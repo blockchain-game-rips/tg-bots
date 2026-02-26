@@ -1,0 +1,14 @@
+.env
+.env.docker*
+node_modules
+.vscode
+.cursorrules
+.cursorignore
+playground
+.VSCodeCounter
+**/.DS_Store
+terraform.json
+dist
+logs
+.data
+configs/

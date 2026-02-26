@@ -1,0 +1,15 @@
+import dotenv from 'dotenv'
+
+export const wait = (ms: number): Promise<void> =>
+	new Promise((resolve) => setTimeout(resolve, ms))
+
+dotenv.config()
+export function getEnvSafe(key: string): string {
+	const value = process.env[key]
+
+	if (!value) {
+		throw new Error(`Environment variable ${key} is not set`)
+	}
+
+	return value
+}

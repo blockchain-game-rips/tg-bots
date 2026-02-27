@@ -1,25 +1,33 @@
-import { Menu } from '@grammyjs/menu'
+import { InlineKeyboard } from 'grammy'
 import { AboutPage, aboutPageInstance } from '../about/about-page'
-import { Page } from '../page'
+import { CallbackQueryContext, Page } from '../page'
+import { PlayPage, playPageInstance } from '../play/play-page'
 
 export class HomePage extends Page {
-	menu: Menu
+	id: string = 'home'
+	override hasNavigation = false
 
-	constructor(private readonly aboutPage: AboutPage) {
-		super()
+	override _keyboard(ctx?: CallbackQueryContext): InlineKeyboard {
+		const inlineKeyboard = new InlineKeyboard()
+			.text('About', this.aboutPage.id)
+			.text('Play Rips', this.playPage.id)
 
-		this.menu = new Menu(this.id).text('About', (ctx) =>
-			this.aboutPage.navigate(ctx),
-		)
-		this.menu.register(this.aboutPage.menu)
-		this.aboutPage.setBackPage(this)
+		return inlineKeyboard
 	}
 
-	id: string = 'home'
+	constructor(
+		private readonly aboutPage: AboutPage,
+		private readonly playPage: PlayPage,
+	) {
+		super([aboutPage, playPage])
+	}
 
-	message(): string {
+	message(ctx?: CallbackQueryContext): string {
 		return 'Here is the home page'
 	}
 }
 
-export const homePageInstance = new HomePage(aboutPageInstance)
+export const homePageInstance = new HomePage(
+	aboutPageInstance,
+	playPageInstance,
+)

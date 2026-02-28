@@ -1,33 +1,14 @@
 import { InlineKeyboard } from 'grammy'
-import { AboutPage, aboutPageInstance } from '../about/about-page'
-import { CallbackQueryContext, Page } from '../page'
-import { PlayPage, playPageInstance } from '../play/play-page'
+import { KeyboardLayout, Page, Renderable, WithKeyboard } from '../interfaces'
+import { composeMarkup } from '../utils.ts/utils'
 
-export class HomePage extends Page {
-	id: string = 'home'
-	override hasNavigation = false
+export class HomePage implements Renderable, WithKeyboard {
+	constructor(readonly keyboardLayout: KeyboardLayout) {}
 
-	override _keyboard(ctx?: CallbackQueryContext): InlineKeyboard {
-		const inlineKeyboard = new InlineKeyboard()
-			.text('About', this.aboutPage.id)
-			.text('Play Rips', this.playPage.id)
-
-		return inlineKeyboard
-	}
-
-	constructor(
-		private readonly aboutPage: AboutPage,
-		private readonly playPage: PlayPage,
-	) {
-		super([aboutPage, playPage])
-	}
-
-	message(ctx?: CallbackQueryContext): string {
-		return 'Here is the home page'
+	render(): Page {
+		return {
+			message: 'Here is the home page',
+			keyboard: new InlineKeyboard(composeMarkup(this.keyboardLayout)),
+		}
 	}
 }
-
-export const homePageInstance = new HomePage(
-	aboutPageInstance,
-	playPageInstance,
-)

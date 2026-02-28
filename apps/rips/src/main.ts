@@ -1,9 +1,8 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
-import { Bot } from 'grammy'
-import { homePageInstance } from './pages/home/home-page'
-import { Page } from './pages/page'
-import { pages } from './pages/registry'
+import { Bot, Context } from 'grammy'
+import { Page, Renderable } from './pages/interfaces'
+import { buildRegistry, homePageId } from './pages/registry'
 import { getEnvSafe } from './utils/common'
 
 const bot = new Bot(getEnvSafe('BOT_TOKEN'))
@@ -20,33 +19,36 @@ bot.use((ctx, next) => {
 	return next()
 })
 
+const pageRegisty: { [id: string]: Renderable } = buildRegistry()
+
 bot.command('start', async (ctx) => {
-	await ctx.reply(homePageInstance.message(), {
-		reply_markup: homePageInstance.keyboard(),
+	const homeRenderable = pageRegisty[homePageId]
+	const page = homeRenderable.render(ctx)
+
+	await ctx.reply(page.message, {
+		reply_markup: page.keyboard,
 	})
-})
-
-export const pageRegisty: { [id: string]: Page } = {}
-
-pages.forEach((page) => {
-	pageRegisty[page.id] = page
-	if (page.hasNavigation && page.id !== homePageInstance.id) {
-		page.setHomePage(homePageInstance)
-	}
 })
 
 bot.on('callback_query:data', async (ctx) => {
 	void ctx.answerCallbackQuery()
+
 	console.log('user press button, data:', ctx.callbackQuery.data)
 
 	const data = ctx.callbackQuery.data
 
-	const pageId = data.split(':')[0]
+	const renderable = pageRegisty[data]
 
-	const page = pageRegisty[pageId]
+	const page = renderable.render(ctx)
 
-	await page.navigate(ctx)
+	await open(ctx, page)
 })
+
+async function open(ctx: Context, page: Page) {
+	await ctx.editMessageText(page.message, {
+		reply_markup: page.keyboard,
+	})
+}
 
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 

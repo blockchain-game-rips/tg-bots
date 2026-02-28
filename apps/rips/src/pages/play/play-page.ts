@@ -1,25 +1,27 @@
 import { InlineKeyboard } from 'grammy'
 import {
-	BuyTicketsPage,
-	buyTicketsPageInstance,
-} from '../buy-tickets/buy-tickets-page'
-import { Page } from '../page'
+	KeyboardLayout,
+	NavIds,
+	Page,
+	Renderable,
+	WithKeyboard,
+	WithNav,
+} from '../interfaces'
+import { addNav, composeMarkup } from '../utils.ts/utils'
 
-export class PlayPage extends Page {
-	id: string = 'play'
-	hasNavigation = true
+export class PlayPage implements Renderable, WithKeyboard, WithNav {
+	constructor(
+		readonly keyboardLayout: KeyboardLayout,
+		readonly navIds: NavIds,
+	) {}
 
-	_keyboard(): InlineKeyboard {
-		return new InlineKeyboard().text('Buy tickets', this.buyTicketsPage.id)
-	}
-
-	constructor(private readonly buyTicketsPage: BuyTicketsPage) {
-		super([buyTicketsPage])
-	}
-
-	message(): string {
-		return 'Play menu'
+	render(): Page {
+		return {
+			message: 'Play menu',
+			keyboard: addNav(
+				new InlineKeyboard(composeMarkup(this.keyboardLayout)),
+				this.navIds,
+			),
+		}
 	}
 }
-
-export const playPageInstance = new PlayPage(buyTicketsPageInstance)

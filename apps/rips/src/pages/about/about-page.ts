@@ -1,20 +1,14 @@
 import { InlineKeyboard } from 'grammy'
-import { CallbackQueryContext, Page } from '../page'
+import { NavIds, Page, Renderable, WithNav } from '../interfaces'
+import { addNav } from '../utils.ts/utils'
 
-export class AboutPage extends Page {
-	override _keyboard(ctx?: CallbackQueryContext): InlineKeyboard {
-		return new InlineKeyboard()
-	}
+export class AboutPage implements Renderable, WithNav {
+	constructor(readonly navIds: NavIds) {}
 
-	hasNavigation = true
-	id = 'about'
-
-	constructor() {
-		super([])
-	}
-
-	message(): string {
-		return 'description of game'
+	render(): Page {
+		return {
+			message: 'description of game',
+			keyboard: addNav(new InlineKeyboard(), this.navIds),
+		}
 	}
 }
-export const aboutPageInstance = new AboutPage()

@@ -1,6 +1,7 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, Context } from 'grammy'
+import { parseCommand } from './commands'
 import { Page, Renderable } from './pages/interfaces'
 import { buildRegistry, homePageId } from './pages/registry'
 import { getEnvSafe } from './utils/common'
@@ -35,13 +36,16 @@ bot.on('callback_query:data', async (ctx) => {
 
 	console.log('user press button, data:', ctx.callbackQuery.data)
 
-	const data = ctx.callbackQuery.data
+	const command = parseCommand(ctx.callbackQuery.data)
 
-	const renderable = pageRegisty[data]
-
-	const page = renderable.render(ctx)
-
-	await open(ctx, page)
+	switch (command.type) {
+		case 'open': {
+			const renderable = pageRegisty[command.pageId]
+			const page = renderable.render(ctx)
+			await open(ctx, page)
+			break
+		}
+	}
 })
 
 async function open(ctx: Context, page: Page) {

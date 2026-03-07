@@ -10,14 +10,19 @@ export function composeMarkup(
 		layout.map((button) => {
 			return {
 				text: button.label,
-				callback_data: buildCommand({ type: 'open', pageId: button.pageId }),
-			} as InlineKeyboardButton
+				callback_data: buildCommand({
+					type: 'open',
+					pageId: button.pageId,
+				}),
+			}
 		}),
 	]
 }
 
 export function addNav(keyboard: InlineKeyboard, ids: NavIds) {
-	keyboard.row().text('Back', buildCommand({ type: 'open', pageId: ids.parent }))
+	keyboard
+		.row()
+		.text('Back', buildCommand({ type: 'open', pageId: ids.parent }))
 
 	if (ids.home !== ids.parent) {
 		keyboard.text('Home', buildCommand({ type: 'open', pageId: ids.home }))

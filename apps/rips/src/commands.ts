@@ -1,7 +1,6 @@
 const COMMAND_SEPARATOR = ':'
 
-export type Command =
-	| { type: 'open'; pageId: string }
+export type Command = { type: 'open'; pageId: string }
 
 export function buildCommand(command: Command): string {
 	switch (command.type) {

@@ -1,8 +1,12 @@
 import { AboutPage } from './about/about-page'
 import { BuyTicketsPage } from './buy-tickets/buy-tickets-page'
+import {
+	ChooseTicketAmountPage,
+	chooseTicketAmountPageId,
+} from './choose-ticket-amount/choose-ticket-amount-page'
 import { HomePage } from './home/home-page'
-import { PlayPage } from './play/play-page'
 import { Renderable } from './interfaces'
+import { PlayPage } from './play/play-page'
 
 export const homePageId = 'home'
 const aboutPageId = 'about'
@@ -25,11 +29,16 @@ export function buildRegistry() {
 		home: homePageId,
 		parent: playPageId,
 	})
+	const chooseTicketAmountPage = new ChooseTicketAmountPage({
+		home: homePageId,
+		parent: buyTicketsPageId,
+	})
 
 	pageRegisty[homePageId] = homePage
 	pageRegisty[aboutPageId] = aboutPage
 	pageRegisty[playPageId] = playPage
 	pageRegisty[buyTicketsPageId] = buyTicketsPage
+	pageRegisty[chooseTicketAmountPageId] = chooseTicketAmountPage
 
 	return pageRegisty
 }

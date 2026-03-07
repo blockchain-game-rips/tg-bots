@@ -8,7 +8,7 @@ export type Page = {
 }
 
 export interface Renderable {
-	render(ctx: Context): Page
+	render(args: { ctx?: Context; params?: string[] }): Page | Promise<Page>
 }
 
 export type NavIds = {
@@ -20,10 +20,12 @@ export interface WithNav {
 	navIds: NavIds
 }
 
-export type KeyboardLayout = {
+export type StaticLayout = {
 	label: string
 	pageId: string
-}[]
+}
+
+export type KeyboardLayout = StaticLayout[]
 
 export interface WithKeyboard {
 	keyboardLayout: KeyboardLayout

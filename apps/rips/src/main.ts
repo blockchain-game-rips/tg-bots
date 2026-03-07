@@ -24,7 +24,7 @@ const pageRegisty: { [id: string]: Renderable } = buildRegistry()
 
 bot.command('start', async (ctx) => {
 	const homeRenderable = pageRegisty[homePageId]
-	const page = homeRenderable.render(ctx)
+	const page = await homeRenderable.render({ ctx })
 
 	await ctx.reply(page.message, {
 		reply_markup: page.keyboard,
@@ -41,8 +41,14 @@ bot.on('callback_query:data', async (ctx) => {
 	switch (command.type) {
 		case 'open': {
 			const renderable = pageRegisty[command.pageId]
-			const page = renderable.render(ctx)
+
+			const page = await renderable.render({
+				ctx,
+				params: command.payloads,
+			})
+
 			await open(ctx, page)
+
 			break
 		}
 	}

@@ -1,22 +1,34 @@
 const COMMAND_SEPARATOR = ':'
 
-export type Command = { type: 'open'; pageId: string }
+export type Command = { type: 'open'; pageId: string; payloads?: string[] }
 
 export function buildCommand(command: Command): string {
+	let commandStr = ''
+
 	switch (command.type) {
 		case 'open':
-			return `o${COMMAND_SEPARATOR}${command.pageId}`
+			commandStr = `o${COMMAND_SEPARATOR}${command.pageId}`
+
+			for (const payload of command.payloads || []) {
+				commandStr += `${COMMAND_SEPARATOR}${payload}`
+			}
+
+			break
 	}
+
+	return commandStr
 }
 
 export function parseCommand(data: string): Command {
-	const separatorIndex = data.indexOf(COMMAND_SEPARATOR)
-	const prefix = data.slice(0, separatorIndex)
-	const payload = data.slice(separatorIndex + 1)
+	const [prefix, ...payloads] = data.split(COMMAND_SEPARATOR)
 
 	switch (prefix) {
 		case 'o':
-			return { type: 'open', pageId: payload }
+			return {
+				type: 'open',
+				pageId: payloads[0],
+				payloads: payloads.slice(1),
+			}
 		default:
 			throw new Error(`Unknown command prefix: ${prefix}`)
 	}

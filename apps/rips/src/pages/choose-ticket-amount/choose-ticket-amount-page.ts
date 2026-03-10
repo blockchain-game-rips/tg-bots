@@ -3,9 +3,8 @@ import { buildCommand } from '../../commands'
 import { getStakesMock } from '../../services/stake.service'
 import { Context } from '../../types'
 import { NavIds, Page, PageContent, WithNav } from '../interfaces'
+import { promptIds } from '../prompt-ids'
 import { addNav } from '../utils.ts/utils'
-
-export const chooseTicketAmountPageId = 'choose-t-a'
 
 export class ChooseTicketAmountPage implements Page, WithNav {
 	constructor(readonly navIds: NavIds) {}
@@ -40,7 +39,7 @@ export class ChooseTicketAmountPage implements Page, WithNav {
 			.text('3 Tickets')
 			.text(
 				'Custom amount',
-				buildCommand({ pageId: 'custom', type: 'reply' }),
+				buildCommand({ pageId: promptIds.customTicketAmount, type: 'reply' }),
 			)
 
 		return {

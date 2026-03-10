@@ -1,60 +1,54 @@
 import { CustomTicketAmountPrompt } from '../prompts/custom-ticket-amount-prompt'
 import { AboutPage } from './about/about-page'
 import { ChooseStakePage } from './choose-stake/choose-stake-page'
-import {
-	ChooseTicketAmountPage,
-	chooseTicketAmountPageId,
-} from './choose-ticket-amount/choose-ticket-amount-page'
+import { ChooseTicketAmountPage } from './choose-ticket-amount/choose-ticket-amount-page'
 import { ConfirmPurchasePage } from './confirm-purchase/confirm-purchase-page'
 import { HomePage } from './home/home-page'
 import { Page, Prompt } from './interfaces'
+import { pageIds } from './page-ids'
 import { PlayPage } from './play/play-page'
-
-export const homePageId = 'home'
-const aboutPageId = 'about'
-const playPageId = 'play'
-const chooseStakePageId = 'chooseStake'
-const confirmPurchasePageId = 'confirm'
+import { promptIds } from './prompt-ids'
 
 export function buildPageRegistry() {
 	const pageRegistry: { [id: string]: Page } = {}
 
 	const homePage = new HomePage([
-		{ label: 'About', pageId: aboutPageId },
-		{ label: 'Play', pageId: playPageId },
+		{ label: 'About', pageId: pageIds.about },
+		{ label: 'Play', pageId: pageIds.play },
 	])
-	const aboutPage = new AboutPage({ home: homePageId, parent: homePageId })
+	const aboutPage = new AboutPage({
+		home: pageIds.home,
+		parent: pageIds.home,
+	})
 	const playPage = new PlayPage(
-		[{ label: 'Buy tickets', pageId: chooseStakePageId }],
-		{ home: homePageId, parent: homePageId },
+		[{ label: 'Buy tickets', pageId: pageIds.chooseStake }],
+		{ home: pageIds.home, parent: pageIds.home },
 	)
 	const chooseStakePage = new ChooseStakePage({
-		home: homePageId,
-		parent: playPageId,
+		home: pageIds.home,
+		parent: pageIds.play,
 	})
 	const chooseTicketAmountPage = new ChooseTicketAmountPage({
-		home: homePageId,
-		parent: chooseStakePageId,
+		home: pageIds.home,
+		parent: pageIds.chooseStake,
 	})
 	const confirmPurchasePage = new ConfirmPurchasePage()
 
-	pageRegistry[homePageId] = homePage
-	pageRegistry[aboutPageId] = aboutPage
-	pageRegistry[playPageId] = playPage
-	pageRegistry[chooseStakePageId] = chooseStakePage
-	pageRegistry[chooseTicketAmountPageId] = chooseTicketAmountPage
-	pageRegistry[confirmPurchasePageId] = confirmPurchasePage
+	pageRegistry[pageIds.home] = homePage
+	pageRegistry[pageIds.about] = aboutPage
+	pageRegistry[pageIds.play] = playPage
+	pageRegistry[pageIds.chooseStake] = chooseStakePage
+	pageRegistry[pageIds.chooseTicketAmount] = chooseTicketAmountPage
+	pageRegistry[pageIds.confirmPurchase] = confirmPurchasePage
 
 	return pageRegistry
 }
-
-const customTicketAmountPromptId = 'custom'
 
 export function buildPromptRegistry() {
 	const promptRegistry: { [id: string]: Prompt } = {}
 
 	const customTicketAmountPrompt = new CustomTicketAmountPrompt()
-	promptRegistry[customTicketAmountPromptId] = customTicketAmountPrompt
+	promptRegistry[promptIds.customTicketAmount] = customTicketAmountPrompt
 
 	return promptRegistry
 }

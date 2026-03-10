@@ -2,13 +2,9 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, session } from 'grammy'
 import { parseCommand } from './commands'
-import { chooseTicketAmountPageId } from './pages/choose-ticket-amount/choose-ticket-amount-page'
 import { Page, PageContent, Prompt } from './pages/interfaces'
-import {
-	buildPageRegistry,
-	buildPromptRegistry,
-	homePageId,
-} from './pages/registry'
+import { pageIds } from './pages/page-ids'
+import { buildPageRegistry, buildPromptRegistry } from './pages/registry'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 
@@ -35,7 +31,7 @@ const pageRegistry: { [id: string]: Page } = buildPageRegistry()
 const promptRegistry: { [id: string]: Prompt } = buildPromptRegistry()
 
 bot.command('start', async (ctx) => {
-	const homePage = pageRegistry[homePageId]
+	const homePage = pageRegistry[pageIds.home]
 	const page = await homePage.render({ ctx })
 
 	await ctx.reply(page.message, {
@@ -97,7 +93,7 @@ bot.on('message:text', async (ctx) => {
 				const ticketAmount = Number(ctx.update.message.text)
 
 				if (isNaN(ticketAmount)) {
-					const page = pageRegistry[chooseTicketAmountPageId]
+					const page = pageRegistry[pageIds.chooseTicketAmount]
 
 					const pageContent = await page.render({
 						ctx,
@@ -118,7 +114,7 @@ bot.on('message:text', async (ctx) => {
 						stakeId: ctx.session.stakeId,
 					}
 
-					const page = pageRegistry.confirm
+					const page = pageRegistry[pageIds.confirmPurchase]
 
 					const pageContent = await page.render({ ctx })
 

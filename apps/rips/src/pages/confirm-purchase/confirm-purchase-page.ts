@@ -3,6 +3,7 @@ import { buildCommand } from '../../commands'
 import { getStakesMock } from '../../services/stake.service'
 import { Context } from '../../types'
 import { Page, PageContent } from '../interfaces'
+import { pageIds } from '../page-ids'
 
 export class ConfirmPurchasePage implements Page {
 	constructor() {}
@@ -31,12 +32,12 @@ export class ConfirmPurchasePage implements Page {
 				.text(
 					'Back',
 					buildCommand({
-						pageId: 'choose-t-a',
+						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
 						payloads: [session.stakeId],
 					}),
 				)
-				.text('Home', buildCommand({ pageId: 'home', type: 'open' })),
+				.text('Home', buildCommand({ pageId: pageIds.home, type: 'open' })),
 		}
 	}
 }

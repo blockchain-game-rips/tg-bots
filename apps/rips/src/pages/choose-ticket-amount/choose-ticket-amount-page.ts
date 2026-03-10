@@ -2,15 +2,15 @@ import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
 import { getStakesMock } from '../../services/stake.service'
 import { Context } from '../../types'
-import { NavIds, Page, Renderable, WithNav } from '../interfaces'
+import { NavIds, Page, PageContent, WithNav } from '../interfaces'
 import { addNav } from '../utils.ts/utils'
 
 export const chooseTicketAmountPageId = 'choose-t-a'
 
-export class ChooseTicketAmountPage implements Renderable, WithNav {
+export class ChooseTicketAmountPage implements Page, WithNav {
 	constructor(readonly navIds: NavIds) {}
 
-	async render(args: { ctx: Context; params: string[] }): Promise<Page> {
+	async render(args: { ctx: Context; params: string[] }): Promise<PageContent> {
 		const stakeId = args.params[0]
 
 		if (stakeId === undefined) {

@@ -1,11 +1,11 @@
 import { InlineKeyboard } from 'grammy'
-import { KeyboardLayout, Page, Renderable, WithKeyboard } from '../interfaces'
+import { KeyboardLayout, Page, PageContent, WithKeyboard } from '../interfaces'
 import { composeMarkup } from '../utils.ts/utils'
 
-export class HomePage implements Renderable, WithKeyboard {
+export class HomePage implements Page, WithKeyboard {
 	constructor(readonly keyboardLayout: KeyboardLayout) {}
 
-	render(): Page {
+	render(): PageContent {
 		return {
 			message: 'Here is the home page',
 			keyboard: new InlineKeyboard(composeMarkup(this.keyboardLayout)),

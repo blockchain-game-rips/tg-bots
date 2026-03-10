@@ -1,13 +1,13 @@
 import { InlineKeyboard } from 'grammy'
 import { Context } from '../types'
 
-export type Page = {
+export type PageContent = {
 	message: string
 	keyboard: InlineKeyboard
 }
 
-export interface Renderable {
-	render(args: { ctx?: Context; params?: string[] }): Page | Promise<Page>
+export interface Page {
+	render(args: { ctx?: Context; params?: string[] }): PageContent | Promise<PageContent>
 }
 
 export type NavIds = {
@@ -30,11 +30,11 @@ export interface WithKeyboard {
 	keyboardLayout: KeyboardLayout
 }
 
-export type Reply = {
+export type PromptContent = {
 	message: string
-	inputPlaceHolder: string
+	placeholder: string
 }
 
-export interface Replyable {
-	reply(args: { ctx?: Context; params?: string[] }): Reply | Promise<Reply>
+export interface Prompt {
+	render(args: { ctx?: Context; params?: string[] }): PromptContent | Promise<PromptContent>
 }

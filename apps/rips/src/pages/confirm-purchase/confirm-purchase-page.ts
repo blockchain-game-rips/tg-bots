@@ -2,12 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
 import { getStakesMock } from '../../services/stake.service'
 import { Context } from '../../types'
-import { Page, Renderable } from '../interfaces'
+import { Page, PageContent } from '../interfaces'
 
-export class ConfirmPurchasePage implements Renderable {
+export class ConfirmPurchasePage implements Page {
 	constructor() {}
 
-	async render(args: { ctx: Context; params: string[] }): Promise<Page> {
+	async render(args: { ctx: Context; params: string[] }): Promise<PageContent> {
 		const session = args.ctx.session
 
 		if (session.activeFlow !== 'ticket-purchase')

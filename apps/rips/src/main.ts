@@ -3,10 +3,10 @@ import { run } from '@grammyjs/runner'
 import { Bot, session } from 'grammy'
 import { parseCommand } from './commands'
 import { chooseTicketAmountPageId } from './pages/choose-ticket-amount/choose-ticket-amount-page'
-import { Page, Renderable, Replyable } from './pages/interfaces'
+import { Page, PageContent, Prompt } from './pages/interfaces'
 import {
 	buildPageRegistry,
-	buildReplyableRegistry,
+	buildPromptRegistry,
 	homePageId,
 } from './pages/registry'
 import { Context, SessionData } from './types'
@@ -31,12 +31,12 @@ function initial(): SessionData {
 }
 bot.use(session({ initial }))
 
-const pageRegisty: { [id: string]: Renderable } = buildPageRegistry()
-const replyableRegistry: { [id: string]: Replyable } = buildReplyableRegistry()
+const pageRegistry: { [id: string]: Page } = buildPageRegistry()
+const promptRegistry: { [id: string]: Prompt } = buildPromptRegistry()
 
 bot.command('start', async (ctx) => {
-	const homeRenderable = pageRegisty[homePageId]
-	const page = await homeRenderable.render({ ctx })
+	const homePage = pageRegistry[homePageId]
+	const page = await homePage.render({ ctx })
 
 	await ctx.reply(page.message, {
 		reply_markup: page.keyboard,
@@ -52,27 +52,27 @@ bot.on('callback_query:data', async (ctx) => {
 
 	switch (command.type) {
 		case 'open': {
-			const renderable = pageRegisty[command.pageId]
+			const page = pageRegistry[command.pageId]
 
-			const page = await renderable.render({
+			const pageContent = await page.render({
 				ctx,
 				params: command.payloads,
 			})
 
-			await open(ctx, page)
+			await open(ctx, pageContent)
 
 			break
 		}
 
 		case 'reply': {
-			const replyable = replyableRegistry[command.pageId]
+			const prompt = promptRegistry[command.pageId]
 
-			const reply = await replyable.reply({ ctx })
+			const promptContent = await prompt.render({ ctx })
 
-			await ctx.reply(reply.message, {
+			await ctx.reply(promptContent.message, {
 				reply_markup: {
 					force_reply: true,
-					input_field_placeholder: reply.inputPlaceHolder,
+					input_field_placeholder: promptContent.placeholder,
 				},
 			})
 
@@ -97,9 +97,9 @@ bot.on('message:text', async (ctx) => {
 				const ticketAmount = Number(ctx.update.message.text)
 
 				if (isNaN(ticketAmount)) {
-					const renderable = pageRegisty[chooseTicketAmountPageId]
+					const page = pageRegistry[chooseTicketAmountPageId]
 
-					const page = await renderable.render({
+					const pageContent = await page.render({
 						ctx,
 						params: [ctx.session.stakeId],
 					})
@@ -107,8 +107,8 @@ bot.on('message:text', async (ctx) => {
 					void bot.api.editMessageText(
 						ctx.chatId,
 						messageIdToEdit,
-						page.message + '\n\n❌ not a number',
-						{ reply_markup: page.keyboard },
+						pageContent.message + '\n\n❌ not a number',
+						{ reply_markup: pageContent.keyboard },
 					)
 				} else {
 					ctx.session = {
@@ -118,15 +118,15 @@ bot.on('message:text', async (ctx) => {
 						stakeId: ctx.session.stakeId,
 					}
 
-					const renderable = pageRegisty.confirm
+					const page = pageRegistry.confirm
 
-					const page = await renderable.render({ ctx })
+					const pageContent = await page.render({ ctx })
 
 					void bot.api.editMessageText(
 						ctx.chatId,
 						messageIdToEdit,
-						page.message,
-						{ reply_markup: page.keyboard },
+						pageContent.message,
+						{ reply_markup: pageContent.keyboard },
 					)
 				}
 
@@ -139,9 +139,9 @@ bot.on('message:text', async (ctx) => {
 	}
 })
 
-async function open(ctx: Context, page: Page) {
-	await ctx.editMessageText(page.message, {
-		reply_markup: page.keyboard,
+async function open(ctx: Context, pageContent: PageContent) {
+	await ctx.editMessageText(pageContent.message, {
+		reply_markup: pageContent.keyboard,
 	})
 }
 

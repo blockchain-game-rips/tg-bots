@@ -1,8 +1,8 @@
-import { Reply, Replyable } from '../pages/interfaces'
+import { Prompt, PromptContent } from '../pages/interfaces'
 import { Context } from '../types'
 
-export class CustomTicketAmountReplyable implements Replyable {
-	reply(args: { ctx: Context }): Reply {
+export class CustomTicketAmountPrompt implements Prompt {
+	render(args: { ctx: Context }): PromptContent {
 		const session = args.ctx.session
 
 		if (session.activeFlow !== 'ticket-purchase') {
@@ -19,7 +19,7 @@ export class CustomTicketAmountReplyable implements Replyable {
 		}
 
 		return {
-			inputPlaceHolder: '10',
+			placeholder: '10',
 			message: 'Specify the ticket amount',
 		}
 	}

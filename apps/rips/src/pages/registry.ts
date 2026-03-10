@@ -1,4 +1,4 @@
-import { CustomTicketAmountReplyable } from '../replyable/custom-ticket-amount-replyable'
+import { CustomTicketAmountPrompt } from '../prompts/custom-ticket-amount-prompt'
 import { AboutPage } from './about/about-page'
 import { ChooseStakePage } from './choose-stake/choose-stake-page'
 import {
@@ -7,7 +7,7 @@ import {
 } from './choose-ticket-amount/choose-ticket-amount-page'
 import { ConfirmPurchasePage } from './confirm-purchase/confirm-purchase-page'
 import { HomePage } from './home/home-page'
-import { Renderable, Replyable } from './interfaces'
+import { Page, Prompt } from './interfaces'
 import { PlayPage } from './play/play-page'
 
 export const homePageId = 'home'
@@ -17,7 +17,7 @@ const chooseStakePageId = 'chooseStake'
 const confirmPurchasePageId = 'confirm'
 
 export function buildPageRegistry() {
-	const pageRegisty: { [id: string]: Renderable } = {}
+	const pageRegistry: { [id: string]: Page } = {}
 
 	const homePage = new HomePage([
 		{ label: 'About', pageId: aboutPageId },
@@ -38,24 +38,23 @@ export function buildPageRegistry() {
 	})
 	const confirmPurchasePage = new ConfirmPurchasePage()
 
-	pageRegisty[homePageId] = homePage
-	pageRegisty[aboutPageId] = aboutPage
-	pageRegisty[playPageId] = playPage
-	pageRegisty[chooseStakePageId] = chooseStakePage
-	pageRegisty[chooseTicketAmountPageId] = chooseTicketAmountPage
-	pageRegisty[confirmPurchasePageId] = confirmPurchasePage
+	pageRegistry[homePageId] = homePage
+	pageRegistry[aboutPageId] = aboutPage
+	pageRegistry[playPageId] = playPage
+	pageRegistry[chooseStakePageId] = chooseStakePage
+	pageRegistry[chooseTicketAmountPageId] = chooseTicketAmountPage
+	pageRegistry[confirmPurchasePageId] = confirmPurchasePage
 
-	return pageRegisty
+	return pageRegistry
 }
 
-const customTicketAmountReplyableId = 'custom'
+const customTicketAmountPromptId = 'custom'
 
-export function buildReplyableRegistry() {
-	const replyableRegistry: { [id: string]: Replyable } = {}
+export function buildPromptRegistry() {
+	const promptRegistry: { [id: string]: Prompt } = {}
 
-	const customTicketAmountReplyable = new CustomTicketAmountReplyable()
-	replyableRegistry[customTicketAmountReplyableId] =
-		customTicketAmountReplyable
+	const customTicketAmountPrompt = new CustomTicketAmountPrompt()
+	promptRegistry[customTicketAmountPromptId] = customTicketAmountPrompt
 
-	return replyableRegistry
+	return promptRegistry
 }

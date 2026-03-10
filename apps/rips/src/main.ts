@@ -1,12 +1,13 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
-import { Bot, Context } from 'grammy'
+import { Bot, session } from 'grammy'
 import { parseCommand } from './commands'
 import { Page, Renderable } from './pages/interfaces'
 import { buildRegistry, homePageId } from './pages/registry'
+import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 
-const bot = new Bot(getEnvSafe('BOT_TOKEN'))
+const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 
 bot.api.config.use(autoRetry())
 
@@ -19,6 +20,11 @@ bot.use((ctx, next) => {
 	console.log('Update received:', JSON.stringify(ctx.update, null, 2))
 	return next()
 })
+
+function initial(): SessionData {
+	return { activeFlow: null }
+}
+bot.use(session({ initial }))
 
 const pageRegisty: { [id: string]: Renderable } = buildRegistry()
 

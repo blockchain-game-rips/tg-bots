@@ -1,6 +1,5 @@
-import { Context, Filter, InlineKeyboard } from 'grammy'
-
-export type CallbackQueryContext = Filter<Context, 'callback_query:data'>
+import { InlineKeyboard } from 'grammy'
+import { Context } from '../types'
 
 export type Page = {
 	message: string

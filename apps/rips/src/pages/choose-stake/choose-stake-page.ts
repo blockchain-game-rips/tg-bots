@@ -1,11 +1,11 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
-import { wait } from '../../utils/common'
+import { getStakesMock } from '../../services/stake.service'
 import { chooseTicketAmountPageId } from '../choose-ticket-amount/choose-ticket-amount-page'
 import { NavIds, Page, Renderable, WithNav } from '../interfaces'
 import { addNav } from '../utils.ts/utils'
 
-export class BuyTicketsPage implements Renderable, WithNav {
+export class ChooseStakePage implements Renderable, WithNav {
 	constructor(readonly navIds: NavIds) {}
 
 	async render(): Promise<Page> {
@@ -29,13 +29,4 @@ export class BuyTicketsPage implements Renderable, WithNav {
 			keyboard: addNav(keyboard, this.navIds),
 		}
 	}
-}
-
-async function getStakesMock() {
-	await wait(100)
-	return [
-		{ stakeId: 1, ticketPrice: 0.0025 },
-		{ stakeId: 2, ticketPrice: 0.005 },
-		{ stakeId: 3, ticketPrice: 0.01 },
-	]
 }

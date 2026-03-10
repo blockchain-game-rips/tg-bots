@@ -1,26 +1,19 @@
 import { InlineKeyboard } from 'grammy'
-import {
-	KeyboardLayout,
-	NavIds,
-	Page,
-	PageContent,
-	WithKeyboard,
-	WithNav,
-} from '../interfaces'
+import { Page, PageContent } from '../interfaces'
+import { pageIds } from '../page-ids'
 import { addNav, composeMarkup } from '../utils.ts/utils'
 
-export class PlayPage implements Page, WithKeyboard, WithNav {
-	constructor(
-		readonly keyboardLayout: KeyboardLayout,
-		readonly navIds: NavIds,
-	) {}
-
+export class PlayPage implements Page {
 	render(): PageContent {
 		return {
 			message: 'Play menu',
 			keyboard: addNav(
-				new InlineKeyboard(composeMarkup(this.keyboardLayout)),
-				this.navIds,
+				new InlineKeyboard(
+					composeMarkup([
+						{ label: 'Buy tickets', pageId: pageIds.chooseStake },
+					]),
+				),
+				{ home: pageIds.home, parent: pageIds.home },
 			),
 		}
 	}

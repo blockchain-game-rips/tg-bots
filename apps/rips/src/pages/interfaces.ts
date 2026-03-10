@@ -15,20 +15,12 @@ export type NavIds = {
 	parent: string
 }
 
-export interface WithNav {
-	navIds: NavIds
-}
-
 export type StaticLayout = {
 	label: string
 	pageId: string
 }
 
 export type KeyboardLayout = StaticLayout[]
-
-export interface WithKeyboard {
-	keyboardLayout: KeyboardLayout
-}
 
 export type PromptContent = {
 	message: string

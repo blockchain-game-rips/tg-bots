@@ -4,7 +4,7 @@ import { Bot, session } from 'grammy'
 import { parseCommand } from './commands'
 import { Page, PageContent, Prompt } from './pages/interfaces'
 import { pageIds } from './pages/page-ids'
-import { buildPageRegistry, buildPromptRegistry } from './pages/registry'
+import { buildPageRegistry, buildPromptRegistry } from './registry'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 

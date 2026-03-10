@@ -1,15 +1,17 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
+import { promptIds } from '../../prompts/prompt-ids'
 import { getStakesMock } from '../../services/stake.service'
 import { Context } from '../../types'
-import { NavIds, Page, PageContent, WithNav } from '../interfaces'
-import { promptIds } from '../prompt-ids'
+import { Page, PageContent } from '../interfaces'
+import { pageIds } from '../page-ids'
 import { addNav } from '../utils.ts/utils'
 
-export class ChooseTicketAmountPage implements Page, WithNav {
-	constructor(readonly navIds: NavIds) {}
-
-	async render(args: { ctx: Context; params: string[] }): Promise<PageContent> {
+export class ChooseTicketAmountPage implements Page {
+	async render(args: {
+		ctx: Context
+		params: string[]
+	}): Promise<PageContent> {
 		const stakeId = args.params[0]
 
 		if (stakeId === undefined) {
@@ -39,12 +41,18 @@ export class ChooseTicketAmountPage implements Page, WithNav {
 			.text('3 Tickets')
 			.text(
 				'Custom amount',
-				buildCommand({ pageId: promptIds.customTicketAmount, type: 'reply' }),
+				buildCommand({
+					pageId: promptIds.customTicketAmount,
+					type: 'reply',
+				}),
 			)
 
 		return {
 			message: `Choose tickets amount for stake ${stake.ticketPrice} ETH`,
-			keyboard: addNav(keyboard, this.navIds),
+			keyboard: addNav(keyboard, {
+				home: pageIds.home,
+				parent: pageIds.chooseStake,
+			}),
 		}
 	}
 }

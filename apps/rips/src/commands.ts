@@ -1,6 +1,8 @@
 const COMMAND_SEPARATOR = ':'
 
-export type Command = { type: 'open'; pageId: string; payloads?: string[] }
+export type Command =
+	| { type: 'open'; pageId: string; payloads?: string[] }
+	| { type: 'reply'; pageId: string }
 
 export function buildCommand(command: Command): string {
 	let commandStr = ''
@@ -14,6 +16,9 @@ export function buildCommand(command: Command): string {
 			}
 
 			break
+
+		case 'reply':
+			commandStr = `r${COMMAND_SEPARATOR}${command.pageId}`
 	}
 
 	return commandStr
@@ -29,6 +34,13 @@ export function parseCommand(data: string): Command {
 				pageId: payloads[0],
 				payloads: payloads.slice(1),
 			}
+
+		case 'r':
+			return {
+				type: 'reply',
+				pageId: payloads[0],
+			}
+
 		default:
 			throw new Error(`Unknown command prefix: ${prefix}`)
 	}

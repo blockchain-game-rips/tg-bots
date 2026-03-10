@@ -9,8 +9,14 @@ export type TicketPurshaseSession = {
 } & (
 	| {
 			stakeId: string
+			step: 'choose-ticket-amount'
 	  }
-	| { stakeId: string; ticketAmount: number }
+	| {
+			stakeId: string
+			step: 'waiting-for-input'
+			messageIdToEdit: number
+	  }
+	| { stakeId: string; ticketAmount: number; step: 'confirming' }
 )
 
 export type SessionData = EmptySession | TicketPurshaseSession

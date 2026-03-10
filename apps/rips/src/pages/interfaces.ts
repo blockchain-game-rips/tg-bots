@@ -29,3 +29,12 @@ export type KeyboardLayout = StaticLayout[]
 export interface WithKeyboard {
 	keyboardLayout: KeyboardLayout
 }
+
+export type Reply = {
+	message: string
+	inputPlaceHolder: string
+}
+
+export interface Replyable {
+	reply(args: { ctx?: Context; params?: string[] }): Reply | Promise<Reply>
+}

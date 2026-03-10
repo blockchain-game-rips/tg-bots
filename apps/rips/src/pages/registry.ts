@@ -1,21 +1,22 @@
+import { CustomTicketAmountReplyable } from '../replyable/custom-ticket-amount-replyable'
 import { AboutPage } from './about/about-page'
 import { ChooseStakePage } from './choose-stake/choose-stake-page'
 import {
 	ChooseTicketAmountPage,
 	chooseTicketAmountPageId,
 } from './choose-ticket-amount/choose-ticket-amount-page'
-import { CustomAmountPage } from './custom-amount/custom-amount'
+import { ConfirmPurchasePage } from './confirm-purchase/confirm-purchase-page'
 import { HomePage } from './home/home-page'
-import { Renderable } from './interfaces'
+import { Renderable, Replyable } from './interfaces'
 import { PlayPage } from './play/play-page'
 
 export const homePageId = 'home'
 const aboutPageId = 'about'
 const playPageId = 'play'
 const chooseStakePageId = 'chooseStake'
-const customAmountPageId = 'custom'
+const confirmPurchasePageId = 'confirm'
 
-export function buildRegistry() {
+export function buildPageRegistry() {
 	const pageRegisty: { [id: string]: Renderable } = {}
 
 	const homePage = new HomePage([
@@ -35,14 +36,26 @@ export function buildRegistry() {
 		home: homePageId,
 		parent: chooseStakePageId,
 	})
-	const customAmountPage = new CustomAmountPage()
+	const confirmPurchasePage = new ConfirmPurchasePage()
 
 	pageRegisty[homePageId] = homePage
 	pageRegisty[aboutPageId] = aboutPage
 	pageRegisty[playPageId] = playPage
 	pageRegisty[chooseStakePageId] = chooseStakePage
 	pageRegisty[chooseTicketAmountPageId] = chooseTicketAmountPage
-	pageRegisty[customAmountPageId] = customAmountPage
+	pageRegisty[confirmPurchasePageId] = confirmPurchasePage
 
 	return pageRegisty
+}
+
+const customTicketAmountReplyableId = 'custom'
+
+export function buildReplyableRegistry() {
+	const replyableRegistry: { [id: string]: Replyable } = {}
+
+	const customTicketAmountReplyable = new CustomTicketAmountReplyable()
+	replyableRegistry[customTicketAmountReplyableId] =
+		customTicketAmountReplyable
+
+	return replyableRegistry
 }

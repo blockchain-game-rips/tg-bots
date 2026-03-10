@@ -32,6 +32,7 @@ export class ChooseTicketAmountPage implements Renderable, WithNav {
 		args.ctx.session = {
 			activeFlow: 'ticket-purchase',
 			stakeId: stakeId,
+			step: 'choose-ticket-amount',
 		}
 
 		const keyboard = new InlineKeyboard()
@@ -39,7 +40,7 @@ export class ChooseTicketAmountPage implements Renderable, WithNav {
 			.text('3 Tickets')
 			.text(
 				'Custom amount',
-				buildCommand({ pageId: 'custom', type: 'open' }),
+				buildCommand({ pageId: 'custom', type: 'reply' }),
 			)
 
 		return {

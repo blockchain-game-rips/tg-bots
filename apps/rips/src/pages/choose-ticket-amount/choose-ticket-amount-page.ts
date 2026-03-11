@@ -24,7 +24,7 @@ export class ChooseTicketAmountPage {
 			.text(
 				'Custom amount',
 				buildCommand({
-					pageId: promptIds.customTicketAmount,
+					promptId: promptIds.customTicketAmount,
 					type: 'reply',
 				}),
 			)

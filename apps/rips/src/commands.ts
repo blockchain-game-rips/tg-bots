@@ -1,8 +1,8 @@
 const COMMAND_SEPARATOR = ':'
 
-export type Command =
-	| { type: 'open'; pageId: string; payloads?: string[] }
-	| { type: 'reply'; pageId: string }
+export type OpenCommand = { type: 'open'; pageId: string; payloads?: string[] }
+export type ReplyCommand = { type: 'reply'; promptId: string }
+export type Command = OpenCommand | ReplyCommand
 
 export function buildCommand(command: Command): string {
 	let commandStr = ''
@@ -18,7 +18,7 @@ export function buildCommand(command: Command): string {
 			break
 
 		case 'reply':
-			commandStr = `r${COMMAND_SEPARATOR}${command.pageId}`
+			commandStr = `r${COMMAND_SEPARATOR}${command.promptId}`
 	}
 
 	return commandStr
@@ -38,7 +38,7 @@ export function parseCommand(data: string): Command {
 		case 'r':
 			return {
 				type: 'reply',
-				pageId: payloads[0],
+				promptId: payloads[0],
 			}
 
 		default:

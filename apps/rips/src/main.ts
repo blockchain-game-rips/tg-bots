@@ -73,7 +73,7 @@ bot.on('callback_query:data', async (ctx) => {
 		}
 
 		case 'reply': {
-			switch (command.pageId) {
+			switch (command.promptId) {
 				case promptIds.customTicketAmount: {
 					if (ctx.session.activeFlow !== 'ticket-purchase') {
 						throw new Error('activeFlow should be ticket-purchase')

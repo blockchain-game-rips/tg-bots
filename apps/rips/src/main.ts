@@ -246,7 +246,7 @@ async function openPage(
 
 			if (
 				sessionData.activeFlow !== ActiveFlow.TicketPurchase ||
-				sessionData.step !== TicketPurchaseStep.Confirming
+				sessionData.step !== TicketPurchaseStep.ChoosingTicketAmount
 			) {
 				console.log('wrong session state for confirmPurchase')
 				return null
@@ -262,7 +262,16 @@ async function openPage(
 				return null
 			}
 
-			return ConfirmPurchasePage.render(stake, sessionData.ticketAmount)
+			const ticketAmount = Number(payloads![0])
+
+			ctx.session = {
+				activeFlow: ActiveFlow.TicketPurchase,
+				step: TicketPurchaseStep.Confirming,
+				ticketAmount: ticketAmount,
+				stakeId: stake.stakeId.toString(),
+			}
+
+			return ConfirmPurchasePage.render(stake, ticketAmount)
 		}
 
 		default:

@@ -7,8 +7,10 @@ type Stake = { stakeId: number; ticketPrice: number }
 
 export class ConfirmPurchasePage {
 	static render(stake: Stake, ticketAmount: number): PageContent {
+		const totalCost = stake.ticketPrice * ticketAmount
+
 		return {
-			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}`,
+			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ETH`,
 			keyboard: new InlineKeyboard()
 				.text(
 					'Back',
@@ -18,7 +20,10 @@ export class ConfirmPurchasePage {
 						payloads: [stake.stakeId.toString()],
 					}),
 				)
-				.text('Home', buildCommand({ pageId: pageIds.home, type: 'open' })),
+				.text(
+					'Home',
+					buildCommand({ pageId: pageIds.home, type: 'open' }),
+				),
 		}
 	}
 }

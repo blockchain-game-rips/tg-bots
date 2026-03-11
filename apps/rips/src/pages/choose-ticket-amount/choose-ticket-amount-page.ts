@@ -10,8 +10,22 @@ type Stake = { stakeId: number; ticketPrice: number }
 export class ChooseTicketAmountPage {
 	static render(stake: Stake): PageContent {
 		const keyboard = new InlineKeyboard()
-			.text('1 Ticket')
-			.text('3 Tickets')
+			.text(
+				'1 Ticket',
+				buildCommand({
+					type: 'open',
+					pageId: pageIds.confirmPurchase,
+					payloads: ['1'],
+				}),
+			)
+			.text(
+				'3 Tickets',
+				buildCommand({
+					type: 'open',
+					pageId: pageIds.confirmPurchase,
+					payloads: ['3'],
+				}),
+			)
 			.text(
 				'Custom amount',
 				buildCommand({

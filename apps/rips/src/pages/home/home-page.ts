@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { Page, PageContent } from '../interfaces'
+import { PageContent } from '../interfaces'
 import { pageIds } from '../page-ids'
 import { composeMarkup } from '../utils.ts/utils'
 
-export class HomePage implements Page {
+export class HomePage {
 	render(): PageContent {
 		return {
 			message: 'Here is the home page',

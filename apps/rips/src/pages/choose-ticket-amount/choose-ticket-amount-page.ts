@@ -2,24 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
 import { promptIds } from '../../prompts/prompt-ids'
 import { getStakesMock } from '../../services/stake.service'
-import { Context } from '../../types'
-import { Page, PageContent } from '../interfaces'
+import { PageContent } from '../interfaces'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils.ts/utils'
 
-export class ChooseTicketAmountPage implements Page {
-	async render(args: {
-		ctx: Context
-		params: string[]
-	}): Promise<PageContent> {
-		const stakeId = args.params[0]
-
-		if (stakeId === undefined) {
-			throw new Error(
-				'stakeId is undefiend, ChooseTicketAmountPage can not be rendered',
-			)
-		}
-
+export class ChooseTicketAmountPage {
+	async render(stakeId: string): Promise<PageContent> {
 		const stakes = await getStakesMock()
 
 		const stake = stakes.find(
@@ -28,12 +16,6 @@ export class ChooseTicketAmountPage implements Page {
 
 		if (stake === undefined) {
 			throw new Error(`stakeId ${stakeId} is invalid`)
-		}
-
-		args.ctx.session = {
-			activeFlow: 'ticket-purchase',
-			stakeId: stakeId,
-			step: 'choose-ticket-amount',
 		}
 
 		const keyboard = new InlineKeyboard()

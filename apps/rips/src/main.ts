@@ -2,9 +2,16 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, session } from 'grammy'
 import { parseCommand } from './commands'
-import { Page, PageContent, Prompt } from './pages/interfaces'
+import { AboutPage } from './pages/about/about-page'
+import { ChooseStakePage } from './pages/choose-stake/choose-stake-page'
+import { ChooseTicketAmountPage } from './pages/choose-ticket-amount/choose-ticket-amount-page'
+import { ConfirmPurchasePage } from './pages/confirm-purchase/confirm-purchase-page'
+import { HomePage } from './pages/home/home-page'
+import { PageContent } from './pages/interfaces'
 import { pageIds } from './pages/page-ids'
-import { buildPageRegistry, buildPromptRegistry } from './registry'
+import { PlayPage } from './pages/play/play-page'
+import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
+import { promptIds } from './prompts/prompt-ids'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 
@@ -27,12 +34,16 @@ function initial(): SessionData {
 }
 bot.use(session({ initial }))
 
-const pageRegistry: { [id: string]: Page } = buildPageRegistry()
-const promptRegistry: { [id: string]: Prompt } = buildPromptRegistry()
+const homePage = new HomePage()
+const aboutPage = new AboutPage()
+const playPage = new PlayPage()
+const chooseStakePage = new ChooseStakePage()
+const chooseTicketAmountPage = new ChooseTicketAmountPage()
+const confirmPurchasePage = new ConfirmPurchasePage()
+const customTicketAmountPrompt = new CustomTicketAmountPrompt()
 
 bot.command('start', async (ctx) => {
-	const homePage = pageRegistry[pageIds.home]
-	const page = await homePage.render({ ctx })
+	const page = homePage.render()
 
 	await ctx.reply(page.message, {
 		reply_markup: page.keyboard,
@@ -48,29 +59,46 @@ bot.on('callback_query:data', async (ctx) => {
 
 	switch (command.type) {
 		case 'open': {
-			const page = pageRegistry[command.pageId]
-
-			const pageContent = await page.render({
+			const pageContent = await openPage(
 				ctx,
-				params: command.payloads,
-			})
+				command.pageId,
+				command.payloads,
+			)
 
-			await open(ctx, pageContent)
+			if (pageContent) {
+				await editMessage(ctx, pageContent)
+			}
 
 			break
 		}
 
 		case 'reply': {
-			const prompt = promptRegistry[command.pageId]
+			switch (command.pageId) {
+				case promptIds.customTicketAmount: {
+					if (ctx.session.activeFlow !== 'ticket-purchase') {
+						throw new Error('activeFlow should be ticket-purchase')
+					}
 
-			const promptContent = await prompt.render({ ctx })
+					ctx.session = {
+						activeFlow: 'ticket-purchase',
+						step: 'waiting-for-input',
+						messageIdToEdit:
+							ctx.update.callback_query.message!.message_id,
+						stakeId: ctx.session.stakeId,
+					}
 
-			await ctx.reply(promptContent.message, {
-				reply_markup: {
-					force_reply: true,
-					input_field_placeholder: promptContent.placeholder,
-				},
-			})
+					const promptContent = customTicketAmountPrompt.render()
+
+					await ctx.reply(promptContent.message, {
+						reply_markup: {
+							force_reply: true,
+							input_field_placeholder: promptContent.placeholder,
+						},
+					})
+
+					break
+				}
+			}
 
 			break
 		}
@@ -89,16 +117,19 @@ bot.on('message:text', async (ctx) => {
 		case 'ticket-purchase': {
 			if (ctx.session.step === 'waiting-for-input') {
 				const messageIdToEdit = ctx.session.messageIdToEdit
+				const stakeId = ctx.session.stakeId
 
 				const ticketAmount = Number(ctx.update.message.text)
 
 				if (isNaN(ticketAmount)) {
-					const page = pageRegistry[pageIds.chooseTicketAmount]
+					ctx.session = {
+						activeFlow: 'ticket-purchase',
+						stakeId,
+						step: 'choose-ticket-amount',
+					}
 
-					const pageContent = await page.render({
-						ctx,
-						params: [ctx.session.stakeId],
-					})
+					const pageContent =
+						await chooseTicketAmountPage.render(stakeId)
 
 					void bot.api.editMessageText(
 						ctx.chatId,
@@ -110,13 +141,14 @@ bot.on('message:text', async (ctx) => {
 					ctx.session = {
 						activeFlow: 'ticket-purchase',
 						step: 'confirming',
-						ticketAmount: ticketAmount,
-						stakeId: ctx.session.stakeId,
+						ticketAmount,
+						stakeId,
 					}
 
-					const page = pageRegistry[pageIds.confirmPurchase]
-
-					const pageContent = await page.render({ ctx })
+					const pageContent = await confirmPurchasePage.render(
+						stakeId,
+						ticketAmount,
+					)
 
 					void bot.api.editMessageText(
 						ctx.chatId,
@@ -135,7 +167,61 @@ bot.on('message:text', async (ctx) => {
 	}
 })
 
-async function open(ctx: Context, pageContent: PageContent) {
+async function openPage(
+	ctx: Context,
+	pageId: string,
+	payloads?: string[],
+): Promise<PageContent | null> {
+	switch (pageId) {
+		case pageIds.home:
+			return homePage.render()
+
+		case pageIds.about:
+			return aboutPage.render()
+
+		case pageIds.play:
+			return playPage.render()
+
+		case pageIds.chooseStake:
+			return chooseStakePage.render()
+
+		case pageIds.chooseTicketAmount: {
+			const stakeId = payloads?.[0]
+
+			if (stakeId === undefined) {
+				throw new Error('stakeId is required for chooseTicketAmount')
+			}
+
+			ctx.session = {
+				activeFlow: 'ticket-purchase',
+				stakeId,
+				step: 'choose-ticket-amount',
+			}
+
+			return chooseTicketAmountPage.render(stakeId)
+		}
+
+		case pageIds.confirmPurchase: {
+			if (
+				ctx.session.activeFlow !== 'ticket-purchase' ||
+				ctx.session.step !== 'confirming'
+			) {
+				throw new Error('wrong session state for confirmPurchase')
+			}
+
+			return confirmPurchasePage.render(
+				ctx.session.stakeId,
+				ctx.session.ticketAmount,
+			)
+		}
+
+		default:
+			console.log(`unknown pageId: ${pageId}`)
+			return null
+	}
+}
+
+async function editMessage(ctx: Context, pageContent: PageContent) {
 	await ctx.editMessageText(pageContent.message, {
 		reply_markup: pageContent.keyboard,
 	})

@@ -119,9 +119,28 @@ bot.on('message:text', async (ctx) => {
 				const messageIdToEdit = ctx.session.messageIdToEdit
 				const stakeId = ctx.session.stakeId
 
-				const ticketAmount = Number(ctx.update.message.text)
+				const validation = validateTicketNumber(ctx.update.message.text)
 
-				if (isNaN(ticketAmount)) {
+				if (validation.isValid) {
+					ctx.session = {
+						activeFlow: ActiveFlow.TicketPurchase,
+						step: TicketPurchaseStep.Confirming,
+						ticketAmount: validation.ticketAmount,
+						stakeId,
+					}
+
+					const pageContent = await confirmPurchasePage.render(
+						stakeId,
+						validation.ticketAmount,
+					)
+
+					void bot.api.editMessageText(
+						ctx.chatId,
+						messageIdToEdit,
+						pageContent.message,
+						{ reply_markup: pageContent.keyboard },
+					)
+				} else {
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						stakeId,
@@ -134,26 +153,7 @@ bot.on('message:text', async (ctx) => {
 					void bot.api.editMessageText(
 						ctx.chatId,
 						messageIdToEdit,
-						pageContent.message + '\n\n❌ not a number',
-						{ reply_markup: pageContent.keyboard },
-					)
-				} else {
-					ctx.session = {
-						activeFlow: ActiveFlow.TicketPurchase,
-						step: TicketPurchaseStep.Confirming,
-						ticketAmount,
-						stakeId,
-					}
-
-					const pageContent = await confirmPurchasePage.render(
-						stakeId,
-						ticketAmount,
-					)
-
-					void bot.api.editMessageText(
-						ctx.chatId,
-						messageIdToEdit,
-						pageContent.message,
+						pageContent.message + `\n\n${validation.reasonMessage}`,
 						{ reply_markup: pageContent.keyboard },
 					)
 				}
@@ -166,6 +166,31 @@ bot.on('message:text', async (ctx) => {
 		}
 	}
 })
+
+export function validateTicketNumber(
+	userInput: string,
+):
+	| { isValid: true; ticketAmount: number }
+	| { isValid: false; reasonMessage: string } {
+	const ticketAmount = Number(userInput)
+
+	if (isNaN(ticketAmount)) {
+		return { isValid: false, reasonMessage: '❌ Not a number' }
+	}
+
+	if (ticketAmount < 0) {
+		return {
+			isValid: false,
+			reasonMessage: '❌ Number should be more than 0',
+		}
+	}
+
+	if (!Number.isSafeInteger(ticketAmount)) {
+		return { isValid: false, reasonMessage: '❌ Number should be integer' }
+	}
+
+	return { isValid: true, ticketAmount }
+}
 
 async function openPage(
 	ctx: Context,

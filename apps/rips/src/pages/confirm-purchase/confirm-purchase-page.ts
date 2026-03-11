@@ -12,6 +12,8 @@ export class ConfirmPurchasePage {
 		return {
 			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ETH`,
 			keyboard: new InlineKeyboard()
+				.text('Confirm')
+				.row()
 				.text(
 					'Back',
 					buildCommand({

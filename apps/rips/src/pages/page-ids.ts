@@ -3,6 +3,7 @@ export const pageIds = {
 	about: 'about',
 	play: 'play',
 	chooseStake: 'chooseStake',
-	chooseTicketAmount: 'choose-t-a',
+	chooseTicketAmount: 'chooseTA',
 	confirmPurchase: 'confirm',
+	insufficientFunds: 'insufFunds',
 } as const

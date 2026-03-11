@@ -1,22 +1,36 @@
 import { Context as GrammyContext, SessionFlavor } from 'grammy'
 
+export enum ActiveFlow {
+	TicketPurchase,
+}
+
+export enum TicketPurchaseStep {
+	ChoosingTicketAmount,
+	WaitingForInput,
+	Confirming,
+}
+
 export type EmptySession = {
 	activeFlow: null
 }
 
 export type TicketPurshaseSession = {
-	activeFlow: 'ticket-purchase'
+	activeFlow: ActiveFlow.TicketPurchase
 } & (
 	| {
 			stakeId: string
-			step: 'choose-ticket-amount'
+			step: TicketPurchaseStep.ChoosingTicketAmount
 	  }
 	| {
 			stakeId: string
-			step: 'waiting-for-input'
+			step: TicketPurchaseStep.WaitingForInput
 			messageIdToEdit: number
 	  }
-	| { stakeId: string; ticketAmount: number; step: 'confirming' }
+	| {
+			stakeId: string
+			ticketAmount: number
+			step: TicketPurchaseStep.Confirming
+	  }
 )
 
 export type SessionData = EmptySession | TicketPurshaseSession

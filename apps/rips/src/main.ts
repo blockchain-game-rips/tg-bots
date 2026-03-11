@@ -12,7 +12,7 @@ import { pageIds } from './pages/page-ids'
 import { PlayPage } from './pages/play/play-page'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { Context, SessionData } from './types'
+import { ActiveFlow, Context, SessionData, TicketPurchaseStep } from './types'
 import { getEnvSafe } from './utils/common'
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
@@ -75,13 +75,13 @@ bot.on('callback_query:data', async (ctx) => {
 		case 'reply': {
 			switch (command.promptId) {
 				case promptIds.customTicketAmount: {
-					if (ctx.session.activeFlow !== 'ticket-purchase') {
+					if (ctx.session.activeFlow !== ActiveFlow.TicketPurchase) {
 						throw new Error('activeFlow should be ticket-purchase')
 					}
 
 					ctx.session = {
-						activeFlow: 'ticket-purchase',
-						step: 'waiting-for-input',
+						activeFlow: ActiveFlow.TicketPurchase,
+						step: TicketPurchaseStep.WaitingForInput,
 						messageIdToEdit:
 							ctx.update.callback_query.message!.message_id,
 						stakeId: ctx.session.stakeId,
@@ -114,8 +114,8 @@ bot.on('message:text', async (ctx) => {
 	}
 
 	switch (ctx.session.activeFlow) {
-		case 'ticket-purchase': {
-			if (ctx.session.step === 'waiting-for-input') {
+		case ActiveFlow.TicketPurchase: {
+			if (ctx.session.step === TicketPurchaseStep.WaitingForInput) {
 				const messageIdToEdit = ctx.session.messageIdToEdit
 				const stakeId = ctx.session.stakeId
 
@@ -123,9 +123,9 @@ bot.on('message:text', async (ctx) => {
 
 				if (isNaN(ticketAmount)) {
 					ctx.session = {
-						activeFlow: 'ticket-purchase',
+						activeFlow: ActiveFlow.TicketPurchase,
 						stakeId,
-						step: 'choose-ticket-amount',
+						step: TicketPurchaseStep.ChoosingTicketAmount,
 					}
 
 					const pageContent =
@@ -139,8 +139,8 @@ bot.on('message:text', async (ctx) => {
 					)
 				} else {
 					ctx.session = {
-						activeFlow: 'ticket-purchase',
-						step: 'confirming',
+						activeFlow: ActiveFlow.TicketPurchase,
+						step: TicketPurchaseStep.Confirming,
 						ticketAmount,
 						stakeId,
 					}
@@ -193,9 +193,9 @@ async function openPage(
 			}
 
 			ctx.session = {
-				activeFlow: 'ticket-purchase',
+				activeFlow: ActiveFlow.TicketPurchase,
 				stakeId,
-				step: 'choose-ticket-amount',
+				step: TicketPurchaseStep.ChoosingTicketAmount,
 			}
 
 			return chooseTicketAmountPage.render(stakeId)
@@ -203,8 +203,8 @@ async function openPage(
 
 		case pageIds.confirmPurchase: {
 			if (
-				ctx.session.activeFlow !== 'ticket-purchase' ||
-				ctx.session.step !== 'confirming'
+				ctx.session.activeFlow !== ActiveFlow.TicketPurchase ||
+				ctx.session.step !== TicketPurchaseStep.Confirming
 			) {
 				throw new Error('wrong session state for confirmPurchase')
 			}

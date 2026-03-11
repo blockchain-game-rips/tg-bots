@@ -1,4 +1,4 @@
-import { Filter, InlineKeyboard } from 'grammy'
+import { Filter } from 'grammy'
 import { parseCommand } from './commands'
 import { getErrorMessageToRender } from './error-to-render'
 import {
@@ -11,6 +11,7 @@ import { HomePage } from './pages/home/home-page'
 import { PageContent } from './pages/interfaces'
 import { pageIds } from './pages/page-ids'
 import { PlayPage } from './pages/play/play-page'
+import { getCurrentPage } from './pages/utils.ts/utils'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
 import { getStakesMock } from './services/stake.service'
@@ -30,20 +31,12 @@ export async function handleButton(
 	} catch (error) {
 		const errorMessageToRender = getErrorMessageToRender(error)
 
-		const rawMarkup = ctx.callbackQuery.message?.reply_markup
+		const currentPage = getCurrentPage(ctx)
 
-		const keyboard =
-			rawMarkup && 'inline_keyboard' in rawMarkup
-				? InlineKeyboard.from(rawMarkup.inline_keyboard)
-				: new InlineKeyboard()
-
-		let message = ctx.callbackQuery.message?.text || ''
-
-		message += `\n\n${errorMessageToRender}`
-
-		await ctx.editMessageText(message, {
-			reply_markup: keyboard,
-		})
+		await ctx.editMessageText(
+			currentPage.message + `\n\n${errorMessageToRender}`,
+			{ reply_markup: currentPage.keyboard },
+		)
 	}
 }
 
@@ -78,23 +71,13 @@ export async function handleButtonLogic(
 						throw new Error('activeFlow should be ticket-purchase')
 					}
 
-					const rawMarkup = ctx.callbackQuery.message?.reply_markup
-
-					const keyboard =
-						rawMarkup && 'inline_keyboard' in rawMarkup
-							? InlineKeyboard.from(rawMarkup.inline_keyboard)
-							: new InlineKeyboard()
-
-					const message = ctx.callbackQuery.message?.text || ''
+					const currentPage = getCurrentPage(ctx)
 
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						step: TicketPurchaseStep.WaitingForInput,
 						messageToEdit: {
-							pageContent: {
-								message: message,
-								keyboard: keyboard,
-							},
+							pageContent: currentPage,
 							messageId:
 								ctx.update.callback_query.message!.message_id,
 						},

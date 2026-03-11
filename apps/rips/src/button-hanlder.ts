@@ -1,5 +1,6 @@
-import { Filter } from 'grammy'
+import { Filter, InlineKeyboard } from 'grammy'
 import { parseCommand } from './commands'
+import { getErrorMessageToRender } from './error-to-render'
 import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
@@ -22,6 +23,31 @@ async function editMessage(ctx: Context, pageContent: PageContent) {
 }
 
 export async function handleButton(
+	ctx: Filter<Context, 'callback_query:data'>,
+) {
+	try {
+		return await handleButtonLogic(ctx)
+	} catch (error) {
+		const errorMessageToRender = getErrorMessageToRender(error)
+
+		const rawMarkup = ctx.callbackQuery.message?.reply_markup
+
+		const keyboard =
+			rawMarkup && 'inline_keyboard' in rawMarkup
+				? InlineKeyboard.from(rawMarkup.inline_keyboard)
+				: new InlineKeyboard()
+
+		let message = ctx.callbackQuery.message?.text || ''
+
+		message += `\n\n${errorMessageToRender}`
+
+		await ctx.editMessageText(message, {
+			reply_markup: keyboard,
+		})
+	}
+}
+
+export async function handleButtonLogic(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
 	void ctx.answerCallbackQuery()
@@ -52,11 +78,26 @@ export async function handleButton(
 						throw new Error('activeFlow should be ticket-purchase')
 					}
 
+					const rawMarkup = ctx.callbackQuery.message?.reply_markup
+
+					const keyboard =
+						rawMarkup && 'inline_keyboard' in rawMarkup
+							? InlineKeyboard.from(rawMarkup.inline_keyboard)
+							: new InlineKeyboard()
+
+					const message = ctx.callbackQuery.message?.text || ''
+
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						step: TicketPurchaseStep.WaitingForInput,
-						messageIdToEdit:
-							ctx.update.callback_query.message!.message_id,
+						messageToEdit: {
+							pageContent: {
+								message: message,
+								keyboard: keyboard,
+							},
+							messageId:
+								ctx.update.callback_query.message!.message_id,
+						},
 						stakeId: ctx.session.stakeId,
 					}
 

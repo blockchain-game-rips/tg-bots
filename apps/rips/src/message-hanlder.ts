@@ -1,8 +1,6 @@
 import { Bot, Filter } from 'grammy'
-import {
-	enterConfirmingStep,
-	enterTicketAmountStep,
-} from './flows/ticket-purchase'
+import { ErrorToRender, getErrorMessageToRender } from './error-to-render'
+import { enterConfirmingStep } from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
 export async function handleMessage(
@@ -19,16 +17,18 @@ export async function handleMessage(
 	switch (ctx.session.activeFlow) {
 		case ActiveFlow.TicketPurchase: {
 			if (ctx.session.step === TicketPurchaseStep.WaitingForInput) {
-				const messageIdToEdit = ctx.session.messageIdToEdit
-				const stakeId = ctx.session.stakeId
+				try {
+					const messageIdToEdit = ctx.session.messageToEdit.messageId
+					const stakeId = ctx.session.stakeId
 
-				const validation = validateTicketNumber(ctx.update.message.text)
+					const ticketAmount = parseTicketNumber(
+						ctx.update.message.text,
+					)
 
-				if (validation.isValid) {
 					const pageContent = await enterConfirmingStep(
 						ctx,
 						stakeId,
-						validation.ticketAmount,
+						ticketAmount,
 					)
 
 					void bot.api.editMessageText(
@@ -37,50 +37,42 @@ export async function handleMessage(
 						pageContent.message,
 						{ reply_markup: pageContent.keyboard },
 					)
-				} else {
-					const pageContent = await enterTicketAmountStep(
-						ctx,
-						stakeId,
-					)
+				} catch (error) {
+					const errorMessageToRender = getErrorMessageToRender(error)
+					const messageToEdit = ctx.session.messageToEdit
 
 					void bot.api.editMessageText(
 						ctx.chatId,
-						messageIdToEdit,
-						pageContent.message + `\n\n${validation.reasonMessage}`,
-						{ reply_markup: pageContent.keyboard },
+						messageToEdit.messageId,
+						messageToEdit.pageContent.message +
+							`\n\n${errorMessageToRender}`,
+						{ reply_markup: messageToEdit.pageContent.keyboard },
 					)
+				} finally {
+					void bot.api.deleteMessages(ctx.chatId, [
+						repliedTo.message_id,
+						ctx.update.message.message_id,
+					])
 				}
-
-				void bot.api.deleteMessages(ctx.chatId, [
-					repliedTo.message_id,
-					ctx.update.message.message_id,
-				])
 			}
 		}
 	}
 }
 
-function validateTicketNumber(
-	userInput: string,
-):
-	| { isValid: true; ticketAmount: number }
-	| { isValid: false; reasonMessage: string } {
+function parseTicketNumber(userInput: string): number {
 	const ticketAmount = Number(userInput)
 
 	if (isNaN(ticketAmount)) {
-		return { isValid: false, reasonMessage: '❌ Not a number' }
+		throw new ErrorToRender('❌ Not a number')
 	}
 
 	if (ticketAmount < 0) {
-		return {
-			isValid: false,
-			reasonMessage: '❌ Number should be more than 0',
-		}
+		throw new ErrorToRender('❌ Number should be more than 0')
 	}
 
 	if (!Number.isSafeInteger(ticketAmount)) {
-		return { isValid: false, reasonMessage: '❌ Number should be integer' }
+		throw new ErrorToRender('❌ Number should be integer')
 	}
 
-	return { isValid: true, ticketAmount }
+	return ticketAmount
 }

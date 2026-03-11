@@ -1,4 +1,5 @@
 import { Context as GrammyContext, SessionFlavor } from 'grammy'
+import { PageContent } from './pages/interfaces'
 
 export enum ActiveFlow {
 	TicketPurchase,
@@ -24,7 +25,10 @@ export type TicketPurshaseSession = {
 	| {
 			stakeId: string
 			step: TicketPurchaseStep.WaitingForInput
-			messageIdToEdit: number
+			messageToEdit: {
+				pageContent: PageContent
+				messageId: number
+			}
 	  }
 	| {
 			stakeId: string

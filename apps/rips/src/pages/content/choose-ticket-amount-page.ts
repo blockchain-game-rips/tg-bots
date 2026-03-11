@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
 import { promptIds } from '../../prompts/prompt-ids'
-import { PageContent } from '../interfaces'
+import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav } from '../utils.ts/utils'
+import { addNav } from '../utils'
 
 type Stake = { stakeId: number; ticketPrice: number }
 

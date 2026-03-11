@@ -1,4 +1,4 @@
-import { PromptContent } from '../pages/interfaces'
+import { PromptContent } from '../types'
 
 export class CustomTicketAmountPrompt {
 	static render(): PromptContent {

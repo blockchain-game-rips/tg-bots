@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
-import { PageContent } from '../interfaces'
+import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav, composeMarkup } from '../utils.ts/utils'
+import { addNav, composeMarkup } from '../utils'
 
 export class PlayPage {
 	static render(): PageContent {

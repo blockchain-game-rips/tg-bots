@@ -1,5 +1,4 @@
-import { Context as GrammyContext, SessionFlavor } from 'grammy'
-import { PageContent } from './pages/interfaces'
+import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
 
 export enum ActiveFlow {
 	TicketPurchase,
@@ -40,3 +39,25 @@ export type TicketPurshaseSession = {
 export type SessionData = EmptySession | TicketPurshaseSession
 
 export type Context = GrammyContext & SessionFlavor<SessionData>
+
+export type PageContent = {
+	message: string
+	keyboard: InlineKeyboard
+}
+
+export type NavIds = {
+	home: string
+	parent: string
+}
+
+export type StaticLayout = {
+	label: string
+	pageId: string
+}
+
+export type KeyboardLayout = StaticLayout[]
+
+export type PromptContent = {
+	message: string
+	placeholder: string
+}

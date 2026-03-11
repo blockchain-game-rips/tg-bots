@@ -3,7 +3,7 @@ import { run } from '@grammyjs/runner'
 import { Bot, session } from 'grammy'
 import { handleButton } from './button-hanlder'
 import { handleMessage } from './message-hanlder'
-import { HomePage } from './pages/home/home-page'
+import { HomePage } from './pages/content/home-page'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 

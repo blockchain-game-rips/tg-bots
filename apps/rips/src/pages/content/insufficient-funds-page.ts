@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
-import { PageContent } from '../interfaces'
+import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
 
 export class InsufficientFundsPage {

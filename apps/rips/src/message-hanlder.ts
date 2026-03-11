@@ -1,7 +1,8 @@
 import { Bot, Filter } from 'grammy'
-import { ChooseTicketAmountPage } from './pages/choose-ticket-amount/choose-ticket-amount-page'
-import { ConfirmPurchasePage } from './pages/confirm-purchase/confirm-purchase-page'
-import { getStakeByIdOrThrow } from './services/stake.service'
+import {
+	enterConfirmingStep,
+	enterTicketAmountStep,
+} from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
 export async function handleMessage(
@@ -24,17 +25,9 @@ export async function handleMessage(
 				const validation = validateTicketNumber(ctx.update.message.text)
 
 				if (validation.isValid) {
-					const stake = await getStakeByIdOrThrow(stakeId)
-
-					ctx.session = {
-						activeFlow: ActiveFlow.TicketPurchase,
-						step: TicketPurchaseStep.Confirming,
-						ticketAmount: validation.ticketAmount,
+					const pageContent = await enterConfirmingStep(
+						ctx,
 						stakeId,
-					}
-
-					const pageContent = ConfirmPurchasePage.render(
-						stake,
 						validation.ticketAmount,
 					)
 
@@ -45,15 +38,10 @@ export async function handleMessage(
 						{ reply_markup: pageContent.keyboard },
 					)
 				} else {
-					const stake = await getStakeByIdOrThrow(stakeId)
-
-					ctx.session = {
-						activeFlow: ActiveFlow.TicketPurchase,
+					const pageContent = await enterTicketAmountStep(
+						ctx,
 						stakeId,
-						step: TicketPurchaseStep.ChoosingTicketAmount,
-					}
-
-					const pageContent = ChooseTicketAmountPage.render(stake)
+					)
 
 					void bot.api.editMessageText(
 						ctx.chatId,

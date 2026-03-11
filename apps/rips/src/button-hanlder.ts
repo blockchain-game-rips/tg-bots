@@ -1,18 +1,18 @@
 import { Filter } from 'grammy'
 import { parseCommand } from './commands'
+import {
+	enterConfirmingStep,
+	enterTicketAmountStep,
+} from './flows/ticket-purchase'
 import { AboutPage } from './pages/about/about-page'
 import { ChooseStakePage } from './pages/choose-stake/choose-stake-page'
-import { ChooseTicketAmountPage } from './pages/choose-ticket-amount/choose-ticket-amount-page'
-import { ConfirmPurchasePage } from './pages/confirm-purchase/confirm-purchase-page'
 import { HomePage } from './pages/home/home-page'
-import { InsufficientFundsPage } from './pages/insufficient-funds/insufficient-funds-page'
 import { PageContent } from './pages/interfaces'
 import { pageIds } from './pages/page-ids'
 import { PlayPage } from './pages/play/play-page'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { getUserBalance } from './services/balance.service'
-import { getStakeByIdOrThrow, getStakesMock } from './services/stake.service'
+import { getStakesMock } from './services/stake.service'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
 async function editMessage(ctx: Context, pageContent: PageContent) {
@@ -105,15 +105,7 @@ async function openPage(
 				throw Error('stakeId is required for chooseTicketAmount')
 			}
 
-			const stake = await getStakeByIdOrThrow(stakeId)
-
-			ctx.session = {
-				activeFlow: ActiveFlow.TicketPurchase,
-				stakeId,
-				step: TicketPurchaseStep.ChoosingTicketAmount,
-			}
-
-			return ChooseTicketAmountPage.render(stake)
+			return await enterTicketAmountStep(ctx, stakeId)
 		}
 
 		case pageIds.confirmPurchase: {
@@ -126,30 +118,13 @@ async function openPage(
 				throw Error('wrong session state for confirmPurchase')
 			}
 
-			const stake = await getStakeByIdOrThrow(sessionData.stakeId)
-
-			const userBalance = await getUserBalance()
-
 			const ticketAmount = Number(payloads![0])
 
-			const totalCost = ticketAmount * stake.ticketPrice
-
-			if (userBalance < totalCost) {
-				return InsufficientFundsPage.render(
-					stake,
-					ticketAmount,
-					userBalance,
-				)
-			}
-
-			ctx.session = {
-				activeFlow: ActiveFlow.TicketPurchase,
-				step: TicketPurchaseStep.Confirming,
-				ticketAmount: ticketAmount,
-				stakeId: stake.stakeId.toString(),
-			}
-
-			return ConfirmPurchasePage.render(stake, ticketAmount)
+			return await enterConfirmingStep(
+				ctx,
+				sessionData.stakeId,
+				ticketAmount,
+			)
 		}
 
 		default:

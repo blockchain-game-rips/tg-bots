@@ -4,7 +4,7 @@ import { pageIds } from '../page-ids'
 import { addNav, composeMarkup } from '../utils.ts/utils'
 
 export class PlayPage {
-	render(): PageContent {
+	static render(): PageContent {
 		return {
 			message: 'Play menu',
 			keyboard: addNav(

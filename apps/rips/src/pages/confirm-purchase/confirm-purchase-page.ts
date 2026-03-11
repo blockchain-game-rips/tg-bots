@@ -6,7 +6,7 @@ import { pageIds } from '../page-ids'
 type Stake = { stakeId: number; ticketPrice: number }
 
 export class ConfirmPurchasePage {
-	render(stake: Stake, ticketAmount: number): PageContent {
+	static render(stake: Stake, ticketAmount: number): PageContent {
 		return {
 			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}`,
 			keyboard: new InlineKeyboard()

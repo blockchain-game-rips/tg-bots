@@ -4,7 +4,7 @@ import { pageIds } from '../page-ids'
 import { composeMarkup } from '../utils.ts/utils'
 
 export class HomePage {
-	render(): PageContent {
+	static render(): PageContent {
 		return {
 			message: 'Here is the home page',
 			keyboard: new InlineKeyboard(

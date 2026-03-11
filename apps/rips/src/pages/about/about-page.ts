@@ -4,7 +4,7 @@ import { pageIds } from '../page-ids'
 import { addNav } from '../utils.ts/utils'
 
 export class AboutPage {
-	render(): PageContent {
+	static render(): PageContent {
 		return {
 			message: 'description of game',
 			keyboard: addNav(new InlineKeyboard(), {

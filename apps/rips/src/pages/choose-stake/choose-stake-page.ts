@@ -7,7 +7,7 @@ import { addNav } from '../utils.ts/utils'
 type Stake = { stakeId: number; ticketPrice: number }
 
 export class ChooseStakePage {
-	render(stakes: Stake[]): PageContent {
+	static render(stakes: Stake[]): PageContent {
 		const keyboard = new InlineKeyboard()
 
 		for (const stake of stakes) {

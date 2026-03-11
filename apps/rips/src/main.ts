@@ -35,16 +35,10 @@ function initial(): SessionData {
 }
 bot.use(session({ initial }))
 
-const homePage = new HomePage()
-const aboutPage = new AboutPage()
-const playPage = new PlayPage()
-const chooseStakePage = new ChooseStakePage()
-const chooseTicketAmountPage = new ChooseTicketAmountPage()
-const confirmPurchasePage = new ConfirmPurchasePage()
 const customTicketAmountPrompt = new CustomTicketAmountPrompt()
 
 bot.command('start', async (ctx) => {
-	const page = homePage.render()
+	const page = HomePage.render()
 
 	await ctx.reply(page.message, {
 		reply_markup: page.keyboard,
@@ -140,7 +134,7 @@ bot.on('message:text', async (ctx) => {
 						stakeId,
 					}
 
-					const pageContent = confirmPurchasePage.render(
+					const pageContent = ConfirmPurchasePage.render(
 						stake,
 						validation.ticketAmount,
 					)
@@ -158,7 +152,7 @@ bot.on('message:text', async (ctx) => {
 						step: TicketPurchaseStep.ChoosingTicketAmount,
 					}
 
-					const pageContent = chooseTicketAmountPage.render(stake)
+					const pageContent = ChooseTicketAmountPage.render(stake)
 
 					void bot.api.editMessageText(
 						ctx.chatId,
@@ -209,17 +203,17 @@ async function openPage(
 ): Promise<PageContent | null> {
 	switch (pageId) {
 		case pageIds.home:
-			return homePage.render()
+			return HomePage.render()
 
 		case pageIds.about:
-			return aboutPage.render()
+			return AboutPage.render()
 
 		case pageIds.play:
-			return playPage.render()
+			return PlayPage.render()
 
 		case pageIds.chooseStake: {
 			const stakes = await getStakesMock()
-			return chooseStakePage.render(stakes)
+			return ChooseStakePage.render(stakes)
 		}
 
 		case pageIds.chooseTicketAmount: {
@@ -244,7 +238,7 @@ async function openPage(
 				step: TicketPurchaseStep.ChoosingTicketAmount,
 			}
 
-			return chooseTicketAmountPage.render(stake)
+			return ChooseTicketAmountPage.render(stake)
 		}
 
 		case pageIds.confirmPurchase: {
@@ -268,7 +262,7 @@ async function openPage(
 				return null
 			}
 
-			return confirmPurchasePage.render(stake, sessionData.ticketAmount)
+			return ConfirmPurchasePage.render(stake, sessionData.ticketAmount)
 		}
 
 		default:

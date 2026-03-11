@@ -118,17 +118,17 @@ bot.on('message:text', async (ctx) => {
 
 				const validation = validateTicketNumber(ctx.update.message.text)
 
-				const stakes = await getStakesMock()
-				const stake = stakes.find(
-					(s) => s.stakeId.toString() === stakeId,
-				)
-
-				if (stake === undefined) {
-					console.log(`stakeId ${stakeId} is invalid`)
-					return
-				}
-
 				if (validation.isValid) {
+					const stakes = await getStakesMock()
+					const stake = stakes.find(
+						(s) => s.stakeId.toString() === stakeId,
+					)
+
+					if (stake === undefined) {
+						console.log(`stakeId ${stakeId} is invalid`)
+						return
+					}
+
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						step: TicketPurchaseStep.Confirming,
@@ -148,6 +148,16 @@ bot.on('message:text', async (ctx) => {
 						{ reply_markup: pageContent.keyboard },
 					)
 				} else {
+					const stakes = await getStakesMock()
+					const stake = stakes.find(
+						(s) => s.stakeId.toString() === stakeId,
+					)
+
+					if (stake === undefined) {
+						console.log(`stakeId ${stakeId} is invalid`)
+						return null
+					}
+
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						stakeId,

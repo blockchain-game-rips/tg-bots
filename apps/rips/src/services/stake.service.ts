@@ -9,3 +9,14 @@ export async function getStakesMock() {
 		{ stakeId: 3, ticketPrice: 0.01 },
 	]
 }
+
+export async function getStakeByIdOrThrow(stakeId: string) {
+	const stakes = await getStakesMock()
+	const stake = stakes.find((s) => s.stakeId.toString() === stakeId)
+
+	if (stake === undefined) {
+		throw Error(`stakeId ${stakeId} is invalid`)
+	}
+
+	return stake
+}

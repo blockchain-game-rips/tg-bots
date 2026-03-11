@@ -1,19 +1,19 @@
-import { Filter } from "grammy"
-import { parseCommand } from "./commands"
-import { AboutPage } from "./pages/about/about-page"
-import { ChooseStakePage } from "./pages/choose-stake/choose-stake-page"
-import { ChooseTicketAmountPage } from "./pages/choose-ticket-amount/choose-ticket-amount-page"
-import { ConfirmPurchasePage } from "./pages/confirm-purchase/confirm-purchase-page"
-import { HomePage } from "./pages/home/home-page"
-import { InsufficientFundsPage } from "./pages/insufficient-funds/insufficient-funds-page"
-import { PageContent } from "./pages/interfaces"
-import { pageIds } from "./pages/page-ids"
-import { PlayPage } from "./pages/play/play-page"
-import { CustomTicketAmountPrompt } from "./prompts/custom-ticket-amount-prompt"
-import { promptIds } from "./prompts/prompt-ids"
-import { getUserBalance } from "./services/balance.service"
-import { getStakesMock } from "./services/stake.service"
-import { ActiveFlow, Context, TicketPurchaseStep } from "./types"
+import { Filter } from 'grammy'
+import { parseCommand } from './commands'
+import { AboutPage } from './pages/about/about-page'
+import { ChooseStakePage } from './pages/choose-stake/choose-stake-page'
+import { ChooseTicketAmountPage } from './pages/choose-ticket-amount/choose-ticket-amount-page'
+import { ConfirmPurchasePage } from './pages/confirm-purchase/confirm-purchase-page'
+import { HomePage } from './pages/home/home-page'
+import { InsufficientFundsPage } from './pages/insufficient-funds/insufficient-funds-page'
+import { PageContent } from './pages/interfaces'
+import { pageIds } from './pages/page-ids'
+import { PlayPage } from './pages/play/play-page'
+import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
+import { promptIds } from './prompts/prompt-ids'
+import { getUserBalance } from './services/balance.service'
+import { getStakeByIdOrThrow, getStakesMock } from './services/stake.service'
+import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
 async function editMessage(ctx: Context, pageContent: PageContent) {
 	await ctx.editMessageText(pageContent.message, {
@@ -21,7 +21,9 @@ async function editMessage(ctx: Context, pageContent: PageContent) {
 	})
 }
 
-export async function handleButton(ctx: Filter<Context, 'callback_query:data'>) {
+export async function handleButton(
+	ctx: Filter<Context, 'callback_query:data'>,
+) {
 	void ctx.answerCallbackQuery()
 
 	console.log('user press button, data:', ctx.callbackQuery.data)
@@ -103,12 +105,7 @@ async function openPage(
 				throw Error('stakeId is required for chooseTicketAmount')
 			}
 
-			const stakes = await getStakesMock()
-			const stake = stakes.find((s) => s.stakeId.toString() === stakeId)
-
-			if (stake === undefined) {
-				throw Error(`stakeId ${stakeId} is invalid`)
-			}
+			const stake = await getStakeByIdOrThrow(stakeId)
 
 			ctx.session = {
 				activeFlow: ActiveFlow.TicketPurchase,
@@ -129,14 +126,7 @@ async function openPage(
 				throw Error('wrong session state for confirmPurchase')
 			}
 
-			const stakes = await getStakesMock()
-			const stake = stakes.find(
-				(s) => s.stakeId.toString() === sessionData.stakeId,
-			)
-
-			if (stake === undefined) {
-				throw Error(`stakeId ${sessionData.stakeId} is invalid`)
-			}
+			const stake = await getStakeByIdOrThrow(sessionData.stakeId)
 
 			const userBalance = await getUserBalance()
 

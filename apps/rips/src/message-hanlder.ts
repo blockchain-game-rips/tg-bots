@@ -1,10 +1,13 @@
-import { Bot, Filter } from "grammy"
-import { ChooseTicketAmountPage } from "./pages/choose-ticket-amount/choose-ticket-amount-page"
-import { ConfirmPurchasePage } from "./pages/confirm-purchase/confirm-purchase-page"
-import { getStakesMock } from "./services/stake.service"
-import { ActiveFlow, Context, TicketPurchaseStep } from "./types"
+import { Bot, Filter } from 'grammy'
+import { ChooseTicketAmountPage } from './pages/choose-ticket-amount/choose-ticket-amount-page'
+import { ConfirmPurchasePage } from './pages/confirm-purchase/confirm-purchase-page'
+import { getStakeByIdOrThrow } from './services/stake.service'
+import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
-export async function handleMessage(ctx: Filter<Context, 'message:text'>, bot: Bot<Context>) {
+export async function handleMessage(
+	ctx: Filter<Context, 'message:text'>,
+	bot: Bot<Context>,
+) {
 	const repliedTo = ctx.message.reply_to_message
 
 	if (!repliedTo || repliedTo.from?.id !== ctx.me.id) {
@@ -21,14 +24,7 @@ export async function handleMessage(ctx: Filter<Context, 'message:text'>, bot: B
 				const validation = validateTicketNumber(ctx.update.message.text)
 
 				if (validation.isValid) {
-					const stakes = await getStakesMock()
-					const stake = stakes.find(
-						(s) => s.stakeId.toString() === stakeId,
-					)
-
-					if (stake === undefined) {
-						throw Error(`stakeId ${stakeId} is invalid`)
-					}
+					const stake = await getStakeByIdOrThrow(stakeId)
 
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
@@ -49,14 +45,7 @@ export async function handleMessage(ctx: Filter<Context, 'message:text'>, bot: B
 						{ reply_markup: pageContent.keyboard },
 					)
 				} else {
-					const stakes = await getStakesMock()
-					const stake = stakes.find(
-						(s) => s.stakeId.toString() === stakeId,
-					)
-
-					if (stake === undefined) {
-						throw Error(`stakeId ${stakeId} is invalid`)
-					}
+					const stake = await getStakeByIdOrThrow(stakeId)
 
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,

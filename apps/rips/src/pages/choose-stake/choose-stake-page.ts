@@ -1,14 +1,13 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
-import { getStakesMock } from '../../services/stake.service'
 import { PageContent } from '../interfaces'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils.ts/utils'
 
-export class ChooseStakePage {
-	async render(): Promise<PageContent> {
-		const stakes = await getStakesMock()
+type Stake = { stakeId: number; ticketPrice: number }
 
+export class ChooseStakePage {
+	render(stakes: Stake[]): PageContent {
 		const keyboard = new InlineKeyboard()
 
 		for (const stake of stakes) {

@@ -1,21 +1,12 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
-import { getStakesMock } from '../../services/stake.service'
 import { PageContent } from '../interfaces'
 import { pageIds } from '../page-ids'
 
+type Stake = { stakeId: number; ticketPrice: number }
+
 export class ConfirmPurchasePage {
-	async render(stakeId: string, ticketAmount: number): Promise<PageContent> {
-		const stakes = await getStakesMock()
-
-		const stake = stakes.find(
-			(stake) => stake.stakeId.toString() === stakeId,
-		)
-
-		if (stake === undefined) {
-			throw new Error(`stakeId ${stakeId} is invalid`)
-		}
-
+	render(stake: Stake, ticketAmount: number): PageContent {
 		return {
 			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}`,
 			keyboard: new InlineKeyboard()
@@ -24,7 +15,7 @@ export class ConfirmPurchasePage {
 					buildCommand({
 						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
-						payloads: [stakeId],
+						payloads: [stake.stakeId.toString()],
 					}),
 				)
 				.text('Home', buildCommand({ pageId: pageIds.home, type: 'open' })),

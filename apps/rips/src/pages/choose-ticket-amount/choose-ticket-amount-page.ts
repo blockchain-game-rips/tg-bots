@@ -1,23 +1,14 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../commands'
 import { promptIds } from '../../prompts/prompt-ids'
-import { getStakesMock } from '../../services/stake.service'
 import { PageContent } from '../interfaces'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils.ts/utils'
 
+type Stake = { stakeId: number; ticketPrice: number }
+
 export class ChooseTicketAmountPage {
-	async render(stakeId: string): Promise<PageContent> {
-		const stakes = await getStakesMock()
-
-		const stake = stakes.find(
-			(stake) => stake.stakeId.toString() === stakeId,
-		)
-
-		if (stake === undefined) {
-			throw new Error(`stakeId ${stakeId} is invalid`)
-		}
-
+	render(stake: Stake): PageContent {
 		const keyboard = new InlineKeyboard()
 			.text('1 Ticket')
 			.text('3 Tickets')

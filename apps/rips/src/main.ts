@@ -12,6 +12,7 @@ import { pageIds } from './pages/page-ids'
 import { PlayPage } from './pages/play/play-page'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
+import { getStakesMock } from './services/stake.service'
 import { ActiveFlow, Context, SessionData, TicketPurchaseStep } from './types'
 import { getEnvSafe } from './utils/common'
 
@@ -121,6 +122,16 @@ bot.on('message:text', async (ctx) => {
 
 				const validation = validateTicketNumber(ctx.update.message.text)
 
+				const stakes = await getStakesMock()
+				const stake = stakes.find(
+					(s) => s.stakeId.toString() === stakeId,
+				)
+
+				if (stake === undefined) {
+					console.log(`stakeId ${stakeId} is invalid`)
+					return
+				}
+
 				if (validation.isValid) {
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
@@ -129,8 +140,8 @@ bot.on('message:text', async (ctx) => {
 						stakeId,
 					}
 
-					const pageContent = await confirmPurchasePage.render(
-						stakeId,
+					const pageContent = confirmPurchasePage.render(
+						stake,
 						validation.ticketAmount,
 					)
 
@@ -147,8 +158,7 @@ bot.on('message:text', async (ctx) => {
 						step: TicketPurchaseStep.ChoosingTicketAmount,
 					}
 
-					const pageContent =
-						await chooseTicketAmountPage.render(stakeId)
+					const pageContent = chooseTicketAmountPage.render(stake)
 
 					void bot.api.editMessageText(
 						ctx.chatId,
@@ -207,14 +217,25 @@ async function openPage(
 		case pageIds.play:
 			return playPage.render()
 
-		case pageIds.chooseStake:
-			return chooseStakePage.render()
+		case pageIds.chooseStake: {
+			const stakes = await getStakesMock()
+			return chooseStakePage.render(stakes)
+		}
 
 		case pageIds.chooseTicketAmount: {
 			const stakeId = payloads?.[0]
 
 			if (stakeId === undefined) {
-				throw new Error('stakeId is required for chooseTicketAmount')
+				console.log('stakeId is required for chooseTicketAmount')
+				return null
+			}
+
+			const stakes = await getStakesMock()
+			const stake = stakes.find((s) => s.stakeId.toString() === stakeId)
+
+			if (stake === undefined) {
+				console.log(`stakeId ${stakeId} is invalid`)
+				return null
 			}
 
 			ctx.session = {
@@ -223,21 +244,31 @@ async function openPage(
 				step: TicketPurchaseStep.ChoosingTicketAmount,
 			}
 
-			return chooseTicketAmountPage.render(stakeId)
+			return chooseTicketAmountPage.render(stake)
 		}
 
 		case pageIds.confirmPurchase: {
+			const sessionData = ctx.session
+
 			if (
-				ctx.session.activeFlow !== ActiveFlow.TicketPurchase ||
-				ctx.session.step !== TicketPurchaseStep.Confirming
+				sessionData.activeFlow !== ActiveFlow.TicketPurchase ||
+				sessionData.step !== TicketPurchaseStep.Confirming
 			) {
-				throw new Error('wrong session state for confirmPurchase')
+				console.log('wrong session state for confirmPurchase')
+				return null
 			}
 
-			return confirmPurchasePage.render(
-				ctx.session.stakeId,
-				ctx.session.ticketAmount,
+			const stakes = await getStakesMock()
+			const stake = stakes.find(
+				(s) => s.stakeId.toString() === sessionData.stakeId,
 			)
+
+			if (stake === undefined) {
+				console.log(`stakeId ${sessionData.stakeId} is invalid`)
+				return null
+			}
+
+			return confirmPurchasePage.render(stake, sessionData.ticketAmount)
 		}
 
 		default:

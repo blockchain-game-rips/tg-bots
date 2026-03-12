@@ -1,4 +1,4 @@
-import { Filter } from 'grammy'
+import { Filter, GrammyError } from 'grammy'
 import { parseCommand } from './commands'
 import { getErrorMessageToRender } from './error-to-render'
 import {
@@ -13,6 +13,7 @@ import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
+import { getUserBalance } from './services/balance.service'
 import { getStakesMock } from './services/stake.service'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
 import { getCurrentPage } from './utils/grammy'
@@ -29,6 +30,8 @@ export async function handleButton(
 	try {
 		return await handleButtonLogic(ctx)
 	} catch (error) {
+		if (error instanceof GrammyError) throw error
+
 		const errorMessageToRender = getErrorMessageToRender(error)
 
 		const currentPage = getCurrentPage(ctx)
@@ -114,8 +117,14 @@ async function openPage(
 		case pageIds.about:
 			return AboutPage.render()
 
-		case pageIds.wallet:
-			return WalletPage.render()
+		case pageIds.wallet: {
+			const [userBalance] = await Promise.all([
+				getUserBalance(),
+				ctx.editMessageText('loading...'),
+			])
+
+			return WalletPage.render(userBalance)
+		}
 
 		case pageIds.play:
 			return PlayPage.render()

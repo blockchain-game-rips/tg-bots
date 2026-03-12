@@ -1,4 +1,4 @@
-import { Bot, Filter } from 'grammy'
+import { Bot, Filter, GrammyError } from 'grammy'
 import { ErrorToRender, getErrorMessageToRender } from './error-to-render'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
@@ -38,6 +38,8 @@ export async function handleMessage(
 						{ reply_markup: pageContent.keyboard },
 					)
 				} catch (error) {
+					if (error instanceof GrammyError) throw error
+
 					const errorMessageToRender = getErrorMessageToRender(error)
 					const messageToEdit = ctx.session.messageToEdit
 

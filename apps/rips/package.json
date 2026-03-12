@@ -5,6 +5,7 @@
     "license": "MIT",
     "author": "Micro <0xmicro222@gmail.com>",
     "scripts": {
+        "test": "jest",
         "start": "ts-node src/main.ts",
         "dev": "ts-node-dev --respawn src/main.ts"
     },
@@ -16,6 +17,9 @@
         "grammy": "^1.40.1"
     },
     "devDependencies": {
+        "@types/jest": "29.5.14",
+        "ts-jest": "29.4.0",
+        "jest": "30.0.2",
         "@eslint/js": "9.26.0",
         "@types/node": "^25.3.1",
         "eslint": "^9.0.0",

@@ -8,14 +8,14 @@ import {
 import { AboutPage } from './pages/content/about-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
 import { HomePage } from './pages/content/home-page'
-import { pageIds } from './pages/page-ids'
 import { PlayPage } from './pages/content/play-page'
-import { getCurrentPage } from './utils/grammy'
-import { PageContent } from './types'
+import { WalletPage } from './pages/content/wallet-page'
+import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
 import { getStakesMock } from './services/stake.service'
-import { ActiveFlow, Context, TicketPurchaseStep } from './types'
+import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
+import { getCurrentPage } from './utils/grammy'
 
 async function editMessage(ctx: Context, pageContent: PageContent) {
 	await ctx.editMessageText(pageContent.message, {
@@ -113,6 +113,9 @@ async function openPage(
 
 		case pageIds.about:
 			return AboutPage.render()
+
+		case pageIds.wallet:
+			return WalletPage.render()
 
 		case pageIds.play:
 			return PlayPage.render()

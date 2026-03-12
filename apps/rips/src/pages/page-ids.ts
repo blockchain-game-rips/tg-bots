@@ -6,4 +6,5 @@ export const pageIds = {
 	chooseTicketAmount: 'chooseTA',
 	confirmPurchase: 'confirm',
 	insufficientFunds: 'insufFunds',
+	wallet: 'wallet',
 } as const

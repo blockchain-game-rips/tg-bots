@@ -11,6 +11,7 @@ export class HomePage {
 				composeMarkup([
 					{ label: 'About', pageId: pageIds.about },
 					{ label: 'Play', pageId: pageIds.play },
+					{ label: 'Wallet', pageId: pageIds.wallet },
 				]),
 			),
 		}

@@ -1,9 +1,14 @@
+import { ApiError } from '../api/client'
+import { buyTickets, getStakes } from '../api/endpoints/rips'
 import { getBalance } from '../api/endpoints/wallets'
-import { getStakes } from '../api/endpoints/rips'
 import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
 import { ConfirmPurchasePage } from '../pages/content/confirm-purchase-page'
 import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
+import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
+import { ErrorToRender } from '../utils/error-to-render'
+
+const TRANSACTION_REVERTED_STATUS = 502
 
 async function getStakeByIdOrThrow(stakeId: number) {
 	const stakes = await getStakes()
@@ -63,4 +68,35 @@ export async function enterConfirmingStep(
 	}
 
 	return ConfirmPurchasePage.render(stake, ticketAmount)
+}
+
+export async function enterBuyingStep(
+	ctx: Context,
+	stakeId: string,
+	ticketAmount: number,
+): Promise<PageContent> {
+	if (ctx.from === undefined) {
+		throw new Error('ctx.from is undefined')
+	}
+
+	const telegramId = BigInt(ctx.from.id)
+
+	const stake = await getStakeByIdOrThrow(Number(stakeId))
+
+	const purchase = await buyTickets(telegramId, stake.id, ticketAmount).catch(
+		(error) => {
+			if (
+				error instanceof ApiError &&
+				error.status === TRANSACTION_REVERTED_STATUS
+			) {
+				throw new ErrorToRender(error.message)
+			}
+
+			throw error
+		},
+	)
+
+	ctx.session = { activeFlow: null }
+
+	return SuccessPurchasePage.render(stake, purchase)
 }

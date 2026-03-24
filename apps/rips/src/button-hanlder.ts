@@ -1,8 +1,10 @@
 import { Filter, GrammyError } from 'grammy'
 import { getStakes } from './api/endpoints/rips'
+import { getBalance } from './api/endpoints/wallets'
 import { parseCommand } from './commands'
 import { enterHomeFlow } from './flows/home'
 import {
+	enterBuyingStep,
 	enterConfirmingStep,
 	enterTicketAmountStep,
 } from './flows/ticket-purchase'
@@ -13,7 +15,6 @@ import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { getBalance } from './api/endpoints/wallets'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
 import { composePageContentWithError } from './utils/error-to-render'
 import { editMessage, getCurrentPage } from './utils/grammy'
@@ -167,6 +168,23 @@ async function openPage(
 				ctx,
 				sessionData.stakeId,
 				ticketAmount,
+			)
+		}
+
+		case pageIds.successPurchase: {
+			const sessionData = ctx.session
+
+			if (
+				sessionData.activeFlow !== ActiveFlow.TicketPurchase ||
+				sessionData.step !== TicketPurchaseStep.Confirming
+			) {
+				throw Error('wrong session state for successPurchase')
+			}
+
+			return await enterBuyingStep(
+				ctx,
+				sessionData.stakeId,
+				sessionData.ticketAmount,
 			)
 		}
 

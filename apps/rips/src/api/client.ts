@@ -24,7 +24,9 @@ export async function apiFetch<T>(
 	})
 
 	if (!res.ok) {
-		throw new ApiError(res.status, await res.text())
+		const body = await res.json().catch(() => null)
+		const message = body?.message ?? res.statusText
+		throw new ApiError(res.status, message)
 	}
 
 	return schema.parse(await res.json())

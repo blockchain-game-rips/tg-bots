@@ -5,6 +5,7 @@ export const pageIds = {
 	chooseStake: 'chooseStake',
 	chooseTicketAmount: 'chooseTA',
 	confirmPurchase: 'confirm',
+	successPurchase: 'successPurchase',
 	insufficientFunds: 'insufFunds',
 	wallet: 'wallet',
 } as const

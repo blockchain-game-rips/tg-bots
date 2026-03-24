@@ -17,7 +17,13 @@ export class ConfirmPurchasePage {
 		return {
 			message: `Stake: ${price} ${symbol}\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ${symbol}`,
 			keyboard: new InlineKeyboard()
-				.text('Confirm')
+				.text(
+					'Confirm',
+					buildCommand({
+						pageId: pageIds.successPurchase,
+						type: 'open',
+					}),
+				)
 				.row()
 				.text(
 					'Back',

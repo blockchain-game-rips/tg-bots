@@ -3,9 +3,8 @@ import { Stake } from '../../api/schemas'
 import { buildCommand } from '../../commands'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
-import { addNav } from '../utils'
+import { addNav, readableStake } from '../utils'
 
 export class ChooseTicketAmountPage {
 	static render(stake: Stake): PageContent {
@@ -35,7 +34,7 @@ export class ChooseTicketAmountPage {
 			)
 
 		return {
-			message: `Choose tickets amount for stake ${formatUnits(BigInt(stake.ticketPrice.amount), stake.ticketPrice.currency.decimals)} ${stake.ticketPrice.currency.symbol}`,
+			message: `Choose tickets amount for stake ${readableStake(stake)}`,
 			keyboard: addNav(keyboard, {
 				home: pageIds.home,
 				parent: pageIds.chooseStake,

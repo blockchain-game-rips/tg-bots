@@ -1,7 +1,17 @@
 import { InlineKeyboard } from 'grammy'
 import { InlineKeyboardButton } from 'grammy/types'
+import { Stake } from '../api/schemas'
 import { buildCommand } from '../commands'
 import { KeyboardLayout, NavIds } from '../types'
+import { formatUnits } from '../utils/units'
+
+export function readableStake(stake: Stake): string {
+	const { decimals, symbol } = stake.ticketPrice.currency
+
+	const price = formatUnits(BigInt(stake.ticketPrice.amount), decimals)
+
+	return `${price} ${symbol}`
+}
 
 export function composeMarkup(
 	layout: KeyboardLayout,

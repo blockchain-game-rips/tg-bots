@@ -11,6 +11,7 @@ export class PlayPage {
 				new InlineKeyboard(
 					composeMarkup([
 						{ label: 'Buy tickets', pageId: pageIds.chooseStake },
+						{ label: 'Status', pageId: pageIds.status },
 					]),
 				),
 				{ home: pageIds.home, parent: pageIds.home },

@@ -4,6 +4,7 @@ import { buildCommand } from '../../commands'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
+import { readableStake } from '../utils'
 
 export class SuccessPurchasePage {
 	static render(stake: Stake, purchase: BuyTickets): PageContent {
@@ -12,7 +13,7 @@ export class SuccessPurchasePage {
 
 		const message =
 			`✅ Purchase successful!\n\n` +
-			`Stake: ${formatUnits(BigInt(stake.ticketPrice.amount), decimals)} ${symbol}\n` +
+			`Stake: ${readableStake(stake)}\n` +
 			`Round: #${purchase.roundId}\n` +
 			`Tickets purchased: ${purchase.ticketAmount}\n` +
 			`Total cost: ${totalCost} ${symbol}`

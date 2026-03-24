@@ -93,6 +93,7 @@ export const roundSchema = z.object({
 	stake: stakeSchema,
 	actions: addressesActionsSchema,
 	status: roundStatusSchema,
+	startTime: z.string(),
 })
 
 export const priceSchema = z.object({

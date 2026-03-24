@@ -1,5 +1,5 @@
 import { Filter, GrammyError } from 'grammy'
-import { getStakes } from './api/endpoints/rips'
+import { getRounds, getStakes } from './api/endpoints/rips'
 import { getBalance } from './api/endpoints/wallets'
 import { parseCommand } from './commands'
 import { enterHomeFlow } from './flows/home'
@@ -10,7 +10,9 @@ import {
 } from './flows/ticket-purchase'
 import { AboutPage } from './pages/content/about-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
+import { FinishedRoundsPage } from './pages/content/finished-rounds-page'
 import { PlayPage } from './pages/content/play-page'
+import { StatusPage } from './pages/content/status-page'
 import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
@@ -126,10 +128,9 @@ async function openPage(
 		case pageIds.wallet: {
 			const telegramId = BigInt(ctx.from!.id)
 
-			const [balance] = await Promise.all([
-				getBalance(telegramId),
-				ctx.editMessageText('loading...'),
-			])
+			await ctx.editMessageText('loading...')
+
+			const balance = await getBalance(telegramId)
 
 			return WalletPage.render(balance)
 		}
@@ -169,6 +170,16 @@ async function openPage(
 				sessionData.stakeId,
 				ticketAmount,
 			)
+		}
+
+		case pageIds.status: {
+			const rounds = await getRounds()
+			return StatusPage.render(rounds)
+		}
+
+		case pageIds.finishedRounds: {
+			const rounds = await getRounds()
+			return FinishedRoundsPage.render(rounds)
 		}
 
 		case pageIds.successPurchase: {

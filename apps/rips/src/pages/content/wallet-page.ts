@@ -14,7 +14,10 @@ export class WalletPage {
 		const message = `Balance: ${amount} ${balance.currency.symbol}`
 		const keyboard = addNav(
 			new InlineKeyboard(
-				composeMarkup([{ label: 'Update', pageId: pageIds.wallet }]),
+				composeMarkup([
+					{ label: 'Update', pageId: pageIds.wallet },
+					{ label: 'Withdraw', pageId: pageIds.chooseWithdrawAmount },
+				]),
 			),
 			{ home: pageIds.home, parent: pageIds.home },
 		)

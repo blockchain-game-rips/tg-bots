@@ -13,9 +13,14 @@ import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
 } from './flows/ticket-purchase'
+import { enterConfirmWithdrawStep, enterWithdrawStep } from './flows/withdraw'
 import { AboutPage } from './pages/content/about-page'
 import { ActiveRoundsPage } from './pages/content/active-rounds-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
+import {
+	ChooseWithdrawAmountPage,
+	MAX_AMOUNT_PAYLOAD,
+} from './pages/content/choose-withdraw-amount-page'
 import { FinishedRoundsPage } from './pages/content/finished-rounds-page'
 import { PlayPage } from './pages/content/play-page'
 import {
@@ -27,8 +32,16 @@ import { EIP155_NAMESPACE, StatusPage } from './pages/content/status-page'
 import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
+import { CustomWithdrawAmountPrompt } from './prompts/custom-withdraw-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
+import { WithdrawAddressPrompt } from './prompts/withdraw-address-prompt'
+import {
+	ActiveFlow,
+	Context,
+	PageContent,
+	TicketPurchaseStep,
+	WithdrawStep,
+} from './types'
 import { composePageContentWithError } from './utils/error-to-render'
 import { editMessage, getCurrentPage } from './utils/grammy'
 
@@ -94,24 +107,48 @@ export async function handleButtonLogic(
 					}
 
 					const currentPage = getCurrentPage(ctx)
+					const messageId =
+						ctx.update.callback_query.message!.message_id
 
 					ctx.session = {
 						activeFlow: ActiveFlow.TicketPurchase,
 						step: TicketPurchaseStep.WaitingForInput,
-						messageToEdit: {
-							pageContent: currentPage,
-							messageId:
-								ctx.update.callback_query.message!.message_id,
-						},
+						messageToEdit: { pageContent: currentPage, messageId },
 						stakeId: ctx.session.stakeId,
 					}
 
-					const promptContent = CustomTicketAmountPrompt.render()
+					const ticketAmountPrompt = CustomTicketAmountPrompt.render()
 
-					await ctx.reply(promptContent.message, {
+					await ctx.reply(ticketAmountPrompt.message, {
 						reply_markup: {
 							force_reply: true,
-							input_field_placeholder: promptContent.placeholder,
+							input_field_placeholder:
+								ticketAmountPrompt.placeholder,
+						},
+					})
+
+					break
+				}
+
+				case promptIds.customWithdrawAmount: {
+					const currentPage = getCurrentPage(ctx)
+					const messageId =
+						ctx.update.callback_query.message!.message_id
+
+					ctx.session = {
+						activeFlow: ActiveFlow.Withdraw,
+						step: WithdrawStep.WaitingForAmount,
+						messageToEdit: { pageContent: currentPage, messageId },
+					}
+
+					const withdrawAmountPrompt =
+						CustomWithdrawAmountPrompt.render()
+
+					await ctx.reply(withdrawAmountPrompt.message, {
+						reply_markup: {
+							force_reply: true,
+							input_field_placeholder:
+								withdrawAmountPrompt.placeholder,
 						},
 					})
 
@@ -125,7 +162,7 @@ export async function handleButtonLogic(
 }
 
 async function openPage(
-	ctx: Context,
+	ctx: Filter<Context, 'callback_query:data'>,
 	pageId: string,
 	payloads?: string[],
 ): Promise<PageContent | null> {
@@ -137,13 +174,85 @@ async function openPage(
 			return AboutPage.render()
 
 		case pageIds.wallet: {
-			const telegramId = BigInt(ctx.from!.id)
+			const telegramId = BigInt(ctx.from.id)
 
 			await ctx.editMessageText('loading...')
 
 			const balance = await getBalance(telegramId)
 
 			return WalletPage.render(balance)
+		}
+
+		case pageIds.chooseWithdrawAmount: {
+			if (ctx.from === undefined) {
+				throw new Error('ctx.from is undefined')
+			}
+
+			const telegramId = BigInt(ctx.from.id)
+			const payload = payloads?.[0]
+
+			if (payload === MAX_AMOUNT_PAYLOAD) {
+				const balance = await getBalance(telegramId)
+
+				const currentPage = getCurrentPage(ctx)
+				const messageId = ctx.update.callback_query.message!.message_id
+
+				ctx.session = {
+					activeFlow: ActiveFlow.Withdraw,
+					step: WithdrawStep.WaitingForAddress,
+					amount: balance.amount,
+					messageToEdit: { pageContent: currentPage, messageId },
+				}
+
+				const promptContent = WithdrawAddressPrompt.render()
+
+				await ctx.reply(promptContent.message, {
+					reply_markup: {
+						force_reply: true,
+						input_field_placeholder: promptContent.placeholder,
+					},
+				})
+
+				return null
+			}
+
+			const balance = await getBalance(telegramId)
+
+			return ChooseWithdrawAmountPage.render(balance)
+		}
+
+		case pageIds.confirmWithdraw: {
+			const sessionData = ctx.session
+
+			if (
+				sessionData.activeFlow !== ActiveFlow.Withdraw ||
+				sessionData.step !== WithdrawStep.Confirming
+			) {
+				throw new Error('wrong session state for confirmWithdraw')
+			}
+
+			return enterConfirmWithdrawStep(
+				ctx,
+				sessionData.amount,
+				sessionData.recipientAddress,
+			)
+		}
+
+		case pageIds.successWithdraw: {
+			const sessionData = ctx.session
+
+			if (
+				sessionData.activeFlow !== ActiveFlow.Withdraw ||
+				sessionData.step !== WithdrawStep.Confirming
+			) {
+				throw new Error('wrong session state for successWithdraw')
+			}
+
+			return enterWithdrawStep(
+				ctx,
+				sessionData.amount,
+				sessionData.recipientAddress,
+			)
 		}
 
 		case pageIds.play: {

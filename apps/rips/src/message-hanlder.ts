@@ -1,12 +1,16 @@
 import { Bot, Filter, GrammyError } from 'grammy'
+import { getBalance } from './api/endpoints/wallets'
 import { enterConfirmingStep } from './flows/ticket-purchase'
-import { ActiveFlow, Context, TicketPurchaseStep } from './types'
+import { enterConfirmWithdrawStep } from './flows/withdraw'
+import { WithdrawAddressPrompt } from './prompts/withdraw-address-prompt'
+import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from './types'
 import { fireAndForget } from './utils/common'
 import {
 	composePageContentWithError,
 	ErrorToRender,
 } from './utils/error-to-render'
 import { editSpecificMessage } from './utils/grammy'
+import { parseUnits } from './utils/units'
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,
@@ -22,14 +26,13 @@ export async function handleMessage(
 	switch (ctx.session.activeFlow) {
 		case ActiveFlow.TicketPurchase: {
 			if (ctx.session.step === TicketPurchaseStep.WaitingForInput) {
-				try {
-					const messageIdToEdit = ctx.session.messageToEdit.messageId
-					const stakeId = ctx.session.stakeId
+				const messageIdToEdit = ctx.session.messageToEdit.messageId
+				const stakeId = ctx.session.stakeId
 
+				try {
 					const ticketAmount = parseTicketNumber(
 						ctx.update.message.text,
 					)
-
 					const pageContent = await enterConfirmingStep(
 						ctx,
 						stakeId,
@@ -47,11 +50,8 @@ export async function handleMessage(
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
-					const messageToEdit = ctx.session.messageToEdit
-					const currentPageContent = messageToEdit.pageContent
-
 					const pageContent = composePageContentWithError(
-						currentPageContent,
+						ctx.session.messageToEdit.pageContent,
 						error,
 					)
 
@@ -59,7 +59,7 @@ export async function handleMessage(
 						editSpecificMessage(
 							bot,
 							ctx.chatId,
-							messageToEdit.messageId,
+							messageIdToEdit,
 							pageContent,
 						),
 					)
@@ -72,6 +72,112 @@ export async function handleMessage(
 						.catch((error) => console.log(error))
 				}
 			}
+
+			break
+		}
+
+		case ActiveFlow.Withdraw: {
+			const session = ctx.session
+
+			if (session.step === WithdrawStep.WaitingForAmount) {
+				const messageIdToEdit = session.messageToEdit.messageId
+
+				try {
+					if (ctx.from === undefined)
+						throw new Error('ctx.from is undefined')
+
+					const telegramId = BigInt(ctx.from.id)
+					const balance = await getBalance(telegramId)
+					const amount = parseWithdrawAmount(
+						ctx.update.message.text,
+						balance.currency.decimals,
+						BigInt(balance.amount),
+					)
+
+					ctx.session = {
+						activeFlow: ActiveFlow.Withdraw,
+						step: WithdrawStep.WaitingForAddress,
+						amount,
+						messageToEdit: session.messageToEdit,
+					}
+
+					const promptContent = WithdrawAddressPrompt.render()
+
+					await ctx.reply(promptContent.message, {
+						reply_markup: {
+							force_reply: true,
+							input_field_placeholder: promptContent.placeholder,
+						},
+					})
+				} catch (error) {
+					if (error instanceof GrammyError) throw error
+
+					const pageContent = composePageContentWithError(
+						session.messageToEdit.pageContent,
+						error,
+					)
+
+					fireAndForget(
+						editSpecificMessage(
+							bot,
+							ctx.chatId,
+							messageIdToEdit,
+							pageContent,
+						),
+					)
+				} finally {
+					bot.api
+						.deleteMessages(ctx.chatId, [
+							repliedTo.message_id,
+							ctx.update.message.message_id,
+						])
+						.catch((error) => console.log(error))
+				}
+			} else if (session.step === WithdrawStep.WaitingForAddress) {
+				const messageIdToEdit = session.messageToEdit.messageId
+
+				try {
+					const pageContent = await enterConfirmWithdrawStep(
+						ctx,
+						session.amount,
+						ctx.update.message.text,
+					)
+
+					fireAndForget(
+						editSpecificMessage(
+							bot,
+							ctx.chatId,
+							messageIdToEdit,
+							pageContent,
+						),
+					)
+				} catch (error) {
+					if (error instanceof GrammyError) throw error
+
+					const pageContent = composePageContentWithError(
+						session.messageToEdit.pageContent,
+						error,
+					)
+
+					fireAndForget(
+						editSpecificMessage(
+							bot,
+							ctx.chatId,
+							messageIdToEdit,
+							pageContent,
+						),
+					)
+				} finally {
+					bot.api
+						.deleteMessages(ctx.chatId, [
+							repliedTo.message_id,
+							ctx.update.message.message_id,
+						])
+						.catch((error) => console.log(error))
+				}
+			}
+
+			break
 		}
 	}
 }
@@ -92,4 +198,28 @@ function parseTicketNumber(userInput: string): number {
 	}
 
 	return ticketAmount
+}
+
+function parseWithdrawAmount(
+	input: string,
+	decimals: number,
+	availableAmount: bigint,
+): string {
+	let amount: bigint
+
+	try {
+		amount = parseUnits(input, decimals)
+	} catch {
+		throw new ErrorToRender('Invalid amount')
+	}
+
+	if (amount <= 0n) {
+		throw new ErrorToRender('Amount must be greater than 0')
+	}
+
+	if (amount > availableAmount) {
+		throw new ErrorToRender('Amount exceeds available balance')
+	}
+
+	return amount.toString()
 }

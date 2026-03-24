@@ -2,6 +2,7 @@ import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
 
 export enum ActiveFlow {
 	TicketPurchase,
+	Withdraw,
 }
 
 export enum TicketPurchaseStep {
@@ -36,7 +37,32 @@ export type TicketPurshaseSession = {
 	  }
 )
 
-export type SessionData = EmptySession | TicketPurshaseSession
+export enum WithdrawStep {
+	WaitingForAmount,
+	WaitingForAddress,
+	Confirming,
+}
+
+export type WithdrawSession = {
+	activeFlow: ActiveFlow.Withdraw
+} & (
+	| {
+			step: WithdrawStep.WaitingForAmount
+			messageToEdit: { pageContent: PageContent; messageId: number }
+	  }
+	| {
+			step: WithdrawStep.WaitingForAddress
+			amount: string
+			messageToEdit: { pageContent: PageContent; messageId: number }
+	  }
+	| {
+			step: WithdrawStep.Confirming
+			amount: string
+			recipientAddress: string
+	  }
+)
+
+export type SessionData = EmptySession | TicketPurshaseSession | WithdrawSession
 
 export type Context = GrammyContext & SessionFlavor<SessionData>
 

@@ -1,13 +1,13 @@
 import { Filter, GrammyError } from 'grammy'
 import { getStakes } from './api/endpoints/rips'
 import { parseCommand } from './commands'
+import { enterHomeFlow } from './flows/home'
 import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
 } from './flows/ticket-purchase'
 import { AboutPage } from './pages/content/about-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
-import { HomePage } from './pages/content/home-page'
 import { PlayPage } from './pages/content/play-page'
 import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
@@ -117,7 +117,7 @@ async function openPage(
 ): Promise<PageContent | null> {
 	switch (pageId) {
 		case pageIds.home:
-			return HomePage.render()
+			return enterHomeFlow(ctx)
 
 		case pageIds.about:
 			return AboutPage.render()

@@ -1,10 +1,10 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
-import { Bot, session } from 'grammy'
+import { Bot, InlineKeyboard, session } from 'grammy'
 import { handleButton } from './button-hanlder'
+import { enterHomeFlow } from './flows/home'
 import { handleMessage } from './message-hanlder'
-import { HomePage } from './pages/content/home-page'
-import { Context, SessionData } from './types'
+import { Context, PageContent, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
@@ -42,10 +42,19 @@ function initial(): SessionData {
 bot.use(session({ initial }))
 
 bot.command('start', async (ctx) => {
-	const page = HomePage.render()
+	let pageContent: PageContent = {
+		keyboard: new InlineKeyboard(),
+		message: 'Failed to get or create user',
+	}
 
-	await ctx.reply(page.message, {
-		reply_markup: page.keyboard,
+	try {
+		pageContent = await enterHomeFlow(ctx)
+	} catch (error) {
+		console.log(error)
+	}
+
+	await ctx.reply(pageContent.message, {
+		reply_markup: pageContent.keyboard,
 	})
 })
 

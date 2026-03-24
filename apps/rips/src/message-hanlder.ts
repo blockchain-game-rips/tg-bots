@@ -1,10 +1,12 @@
 import { Bot, Filter, GrammyError } from 'grammy'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
+import { fireAndForget } from './utils/common'
 import {
 	composePageContentWithError,
 	ErrorToRender,
 } from './utils/error-to-render'
+import { editSpecificMessage } from './utils/grammy'
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,
@@ -34,14 +36,14 @@ export async function handleMessage(
 						ticketAmount,
 					)
 
-					bot.api
-						.editMessageText(
+					fireAndForget(
+						editSpecificMessage(
+							bot,
 							ctx.chatId,
 							messageIdToEdit,
-							pageContent.message,
-							{ reply_markup: pageContent.keyboard },
-						)
-						.catch((error) => console.log(error))
+							pageContent,
+						),
+					)
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
@@ -53,14 +55,14 @@ export async function handleMessage(
 						error,
 					)
 
-					bot.api
-						.editMessageText(
+					fireAndForget(
+						editSpecificMessage(
+							bot,
 							ctx.chatId,
 							messageToEdit.messageId,
-							pageContent.message,
-							{ reply_markup: pageContent.keyboard },
-						)
-						.catch((error) => console.log(error))
+							pageContent,
+						),
+					)
 				} finally {
 					bot.api
 						.deleteMessages(ctx.chatId, [

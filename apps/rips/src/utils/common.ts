@@ -13,3 +13,7 @@ export function getEnvSafe(key: string): string {
 
 	return value
 }
+
+export function fireAndForget<T>(promise: Promise<T>) {
+	promise.catch((error) => console.log(error))
+}

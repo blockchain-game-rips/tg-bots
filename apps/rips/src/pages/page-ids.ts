@@ -6,6 +6,8 @@ export const pageIds = {
 	chooseTicketAmount: 'chooseTA',
 	confirmPurchase: 'confirm',
 	successPurchase: 'successPurchase',
+	openRips: 'openRips',
+	revealPrizes: 'revealPrizes',
 	status: 'status',
 	finishedRounds: 'finishedRounds',
 	insufficientFunds: 'insufFunds',

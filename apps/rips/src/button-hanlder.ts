@@ -1,5 +1,6 @@
 import { Filter, GrammyError } from 'grammy'
 import { getRounds, getStakes } from './api/endpoints/rips'
+import { getUnrevealedPrizes, revealTicketPrizes } from './api/endpoints/users'
 import { getBalance } from './api/endpoints/wallets'
 import { parseCommand } from './commands'
 import { enterHomeFlow } from './flows/home'
@@ -12,6 +13,11 @@ import { AboutPage } from './pages/content/about-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
 import { FinishedRoundsPage } from './pages/content/finished-rounds-page'
 import { PlayPage } from './pages/content/play-page'
+import {
+	REVEAL_ALL_PAYLOAD,
+	REVEAL_ONE_PAYLOAD,
+	RevealPrizesPage,
+} from './pages/content/reveal-prizes-page'
 import { StatusPage } from './pages/content/status-page'
 import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
@@ -135,8 +141,16 @@ async function openPage(
 			return WalletPage.render(balance)
 		}
 
-		case pageIds.play:
-			return PlayPage.render()
+		case pageIds.play: {
+			if (ctx.from === undefined) {
+				throw new Error('ctx.from is undefined')
+			}
+
+			const telegramId = BigInt(ctx.from.id)
+			const prizes = await getUnrevealedPrizes(telegramId)
+
+			return PlayPage.render(prizes.length > 0)
+		}
 
 		case pageIds.chooseStake: {
 			const stakes = await getStakes()
@@ -170,6 +184,41 @@ async function openPage(
 				sessionData.stakeId,
 				ticketAmount,
 			)
+		}
+
+		case pageIds.openRips: {
+			if (ctx.from === undefined) {
+				throw new Error('ctx.from is undefined')
+			}
+
+			const telegramId = BigInt(ctx.from.id)
+			const prizes = await getUnrevealedPrizes(telegramId)
+
+			return RevealPrizesPage.render(prizes)
+		}
+
+		case pageIds.revealPrizes: {
+			if (ctx.from === undefined) {
+				throw new Error('ctx.from is undefined')
+			}
+
+			const telegramId = BigInt(ctx.from.id)
+			const action = payloads?.[0]
+
+			if (
+				action === REVEAL_ONE_PAYLOAD ||
+				action === REVEAL_ALL_PAYLOAD
+			) {
+				const revealAll = action === REVEAL_ALL_PAYLOAD
+				const revealed = await revealTicketPrizes(telegramId, revealAll)
+				const unrevealed = await getUnrevealedPrizes(telegramId)
+
+				return RevealPrizesPage.render(unrevealed, revealed)
+			}
+
+			const prizes = await getUnrevealedPrizes(telegramId)
+
+			return RevealPrizesPage.render(prizes)
 		}
 
 		case pageIds.status: {

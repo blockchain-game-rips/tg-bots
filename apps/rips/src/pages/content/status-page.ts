@@ -19,10 +19,12 @@ function roundStatusLine(round: Round): string {
 	const remainingTickets = round.stake.ticketCup - Number(soldTickets)
 
 	const expiresAt =
-		new Date(round.startTime).getTime() +
-		round.stake.durationSeconds * 1000
+		new Date(round.startTime).getTime() + round.stake.durationSeconds * 1000
 	const remainingMs = expiresAt - Date.now()
-	const remainingHours = Math.max(0, Math.floor(remainingMs / (1000 * 60 * 60)))
+	const remainingHours = Math.max(
+		0,
+		Math.floor(remainingMs / (1000 * 60 * 60)),
+	)
 	const remainingMinutes = Math.max(
 		0,
 		Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60)),

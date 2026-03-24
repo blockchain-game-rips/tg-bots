@@ -1,6 +1,5 @@
 import { Filter, GrammyError } from 'grammy'
 import { parseCommand } from './commands'
-import { composePageContentWithError } from './error-to-render'
 import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
@@ -16,15 +15,10 @@ import { promptIds } from './prompts/prompt-ids'
 import { getUserBalance } from './services/balance.service'
 import { getStakesMock } from './services/stake.service'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
-import { getCurrentPage } from './utils/grammy'
+import { composePageContentWithError } from './utils/error-to-render'
+import { editMessage, getCurrentPage } from './utils/grammy'
 
 const processingUsers = new Set<number>()
-
-async function editMessage(ctx: Context, pageContent: PageContent) {
-	await ctx.editMessageText(pageContent.message, {
-		reply_markup: pageContent.keyboard,
-	})
-}
 
 export async function handleButton(
 	ctx: Filter<Context, 'callback_query:data'>,

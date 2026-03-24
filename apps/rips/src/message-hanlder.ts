@@ -1,7 +1,10 @@
 import { Bot, Filter, GrammyError } from 'grammy'
-import { composePageContentWithError, ErrorToRender } from './error-to-render'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
+import {
+	composePageContentWithError,
+	ErrorToRender,
+} from './utils/error-to-render'
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,

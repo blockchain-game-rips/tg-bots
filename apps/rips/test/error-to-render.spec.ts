@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import {
 	composePageContentWithError,
 	ErrorToRender,
-} from '../src/error-to-render'
+} from '../src/utils/error-to-render'
 
 const errorPrefix = '❌ Error:'
 

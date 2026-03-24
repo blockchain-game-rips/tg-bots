@@ -15,3 +15,9 @@ export function getCurrentPage(
 
 	return { message, keyboard }
 }
+
+export async function editMessage(ctx: Context, pageContent: PageContent) {
+	await ctx.editMessageText(pageContent.message, {
+		reply_markup: pageContent.keyboard,
+	})
+}

@@ -1,4 +1,4 @@
-import { PageContent } from './types'
+import { PageContent } from '../types'
 
 const errorPrefixToRender = '❌ Error:'
 export class ErrorToRender extends Error {

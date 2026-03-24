@@ -1,16 +1,42 @@
+import { PageContent } from './types'
+
+const errorPrefixToRender = '❌ Error:'
 export class ErrorToRender extends Error {
-	constructor(
-		readonly messageToRender: string,
-		message?: string,
-	) {
+	messageToRender: string
+
+	constructor(rawMessageToRender: string, message?: string) {
 		super(message)
+
+		this.messageToRender = errorMessageToRender(rawMessageToRender)
 	}
 }
 
-export function getErrorMessageToRender(error: unknown) {
+export function composePageContentWithError(
+	currentPageContent: PageContent,
+	error: unknown,
+) {
+	const errorMessageToRender = getErrorMessageToRender(error)
+
+	const baseMessage = currentPageContent.message.includes(errorPrefixToRender)
+		? currentPageContent.message.replace(
+				/❌ Error:.*$/,
+				errorMessageToRender,
+			)
+		: `${currentPageContent.message}\n\n${errorMessageToRender}`
+
+	return { ...currentPageContent, message: baseMessage }
+}
+
+function getErrorMessageToRender(error: unknown) {
 	if (error instanceof ErrorToRender) {
 		return error.messageToRender
 	}
 
-	return '❌ Internal server error, try again or summon a new menu'
+	return errorMessageToRender(
+		'Internal server error, try again or summon a new menu',
+	)
+}
+
+function errorMessageToRender(rawErrorMessage: string) {
+	return `${errorPrefixToRender} ${rawErrorMessage}`
 }

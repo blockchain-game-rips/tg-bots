@@ -1,5 +1,5 @@
 import { Bot, Filter, GrammyError } from 'grammy'
-import { ErrorToRender, getErrorMessageToRender } from './error-to-render'
+import { composePageContentWithError, ErrorToRender } from './error-to-render'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from './types'
 
@@ -40,15 +40,19 @@ export async function handleMessage(
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
-					const errorMessageToRender = getErrorMessageToRender(error)
 					const messageToEdit = ctx.session.messageToEdit
+					const currentPageContent = messageToEdit.pageContent
+
+					const pageContent = composePageContentWithError(
+						currentPageContent,
+						error,
+					)
 
 					void bot.api.editMessageText(
 						ctx.chatId,
 						messageToEdit.messageId,
-						messageToEdit.pageContent.message +
-							`\n\n${errorMessageToRender}`,
-						{ reply_markup: messageToEdit.pageContent.keyboard },
+						pageContent.message,
+						{ reply_markup: pageContent.keyboard },
 					)
 				} finally {
 					void bot.api.deleteMessages(ctx.chatId, [
@@ -65,15 +69,15 @@ function parseTicketNumber(userInput: string): number {
 	const ticketAmount = Number(userInput)
 
 	if (isNaN(ticketAmount)) {
-		throw new ErrorToRender('❌ Not a number')
+		throw new ErrorToRender('Not a number')
 	}
 
 	if (ticketAmount < 0) {
-		throw new ErrorToRender('❌ Number should be more than 0')
+		throw new ErrorToRender('Number should be more than 0')
 	}
 
 	if (!Number.isSafeInteger(ticketAmount)) {
-		throw new ErrorToRender('❌ Number should be integer')
+		throw new ErrorToRender('Number should be integer')
 	}
 
 	return ticketAmount

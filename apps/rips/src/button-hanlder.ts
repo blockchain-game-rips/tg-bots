@@ -1,6 +1,6 @@
 import { Filter, GrammyError } from 'grammy'
 import { parseCommand } from './commands'
-import { getErrorMessageToRender } from './error-to-render'
+import { composePageContentWithError } from './error-to-render'
 import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
@@ -40,14 +40,15 @@ export async function handleButton(
 	} catch (error) {
 		if (error instanceof GrammyError) throw error
 
-		const errorMessageToRender = getErrorMessageToRender(error)
-
-		const currentPage = getCurrentPage(ctx)
-
-		await ctx.editMessageText(
-			currentPage.message + `\n\n${errorMessageToRender}`,
-			{ reply_markup: currentPage.keyboard },
+		const currentPageContent = getCurrentPage(ctx)
+		const pageContent = composePageContentWithError(
+			currentPageContent,
+			error,
 		)
+
+		await ctx.editMessageText(pageContent.message, {
+			reply_markup: pageContent.keyboard,
+		})
 	} finally {
 		processingUsers.delete(userId)
 	}

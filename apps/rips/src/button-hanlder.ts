@@ -18,6 +18,8 @@ import { getStakesMock } from './services/stake.service'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
 import { getCurrentPage } from './utils/grammy'
 
+const processingUsers = new Set<number>()
+
 async function editMessage(ctx: Context, pageContent: PageContent) {
 	await ctx.editMessageText(pageContent.message, {
 		reply_markup: pageContent.keyboard,
@@ -27,6 +29,12 @@ async function editMessage(ctx: Context, pageContent: PageContent) {
 export async function handleButton(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
+	const userId = ctx.from.id
+
+	if (processingUsers.has(userId)) return
+
+	processingUsers.add(userId)
+
 	try {
 		return await handleButtonLogic(ctx)
 	} catch (error) {
@@ -40,6 +48,8 @@ export async function handleButton(
 			currentPage.message + `\n\n${errorMessageToRender}`,
 			{ reply_markup: currentPage.keyboard },
 		)
+	} finally {
+		processingUsers.delete(userId)
 	}
 }
 

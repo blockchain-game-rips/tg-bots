@@ -1,6 +1,10 @@
 import { Filter, GrammyError } from 'grammy'
 import { getRounds, getStakes } from './api/endpoints/rips'
-import { getUnrevealedPrizes, revealTicketPrizes } from './api/endpoints/users'
+import {
+	getUnrevealedPrizes,
+	getUser,
+	revealTicketPrizes,
+} from './api/endpoints/users'
 import { getBalance } from './api/endpoints/wallets'
 import { parseCommand } from './commands'
 import { enterHomeFlow } from './flows/home'
@@ -10,6 +14,7 @@ import {
 	enterTicketAmountStep,
 } from './flows/ticket-purchase'
 import { AboutPage } from './pages/content/about-page'
+import { ActiveRoundsPage } from './pages/content/active-rounds-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
 import { FinishedRoundsPage } from './pages/content/finished-rounds-page'
 import { PlayPage } from './pages/content/play-page'
@@ -18,7 +23,7 @@ import {
 	REVEAL_ONE_PAYLOAD,
 	RevealPrizesPage,
 } from './pages/content/reveal-prizes-page'
-import { StatusPage } from './pages/content/status-page'
+import { EIP155_NAMESPACE, StatusPage } from './pages/content/status-page'
 import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
@@ -222,8 +227,29 @@ async function openPage(
 		}
 
 		case pageIds.status: {
+			if (ctx.from === undefined) {
+				throw new Error('ctx.from is undefined')
+			}
+
+			const telegramId = BigInt(ctx.from.id)
+
+			const [rounds, user] = await Promise.all([
+				getRounds(),
+				getUser(telegramId),
+			])
+
+			const userEvmAddress = user.wallets[EIP155_NAMESPACE]
+
+			if (userEvmAddress === undefined) {
+				throw new Error('User has no EVM wallet')
+			}
+
+			return StatusPage.render(rounds, userEvmAddress)
+		}
+
+		case pageIds.activeRounds: {
 			const rounds = await getRounds()
-			return StatusPage.render(rounds)
+			return ActiveRoundsPage.render(rounds)
 		}
 
 		case pageIds.finishedRounds: {

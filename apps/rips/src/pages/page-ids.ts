@@ -9,6 +9,7 @@ export const pageIds = {
 	openRips: 'openRips',
 	revealPrizes: 'revealPrizes',
 	status: 'status',
+	activeRounds: 'activeRounds',
 	finishedRounds: 'finishedRounds',
 	insufficientFunds: 'insufFunds',
 	wallet: 'wallet',

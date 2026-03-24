@@ -1,16 +1,26 @@
+import { getBalance } from '../api/endpoints/wallets'
+import { getStakes } from '../api/endpoints/rips'
 import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
 import { ConfirmPurchasePage } from '../pages/content/confirm-purchase-page'
 import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
-import { PageContent } from '../types'
-import { getUserBalance } from '../services/balance.service'
-import { getStakeByIdOrThrow } from '../services/stake.service'
-import { ActiveFlow, Context, TicketPurchaseStep } from '../types'
+import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
+
+async function getStakeByIdOrThrow(stakeId: number) {
+	const stakes = await getStakes()
+	const stake = stakes.find((s) => s.id === stakeId)
+
+	if (stake === undefined) {
+		throw new Error(`stakeId ${stakeId} is invalid`)
+	}
+
+	return stake
+}
 
 export async function enterTicketAmountStep(
 	ctx: Context,
 	stakeId: string,
 ): Promise<PageContent> {
-	const stake = await getStakeByIdOrThrow(stakeId)
+	const stake = await getStakeByIdOrThrow(Number(stakeId))
 
 	ctx.session = {
 		activeFlow: ActiveFlow.TicketPurchase,
@@ -26,12 +36,23 @@ export async function enterConfirmingStep(
 	stakeId: string,
 	ticketAmount: number,
 ): Promise<PageContent> {
-	const stake = await getStakeByIdOrThrow(stakeId)
-	const userBalance = await getUserBalance()
-	const totalCost = ticketAmount * stake.ticketPrice
+	if (ctx.from === undefined) {
+		throw new Error('ctx.from is undefined')
+	}
 
-	if (userBalance < totalCost) {
-		return InsufficientFundsPage.render(stake, ticketAmount, userBalance)
+	const telegramId = BigInt(ctx.from.id)
+
+	const [stake, balance] = await Promise.all([
+		getStakeByIdOrThrow(Number(stakeId)),
+		getBalance(telegramId),
+	])
+
+	const totalCostRaw = BigInt(stake.ticketPrice.amount) * BigInt(ticketAmount)
+	const balanceRaw = BigInt(balance.amount)
+
+	//TODO: also check gas
+	if (balanceRaw < totalCostRaw) {
+		return InsufficientFundsPage.render(stake, ticketAmount, balance)
 	}
 
 	ctx.session = {

@@ -1,15 +1,32 @@
 import { InlineKeyboard } from 'grammy'
+import { Balance, Stake } from '../../api/schemas'
 import { buildCommand } from '../../commands'
 import { PageContent } from '../../types'
+import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
 
 export class InsufficientFundsPage {
 	static render(
-		stake: { stakeId: number; ticketPrice: number },
+		stake: Stake,
 		ticketAmount: number,
-		userBalance: number,
+		balance: Balance,
 	): PageContent {
-		const message = this.message(stake, ticketAmount, userBalance)
+		const priceRaw = BigInt(stake.ticketPrice.amount)
+		const { decimals, symbol } = stake.ticketPrice.currency
+		const totalCostRaw = priceRaw * BigInt(ticketAmount)
+
+		const price = formatUnits(priceRaw, decimals)
+		const totalCost = formatUnits(totalCostRaw, decimals)
+		const balanceFormatted = formatUnits(
+			BigInt(balance.amount),
+			balance.currency.decimals,
+		)
+
+		const message =
+			`Stake: ${price} ${symbol}\n\n` +
+			`Ticket amount: ${ticketAmount}\n\n` +
+			`Total cost: ${totalCost} ${symbol}\n\n` +
+			`⚠️ Insufficient Balance: ${balanceFormatted} ${balance.currency.symbol}`
 
 		return {
 			message,
@@ -19,7 +36,7 @@ export class InsufficientFundsPage {
 					buildCommand({
 						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
-						payloads: [stake.stakeId.toString()],
+						payloads: [stake.id.toString()],
 					}),
 				)
 				.text(
@@ -27,19 +44,5 @@ export class InsufficientFundsPage {
 					buildCommand({ pageId: pageIds.home, type: 'open' }),
 				),
 		}
-	}
-
-	private static message(
-		stake: { stakeId: number; ticketPrice: number },
-		ticketAmount: number,
-		userBalance: number,
-	) {
-		const totalCost = stake.ticketPrice * ticketAmount
-
-		let message = `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ETH`
-
-		message += `\n\n⚠️ Insufficient Balance: ${userBalance} ETH`
-
-		return message
 	}
 }

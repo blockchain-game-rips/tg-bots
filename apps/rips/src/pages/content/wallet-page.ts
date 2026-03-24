@@ -1,17 +1,20 @@
 import { InlineKeyboard } from 'grammy'
+import { Balance } from '../../api/schemas'
 import { PageContent } from '../../types'
+import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav, composeMarkup } from '../utils'
 
 export class WalletPage {
-	static render(userBalance: number): PageContent {
-		const message = `Balance: ${userBalance} ETH`
+	static render(balance: Balance): PageContent {
+		const amount = formatUnits(
+			BigInt(balance.amount),
+			balance.currency.decimals,
+		)
+		const message = `Balance: ${amount} ${balance.currency.symbol}`
 		const keyboard = addNav(
 			new InlineKeyboard(
-				composeMarkup([
-					{ label: 'All balances', pageId: '' },
-					{ label: 'Update', pageId: pageIds.wallet },
-				]),
+				composeMarkup([{ label: 'Update', pageId: pageIds.wallet }]),
 			),
 			{ home: pageIds.home, parent: pageIds.home },
 		)

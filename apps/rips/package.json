@@ -5,6 +5,7 @@
     "license": "MIT",
     "author": "Micro <0xmicro222@gmail.com>",
     "scripts": {
+        "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "test": "jest",
         "start": "ts-node src/main.ts",
         "dev": "ts-node-dev --respawn src/main.ts"

@@ -1,4 +1,5 @@
 import { Filter, GrammyError } from 'grammy'
+import { getStakes } from './api/endpoints/rips'
 import { parseCommand } from './commands'
 import {
 	enterConfirmingStep,
@@ -12,8 +13,7 @@ import { WalletPage } from './pages/content/wallet-page'
 import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { getUserBalance } from './services/balance.service'
-import { getStakesMock } from './services/stake.service'
+import { getBalance } from './api/endpoints/wallets'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from './types'
 import { composePageContentWithError } from './utils/error-to-render'
 import { editMessage, getCurrentPage } from './utils/grammy'
@@ -123,19 +123,21 @@ async function openPage(
 			return AboutPage.render()
 
 		case pageIds.wallet: {
-			const [userBalance] = await Promise.all([
-				getUserBalance(),
+			const telegramId = BigInt(ctx.from!.id)
+
+			const [balance] = await Promise.all([
+				getBalance(telegramId),
 				ctx.editMessageText('loading...'),
 			])
 
-			return WalletPage.render(userBalance)
+			return WalletPage.render(balance)
 		}
 
 		case pageIds.play:
 			return PlayPage.render()
 
 		case pageIds.chooseStake: {
-			const stakes = await getStakesMock()
+			const stakes = await getStakes()
 			return ChooseStakePage.render(stakes)
 		}
 

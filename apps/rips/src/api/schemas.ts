@@ -31,6 +31,7 @@ export const userSchema = z.object({
 export const balanceSchema = currencyAmountSchema
 
 export const stakeSchema = z.object({
+	id: z.number(),
 	ticketCup: z.number(),
 	ticketPrice: currencyAmountSchema,
 	durationSeconds: z.number(),
@@ -75,21 +76,23 @@ const addressesActionsSchema = z.object({
 	refunds: z.array(refundActionSchema),
 })
 
-export enum RoundStatus {
-	FILLING,
-	SEALED,
-	VRFREQUESTED,
-	CLAIMING,
-	CLAIMED,
-	REFUNDING,
-	REFUNDED,
-}
+const roundStatusSchema = z.enum([
+	'FILLING',
+	'SEALED',
+	'VRFREQUESTED',
+	'CLAIMING',
+	'CLAIMED',
+	'REFUNDING',
+	'REFUNDED',
+])
+
+export type RoundStatus = z.infer<typeof roundStatusSchema>
 
 export const roundSchema = z.object({
 	id: z.number(),
 	stake: stakeSchema,
 	actions: addressesActionsSchema,
-	status: z.nativeEnum(RoundStatus),
+	status: roundStatusSchema,
 })
 
 export const priceSchema = z.object({

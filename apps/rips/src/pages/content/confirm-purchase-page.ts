@@ -1,16 +1,21 @@
 import { InlineKeyboard } from 'grammy'
+import { Stake } from '../../api/schemas'
 import { buildCommand } from '../../commands'
 import { PageContent } from '../../types'
+import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
-
-type Stake = { stakeId: number; ticketPrice: number }
 
 export class ConfirmPurchasePage {
 	static render(stake: Stake, ticketAmount: number): PageContent {
-		const totalCost = stake.ticketPrice * ticketAmount
+		const priceRaw = BigInt(stake.ticketPrice.amount)
+		const { decimals, symbol } = stake.ticketPrice.currency
+		const totalCostRaw = priceRaw * BigInt(ticketAmount)
+
+		const price = formatUnits(priceRaw, decimals)
+		const totalCost = formatUnits(totalCostRaw, decimals)
 
 		return {
-			message: `Stake: ${stake.ticketPrice} ETH\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ETH`,
+			message: `Stake: ${price} ${symbol}\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ${symbol}`,
 			keyboard: new InlineKeyboard()
 				.text('Confirm')
 				.row()
@@ -19,7 +24,7 @@ export class ConfirmPurchasePage {
 					buildCommand({
 						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
-						payloads: [stake.stakeId.toString()],
+						payloads: [stake.id.toString()],
 					}),
 				)
 				.text(

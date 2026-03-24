@@ -57,7 +57,7 @@ export async function handleButton(
 export async function handleButtonLogic(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
-	void ctx.answerCallbackQuery()
+	ctx.answerCallbackQuery().catch((error) => console.log(error))
 
 	console.log('user press button, data:', ctx.callbackQuery.data)
 

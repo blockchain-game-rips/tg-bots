@@ -31,12 +31,14 @@ export async function handleMessage(
 						ticketAmount,
 					)
 
-					void bot.api.editMessageText(
-						ctx.chatId,
-						messageIdToEdit,
-						pageContent.message,
-						{ reply_markup: pageContent.keyboard },
-					)
+					bot.api
+						.editMessageText(
+							ctx.chatId,
+							messageIdToEdit,
+							pageContent.message,
+							{ reply_markup: pageContent.keyboard },
+						)
+						.catch((error) => console.log(error))
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
@@ -48,17 +50,21 @@ export async function handleMessage(
 						error,
 					)
 
-					void bot.api.editMessageText(
-						ctx.chatId,
-						messageToEdit.messageId,
-						pageContent.message,
-						{ reply_markup: pageContent.keyboard },
-					)
+					bot.api
+						.editMessageText(
+							ctx.chatId,
+							messageToEdit.messageId,
+							pageContent.message,
+							{ reply_markup: pageContent.keyboard },
+						)
+						.catch((error) => console.log(error))
 				} finally {
-					void bot.api.deleteMessages(ctx.chatId, [
-						repliedTo.message_id,
-						ctx.update.message.message_id,
-					])
+					bot.api
+						.deleteMessages(ctx.chatId, [
+							repliedTo.message_id,
+							ctx.update.message.message_id,
+						])
+						.catch((error) => console.log(error))
 				}
 			}
 		}

@@ -13,7 +13,11 @@ import {
 	enterConfirmingStep,
 	enterTicketAmountStep,
 } from './flows/ticket-purchase'
-import { enterConfirmWithdrawStep, enterWithdrawStep } from './flows/withdraw'
+import {
+	enterChoosingAddressStep,
+	enterConfirmWithdrawStep,
+	enterWithdrawalStep,
+} from './flows/withdraw'
 import { AboutPage } from './pages/content/about-page'
 import { ActiveRoundsPage } from './pages/content/active-rounds-page'
 import { ChooseStakePage } from './pages/content/choose-stake-page'
@@ -34,7 +38,6 @@ import { pageIds } from './pages/page-ids'
 import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
 import { CustomWithdrawAmountPrompt } from './prompts/custom-withdraw-amount-prompt'
 import { promptIds } from './prompts/prompt-ids'
-import { WithdrawAddressPrompt } from './prompts/withdraw-address-prompt'
 import {
 	ActiveFlow,
 	Context,
@@ -197,23 +200,10 @@ async function openPage(
 				const currentPage = getCurrentPage(ctx)
 				const messageId = ctx.update.callback_query.message!.message_id
 
-				ctx.session = {
-					activeFlow: ActiveFlow.Withdraw,
-					step: WithdrawStep.WaitingForAddress,
-					amount: balance.amount,
-					messageToEdit: { pageContent: currentPage, messageId },
-				}
-
-				const promptContent = WithdrawAddressPrompt.render()
-
-				await ctx.reply(promptContent.message, {
-					reply_markup: {
-						force_reply: true,
-						input_field_placeholder: promptContent.placeholder,
-					},
+				return enterChoosingAddressStep(ctx, balance.amount, {
+					pageContent: currentPage,
+					messageId,
 				})
-
-				return null
 			}
 
 			const balance = await getBalance(telegramId)
@@ -248,7 +238,7 @@ async function openPage(
 				throw new Error('wrong session state for successWithdraw')
 			}
 
-			return enterWithdrawStep(
+			return enterWithdrawalStep(
 				ctx,
 				sessionData.amount,
 				sessionData.recipientAddress,

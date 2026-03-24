@@ -1,10 +1,35 @@
 import { getBalance, withdraw } from '../api/endpoints/wallets'
 import { ConfirmWithdrawPage } from '../pages/content/confirm-withdraw-page'
 import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
+import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
 import { ActiveFlow, Context, PageContent, WithdrawStep } from '../types'
 import { ErrorToRender } from '../utils/error-to-render'
 
 const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
+
+export async function enterChoosingAddressStep(
+	ctx: Context,
+	amount: string,
+	messageToEdit: { pageContent: PageContent; messageId: number },
+): Promise<null> {
+	ctx.session = {
+		activeFlow: ActiveFlow.Withdraw,
+		step: WithdrawStep.WaitingForAddress,
+		amount,
+		messageToEdit,
+	}
+
+	const promptContent = WithdrawAddressPrompt.render()
+
+	await ctx.reply(promptContent.message, {
+		reply_markup: {
+			force_reply: true,
+			input_field_placeholder: promptContent.placeholder,
+		},
+	})
+
+	return null
+}
 
 export async function enterConfirmWithdrawStep(
 	ctx: Context,
@@ -32,7 +57,7 @@ export async function enterConfirmWithdrawStep(
 	return ConfirmWithdrawPage.render(BigInt(amount), recipientAddress, balance)
 }
 
-export async function enterWithdrawStep(
+export async function enterWithdrawalStep(
 	ctx: Context,
 	amount: string,
 	recipientAddress: string,

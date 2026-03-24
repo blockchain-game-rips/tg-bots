@@ -1,8 +1,10 @@
 import { Bot, Filter, GrammyError } from 'grammy'
 import { getBalance } from './api/endpoints/wallets'
 import { enterConfirmingStep } from './flows/ticket-purchase'
-import { enterConfirmWithdrawStep } from './flows/withdraw'
-import { WithdrawAddressPrompt } from './prompts/withdraw-address-prompt'
+import {
+	enterChoosingAddressStep,
+	enterConfirmWithdrawStep,
+} from './flows/withdraw'
 import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from './types'
 import { fireAndForget } from './utils/common'
 import {
@@ -94,21 +96,7 @@ export async function handleMessage(
 						BigInt(balance.amount),
 					)
 
-					ctx.session = {
-						activeFlow: ActiveFlow.Withdraw,
-						step: WithdrawStep.WaitingForAddress,
-						amount,
-						messageToEdit: session.messageToEdit,
-					}
-
-					const promptContent = WithdrawAddressPrompt.render()
-
-					await ctx.reply(promptContent.message, {
-						reply_markup: {
-							force_reply: true,
-							input_field_placeholder: promptContent.placeholder,
-						},
-					})
+					await enterChoosingAddressStep(ctx, amount, session.messageToEdit)
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 

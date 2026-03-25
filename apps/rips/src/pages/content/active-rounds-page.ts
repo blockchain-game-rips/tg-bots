@@ -57,14 +57,14 @@ export class ActiveRoundsPage {
 
 			if (lines.length > 0) lines.push('')
 
-			lines.push(`Stake ${readableStake(stakeRef.stake)}`)
+			lines.push(`${readableStake(stakeRef.stake)} stake:`)
 
 			const hasActiveRound = stakeRounds.some(
 				(r) => r.status === 'FILLING',
 			)
 
 			if (!hasActiveRound) {
-				lines.push('  Round ACTIVE — starts with first purchase')
+				lines.push('  Round ready — starts with your first purchase')
 			}
 
 			for (const round of stakeRounds) {
@@ -73,7 +73,7 @@ export class ActiveRoundsPage {
 		}
 
 		const message =
-			lines.length > 0 ? lines.join('\n') : 'No ongoing rounds'
+			lines.length > 0 ? lines.join('\n') : 'No ongoing rounds yet'
 
 		return {
 			message,

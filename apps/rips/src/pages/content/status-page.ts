@@ -25,9 +25,9 @@ export class StatusPage {
 		const lines: string[] = []
 
 		if (stakeIds.length === 0) {
-			lines.push("You don't have tickets in ongoing rounds")
+			lines.push('You have no tickets in ongoing rounds')
 		} else {
-			lines.push('You have tickets:')
+			lines.push('Your tickets in ongoing rounds:')
 
 			for (const stakeId of stakeIds) {
 				const stakeRounds = userRounds.filter(
@@ -35,7 +35,7 @@ export class StatusPage {
 				)
 
 				lines.push('')
-				lines.push(`Stake ${readableStake(stakeRounds[0].stake)}`)
+				lines.push(`${readableStake(stakeRounds[0].stake)} stake:`)
 
 				for (const round of stakeRounds) {
 					const userTickets = round.actions.purchases

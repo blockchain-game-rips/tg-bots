@@ -9,14 +9,19 @@ import { readableStake } from '../utils'
 export class SuccessPurchasePage {
 	static render(stake: Stake, purchase: BuyTickets): PageContent {
 		const { decimals, symbol } = stake.ticketPrice.currency
-		const totalCost = formatUnits(BigInt(purchase.cost.amount), decimals)
+		const ticketsCost = formatUnits(
+			BigInt(stake.ticketPrice.amount) * BigInt(purchase.ticketAmount),
+			decimals,
+		)
+		const blockchainFee = formatUnits(BigInt(purchase.cost.amount), decimals)
 
 		const message =
 			`✅ Purchase successful!\n\n` +
 			`Stake: ${readableStake(stake)}\n` +
 			`Round: #${purchase.roundId}\n` +
-			`Tickets purchased: ${purchase.ticketAmount}\n` +
-			`Total cost: ${totalCost} ${symbol}`
+			`Tickets: ${purchase.ticketAmount}\n` +
+			`Tickets cost: ${ticketsCost} ${symbol}\n` +
+			`Blockchain fee: ${blockchainFee} ${symbol}`
 
 		return {
 			message,

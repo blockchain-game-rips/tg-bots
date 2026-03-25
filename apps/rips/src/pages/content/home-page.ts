@@ -6,12 +6,14 @@ import { composeMarkup } from '../utils'
 export class HomePage {
 	static render(): PageContent {
 		return {
-			message: 'Here is the home page',
+			message: 'Welcome to Rips!\n\nGet started in two steps:\n· Deposit ETH on Base via the Wallet menu\n· Play the game and earn rewards',
 			keyboard: new InlineKeyboard(
 				composeMarkup([
-					{ label: 'About', pageId: pageIds.about },
 					{ label: 'Play', pageId: pageIds.play },
+					'row',
 					{ label: 'Wallet', pageId: pageIds.wallet },
+					'row',
+					{ label: 'About', pageId: pageIds.about },
 				]),
 			),
 		}

@@ -18,7 +18,7 @@ export class SuccessWithdrawPage {
 			message:
 				`✅ Withdrawal successful!\n\n` +
 				`Amount: ${formatted} ${symbol}\n` +
-				`Tx: ${withdraw.txId}`,
+				`Transaction: ${withdraw.txId}`,
 			keyboard: new InlineKeyboard().text(
 				'Home',
 				buildCommand({

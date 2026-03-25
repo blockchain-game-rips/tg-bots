@@ -80,12 +80,13 @@ export type NavIds = {
 	parent: string
 }
 
+export type Row = 'row'
 export type StaticLayout = {
 	label: string
 	pageId: string
 }
 
-export type KeyboardLayout = StaticLayout[]
+export type KeyboardLayout = (StaticLayout | Row)[]
 
 export type PromptContent = {
 	message: string

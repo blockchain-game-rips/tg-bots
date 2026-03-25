@@ -15,7 +15,7 @@ export class ConfirmPurchasePage {
 		const totalCost = formatUnits(totalCostRaw, decimals)
 
 		return {
-			message: `Stake: ${price} ${symbol}\n\nTicket amount: ${ticketAmount}\n\nTotal cost: ${totalCost} ${symbol}`,
+			message: `You're about to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} each.\nTotal: ${totalCost} ${symbol}\n\nConfirm to proceed.`,
 			keyboard: new InlineKeyboard()
 				.text(
 					'Confirm',

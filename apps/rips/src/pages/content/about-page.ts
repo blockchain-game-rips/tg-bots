@@ -50,10 +50,10 @@ function renderStakeConfig(stake: Stake): string {
 	)
 
 	return [
-		`<b>Stake: ${readableStake(stake)}</b>`,
+		`<b>${readableStake(stake)} stake</b>`,
 		`Duration: ${formatDuration(stake.durationSeconds)}`,
-		`Ticket cap: ${stake.ticketCup}`,
-		'Prize distribution:',
+		`Tickets per round: ${stake.ticketCup}`,
+		'Prizes:',
 		...tierLines,
 	].join('\n')
 }

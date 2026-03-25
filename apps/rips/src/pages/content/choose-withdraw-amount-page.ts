@@ -36,6 +36,7 @@ export class ChooseWithdrawAmountPage {
 							payloads: [MAX_AMOUNT_PAYLOAD],
 						}),
 					)
+					.row()
 					.text(
 						'Custom amount',
 						buildCommand({

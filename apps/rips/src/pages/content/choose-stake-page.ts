@@ -10,18 +10,20 @@ export class ChooseStakePage {
 		const keyboard = new InlineKeyboard()
 
 		for (const stake of stakes) {
-			keyboard.text(
-				readableStake(stake),
-				buildCommand({
-					type: 'open',
-					pageId: pageIds.chooseTicketAmount,
-					payloads: [stake.id.toString()],
-				}),
-			)
+			keyboard
+				.text(
+					readableStake(stake),
+					buildCommand({
+						type: 'open',
+						pageId: pageIds.chooseTicketAmount,
+						payloads: [stake.id.toString()],
+					}),
+				)
+				.row()
 		}
 
 		return {
-			message: 'Choose stake',
+			message: 'Choose your stake — the higher the ticket price, the bigger the potential reward.',
 			keyboard: addNav(keyboard, {
 				home: pageIds.home,
 				parent: pageIds.play,

@@ -17,6 +17,7 @@ export class ChooseTicketAmountPage {
 					payloads: ['1'],
 				}),
 			)
+			.row()
 			.text(
 				'3 Tickets',
 				buildCommand({
@@ -25,8 +26,9 @@ export class ChooseTicketAmountPage {
 					payloads: ['3'],
 				}),
 			)
+			.row()
 			.text(
-				'Custom amount',
+				'Custom Amount',
 				buildCommand({
 					promptId: promptIds.customTicketAmount,
 					type: 'reply',
@@ -34,7 +36,7 @@ export class ChooseTicketAmountPage {
 			)
 
 		return {
-			message: `Choose tickets amount for stake ${readableStake(stake)}`,
+			message: `Choose how many tickets to buy at ${readableStake(stake)} each.`,
 			keyboard: addNav(keyboard, {
 				home: pageIds.home,
 				parent: pageIds.chooseStake,

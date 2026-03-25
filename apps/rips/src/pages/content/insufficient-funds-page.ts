@@ -23,10 +23,9 @@ export class InsufficientFundsPage {
 		)
 
 		const message =
-			`Stake: ${price} ${symbol}\n\n` +
-			`Ticket amount: ${ticketAmount}\n\n` +
-			`Total cost: ${totalCost} ${symbol}\n\n` +
-			`⚠️ Insufficient Balance: ${balanceFormatted} ${balance.currency.symbol}`
+			`You're trying to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} each.\n` +
+			`Total: ${totalCost} ${symbol}\n\n` +
+			`⚠️ Not enough funds. Your balance: ${balanceFormatted} ${balance.currency.symbol}`
 
 		return {
 			message,

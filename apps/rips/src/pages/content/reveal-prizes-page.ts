@@ -2,6 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { TicketPrize } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
+import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
@@ -22,10 +23,24 @@ export class RevealPrizesPage {
 				lines.push('Your prizes:')
 			}
 
+			let totalPrize = 0n
+
 			for (const prize of revealedPrizes) {
+				const prizeAmount = BigInt(prize.prizeAmount)
+				totalPrize += prizeAmount
+
+				const formattedPrizeAmount = formatUnits(prizeAmount, 18)
+
 				lines.push(
-					`  Ticket #${prize.ticketNumber} — ${prize.prizeAmount}`,
+					`  Ticket #${prize.ticketNumber} — ${formattedPrizeAmount} ETH`,
 				)
+			}
+
+			if (revealedPrizes.length > 1) {
+				const formattedTotalPrize = formatUnits(totalPrize, 18)
+
+				lines.push('')
+				lines.push(`Total prize: ${formattedTotalPrize} ETH`)
 			}
 
 			lines.push('')
@@ -45,6 +60,7 @@ export class RevealPrizesPage {
 						payloads: [REVEAL_ONE_PAYLOAD],
 					}),
 				)
+				.row()
 				.text(
 					'Reveal all',
 					buildCommand({

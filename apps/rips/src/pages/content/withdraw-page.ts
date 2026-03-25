@@ -22,7 +22,7 @@ export class WithdrawPage {
 
 		message += recipientAddress
 			? `Recipient: <code>${recipientAddress}</code>\n`
-			: `Recipient: not chosen\n`
+			: `Recipient: —\n`
 
 		if (amount !== undefined) {
 			const formattedAmount = formatUnits(
@@ -31,10 +31,25 @@ export class WithdrawPage {
 			)
 			message += `Amount: ${formattedAmount} ${balance.currency.symbol}\n`
 		} else {
-			message += `Amount: not chosen\n`
+			message += `Amount: —\n`
 		}
 
 		const keyboard = new InlineKeyboard()
+
+		if (amount !== undefined && recipientAddress !== undefined) {
+			keyboard
+				.text(
+					'Confirm',
+					buildCommand({
+						type: 'open',
+						pageId: pageIds.successWithdraw,
+						payloads: [],
+					}),
+				)
+				.row()
+		}
+
+		keyboard
 			.text(
 				'Choose recipient',
 				buildCommand({
@@ -42,6 +57,7 @@ export class WithdrawPage {
 					promptId: promptIds.withdrawRecipient,
 				}),
 			)
+			.row()
 			.text(
 				'Choose amount',
 				buildCommand({
@@ -50,17 +66,6 @@ export class WithdrawPage {
 					payloads: [],
 				}),
 			)
-
-		if (amount !== undefined && recipientAddress !== undefined) {
-			keyboard.row().text(
-				'Confirm',
-				buildCommand({
-					type: 'open',
-					pageId: pageIds.successWithdraw,
-					payloads: [],
-				}),
-			)
-		}
 
 		return {
 			message,

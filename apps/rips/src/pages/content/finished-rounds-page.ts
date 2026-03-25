@@ -22,7 +22,7 @@ export class FinishedRoundsPage {
 
 			if (lines.length > 0) lines.push('')
 
-			lines.push(`Stake ${readableStake(stakeRounds[0].stake)}`)
+			lines.push(`${readableStake(stakeRounds[0].stake)} stake:`)
 
 			for (const round of stakeRounds) {
 				lines.push(
@@ -32,7 +32,7 @@ export class FinishedRoundsPage {
 		}
 
 		const message =
-			lines.length > 0 ? lines.join('\n') : 'No completed rounds'
+			lines.length > 0 ? lines.join('\n') : 'No completed rounds yet'
 
 		return {
 			message,

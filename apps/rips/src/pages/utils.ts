@@ -16,18 +16,28 @@ export function readableStake(stake: Stake): string {
 export function composeMarkup(
 	layout: KeyboardLayout,
 ): InlineKeyboardButton[][] {
-	return [
-		layout.map((button) => {
-			return {
+	const rows: InlineKeyboardButton[][] = []
+	let current: InlineKeyboardButton[] = []
+
+	for (const button of layout) {
+		if (button === 'row') {
+			if (current.length > 0) rows.push(current)
+			current = []
+		} else {
+			current.push({
 				text: button.label,
 				callback_data: buildCommand({
 					type: 'open',
 					pageId: button.pageId,
 					payloads: [],
 				}),
-			}
-		}),
-	]
+			})
+		}
+	}
+
+	if (current.length > 0) rows.push(current)
+
+	return rows
 }
 
 export function addNav(keyboard: InlineKeyboard, ids: NavIds) {

@@ -96,7 +96,11 @@ export async function handleMessage(
 						BigInt(balance.amount),
 					)
 
-					await enterChoosingAddressStep(ctx, amount, session.messageToEdit)
+					await enterChoosingAddressStep(
+						ctx,
+						amount,
+						session.messageToEdit,
+					)
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 

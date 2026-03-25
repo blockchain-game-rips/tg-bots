@@ -1,7 +1,7 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
-import { handleButton } from './button-hanlder'
+import { handleButton } from './button-handler/button-hanlder'
 import { enterHomeFlow } from './flows/home'
 import { handleMessage } from './message-hanlder'
 import { Context, PageContent, SessionData } from './types'

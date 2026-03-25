@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { Round, RoundStatus } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
 import { addNav, readableStake } from '../utils'
@@ -63,6 +63,7 @@ export class StatusPage {
 					buildCommand({
 						type: 'open',
 						pageId: pageIds.activeRounds,
+						payloads: [],
 					}),
 				)
 				.text(
@@ -70,6 +71,7 @@ export class StatusPage {
 					buildCommand({
 						type: 'open',
 						pageId: pageIds.finishedRounds,
+						payloads: [],
 					}),
 				),
 			{ home: pageIds.home, parent: pageIds.play },

@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { Stake } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
@@ -22,6 +22,7 @@ export class ConfirmPurchasePage {
 					buildCommand({
 						pageId: pageIds.successPurchase,
 						type: 'open',
+						payloads: [],
 					}),
 				)
 				.row()
@@ -35,7 +36,11 @@ export class ConfirmPurchasePage {
 				)
 				.text(
 					'Home',
-					buildCommand({ pageId: pageIds.home, type: 'open' }),
+					buildCommand({
+						pageId: pageIds.home,
+						type: 'open',
+						payloads: [],
+					}),
 				),
 		}
 	}

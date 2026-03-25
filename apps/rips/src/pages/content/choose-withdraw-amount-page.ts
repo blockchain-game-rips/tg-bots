@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { Balance } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/units'

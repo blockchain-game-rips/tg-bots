@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { Balance, Withdraw } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
@@ -21,7 +21,11 @@ export class SuccessWithdrawPage {
 				`Tx: ${withdraw.txId}`,
 			keyboard: new InlineKeyboard().text(
 				'Home',
-				buildCommand({ type: 'open', pageId: pageIds.home }),
+				buildCommand({
+					type: 'open',
+					pageId: pageIds.home,
+					payloads: [],
+				}),
 			),
 		}
 	}

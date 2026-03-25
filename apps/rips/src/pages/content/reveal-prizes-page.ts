@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { TicketPrize } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'

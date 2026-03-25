@@ -32,7 +32,7 @@ export function parseCommand(data: string): Command {
 			return {
 				type: 'open',
 				pageId: payloads[0],
-				payloads: payloads.slice(1),
+				payloads: payloads.slice(1) || [],
 			}
 
 		case 'r':

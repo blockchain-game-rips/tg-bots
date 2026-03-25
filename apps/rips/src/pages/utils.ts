@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { InlineKeyboardButton } from 'grammy/types'
 import { Stake } from '../api/schemas'
-import { buildCommand } from '../commands'
+import { buildCommand } from '../button-handler/utils'
 import { KeyboardLayout, NavIds } from '../types'
 import { formatUnits } from '../utils/units'
 
@@ -23,6 +23,7 @@ export function composeMarkup(
 				callback_data: buildCommand({
 					type: 'open',
 					pageId: button.pageId,
+					payloads: [],
 				}),
 			}
 		}),
@@ -32,10 +33,16 @@ export function composeMarkup(
 export function addNav(keyboard: InlineKeyboard, ids: NavIds) {
 	keyboard
 		.row()
-		.text('Back', buildCommand({ type: 'open', pageId: ids.parent }))
+		.text(
+			'Back',
+			buildCommand({ type: 'open', pageId: ids.parent, payloads: [] }),
+		)
 
 	if (ids.home !== ids.parent) {
-		keyboard.text('Home', buildCommand({ type: 'open', pageId: ids.home }))
+		keyboard.text(
+			'Home',
+			buildCommand({ type: 'open', pageId: ids.home, payloads: [] }),
+		)
 	}
 
 	return keyboard

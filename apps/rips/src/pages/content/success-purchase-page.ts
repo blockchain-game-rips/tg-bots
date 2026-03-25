@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
 import { BuyTickets, Stake } from '../../api/schemas'
-import { buildCommand } from '../../commands'
+import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/units'
 import { pageIds } from '../page-ids'
@@ -22,7 +22,11 @@ export class SuccessPurchasePage {
 			message,
 			keyboard: new InlineKeyboard().text(
 				'Home',
-				buildCommand({ pageId: pageIds.home, type: 'open' }),
+				buildCommand({
+					pageId: pageIds.home,
+					type: 'open',
+					payloads: [],
+				}),
 			),
 		}
 	}

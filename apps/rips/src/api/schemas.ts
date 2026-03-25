@@ -30,11 +30,18 @@ export const userSchema = z.object({
 
 export const balanceSchema = currencyAmountSchema
 
+const prizeTierSchema = z.object({
+	prizeCount: z.string(),
+	minPrize: z.string(),
+	maxPrize: z.string(),
+})
+
 export const stakeSchema = z.object({
 	id: z.number(),
 	ticketCup: z.number(),
 	ticketPrice: currencyAmountSchema,
 	durationSeconds: z.number(),
+	prizeDistribution: z.array(prizeTierSchema),
 })
 
 export const buyTicketsSchema = z.object({
@@ -100,6 +107,7 @@ export const priceSchema = z.object({
 	price: z.number(),
 })
 
+export type PrizeTier = z.infer<typeof prizeTierSchema>
 export type User = z.infer<typeof userSchema>
 export type Balance = z.infer<typeof balanceSchema>
 export type Stake = z.infer<typeof stakeSchema>

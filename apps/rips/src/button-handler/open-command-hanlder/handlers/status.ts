@@ -1,10 +1,8 @@
 import { Filter } from 'grammy'
 import { getRounds } from '../../../api/endpoints/rips'
 import { getUser } from '../../../api/endpoints/users'
-import {
-	EIP155_NAMESPACE,
-	StatusPage,
-} from '../../../pages/content/status-page'
+import { EIP155_NAMESPACE } from '../../../constants'
+import { StatusPage } from '../../../pages/content/status-page'
 import { Context } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 

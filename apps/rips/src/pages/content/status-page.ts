@@ -7,8 +7,6 @@ import { addNav, readableStake } from '../utils'
 
 const FINISHED_STATUSES: RoundStatus[] = ['CLAIMED', 'REFUNDED']
 
-const EIP155_NAMESPACE = 'eip155'
-
 export class StatusPage {
 	static render(rounds: Round[], userEvmAddress: string): PageContent {
 		const activeRounds = rounds.filter(
@@ -80,5 +78,3 @@ export class StatusPage {
 		return { message: lines.join('\n'), keyboard }
 	}
 }
-
-export { EIP155_NAMESPACE }

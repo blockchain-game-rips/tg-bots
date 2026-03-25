@@ -4,6 +4,7 @@ import { Context, PageContent } from '../types'
 export async function editMessage(ctx: Context, pageContent: PageContent) {
 	await ctx.editMessageText(pageContent.message, {
 		reply_markup: pageContent.keyboard,
+		parse_mode: 'HTML',
 	})
 }
 

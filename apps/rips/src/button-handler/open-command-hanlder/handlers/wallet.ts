@@ -1,5 +1,7 @@
 import { Filter } from 'grammy'
+import { getUser } from '../../../api/endpoints/users'
 import { getBalance } from '../../../api/endpoints/wallets'
+import { EIP155_NAMESPACE } from '../../../constants'
 import { WalletPage } from '../../../pages/content/wallet-page'
 import { Context } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
@@ -13,10 +15,14 @@ export async function handleWalletPageId(
 
 	const telegramId = BigInt(ctx.from.id)
 
-	await ctx.editMessageText('loading...')
+	const [balance, user] = await Promise.all([
+		getBalance(telegramId),
+		getUser(telegramId),
+	])
 
-	const balance = await getBalance(telegramId)
-	const walletPage = WalletPage.render(balance)
+	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
+
+	const walletPage = WalletPage.render(balance, userEvmAddress)
 
 	await editMessage(ctx, walletPage)
 }

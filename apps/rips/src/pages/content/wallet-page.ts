@@ -6,12 +6,18 @@ import { pageIds } from '../page-ids'
 import { addNav, composeMarkup } from '../utils'
 
 export class WalletPage {
-	static render(balance: Balance): PageContent {
+	static render(balance: Balance, userEvmAddress: string): PageContent {
+		console.log(balance)
 		const amount = formatUnits(
 			BigInt(balance.amount),
 			balance.currency.decimals,
 		)
-		const message = `Balance: ${amount} ${balance.currency.symbol}`
+
+		let message = ''
+		message += `Balance: ${amount} ${balance.currency.symbol}`
+		message += '\n\n'
+		message += `Deposit address (Base): <code>${userEvmAddress}</code>`
+
 		const keyboard = addNav(
 			new InlineKeyboard(
 				composeMarkup([

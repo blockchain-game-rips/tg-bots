@@ -7,6 +7,7 @@ import {
 } from '../../../pages/content/choose-withdraw-amount-page'
 import { Context } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
+import { calcAvailableBalance } from '../../../utils/tx'
 import { getCurrentPage } from '../../utils'
 
 export async function handleChooseWithdrawAmountPageId(
@@ -22,11 +23,12 @@ export async function handleChooseWithdrawAmountPageId(
 
 	if (payload === MAX_AMOUNT_PAYLOAD) {
 		const balance = await getBalance(telegramId)
+		const availableBalance = calcAvailableBalance(BigInt(balance.amount))
 
 		const currentPage = getCurrentPage(ctx)
 		const messageId = ctx.update.callback_query.message!.message_id
 
-		await enterChoosingAddressStep(ctx, balance.amount, {
+		await enterChoosingAddressStep(ctx, availableBalance.toString(), {
 			pageContent: currentPage,
 			messageId,
 		})

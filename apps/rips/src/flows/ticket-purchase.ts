@@ -7,6 +7,7 @@ import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
 import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
 import { ErrorToRender } from '../utils/error-to-render'
+import { calcAvailableBalance } from '../utils/tx'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
@@ -54,9 +55,9 @@ export async function enterConfirmingStep(
 
 	const totalCostRaw = BigInt(stake.ticketPrice.amount) * BigInt(ticketAmount)
 	const balanceRaw = BigInt(balance.amount)
+	const availableBalance = calcAvailableBalance(balanceRaw)
 
-	//TODO: also check gas
-	if (balanceRaw < totalCostRaw) {
+	if (availableBalance < totalCostRaw) {
 		return InsufficientFundsPage.render(stake, ticketAmount, balance)
 	}
 

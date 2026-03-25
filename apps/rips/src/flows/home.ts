@@ -14,7 +14,6 @@ export async function enterHomeFlow(ctx: Context): Promise<PageContent> {
 
 	await getUser(telegramId).catch(async (error) => {
 		if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {
-			// TODO: handle failed user creation
 			return await createUser(telegramId)
 		}
 

@@ -12,6 +12,7 @@ import {
 	ErrorToRender,
 } from './utils/error-to-render'
 import { editSpecificMessage } from './utils/grammy'
+import { calcAvailableBalance } from './utils/tx'
 import { parseUnits } from './utils/units'
 
 export async function handleMessage(
@@ -90,6 +91,7 @@ export async function handleMessage(
 
 					const telegramId = BigInt(ctx.from.id)
 					const balance = await getBalance(telegramId)
+
 					const amount = parseWithdrawAmount(
 						ctx.update.message.text,
 						balance.currency.decimals,
@@ -195,7 +197,7 @@ function parseTicketNumber(userInput: string): number {
 function parseWithdrawAmount(
 	input: string,
 	decimals: number,
-	availableAmount: bigint,
+	userBalance: bigint,
 ): string {
 	let amount: bigint
 
@@ -209,8 +211,10 @@ function parseWithdrawAmount(
 		throw new ErrorToRender('Amount must be greater than 0')
 	}
 
-	if (amount > availableAmount) {
-		throw new ErrorToRender('Amount exceeds available balance')
+	const availableBalance = calcAvailableBalance(BigInt(userBalance))
+
+	if (amount > userBalance) {
+		throw new ErrorToRender('Amount exceeds available to withdraw balance')
 	}
 
 	return amount.toString()

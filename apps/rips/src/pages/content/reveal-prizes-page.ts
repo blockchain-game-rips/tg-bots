@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { TicketPrize } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
+import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
@@ -12,6 +12,7 @@ export const REVEAL_ALL_PAYLOAD = 'all'
 export class RevealPrizesPage {
 	static render(
 		unrevealedPrizes: TicketPrize[],
+		ethPrice: number,
 		revealedPrizes: TicketPrize[] = [],
 	): PageContent {
 		const lines: string[] = []
@@ -32,7 +33,7 @@ export class RevealPrizesPage {
 				const formattedPrizeAmount = formatUnits(prizeAmount, 18)
 
 				lines.push(
-					`  Ticket #${prize.ticketNumber} — ${formattedPrizeAmount} ETH`,
+					`  Ticket #${prize.ticketNumber} — ${formattedPrizeAmount} ETH ${formatUsd(formattedPrizeAmount, ethPrice)}`,
 				)
 			}
 
@@ -40,7 +41,9 @@ export class RevealPrizesPage {
 				const formattedTotalPrize = formatUnits(totalPrize, 18)
 
 				lines.push('')
-				lines.push(`Total prize: ${formattedTotalPrize} ETH`)
+				lines.push(
+					`Total prize: ${formattedTotalPrize} ETH ${formatUsd(formattedTotalPrize, ethPrice)}`,
+				)
 			}
 
 			lines.push('')

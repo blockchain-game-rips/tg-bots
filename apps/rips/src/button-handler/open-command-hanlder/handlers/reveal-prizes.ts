@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import {
 	getUnrevealedPrizes,
 	revealTicketPrizes,
@@ -26,17 +27,27 @@ export async function handleRevealPrizesPageId(
 
 	if (action === REVEAL_ONE_PAYLOAD || action === REVEAL_ALL_PAYLOAD) {
 		const revealAll = action === REVEAL_ALL_PAYLOAD
-		const revealed = await revealTicketPrizes(telegramId, revealAll)
-		const unrevealed = await getUnrevealedPrizes(telegramId)
-		const revealedPrizesPage = RevealPrizesPage.render(unrevealed, revealed)
+		const [revealed, unrevealed, { price }] = await Promise.all([
+			revealTicketPrizes(telegramId, revealAll),
+			getUnrevealedPrizes(telegramId),
+			getMainCurrencyPrice(),
+		])
+		const revealedPrizesPage = RevealPrizesPage.render(
+			unrevealed,
+			price,
+			revealed,
+		)
 
 		await editMessage(ctx, revealedPrizesPage)
 
 		return
 	}
 
-	const prizes = await getUnrevealedPrizes(telegramId)
-	const revealPrizesPage = RevealPrizesPage.render(prizes)
+	const [prizes, { price }] = await Promise.all([
+		getUnrevealedPrizes(telegramId),
+		getMainCurrencyPrice(),
+	])
+	const revealPrizesPage = RevealPrizesPage.render(prizes, price)
 
 	await editMessage(ctx, revealPrizesPage)
 }

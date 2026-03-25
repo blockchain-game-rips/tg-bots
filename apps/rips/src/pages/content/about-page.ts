@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { PrizeTier, Stake } from '../../api/schemas'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
+import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav, readableStake } from '../utils'
 
@@ -32,25 +32,29 @@ function formatPrizeTier(
 	tier: PrizeTier,
 	decimals: number,
 	symbol: string,
+	ethPrice: number,
 ): string {
 	const min = formatUnits(BigInt(tier.minPrize), decimals)
 	const max = formatUnits(BigInt(tier.maxPrize), decimals)
 
 	const prizeRange =
-		min === max ? `${min} ${symbol}` : `${min}–${max} ${symbol}`
+		min === max
+			? `${min} ${symbol} ${formatUsd(min, ethPrice)}`
+			: `${min}–${max} ${symbol} ${formatUsd(max, ethPrice)}`
 
 	return `  • ${tier.prizeCount} × ${prizeRange}`
 }
 
-function renderStakeConfig(stake: Stake): string {
+function renderStakeConfig(stake: Stake, ethPrice: number): string {
 	const { decimals, symbol } = stake.ticketPrice.currency
+	const ticketPrice = formatUnits(BigInt(stake.ticketPrice.amount), decimals)
 
 	const tierLines = stake.prizeDistribution.map((tier) =>
-		formatPrizeTier(tier, decimals, symbol),
+		formatPrizeTier(tier, decimals, symbol, ethPrice),
 	)
 
 	return [
-		`<b>${readableStake(stake)} stake</b>`,
+		`<b>${readableStake(stake)} ${formatUsd(ticketPrice, ethPrice)} stake</b>`,
 		`Duration: ${formatDuration(stake.durationSeconds)}`,
 		`Tickets per round: ${stake.ticketCup}`,
 		'Prizes:',
@@ -59,8 +63,10 @@ function renderStakeConfig(stake: Stake): string {
 }
 
 export class AboutPage {
-	static render(stakes: Stake[]): PageContent {
-		const sections = stakes.map(renderStakeConfig)
+	static render(stakes: Stake[], ethPrice: number): PageContent {
+		const sections = stakes.map((stake) =>
+			renderStakeConfig(stake, ethPrice),
+		)
 
 		const message = sections.join('\n\n')
 

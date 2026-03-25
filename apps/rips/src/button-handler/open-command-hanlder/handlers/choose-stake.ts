@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import { getStakes } from '../../../api/endpoints/rips'
 import { ChooseStakePage } from '../../../pages/content/choose-stake-page'
 import { Context } from '../../../types'
@@ -9,8 +10,11 @@ export async function handleChooseStakePageId(
 ) {
 	clearFlow(ctx)
 
-	const stakes = await getStakes()
-	const chooseStakePage = ChooseStakePage.render(stakes)
+	const [stakes, { price }] = await Promise.all([
+		getStakes(),
+		getMainCurrencyPrice(),
+	])
+	const chooseStakePage = ChooseStakePage.render(stakes, price)
 
 	await editMessage(ctx, chooseStakePage)
 }

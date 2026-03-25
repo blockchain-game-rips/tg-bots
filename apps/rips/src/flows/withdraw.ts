@@ -1,3 +1,4 @@
+import { getMainCurrencyPrice } from '../api/endpoints/price'
 import { getBalance, withdraw } from '../api/endpoints/wallets'
 import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
 import { WithdrawPage } from '../pages/content/withdraw-page'
@@ -10,6 +11,7 @@ type MessageToEdit = { pageContent: PageContent; messageId: number }
 export async function enterWithdrawPage(
 	ctx: Context,
 	messageToEdit: MessageToEdit,
+	price: number,
 	amount?: string,
 	recipientAddress?: string,
 ): Promise<PageContent> {
@@ -28,7 +30,7 @@ export async function enterWithdrawPage(
 		recipientAddress,
 	}
 
-	return WithdrawPage.render(balance, amount, recipientAddress)
+	return WithdrawPage.render(balance, price, amount, recipientAddress)
 }
 
 export async function enterChoosingRecipientStep(
@@ -85,12 +87,13 @@ export async function enterWithdrawalStep(
 	}
 
 	const telegramId = BigInt(ctx.from.id)
-	const [result, balance] = await Promise.all([
+	const [result, balance, { price }] = await Promise.all([
 		withdraw(telegramId, BigInt(amount), recipientAddress),
 		getBalance(telegramId),
+		getMainCurrencyPrice(),
 	])
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessWithdrawPage.render(result, BigInt(amount), balance)
+	return SuccessWithdrawPage.render(result, BigInt(amount), balance, price)
 }

@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { Balance, Withdraw } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
+import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 
 export class SuccessWithdrawPage {
@@ -10,6 +10,7 @@ export class SuccessWithdrawPage {
 		withdraw: Withdraw,
 		amount: bigint,
 		balance: Balance,
+		ethPrice: number,
 	): PageContent {
 		const { decimals, symbol } = balance.currency
 		const formatted = formatUnits(amount, decimals)
@@ -17,7 +18,7 @@ export class SuccessWithdrawPage {
 		return {
 			message:
 				`✅ Withdrawal successful!\n\n` +
-				`Amount: ${formatted} ${symbol}\n` +
+				`Amount: ${formatted} ${symbol} ${formatUsd(formatted, ethPrice)}\n` +
 				`Transaction: ${withdraw.txId}`,
 			keyboard: new InlineKeyboard().text(
 				'Home',

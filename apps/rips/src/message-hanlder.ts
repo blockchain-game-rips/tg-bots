@@ -1,4 +1,5 @@
 import { Bot, Filter, GrammyError } from 'grammy'
+import { getMainCurrencyPrice } from './api/endpoints/price'
 import { getBalance } from './api/endpoints/wallets'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { enterWithdrawPage } from './flows/withdraw'
@@ -93,9 +94,12 @@ export async function handleMessage(
 						ctx.update.message.text,
 					)
 
+					const { price } = await getMainCurrencyPrice()
+
 					const withdrawPage = await enterWithdrawPage(
 						ctx,
 						messageToEdit,
+						price,
 						amount,
 						recipientAddress,
 					)
@@ -141,7 +145,10 @@ export async function handleMessage(
 						throw new Error('ctx.from is undefined')
 
 					const telegramId = BigInt(ctx.from.id)
-					const balance = await getBalance(telegramId)
+					const [balance, { price }] = await Promise.all([
+						getBalance(telegramId),
+						getMainCurrencyPrice(),
+					])
 
 					const amount = parseWithdrawAmount(
 						ctx.update.message.text,
@@ -152,6 +159,7 @@ export async function handleMessage(
 					const withdrawPage = await enterWithdrawPage(
 						ctx,
 						messageToEdit,
+						price,
 						amount,
 						recipientAddress,
 					)

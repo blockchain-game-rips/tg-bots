@@ -3,13 +3,14 @@ import { Balance } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
+import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
 export class WithdrawPage {
 	static render(
 		balance: Balance,
+		price: number,
 		amount?: string,
 		recipientAddress?: string,
 	): PageContent {
@@ -18,7 +19,7 @@ export class WithdrawPage {
 			balance.currency.decimals,
 		)
 
-		let message = `Balance: ${formattedBalance} ${balance.currency.symbol}\n\n`
+		let message = `Balance: ${formattedBalance} ${balance.currency.symbol} ${formatUsd(formattedBalance, price)}\n\n`
 
 		message += recipientAddress
 			? `Recipient: <code>${recipientAddress}</code>\n`
@@ -29,7 +30,7 @@ export class WithdrawPage {
 				BigInt(amount),
 				balance.currency.decimals,
 			)
-			message += `Amount: ${formattedAmount} ${balance.currency.symbol}\n`
+			message += `Amount: ${formattedAmount} ${balance.currency.symbol} ${formatUsd(formattedAmount, price)}\n`
 		} else {
 			message += `Amount: —\n`
 		}

@@ -2,11 +2,15 @@ import { InlineKeyboard } from 'grammy'
 import { Stake } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/units'
+import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 
 export class ConfirmPurchasePage {
-	static render(stake: Stake, ticketAmount: number): PageContent {
+	static render(
+		stake: Stake,
+		ticketAmount: number,
+		ethPrice: number,
+	): PageContent {
 		const priceRaw = BigInt(stake.ticketPrice.amount)
 		const { decimals, symbol } = stake.ticketPrice.currency
 		const totalCostRaw = priceRaw * BigInt(ticketAmount)
@@ -15,7 +19,7 @@ export class ConfirmPurchasePage {
 		const totalCost = formatUnits(totalCostRaw, decimals)
 
 		return {
-			message: `You're about to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} each.\nTotal: ${totalCost} ${symbol}\n\nConfirm to proceed.`,
+			message: `You're about to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} ${formatUsd(price, ethPrice)} each.\nTotal: ${totalCost} ${symbol} ${formatUsd(totalCost, ethPrice)}\n\nConfirm to proceed.`,
 			keyboard: new InlineKeyboard()
 				.text(
 					'Confirm',

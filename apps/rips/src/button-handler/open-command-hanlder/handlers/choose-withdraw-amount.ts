@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import { getBalance } from '../../../api/endpoints/wallets'
 import { enterWithdrawPage } from '../../../flows/withdraw'
 import {
@@ -31,12 +32,16 @@ export async function handleChooseWithdrawAmountPageId(
 			: undefined
 
 	if (payload === MAX_AMOUNT_PAYLOAD) {
-		const balance = await getBalance(telegramId)
+		const [balance, { price }] = await Promise.all([
+			getBalance(telegramId),
+			getMainCurrencyPrice(),
+		])
 		const availableBalance = calcAvailableBalance(BigInt(balance.amount))
 
 		const withdrawPage = await enterWithdrawPage(
 			ctx,
 			{ pageContent: currentPage, messageId },
+			price,
 			availableBalance.toString(),
 			existingRecipientAddress,
 		)
@@ -45,8 +50,14 @@ export async function handleChooseWithdrawAmountPageId(
 		return
 	}
 
-	const balance = await getBalance(telegramId)
-	const chooseWithdrawAmountPage = ChooseWithdrawAmountPage.render(balance)
+	const [balance, { price }] = await Promise.all([
+		getBalance(telegramId),
+		getMainCurrencyPrice(),
+	])
+	const chooseWithdrawAmountPage = ChooseWithdrawAmountPage.render(
+		balance,
+		price,
+	)
 
 	await editMessage(ctx, chooseWithdrawAmountPage)
 }

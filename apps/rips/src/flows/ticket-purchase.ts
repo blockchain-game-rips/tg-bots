@@ -1,4 +1,5 @@
 import { ApiError } from '../api/client'
+import { getMainCurrencyPrice } from '../api/endpoints/price'
 import { buyTickets, getStakes } from '../api/endpoints/rips'
 import { getBalance } from '../api/endpoints/wallets'
 import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
@@ -26,7 +27,10 @@ export async function enterTicketAmountStep(
 	ctx: Context,
 	stakeId: string,
 ): Promise<PageContent> {
-	const stake = await getStakeByIdOrThrow(Number(stakeId))
+	const [stake, { price }] = await Promise.all([
+		getStakeByIdOrThrow(Number(stakeId)),
+		getMainCurrencyPrice(),
+	])
 
 	ctx.session = {
 		activeFlow: ActiveFlow.TicketPurchase,
@@ -34,7 +38,7 @@ export async function enterTicketAmountStep(
 		step: TicketPurchaseStep.ChoosingTicketAmount,
 	}
 
-	return ChooseTicketAmountPage.render(stake)
+	return ChooseTicketAmountPage.render(stake, price)
 }
 
 export async function enterConfirmingStep(
@@ -48,9 +52,10 @@ export async function enterConfirmingStep(
 
 	const telegramId = BigInt(ctx.from.id)
 
-	const [stake, balance] = await Promise.all([
+	const [stake, balance, { price }] = await Promise.all([
 		getStakeByIdOrThrow(Number(stakeId)),
 		getBalance(telegramId),
+		getMainCurrencyPrice(),
 	])
 
 	const totalCostRaw = BigInt(stake.ticketPrice.amount) * BigInt(ticketAmount)
@@ -58,7 +63,7 @@ export async function enterConfirmingStep(
 	const availableBalance = calcAvailableBalance(balanceRaw)
 
 	if (availableBalance < totalCostRaw) {
-		return InsufficientFundsPage.render(stake, ticketAmount, balance)
+		return InsufficientFundsPage.render(stake, ticketAmount, balance, price)
 	}
 
 	ctx.session = {
@@ -68,7 +73,7 @@ export async function enterConfirmingStep(
 		stakeId,
 	}
 
-	return ConfirmPurchasePage.render(stake, ticketAmount)
+	return ConfirmPurchasePage.render(stake, ticketAmount, price)
 }
 
 export async function enterBuyingStep(
@@ -82,7 +87,10 @@ export async function enterBuyingStep(
 
 	const telegramId = BigInt(ctx.from.id)
 
-	const stake = await getStakeByIdOrThrow(Number(stakeId))
+	const [stake, { price }] = await Promise.all([
+		getStakeByIdOrThrow(Number(stakeId)),
+		getMainCurrencyPrice(),
+	])
 
 	const purchase = await buyTickets(telegramId, stake.id, ticketAmount).catch(
 		(error) => {
@@ -99,5 +107,5 @@ export async function enterBuyingStep(
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessPurchasePage.render(stake, purchase)
+	return SuccessPurchasePage.render(stake, purchase, price)
 }

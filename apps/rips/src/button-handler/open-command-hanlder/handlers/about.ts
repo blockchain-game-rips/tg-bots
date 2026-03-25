@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import { getStakes } from '../../../api/endpoints/rips'
 import { AboutPage } from '../../../pages/content/about-page'
 import { Context } from '../../../types'
@@ -9,8 +10,11 @@ export async function handleAboutPageId(
 ) {
 	clearFlow(ctx)
 
-	const stakes = await getStakes()
-	const aboutPage = AboutPage.render(stakes)
+	const [stakes, { price }] = await Promise.all([
+		getStakes(),
+		getMainCurrencyPrice(),
+	])
+	const aboutPage = AboutPage.render(stakes, price)
 
 	await editMessage(ctx, aboutPage)
 }

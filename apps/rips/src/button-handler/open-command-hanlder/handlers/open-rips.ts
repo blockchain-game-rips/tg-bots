@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import { getUnrevealedPrizes } from '../../../api/endpoints/users'
 import { RevealPrizesPage } from '../../../pages/content/reveal-prizes-page'
 import { Context } from '../../../types'
@@ -14,8 +15,11 @@ export async function handleOpenRipsPageId(
 	}
 
 	const telegramId = BigInt(ctx.from.id)
-	const prizes = await getUnrevealedPrizes(telegramId)
-	const revealPrizesPage = RevealPrizesPage.render(prizes)
+	const [prizes, { price }] = await Promise.all([
+		getUnrevealedPrizes(telegramId),
+		getMainCurrencyPrice(),
+	])
+	const revealPrizesPage = RevealPrizesPage.render(prizes, price)
 
 	await editMessage(ctx, revealPrizesPage)
 }

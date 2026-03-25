@@ -1,4 +1,5 @@
 import { Filter } from 'grammy'
+import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import { getUser } from '../../../api/endpoints/users'
 import { getBalance } from '../../../api/endpoints/wallets'
 import { EIP155_NAMESPACE } from '../../../constants'
@@ -17,14 +18,15 @@ export async function handleWalletPageId(
 
 	const telegramId = BigInt(ctx.from.id)
 
-	const [balance, user] = await Promise.all([
+	const [balance, user, { price }] = await Promise.all([
 		getBalance(telegramId),
 		getUser(telegramId),
+		getMainCurrencyPrice(),
 	])
 
 	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
 
-	const walletPage = WalletPage.render(balance, userEvmAddress)
+	const walletPage = WalletPage.render(balance, userEvmAddress, price)
 
 	await editMessage(ctx, walletPage)
 }

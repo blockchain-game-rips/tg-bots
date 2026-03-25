@@ -1,3 +1,8 @@
+export function formatUsd(ethAmount: string, price: number): string {
+	const usd = parseFloat(ethAmount) * price
+	return `($${usd.toFixed(2)})`
+}
+
 export function formatUnits(amount: bigint, decimals: number): string {
 	let display = amount.toString()
 

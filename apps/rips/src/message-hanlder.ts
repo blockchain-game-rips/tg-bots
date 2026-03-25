@@ -1,10 +1,7 @@
 import { Bot, Filter, GrammyError } from 'grammy'
 import { getBalance } from './api/endpoints/wallets'
 import { enterConfirmingStep } from './flows/ticket-purchase'
-import {
-	enterChoosingAddressStep,
-	enterConfirmWithdrawStep,
-} from './flows/withdraw'
+import { enterWithdrawPage } from './flows/withdraw'
 import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from './types'
 import { fireAndForget } from './utils/common'
 import {
@@ -14,6 +11,8 @@ import {
 import { editSpecificMessage } from './utils/grammy'
 import { calcAvailableBalance } from './utils/tx'
 import { parseUnits } from './utils/units'
+
+const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,
@@ -82,32 +81,38 @@ export async function handleMessage(
 		case ActiveFlow.Withdraw: {
 			const session = ctx.session
 
-			if (session.step === WithdrawStep.WaitingForAmount) {
-				const messageIdToEdit = session.messageToEdit.messageId
+			if (session.step === WithdrawStep.WaitingForRecipient) {
+				const { messageToEdit, amount } = session
+				const messageIdToEdit = messageToEdit.messageId
 
 				try {
 					if (ctx.from === undefined)
 						throw new Error('ctx.from is undefined')
 
-					const telegramId = BigInt(ctx.from.id)
-					const balance = await getBalance(telegramId)
-
-					const amount = parseWithdrawAmount(
+					const recipientAddress = parseRecipientAddress(
 						ctx.update.message.text,
-						balance.currency.decimals,
-						BigInt(balance.amount),
 					)
 
-					await enterChoosingAddressStep(
+					const withdrawPage = await enterWithdrawPage(
 						ctx,
+						messageToEdit,
 						amount,
-						session.messageToEdit,
+						recipientAddress,
+					)
+
+					fireAndForget(
+						editSpecificMessage(
+							bot,
+							ctx.chatId,
+							messageIdToEdit,
+							withdrawPage,
+						),
 					)
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
 					const pageContent = composePageContentWithError(
-						session.messageToEdit.pageContent,
+						messageToEdit.pageContent,
 						error,
 					)
 
@@ -127,14 +132,28 @@ export async function handleMessage(
 						])
 						.catch((error) => console.log(error))
 				}
-			} else if (session.step === WithdrawStep.WaitingForAddress) {
-				const messageIdToEdit = session.messageToEdit.messageId
+			} else if (session.step === WithdrawStep.WaitingForCustomAmount) {
+				const { messageToEdit, recipientAddress } = session
+				const messageIdToEdit = messageToEdit.messageId
 
 				try {
-					const pageContent = await enterConfirmWithdrawStep(
-						ctx,
-						session.amount,
+					if (ctx.from === undefined)
+						throw new Error('ctx.from is undefined')
+
+					const telegramId = BigInt(ctx.from.id)
+					const balance = await getBalance(telegramId)
+
+					const amount = parseWithdrawAmount(
 						ctx.update.message.text,
+						balance.currency.decimals,
+						BigInt(balance.amount),
+					)
+
+					const withdrawPage = await enterWithdrawPage(
+						ctx,
+						messageToEdit,
+						amount,
+						recipientAddress,
 					)
 
 					fireAndForget(
@@ -142,14 +161,14 @@ export async function handleMessage(
 							bot,
 							ctx.chatId,
 							messageIdToEdit,
-							pageContent,
+							withdrawPage,
 						),
 					)
 				} catch (error) {
 					if (error instanceof GrammyError) throw error
 
 					const pageContent = composePageContentWithError(
-						session.messageToEdit.pageContent,
+						messageToEdit.pageContent,
 						error,
 					)
 
@@ -194,6 +213,14 @@ function parseTicketNumber(userInput: string): number {
 	return ticketAmount
 }
 
+function parseRecipientAddress(input: string): string {
+	if (!EVM_ADDRESS_REGEX.test(input)) {
+		throw new ErrorToRender('Invalid address format')
+	}
+
+	return input
+}
+
 function parseWithdrawAmount(
 	input: string,
 	decimals: number,
@@ -211,9 +238,7 @@ function parseWithdrawAmount(
 		throw new ErrorToRender('Amount must be greater than 0')
 	}
 
-	const availableBalance = calcAvailableBalance(BigInt(userBalance))
-
-	if (amount > userBalance) {
+	if (amount > calcAvailableBalance(userBalance)) {
 		throw new ErrorToRender('Amount exceeds available to withdraw balance')
 	}
 

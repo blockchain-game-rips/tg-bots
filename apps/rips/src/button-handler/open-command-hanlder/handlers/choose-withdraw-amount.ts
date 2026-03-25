@@ -1,11 +1,11 @@
 import { Filter } from 'grammy'
 import { getBalance } from '../../../api/endpoints/wallets'
-import { enterChoosingAddressStep } from '../../../flows/withdraw'
+import { enterWithdrawPage } from '../../../flows/withdraw'
 import {
 	ChooseWithdrawAmountPage,
 	MAX_AMOUNT_PAYLOAD,
 } from '../../../pages/content/choose-withdraw-amount-page'
-import { Context } from '../../../types'
+import { ActiveFlow, Context, WithdrawStep } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 import { calcAvailableBalance } from '../../../utils/tx'
 import { getCurrentPage } from '../../utils'
@@ -20,19 +20,28 @@ export async function handleChooseWithdrawAmountPageId(
 
 	const telegramId = BigInt(ctx.from.id)
 	const payload = payloads[0]
+	const currentPage = getCurrentPage(ctx)
+	const messageId = ctx.update.callback_query.message!.message_id
+
+	const session = ctx.session
+	const existingRecipientAddress =
+		session.activeFlow === ActiveFlow.Withdraw &&
+		session.step === WithdrawStep.OnWithdrawPage
+			? session.recipientAddress
+			: undefined
 
 	if (payload === MAX_AMOUNT_PAYLOAD) {
 		const balance = await getBalance(telegramId)
 		const availableBalance = calcAvailableBalance(BigInt(balance.amount))
 
-		const currentPage = getCurrentPage(ctx)
-		const messageId = ctx.update.callback_query.message!.message_id
+		const withdrawPage = await enterWithdrawPage(
+			ctx,
+			{ pageContent: currentPage, messageId },
+			availableBalance.toString(),
+			existingRecipientAddress,
+		)
 
-		await enterChoosingAddressStep(ctx, availableBalance.toString(), {
-			pageContent: currentPage,
-			messageId,
-		})
-
+		await editMessage(ctx, withdrawPage)
 		return
 	}
 

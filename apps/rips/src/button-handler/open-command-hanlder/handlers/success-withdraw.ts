@@ -6,19 +6,25 @@ import { editMessage } from '../../../utils/grammy'
 export async function handleSuccessWithdrawPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
-	const sessionData = ctx.session
+	const session = ctx.session
 
 	if (
-		sessionData.activeFlow !== ActiveFlow.Withdraw ||
-		sessionData.step !== WithdrawStep.Confirming
+		session.activeFlow !== ActiveFlow.Withdraw ||
+		session.step !== WithdrawStep.OnWithdrawPage
 	) {
 		throw new Error('wrong session state for successWithdraw')
 	}
 
+	const { amount, recipientAddress } = session
+
+	if (amount === undefined || recipientAddress === undefined) {
+		throw new Error('amount and recipientAddress must be set to withdraw')
+	}
+
 	const successWithdrawPage = await enterWithdrawalStep(
 		ctx,
-		sessionData.amount,
-		sessionData.recipientAddress,
+		amount,
+		recipientAddress,
 	)
 
 	await editMessage(ctx, successWithdrawPage)

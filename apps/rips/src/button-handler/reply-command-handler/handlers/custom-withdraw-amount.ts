@@ -1,5 +1,5 @@
 import { Filter } from 'grammy'
-import { CustomWithdrawAmountPrompt } from '../../../prompts/custom-withdraw-amount-prompt'
+import { enterChoosingCustomAmountStep } from '../../../flows/withdraw'
 import { ActiveFlow, Context, WithdrawStep } from '../../../types'
 import { getCurrentPage } from '../../utils'
 
@@ -9,18 +9,16 @@ export async function handleCustomWithdrawAmountPromptId(
 	const currentPage = getCurrentPage(ctx)
 	const messageId = ctx.update.callback_query.message!.message_id
 
-	ctx.session = {
-		activeFlow: ActiveFlow.Withdraw,
-		step: WithdrawStep.WaitingForAmount,
-		messageToEdit: { pageContent: currentPage, messageId },
-	}
+	const session = ctx.session
+	const existingRecipientAddress =
+		session.activeFlow === ActiveFlow.Withdraw &&
+		session.step === WithdrawStep.OnWithdrawPage
+			? session.recipientAddress
+			: undefined
 
-	const withdrawAmountPrompt = CustomWithdrawAmountPrompt.render()
-
-	await ctx.reply(withdrawAmountPrompt.message, {
-		reply_markup: {
-			force_reply: true,
-			input_field_placeholder: withdrawAmountPrompt.placeholder,
-		},
-	})
+	await enterChoosingCustomAmountStep(
+		ctx,
+		{ pageContent: currentPage, messageId },
+		existingRecipientAddress,
+	)
 }

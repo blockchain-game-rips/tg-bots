@@ -16,6 +16,7 @@ export async function editSpecificMessage(
 ) {
 	await bot.api.editMessageText(chatId, messageId, pageContent.message, {
 		reply_markup: pageContent.keyboard,
+		parse_mode: 'HTML',
 	})
 }
 

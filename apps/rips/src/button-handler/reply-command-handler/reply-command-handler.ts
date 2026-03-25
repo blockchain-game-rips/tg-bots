@@ -3,6 +3,7 @@ import { promptIds } from '../../prompts/prompt-ids'
 import { Context } from '../../types'
 import { handleCustomTicketAmountPromptId } from './handlers/custom-ticket-amount'
 import { handleCustomWithdrawAmountPromptId } from './handlers/custom-withdraw-amount'
+import { handleWithdrawRecipientPromptId } from './handlers/withdraw-recipient'
 
 export async function handleReplyCommand(
 	ctx: Filter<Context, 'callback_query:data'>,
@@ -14,5 +15,8 @@ export async function handleReplyCommand(
 
 		case promptIds.customWithdrawAmount:
 			return await handleCustomWithdrawAmountPromptId(ctx)
+
+		case promptIds.withdrawRecipient:
+			return await handleWithdrawRecipientPromptId(ctx)
 	}
 }

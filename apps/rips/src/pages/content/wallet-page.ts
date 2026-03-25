@@ -22,7 +22,7 @@ export class WalletPage {
 			new InlineKeyboard(
 				composeMarkup([
 					{ label: 'Update', pageId: pageIds.wallet },
-					{ label: 'Withdraw', pageId: pageIds.chooseWithdrawAmount },
+					{ label: 'Withdraw', pageId: pageIds.withdraw },
 				]),
 			),
 			{ home: pageIds.home, parent: pageIds.home },

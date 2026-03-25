@@ -1,22 +1,46 @@
 import { getBalance, withdraw } from '../api/endpoints/wallets'
-import { ConfirmWithdrawPage } from '../pages/content/confirm-withdraw-page'
 import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
+import { WithdrawPage } from '../pages/content/withdraw-page'
+import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
 import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
 import { ActiveFlow, Context, PageContent, WithdrawStep } from '../types'
-import { ErrorToRender } from '../utils/error-to-render'
 
-const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
+type MessageToEdit = { pageContent: PageContent; messageId: number }
 
-export async function enterChoosingAddressStep(
+export async function enterWithdrawPage(
 	ctx: Context,
-	amount: string,
-	messageToEdit: { pageContent: PageContent; messageId: number },
-): Promise<null> {
+	messageToEdit: MessageToEdit,
+	amount?: string,
+	recipientAddress?: string,
+): Promise<PageContent> {
+	if (ctx.from === undefined) {
+		throw new Error('ctx.from is undefined')
+	}
+
+	const telegramId = BigInt(ctx.from.id)
+	const balance = await getBalance(telegramId)
+
 	ctx.session = {
 		activeFlow: ActiveFlow.Withdraw,
-		step: WithdrawStep.WaitingForAddress,
-		amount,
+		step: WithdrawStep.OnWithdrawPage,
 		messageToEdit,
+		amount,
+		recipientAddress,
+	}
+
+	return WithdrawPage.render(balance, amount, recipientAddress)
+}
+
+export async function enterChoosingRecipientStep(
+	ctx: Context,
+	messageToEdit: MessageToEdit,
+	amount?: string,
+): Promise<void> {
+	ctx.session = {
+		activeFlow: ActiveFlow.Withdraw,
+		step: WithdrawStep.WaitingForRecipient,
+		messageToEdit,
+		amount,
 	}
 
 	const promptContent = WithdrawAddressPrompt.render()
@@ -27,34 +51,28 @@ export async function enterChoosingAddressStep(
 			input_field_placeholder: promptContent.placeholder,
 		},
 	})
-
-	return null
 }
 
-export async function enterConfirmWithdrawStep(
+export async function enterChoosingCustomAmountStep(
 	ctx: Context,
-	amount: string,
-	recipientAddress: string,
-): Promise<PageContent> {
-	if (!EVM_ADDRESS_REGEX.test(recipientAddress)) {
-		throw new ErrorToRender('Invalid address format')
-	}
-
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
-	const telegramId = BigInt(ctx.from.id)
-	const balance = await getBalance(telegramId)
-
+	messageToEdit: MessageToEdit,
+	recipientAddress?: string,
+): Promise<void> {
 	ctx.session = {
 		activeFlow: ActiveFlow.Withdraw,
-		step: WithdrawStep.Confirming,
-		amount,
+		step: WithdrawStep.WaitingForCustomAmount,
+		messageToEdit,
 		recipientAddress,
 	}
 
-	return ConfirmWithdrawPage.render(BigInt(amount), recipientAddress, balance)
+	const promptContent = CustomWithdrawAmountPrompt.render()
+
+	await ctx.reply(promptContent.message, {
+		reply_markup: {
+			force_reply: true,
+			input_field_placeholder: promptContent.placeholder,
+		},
+	})
 }
 
 export async function enterWithdrawalStep(

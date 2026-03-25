@@ -13,7 +13,7 @@ export const pageIds = {
 	completedRounds: 'completedRounds',
 	insufficientFunds: 'insufFunds',
 	wallet: 'wallet',
+	withdraw: 'withdraw',
 	chooseWithdrawAmount: 'chooseWA',
-	confirmWithdraw: 'confirmWithdraw',
 	successWithdraw: 'successWithdraw',
 } as const

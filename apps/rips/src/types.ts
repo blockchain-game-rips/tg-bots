@@ -38,27 +38,31 @@ export type TicketPurshaseSession = {
 )
 
 export enum WithdrawStep {
-	WaitingForAmount,
-	WaitingForAddress,
-	Confirming,
+	OnWithdrawPage,
+	WaitingForRecipient,
+	WaitingForCustomAmount,
 }
+
+type MessageToEdit = { pageContent: PageContent; messageId: number }
 
 export type WithdrawSession = {
 	activeFlow: ActiveFlow.Withdraw
 } & (
 	| {
-			step: WithdrawStep.WaitingForAmount
-			messageToEdit: { pageContent: PageContent; messageId: number }
+			step: WithdrawStep.OnWithdrawPage
+			messageToEdit: MessageToEdit
+			amount?: string
+			recipientAddress?: string
 	  }
 	| {
-			step: WithdrawStep.WaitingForAddress
-			amount: string
-			messageToEdit: { pageContent: PageContent; messageId: number }
+			step: WithdrawStep.WaitingForRecipient
+			messageToEdit: MessageToEdit
+			amount?: string
 	  }
 	| {
-			step: WithdrawStep.Confirming
-			amount: string
-			recipientAddress: string
+			step: WithdrawStep.WaitingForCustomAmount
+			messageToEdit: MessageToEdit
+			recipientAddress?: string
 	  }
 )
 

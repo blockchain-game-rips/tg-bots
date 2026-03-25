@@ -14,7 +14,7 @@ export class ChooseWithdrawAmountPage {
 	static render(balance: Balance): PageContent {
 		const availableBalance = calcAvailableBalance(BigInt(balance.amount))
 
-		const amount = formatUnits(
+		const formattedBalance = formatUnits(
 			BigInt(balance.amount),
 			balance.currency.decimals,
 		)
@@ -25,7 +25,7 @@ export class ChooseWithdrawAmountPage {
 		)
 
 		return {
-			message: `Balance: ${amount} ${balance.currency.symbol}\n\nChoose amount to withdraw:`,
+			message: `Balance: ${formattedBalance} ${balance.currency.symbol}\n\nChoose amount to withdraw:`,
 			keyboard: addNav(
 				new InlineKeyboard()
 					.text(
@@ -43,7 +43,7 @@ export class ChooseWithdrawAmountPage {
 							promptId: promptIds.customWithdrawAmount,
 						}),
 					),
-				{ home: pageIds.home, parent: pageIds.wallet },
+				{ home: pageIds.home, parent: pageIds.withdraw },
 			),
 		}
 	}

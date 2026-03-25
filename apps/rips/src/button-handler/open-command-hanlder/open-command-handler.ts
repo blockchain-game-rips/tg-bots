@@ -7,7 +7,6 @@ import { handleChooseTicketAmountPageId } from './handlers/choose-ticket-amount'
 import { handleChooseWithdrawAmountPageId } from './handlers/choose-withdraw-amount'
 import { handleCompletedRoundsPageId } from './handlers/completed-rounds'
 import { handleConfirmPurchasePageId } from './handlers/confirm-purchase'
-import { handleConfirmWithdrawPageId } from './handlers/confirm-withdraw'
 import { handleHomePageId } from './handlers/home'
 import { handleOngoingRoundsPageId } from './handlers/ongoing-rounds'
 import { handleOpenRipsPageId } from './handlers/open-rips'
@@ -17,6 +16,7 @@ import { handleStatusPageId } from './handlers/status'
 import { handleSuccessPurchasePageId } from './handlers/success-purchase'
 import { handleSuccessWithdrawPageId } from './handlers/success-withdraw'
 import { handleWalletPageId } from './handlers/wallet'
+import { handleWithdrawPageId } from './handlers/withdraw'
 
 export async function handleOpenCommand(
 	ctx: Filter<Context, 'callback_query:data'>,
@@ -33,11 +33,11 @@ export async function handleOpenCommand(
 		case pageIds.wallet:
 			return await handleWalletPageId(ctx)
 
+		case pageIds.withdraw:
+			return await handleWithdrawPageId(ctx)
+
 		case pageIds.chooseWithdrawAmount:
 			return await handleChooseWithdrawAmountPageId(ctx, payloads)
-
-		case pageIds.confirmWithdraw:
-			return await handleConfirmWithdrawPageId(ctx)
 
 		case pageIds.successWithdraw:
 			return await handleSuccessWithdrawPageId(ctx)

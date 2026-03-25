@@ -1,19 +1,18 @@
 import { InlineKeyboard } from 'grammy'
-import { Round, RoundStatus } from '../../api/schemas'
+import { Round } from '../../api/schemas'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
 import { addNav, readableStake } from '../utils'
-
-const FINISHED_STATUSES: RoundStatus[] = ['CLAIMED', 'REFUNDED']
+import { NON_FINISHED_STATUSES } from './round-statuses'
 
 export class StatusPage {
 	static render(rounds: Round[], userEvmAddress: string): PageContent {
-		const activeRounds = rounds.filter(
-			(r) => !FINISHED_STATUSES.includes(r.status),
+		const ongoingRounds = rounds.filter((r) =>
+			NON_FINISHED_STATUSES.includes(r.status),
 		)
 
-		const userRounds = activeRounds.filter((r) =>
+		const userRounds = ongoingRounds.filter((r) =>
 			r.actions.purchases.some(
 				(p) =>
 					p.userAddress.toLowerCase() ===
@@ -26,7 +25,7 @@ export class StatusPage {
 		const lines: string[] = []
 
 		if (stakeIds.length === 0) {
-			lines.push("You don't have tickets in active rounds")
+			lines.push("You don't have tickets in ongoing rounds")
 		} else {
 			lines.push('You have tickets:')
 
@@ -57,18 +56,19 @@ export class StatusPage {
 		const keyboard = addNav(
 			new InlineKeyboard()
 				.text(
-					'Active rounds',
+					'Ongoing rounds',
 					buildCommand({
 						type: 'open',
-						pageId: pageIds.activeRounds,
+						pageId: pageIds.ongoingRounds,
 						payloads: [],
 					}),
 				)
+				.row()
 				.text(
-					'Finished rounds',
+					'Completed rounds',
 					buildCommand({
 						type: 'open',
-						pageId: pageIds.finishedRounds,
+						pageId: pageIds.completedRounds,
 						payloads: [],
 					}),
 				),

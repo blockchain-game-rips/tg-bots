@@ -1,10 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { Round, RoundStatus } from '../../api/schemas'
+import { Round } from '../../api/schemas'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav } from '../utils'
-
-const FINISHED_STATUSES: RoundStatus[] = ['CLAIMED', 'REFUNDED']
+import { addNav, readableStake } from '../utils'
+import { FINISHED_STATUSES, displayStatus } from './round-statuses'
 
 export class FinishedRoundsPage {
 	static render(rounds: Round[]): PageContent {
@@ -12,12 +11,28 @@ export class FinishedRoundsPage {
 			FINISHED_STATUSES.includes(r.status),
 		)
 
-		const lines = finishedRounds.map(
-			(r) => `Round #${r.id} (Stake #${r.stake.id}) — ${r.status}`,
-		)
+		const stakeIds = [...new Set(finishedRounds.map((r) => r.stake.id))]
+
+		const lines: string[] = []
+
+		for (const stakeId of stakeIds) {
+			const stakeRounds = finishedRounds.filter(
+				(r) => r.stake.id === stakeId,
+			)
+
+			if (lines.length > 0) lines.push('')
+
+			lines.push(`Stake ${readableStake(stakeRounds[0].stake)}`)
+
+			for (const round of stakeRounds) {
+				lines.push(
+					`  Round #${round.id} — ${displayStatus(round.status)}`,
+				)
+			}
+		}
 
 		const message =
-			lines.length > 0 ? lines.join('\n') : 'No finished rounds'
+			lines.length > 0 ? lines.join('\n') : 'No completed rounds'
 
 		return {
 			message,

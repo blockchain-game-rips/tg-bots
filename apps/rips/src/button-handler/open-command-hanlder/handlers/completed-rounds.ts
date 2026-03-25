@@ -4,11 +4,11 @@ import { FinishedRoundsPage } from '../../../pages/content/finished-rounds-page'
 import { Context } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 
-export async function handleFinishedRoundsPageId(
+export async function handleCompletedRoundsPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
 	const rounds = await getRounds()
-	const finishedRoundsPage = FinishedRoundsPage.render(rounds)
+	const completedRoundsPage = FinishedRoundsPage.render(rounds)
 
-	await editMessage(ctx, finishedRoundsPage)
+	await editMessage(ctx, completedRoundsPage)
 }

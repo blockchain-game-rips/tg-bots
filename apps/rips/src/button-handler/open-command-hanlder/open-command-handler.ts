@@ -2,14 +2,14 @@ import { Filter } from 'grammy'
 import { pageIds } from '../../pages/page-ids'
 import { Context } from '../../types'
 import { handleAboutPageId } from './handlers/about'
-import { handleActiveRoundsPageId } from './handlers/active-rounds'
 import { handleChooseStakePageId } from './handlers/choose-stake'
 import { handleChooseTicketAmountPageId } from './handlers/choose-ticket-amount'
 import { handleChooseWithdrawAmountPageId } from './handlers/choose-withdraw-amount'
+import { handleCompletedRoundsPageId } from './handlers/completed-rounds'
 import { handleConfirmPurchasePageId } from './handlers/confirm-purchase'
 import { handleConfirmWithdrawPageId } from './handlers/confirm-withdraw'
-import { handleFinishedRoundsPageId } from './handlers/finished-rounds'
 import { handleHomePageId } from './handlers/home'
+import { handleOngoingRoundsPageId } from './handlers/ongoing-rounds'
 import { handleOpenRipsPageId } from './handlers/open-rips'
 import { handlePlayPageId } from './handlers/play'
 import { handleRevealPrizesPageId } from './handlers/reveal-prizes'
@@ -63,11 +63,11 @@ export async function handleOpenCommand(
 		case pageIds.status:
 			return await handleStatusPageId(ctx)
 
-		case pageIds.activeRounds:
-			return await handleActiveRoundsPageId(ctx)
+		case pageIds.ongoingRounds:
+			return await handleOngoingRoundsPageId(ctx)
 
-		case pageIds.finishedRounds:
-			return await handleFinishedRoundsPageId(ctx)
+		case pageIds.completedRounds:
+			return await handleCompletedRoundsPageId(ctx)
 
 		case pageIds.successPurchase:
 			return await handleSuccessPurchasePageId(ctx)

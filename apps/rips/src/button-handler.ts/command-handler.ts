@@ -1,103 +1,54 @@
-import { Filter, GrammyError } from 'grammy'
-import { getRounds, getStakes } from './api/endpoints/rips'
+import { Filter } from 'grammy'
+import { getRounds, getStakes } from '../api/endpoints/rips'
 import {
 	getUnrevealedPrizes,
 	getUser,
 	revealTicketPrizes,
-} from './api/endpoints/users'
-import { getBalance } from './api/endpoints/wallets'
-import { parseCommand } from './commands'
-import { enterHomeFlow } from './flows/home'
+} from '../api/endpoints/users'
+import { getBalance } from '../api/endpoints/wallets'
+import { enterHomeFlow } from '../flows/home'
 import {
 	enterBuyingStep,
 	enterConfirmingStep,
 	enterTicketAmountStep,
-} from './flows/ticket-purchase'
+} from '../flows/ticket-purchase'
 import {
 	enterChoosingAddressStep,
 	enterConfirmWithdrawStep,
 	enterWithdrawalStep,
-} from './flows/withdraw'
-import { AboutPage } from './pages/content/about-page'
-import { ActiveRoundsPage } from './pages/content/active-rounds-page'
-import { ChooseStakePage } from './pages/content/choose-stake-page'
+} from '../flows/withdraw'
+import { AboutPage } from '../pages/content/about-page'
+import { ActiveRoundsPage } from '../pages/content/active-rounds-page'
+import { ChooseStakePage } from '../pages/content/choose-stake-page'
 import {
 	ChooseWithdrawAmountPage,
 	MAX_AMOUNT_PAYLOAD,
-} from './pages/content/choose-withdraw-amount-page'
-import { FinishedRoundsPage } from './pages/content/finished-rounds-page'
-import { PlayPage } from './pages/content/play-page'
+} from '../pages/content/choose-withdraw-amount-page'
+import { FinishedRoundsPage } from '../pages/content/finished-rounds-page'
+import { PlayPage } from '../pages/content/play-page'
 import {
 	REVEAL_ALL_PAYLOAD,
 	REVEAL_ONE_PAYLOAD,
 	RevealPrizesPage,
-} from './pages/content/reveal-prizes-page'
-import { EIP155_NAMESPACE, StatusPage } from './pages/content/status-page'
-import { WalletPage } from './pages/content/wallet-page'
-import { pageIds } from './pages/page-ids'
-import { CustomTicketAmountPrompt } from './prompts/custom-ticket-amount-prompt'
-import { CustomWithdrawAmountPrompt } from './prompts/custom-withdraw-amount-prompt'
-import { promptIds } from './prompts/prompt-ids'
-import {
-	ActiveFlow,
-	Context,
-	PageContent,
-	TicketPurchaseStep,
-	WithdrawStep,
-} from './types'
-import { composePageContentWithError } from './utils/error-to-render'
-import { editMessage, getCurrentPage } from './utils/grammy'
+} from '../pages/content/reveal-prizes-page'
+import { EIP155_NAMESPACE, StatusPage } from '../pages/content/status-page'
+import { WalletPage } from '../pages/content/wallet-page'
+import { pageIds } from '../pages/page-ids'
+import { CustomTicketAmountPrompt } from '../prompts/custom-ticket-amount-prompt'
+import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
+import { promptIds } from '../prompts/prompt-ids'
+import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from '../types'
+import { editMessage } from '../utils/grammy'
+import { Command } from './types'
+import { getCurrentPage } from './utils'
 
-const processingUsers = new Set<number>()
-
-export async function handleButton(
+export async function handleButtonCommand(
+	command: Command,
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
-	const userId = ctx.from.id
-
-	if (processingUsers.has(userId)) return
-
-	processingUsers.add(userId)
-
-	try {
-		return await handleButtonLogic(ctx)
-	} catch (error) {
-		if (error instanceof GrammyError) throw error
-
-		const currentPageContent = getCurrentPage(ctx)
-		const pageContent = composePageContentWithError(
-			currentPageContent,
-			error,
-		)
-
-		await ctx.editMessageText(pageContent.message, {
-			reply_markup: pageContent.keyboard,
-		})
-	} finally {
-		processingUsers.delete(userId)
-	}
-}
-
-export async function handleButtonLogic(
-	ctx: Filter<Context, 'callback_query:data'>,
-) {
-	ctx.answerCallbackQuery().catch((error) => console.log(error))
-
-	console.log('user press button, data:', ctx.callbackQuery.data)
-
-	const command = parseCommand(ctx.callbackQuery.data)
-
 	switch (command.type) {
 		case 'open': {
-			const pageContent = await openPage(
-				ctx,
-				command.pageId,
-				command.payloads,
-			)
-
-			if (pageContent) {
-				await editMessage(ctx, pageContent)
-			}
+			await handleOpenCommand(ctx, command.pageId, command.payloads)
 
 			break
 		}
@@ -164,26 +115,43 @@ export async function handleButtonLogic(
 	}
 }
 
-async function openPage(
+async function handleOpenCommand(
 	ctx: Filter<Context, 'callback_query:data'>,
 	pageId: string,
 	payloads?: string[],
-): Promise<PageContent | null> {
+): Promise<void> {
 	switch (pageId) {
-		case pageIds.home:
-			return enterHomeFlow(ctx)
+		case pageIds.home: {
+			const homePage = await enterHomeFlow(ctx)
 
-		case pageIds.about:
-			return AboutPage.render()
+			await editMessage(ctx, homePage)
+
+			break
+		}
+
+		case pageIds.about: {
+			const aboutPage = AboutPage.render()
+
+			await editMessage(ctx, aboutPage)
+
+			break
+		}
 
 		case pageIds.wallet: {
+			const from = ctx.from
+
+			if (!from) throw Error('ctx.from is undefinded')
+
 			const telegramId = BigInt(ctx.from.id)
 
 			await ctx.editMessageText('loading...')
 
 			const balance = await getBalance(telegramId)
+			const walletPage = WalletPage.render(balance)
 
-			return WalletPage.render(balance)
+			await editMessage(ctx, walletPage)
+
+			break
 		}
 
 		case pageIds.chooseWithdrawAmount: {
@@ -200,15 +168,21 @@ async function openPage(
 				const currentPage = getCurrentPage(ctx)
 				const messageId = ctx.update.callback_query.message!.message_id
 
-				return enterChoosingAddressStep(ctx, balance.amount, {
+				await enterChoosingAddressStep(ctx, balance.amount, {
 					pageContent: currentPage,
 					messageId,
 				})
+
+				break
 			}
 
 			const balance = await getBalance(telegramId)
+			const chooseWithdrawAmountPage =
+				ChooseWithdrawAmountPage.render(balance)
 
-			return ChooseWithdrawAmountPage.render(balance)
+			await editMessage(ctx, chooseWithdrawAmountPage)
+
+			break
 		}
 
 		case pageIds.confirmWithdraw: {
@@ -221,11 +195,15 @@ async function openPage(
 				throw new Error('wrong session state for confirmWithdraw')
 			}
 
-			return enterConfirmWithdrawStep(
+			const confirmWithdrawPage = await enterConfirmWithdrawStep(
 				ctx,
 				sessionData.amount,
 				sessionData.recipientAddress,
 			)
+
+			await editMessage(ctx, confirmWithdrawPage)
+
+			break
 		}
 
 		case pageIds.successWithdraw: {
@@ -238,11 +216,15 @@ async function openPage(
 				throw new Error('wrong session state for successWithdraw')
 			}
 
-			return enterWithdrawalStep(
+			const successWithdrawPage = await enterWithdrawalStep(
 				ctx,
 				sessionData.amount,
 				sessionData.recipientAddress,
 			)
+
+			await editMessage(ctx, successWithdrawPage)
+
+			break
 		}
 
 		case pageIds.play: {
@@ -252,13 +234,20 @@ async function openPage(
 
 			const telegramId = BigInt(ctx.from.id)
 			const prizes = await getUnrevealedPrizes(telegramId)
+			const playPage = PlayPage.render(prizes.length > 0)
 
-			return PlayPage.render(prizes.length > 0)
+			await editMessage(ctx, playPage)
+
+			break
 		}
 
 		case pageIds.chooseStake: {
 			const stakes = await getStakes()
-			return ChooseStakePage.render(stakes)
+			const chooseStakePage = ChooseStakePage.render(stakes)
+
+			await editMessage(ctx, chooseStakePage)
+
+			break
 		}
 
 		case pageIds.chooseTicketAmount: {
@@ -268,7 +257,14 @@ async function openPage(
 				throw Error('stakeId is required for chooseTicketAmount')
 			}
 
-			return await enterTicketAmountStep(ctx, stakeId)
+			const chooseTicketAmountPage = await enterTicketAmountStep(
+				ctx,
+				stakeId,
+			)
+
+			await editMessage(ctx, chooseTicketAmountPage)
+
+			break
 		}
 
 		case pageIds.confirmPurchase: {
@@ -283,11 +279,15 @@ async function openPage(
 
 			const ticketAmount = Number(payloads![0])
 
-			return await enterConfirmingStep(
+			const confirmPurchasePage = await enterConfirmingStep(
 				ctx,
 				sessionData.stakeId,
 				ticketAmount,
 			)
+
+			await editMessage(ctx, confirmPurchasePage)
+
+			break
 		}
 
 		case pageIds.openRips: {
@@ -297,8 +297,11 @@ async function openPage(
 
 			const telegramId = BigInt(ctx.from.id)
 			const prizes = await getUnrevealedPrizes(telegramId)
+			const revealPrizesPage = RevealPrizesPage.render(prizes)
 
-			return RevealPrizesPage.render(prizes)
+			await editMessage(ctx, revealPrizesPage)
+
+			break
 		}
 
 		case pageIds.revealPrizes: {
@@ -316,13 +319,22 @@ async function openPage(
 				const revealAll = action === REVEAL_ALL_PAYLOAD
 				const revealed = await revealTicketPrizes(telegramId, revealAll)
 				const unrevealed = await getUnrevealedPrizes(telegramId)
+				const revealedPrizesPage = RevealPrizesPage.render(
+					unrevealed,
+					revealed,
+				)
 
-				return RevealPrizesPage.render(unrevealed, revealed)
+				await editMessage(ctx, revealedPrizesPage)
+
+				break
 			}
 
 			const prizes = await getUnrevealedPrizes(telegramId)
+			const revealPrizesPage = RevealPrizesPage.render(prizes)
 
-			return RevealPrizesPage.render(prizes)
+			await editMessage(ctx, revealPrizesPage)
+
+			break
 		}
 
 		case pageIds.status: {
@@ -343,17 +355,29 @@ async function openPage(
 				throw new Error('User has no EVM wallet')
 			}
 
-			return StatusPage.render(rounds, userEvmAddress)
+			const statusPage = StatusPage.render(rounds, userEvmAddress)
+
+			await editMessage(ctx, statusPage)
+
+			break
 		}
 
 		case pageIds.activeRounds: {
 			const rounds = await getRounds()
-			return ActiveRoundsPage.render(rounds)
+			const activeRoundsPage = ActiveRoundsPage.render(rounds)
+
+			await editMessage(ctx, activeRoundsPage)
+
+			break
 		}
 
 		case pageIds.finishedRounds: {
 			const rounds = await getRounds()
-			return FinishedRoundsPage.render(rounds)
+			const finishedRoundsPage = FinishedRoundsPage.render(rounds)
+
+			await editMessage(ctx, finishedRoundsPage)
+
+			break
 		}
 
 		case pageIds.successPurchase: {
@@ -366,11 +390,15 @@ async function openPage(
 				throw Error('wrong session state for successPurchase')
 			}
 
-			return await enterBuyingStep(
+			const successPurchasePage = await enterBuyingStep(
 				ctx,
 				sessionData.stakeId,
 				sessionData.ticketAmount,
 			)
+
+			await editMessage(ctx, successPurchasePage)
+
+			break
 		}
 
 		default:

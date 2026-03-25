@@ -1,8 +1,8 @@
-const COMMAND_SEPARATOR = ':'
+import { Filter, InlineKeyboard } from 'grammy'
+import { Context, PageContent } from '../types'
+import { Command } from './types'
 
-export type OpenCommand = { type: 'open'; pageId: string; payloads?: string[] }
-export type ReplyCommand = { type: 'reply'; promptId: string }
-export type Command = OpenCommand | ReplyCommand
+const COMMAND_SEPARATOR = ':'
 
 export function buildCommand(command: Command): string {
 	let commandStr = ''
@@ -44,4 +44,19 @@ export function parseCommand(data: string): Command {
 		default:
 			throw new Error(`Unknown command prefix: ${prefix}`)
 	}
+}
+
+export function getCurrentPage(
+	ctx: Filter<Context, 'callback_query:data'>,
+): PageContent {
+	const rawMarkup = ctx.callbackQuery.message?.reply_markup
+
+	const keyboard =
+		rawMarkup && 'inline_keyboard' in rawMarkup
+			? InlineKeyboard.from(rawMarkup.inline_keyboard)
+			: new InlineKeyboard()
+
+	const message = ctx.callbackQuery.message?.text || ''
+
+	return { message, keyboard }
 }

@@ -4,11 +4,13 @@ import { getUser } from '../../../api/endpoints/users'
 import { EIP155_NAMESPACE } from '../../../constants'
 import { StatusPage } from '../../../pages/content/status-page'
 import { Context } from '../../../types'
-import { editMessage } from '../../../utils/grammy'
+import { clearFlow, editMessage } from '../../../utils/grammy'
 
 export async function handleStatusPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
+	clearFlow(ctx)
+
 	if (ctx.from === undefined) {
 		throw new Error('ctx.from is undefined')
 	}

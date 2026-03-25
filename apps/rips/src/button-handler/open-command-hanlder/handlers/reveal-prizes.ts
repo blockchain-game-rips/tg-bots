@@ -9,12 +9,14 @@ import {
 	RevealPrizesPage,
 } from '../../../pages/content/reveal-prizes-page'
 import { Context } from '../../../types'
-import { editMessage } from '../../../utils/grammy'
+import { clearFlow, editMessage } from '../../../utils/grammy'
 
 export async function handleRevealPrizesPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 	payloads: string[],
 ) {
+	clearFlow(ctx)
+
 	if (ctx.from === undefined) {
 		throw new Error('ctx.from is undefined')
 	}

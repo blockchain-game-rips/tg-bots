@@ -18,3 +18,7 @@ export async function editSpecificMessage(
 		reply_markup: pageContent.keyboard,
 	})
 }
+
+export function clearFlow(ctx: Context) {
+	ctx.session.activeFlow = null
+}

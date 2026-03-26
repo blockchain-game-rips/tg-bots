@@ -14,18 +14,15 @@ bot.api.config.use(autoRetry())
 const IGNORE_OLD_THRESHOLD_SECONDS = 1
 const botStartTime = Math.floor(Date.now() / 1000)
 
-//TODO: not working, fix
-// bot.use((ctx, next) => {
-// 	const date = ctx.message?.date ?? ctx.callbackQuery?.message?.date
-//
-// 	if (
-// 		date !== undefined &&
-// 		botStartTime - date > IGNORE_OLD_THRESHOLD_SECONDS
-// 	)
-// 		return next()
-//
-// 	return
-// })
+bot.use((ctx, next) => {
+	const date = ctx.message?.date ?? ctx.callbackQuery?.message?.date
+
+	if (date === undefined) return next()
+
+	if (botStartTime - date > IGNORE_OLD_THRESHOLD_SECONDS) return
+
+	return next()
+})
 
 bot.api.config.use((prev, method, payload, signal) => {
 	console.log(`API call: ${method}`, payload)

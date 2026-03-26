@@ -27,11 +27,14 @@ export async function handleRevealPrizesPageId(
 
 	if (action === REVEAL_ONE_PAYLOAD || action === REVEAL_ALL_PAYLOAD) {
 		const revealAll = action === REVEAL_ALL_PAYLOAD
-		const [revealed, unrevealed, { price }] = await Promise.all([
-			revealTicketPrizes(telegramId, revealAll),
+
+		const revealed = await revealTicketPrizes(telegramId, revealAll)
+
+		const [unrevealed, { price }] = await Promise.all([
 			getUnrevealedPrizes(telegramId),
 			getMainCurrencyPrice(),
 		])
+
 		const revealedPrizesPage = RevealPrizesPage.render(
 			unrevealed,
 			price,

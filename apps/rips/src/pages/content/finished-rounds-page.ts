@@ -1,34 +1,18 @@
 import { InlineKeyboard } from 'grammy'
-import { Round } from '../../api/schemas'
+import { RoundDto } from '../../../generated/api-client'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav, readableStake } from '../utils'
-import { FINISHED_STATUSES, displayStatus } from './round-statuses'
+import { addNav, configName } from '../utils'
+import { displayStatus } from './round-statuses'
 
 export class FinishedRoundsPage {
-	static render(rounds: Round[]): PageContent {
-		const finishedRounds = rounds.filter((r) =>
-			FINISHED_STATUSES.includes(r.status),
-		)
-
-		const stakeIds = [...new Set(finishedRounds.map((r) => r.stake.id))]
-
+	static render(completedRounds: RoundDto[]): PageContent {
 		const lines: string[] = []
 
-		for (const stakeId of stakeIds) {
-			const stakeRounds = finishedRounds.filter(
-				(r) => r.stake.id === stakeId,
+		for (const round of completedRounds) {
+			lines.push(
+				`${configName(round.config)} stake | Round #${round.id} — ${displayStatus(round.status)}`,
 			)
-
-			if (lines.length > 0) lines.push('')
-
-			lines.push(`${readableStake(stakeRounds[0].stake)} stake:`)
-
-			for (const round of stakeRounds) {
-				lines.push(
-					`  Round #${round.id} — ${displayStatus(round.status)}`,
-				)
-			}
 		}
 
 		const message =

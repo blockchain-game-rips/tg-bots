@@ -1,16 +1,29 @@
 import { InlineKeyboard } from 'grammy'
 import { InlineKeyboardButton } from 'grammy/types'
-import { Stake } from '../api/schemas'
+import { AvailableStakeDto, ConfigDto } from '../../generated/api-client'
 import { buildCommand } from '../button-handler/utils'
 import { KeyboardLayout, NavIds } from '../types'
 import { formatUnits } from '../utils/units'
 
-export function readableStake(stake: Stake): string {
-	const { decimals, symbol } = stake.ticketPrice.currency
+export function getConfig(availableStake: AvailableStakeDto) {
+	if (availableStake.fillingRound) return availableStake.fillingRound.config
+	if (availableStake.stake.currentConfig)
+		return availableStake.stake.currentConfig
 
-	const price = formatUnits(BigInt(stake.ticketPrice.amount), decimals)
+	throw new Error('Config should be in fillingRound or stake.currentConfig')
+}
 
-	return `${price} ${symbol}`
+export function configName(config: ConfigDto): string {
+	const { decimals, symbol } = config.ticketPrice.currency
+
+	const formattedAmount = formatUnits(
+		BigInt(config.ticketPrice.amount),
+		decimals,
+	)
+
+	const usd = Number(formattedAmount) * config.ticketPrice.currency.priceUsd
+
+	return `${formattedAmount} ${symbol} $${usd.toFixed(2)}`
 }
 
 export function composeMarkup(

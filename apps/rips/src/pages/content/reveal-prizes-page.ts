@@ -1,8 +1,12 @@
 import { InlineKeyboard } from 'grammy'
-import { TicketPrize } from '../../api/schemas'
+import {
+	CurrencyAmountDto,
+	PrizeDto,
+	RoundDto,
+} from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
@@ -10,39 +14,39 @@ export const REVEAL_ONE_PAYLOAD = 'one'
 export const REVEAL_ALL_PAYLOAD = 'all'
 
 export class RevealPrizesPage {
+	/**
+	 * Page allows to reveal prizes and in the same time shows previos reveal if it was
+	 * @param unrevealedPrizes available to reveal prizes
+	 * @param revealedPrizes previos reveal from the same page
+	 */
 	static render(
-		unrevealedPrizes: TicketPrize[],
-		ethPrice: number,
-		revealedPrizes: TicketPrize[] = [],
+		rounds: RoundDto[],
+		unrevealedPrizes: PrizeDto[],
+		revealedPrizes: PrizeDto[] = [],
 	): PageContent {
 		const lines: string[] = []
 
 		if (revealedPrizes.length > 0) {
-			if (revealedPrizes.length === 1) {
-				lines.push('Your prize:')
-			} else {
-				lines.push('Your prizes:')
-			}
-
-			let totalPrize = 0n
+			lines.push('Your prizes:')
 
 			for (const prize of revealedPrizes) {
-				const prizeAmount = BigInt(prize.prizeAmount)
-				totalPrize += prizeAmount
+				const round = rounds.find((round) => prize.roundId === round.id)
 
+				if (!round)
+					throw new Error(
+						`round with id ${prize.roundId} is not found in rounds`,
+					)
+
+				const prizeCurrencyAmount: CurrencyAmountDto = {
+					amount: prize.prizeAmount,
+					currency: round.currency,
+				}
+
+				const prizeAmount = BigInt(prize.prizeAmount)
 				const formattedPrizeAmount = formatUnits(prizeAmount, 18)
 
 				lines.push(
-					`  Ticket #${prize.ticketNumber} — ${formattedPrizeAmount} ETH ${formatUsd(formattedPrizeAmount, ethPrice)}`,
-				)
-			}
-
-			if (revealedPrizes.length > 1) {
-				const formattedTotalPrize = formatUnits(totalPrize, 18)
-
-				lines.push('')
-				lines.push(
-					`Total prize: ${formattedTotalPrize} ETH ${formatUsd(formattedTotalPrize, ethPrice)}`,
+					`Ticket #${prize.ticketNumber} — ${formattedPrizeAmount} ETH ${toUsd(prizeCurrencyAmount)}`,
 				)
 			}
 

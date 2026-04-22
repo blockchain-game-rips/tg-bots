@@ -1,14 +1,12 @@
 import { InlineKeyboard } from 'grammy'
-import { Round } from '../../api/schemas'
+import { AvailableStakeDto, RoundDto } from '../../../generated/api-client'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav, readableStake } from '../utils'
-import { NON_FINISHED_STATUSES, displayStatus } from './round-statuses'
+import { toShortDurationFormat } from '../ui-utils'
+import { addNav, configName, getConfig } from '../utils'
+import { displayStatus } from './round-statuses'
 
-const MS_PER_MINUTE = 1000 * 60
-const MS_PER_HOUR = MS_PER_MINUTE * 60
-
-function roundLine(round: Round): string {
+function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)
 
 	if (round.status !== 'FILLING') {
@@ -16,48 +14,48 @@ function roundLine(round: Round): string {
 	}
 
 	const soldTickets = round.actions.purchases.reduce(
-		(sum, p) => sum + BigInt(p.ticketAmount),
+		(sum, p) => sum + BigInt(p.ticketCount),
 		0n,
 	)
-	const remainingTickets = round.stake.ticketCup - Number(soldTickets)
+	const remainingTickets = round.config.ticketCap - Number(soldTickets)
 
 	const expiresAt =
-		new Date(round.startTime).getTime() + round.stake.durationSeconds * 1000
+		new Date(round.startTime).getTime() +
+		round.config.durationSeconds * 1000
+
 	const remainingMs = expiresAt - Date.now()
-	const remainingHours = Math.max(0, Math.floor(remainingMs / MS_PER_HOUR))
-	const remainingMinutes = Math.max(
-		0,
-		Math.floor((remainingMs % MS_PER_HOUR) / MS_PER_MINUTE),
-	)
+	const remaining = Math.floor(remainingMs / 1000)
 
 	return (
 		`  Round #${round.id} — ${status}` +
 		` | ${remainingTickets} tickets left` +
-		` | ${remainingHours}h ${remainingMinutes}m left`
+		` | ${toShortDurationFormat(remaining)} left`
 	)
 }
 
-export class ActiveRoundsPage {
-	static render(rounds: Round[]): PageContent {
-		const activeRounds = rounds.filter((r) =>
-			NON_FINISHED_STATUSES.includes(r.status),
-		)
-
-		const stakeIds = [...new Set(rounds.map((r) => r.stake.id))]
+export class OngoingRoundsPage {
+	static render(
+		ongoingRounds: RoundDto[],
+		availableStakes: AvailableStakeDto[],
+	): PageContent {
+		const stakeIds = [...new Set(availableStakes.map((s) => s.stake.id))]
 
 		const lines: string[] = []
 
 		for (const stakeId of stakeIds) {
-			const stakeRounds = activeRounds.filter(
-				(r) => r.stake.id === stakeId,
-			)
-			const stakeRef = rounds.find((r) => r.stake.id === stakeId)
-
-			if (stakeRef === undefined) continue
-
+			// empty string betwee stakes
 			if (lines.length > 0) lines.push('')
 
-			lines.push(`${readableStake(stakeRef.stake)} stake:`)
+			const stakeRounds = ongoingRounds.filter(
+				(r) => r.stakeId === stakeId,
+			)
+
+			// stakeIds is set from availableStakes, thus stake is not undefined
+			const stake = availableStakes.find((s) => s.stake.id === stakeId)!
+
+			const config = getConfig(stake)
+
+			lines.push(`${configName(config)} stake:`)
 
 			const hasActiveRound = stakeRounds.some(
 				(r) => r.status === 'FILLING',
@@ -72,8 +70,7 @@ export class ActiveRoundsPage {
 			}
 		}
 
-		const message =
-			lines.length > 0 ? lines.join('\n') : 'No ongoing rounds yet'
+		const message = lines.join('\n')
 
 		return {
 			message,

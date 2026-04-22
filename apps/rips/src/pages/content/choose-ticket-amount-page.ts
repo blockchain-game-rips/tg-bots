@@ -1,19 +1,15 @@
 import { InlineKeyboard } from 'grammy'
-import { Stake } from '../../api/schemas'
+import { AvailableStakeDto } from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
-import { addNav, readableStake } from '../utils'
+import { addNav, configName, getConfig } from '../utils'
 
 export class ChooseTicketAmountPage {
-	static render(stake: Stake, ethPrice: number): PageContent {
-		const { decimals } = stake.ticketPrice.currency
-		const ticketPrice = formatUnits(
-			BigInt(stake.ticketPrice.amount),
-			decimals,
-		)
+	static render(availableStake: AvailableStakeDto): PageContent {
+		const config = getConfig(availableStake)
+
 		const keyboard = new InlineKeyboard()
 			.text(
 				'1 Ticket',
@@ -42,7 +38,7 @@ export class ChooseTicketAmountPage {
 			)
 
 		return {
-			message: `Choose how many tickets to buy at ${readableStake(stake)} ${formatUsd(ticketPrice, ethPrice)} each.`,
+			message: `Choose how many tickets to buy at ${configName(config)} each.`,
 			keyboard: addNav(keyboard, {
 				home: pageIds.home,
 				parent: pageIds.chooseStake,

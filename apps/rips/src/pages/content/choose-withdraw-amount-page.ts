@@ -1,35 +1,27 @@
 import { InlineKeyboard } from 'grammy'
-import { Balance } from '../../api/schemas'
+import { CurrencyAmountDto } from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
-import { calcAvailableBalance } from '../../utils/tx'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
 export const MAX_AMOUNT_PAYLOAD = 'max'
 
 export class ChooseWithdrawAmountPage {
-	static render(balance: Balance, price: number): PageContent {
-		const availableBalance = calcAvailableBalance(BigInt(balance.amount))
-
+	static render(balance: CurrencyAmountDto): PageContent {
 		const formattedBalance = formatUnits(
 			BigInt(balance.amount),
 			balance.currency.decimals,
 		)
 
-		const formattedAvailableBalance = formatUnits(
-			availableBalance,
-			balance.currency.decimals,
-		)
-
 		return {
-			message: `Balance: ${formattedBalance} ${balance.currency.symbol} ${formatUsd(formattedBalance, price)}\n\nChoose amount to withdraw:`,
+			message: `Balance: ${formattedBalance} ${balance.currency.symbol} ${toUsd(balance)}\n\nChoose amount to withdraw:`,
 			keyboard: addNav(
 				new InlineKeyboard()
 					.text(
-						`Withdraw Max (${formattedAvailableBalance} ${balance.currency.symbol} ${formatUsd(formattedAvailableBalance, price)})`,
+						`Withdraw Max`,
 						buildCommand({
 							type: 'open',
 							pageId: pageIds.chooseWithdrawAmount,

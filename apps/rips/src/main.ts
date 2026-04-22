@@ -1,11 +1,14 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
+import { client } from '../generated/api-client/client.gen'
 import { handleButton } from './button-handler/button-hanlder'
 import { enterHomeFlow } from './flows/home'
 import { handleMessage } from './message-hanlder'
 import { Context, PageContent, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
+
+client.setConfig({ baseUrl: getEnvSafe('BACKEND_URL') })
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 

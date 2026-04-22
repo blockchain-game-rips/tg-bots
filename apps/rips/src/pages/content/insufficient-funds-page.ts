@@ -1,32 +1,35 @@
 import { InlineKeyboard } from 'grammy'
-import { Balance, Stake } from '../../api/schemas'
+import {
+	AvailableStakeDto,
+	CurrencyAmountDto,
+} from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
+import { configName, getConfig } from '../utils'
 
 export class InsufficientFundsPage {
 	static render(
-		stake: Stake,
-		ticketAmount: number,
-		balance: Balance,
-		ethPrice: number,
+		balance: CurrencyAmountDto,
+		availableStake: AvailableStakeDto,
+		ticketCount: number,
 	): PageContent {
-		const priceRaw = BigInt(stake.ticketPrice.amount)
-		const { decimals, symbol } = stake.ticketPrice.currency
-		const totalCostRaw = priceRaw * BigInt(ticketAmount)
+		const config = getConfig(availableStake)
 
-		const price = formatUnits(priceRaw, decimals)
-		const totalCost = formatUnits(totalCostRaw, decimals)
-		const balanceFormatted = formatUnits(
+		const formattedBalance = formatUnits(
 			BigInt(balance.amount),
 			balance.currency.decimals,
 		)
 
-		const message =
-			`You're trying to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} ${formatUsd(price, ethPrice)} each.\n` +
-			`Total: ${totalCost} ${symbol} ${formatUsd(totalCost, ethPrice)}\n\n` +
-			`⚠️ Not enough funds. Your balance: ${balanceFormatted} ${balance.currency.symbol} ${formatUsd(balanceFormatted, ethPrice)}`
+		const lines = [
+			`${configName(config)} stake`,
+			`Ticket count: ${ticketCount}`,
+			'',
+			`⚠️ Not enough funds. Your balance: ${formattedBalance} ${toUsd(balance)}`,
+		]
+
+		const message = lines.join('\n')
 
 		return {
 			message,
@@ -36,7 +39,7 @@ export class InsufficientFundsPage {
 					buildCommand({
 						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
-						payloads: [stake.id.toString()],
+						payloads: [availableStake.stake.id.toString()],
 					}),
 				)
 				.text(

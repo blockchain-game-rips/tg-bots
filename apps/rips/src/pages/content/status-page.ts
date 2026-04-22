@@ -1,17 +1,15 @@
 import { InlineKeyboard } from 'grammy'
-import { Round } from '../../api/schemas'
+import { RoundDto } from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
 import { pageIds } from '../page-ids'
-import { addNav, readableStake } from '../utils'
-import { NON_FINISHED_STATUSES } from './round-statuses'
+import { addNav } from '../utils'
 
 export class StatusPage {
-	static render(rounds: Round[], userEvmAddress: string): PageContent {
-		const ongoingRounds = rounds.filter((r) =>
-			NON_FINISHED_STATUSES.includes(r.status),
-		)
-
+	static render(
+		ongoingRounds: RoundDto[],
+		userEvmAddress: string,
+	): PageContent {
 		const userRounds = ongoingRounds.filter((r) =>
 			r.actions.purchases.some(
 				(p) =>
@@ -20,36 +18,27 @@ export class StatusPage {
 			),
 		)
 
-		const stakeIds = [...new Set(userRounds.map((r) => r.stake.id))]
-
 		const lines: string[] = []
 
-		if (stakeIds.length === 0) {
+		if (userRounds.length === 0) {
 			lines.push('You have no tickets in ongoing rounds')
 		} else {
 			lines.push('Your tickets in ongoing rounds:')
+			lines.push('')
 
-			for (const stakeId of stakeIds) {
-				const stakeRounds = userRounds.filter(
-					(r) => r.stake.id === stakeId,
-				)
-
-				lines.push('')
-				lines.push(`${readableStake(stakeRounds[0].stake)} stake:`)
-
-				for (const round of stakeRounds) {
-					const userTickets = round.actions.purchases
-						.filter(
-							(p) =>
-								p.userAddress.toLowerCase() ===
-								userEvmAddress.toLowerCase(),
-						)
-						.reduce((sum, p) => sum + Number(p.ticketAmount), 0)
-
-					lines.push(
-						`  Round #${round.id} — ${userTickets} ticket(s)`,
+			for (const round of userRounds) {
+				const userTickets = round.actions.purchases
+					.filter(
+						(p) =>
+							p.userAddress.toLowerCase() ===
+							userEvmAddress.toLowerCase(),
 					)
-				}
+					.reduce(
+						(sum, purchase) => sum + Number(purchase.ticketCount),
+						0,
+					)
+
+				lines.push(`Round #${round.id} — ${userTickets} ticket(s)`)
 			}
 		}
 

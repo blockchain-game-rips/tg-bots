@@ -5,9 +5,21 @@ import { composeMarkup } from '../utils'
 
 export class HomePage {
 	static render(): PageContent {
+		const lines: string[] = [
+			'Welcome to Rips!',
+			'',
+			'Get started in two steps:',
+			'· Deposit ETH on Base via the Wallet menu',
+			'· Play the game and earn rewards',
+			'',
+			//TODO: better message
+			'When a round completes, go to play/open rips',
+		]
+
+		const message = lines.join('\n')
+
 		return {
-			message:
-				'Welcome to Rips!\n\nGet started in two steps:\n· Deposit ETH on Base via the Wallet menu\n· Play the game and earn rewards\n\nWhen a round completes, an Open Rips! button will appear in the Play menu — tap it to reveal your prizes.',
+			message,
 			keyboard: new InlineKeyboard(
 				composeMarkup([
 					{ label: 'Play', pageId: pageIds.play },

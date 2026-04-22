@@ -1,22 +1,24 @@
-import { RoundStatus } from '../../api/schemas'
+import { RoundDto } from '../../../generated/api-client'
+
+type RoundStatus = RoundDto['status']
 
 export const ACTIVE_STATUSES: RoundStatus[] = ['FILLING']
 export const DEFINING_PRIZES_STATUSES: RoundStatus[] = [
 	'SEALED',
-	'VRFREQUESTED',
+	'VRF_REQUESTED',
 	'CLAIMING',
 ]
 export const REFUNDING_STATUSES: RoundStatus[] = ['REFUNDING']
 export const CLAIMED_STATUSES: RoundStatus[] = ['CLAIMED']
 export const REFUNDED_STATUSES: RoundStatus[] = ['REFUNDED']
 
-export const NON_FINISHED_STATUSES: RoundStatus[] = [
+export const ONGOING_STATUSES: RoundStatus[] = [
 	...ACTIVE_STATUSES,
 	...DEFINING_PRIZES_STATUSES,
 	...REFUNDING_STATUSES,
 ]
 
-export const FINISHED_STATUSES: RoundStatus[] = [
+export const COMPLETED_STATUSES: RoundStatus[] = [
 	...CLAIMED_STATUSES,
 	...REFUNDED_STATUSES,
 ]

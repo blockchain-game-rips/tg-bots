@@ -1,15 +1,14 @@
 import { InlineKeyboard } from 'grammy'
-import { Balance } from '../../api/schemas'
+import { CurrencyAmountDto } from '../../../generated/api-client'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav, composeMarkup } from '../utils'
 
 export class WalletPage {
 	static render(
-		balance: Balance,
+		balance: CurrencyAmountDto,
 		userEvmAddress: string,
-		price: number,
 	): PageContent {
 		const amount = formatUnits(
 			BigInt(balance.amount),
@@ -17,7 +16,7 @@ export class WalletPage {
 		)
 
 		let message = ''
-		message += `Balance: ${amount} ${balance.currency.symbol} ${formatUsd(amount, price)}`
+		message += `Balance: ${amount} ${balance.currency.symbol} ${toUsd(balance)}`
 		message += '\n\n'
 		message += `Deposit ETH on Base to this address: <code>${userEvmAddress}</code>`
 

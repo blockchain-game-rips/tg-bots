@@ -1,16 +1,15 @@
 import { InlineKeyboard } from 'grammy'
-import { Balance } from '../../api/schemas'
+import { CurrencyAmountDto } from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { promptIds } from '../../prompts/prompt-ids'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
 import { addNav } from '../utils'
 
 export class WithdrawPage {
 	static render(
-		balance: Balance,
-		price: number,
+		balance: CurrencyAmountDto,
 		amount?: string,
 		recipientAddress?: string,
 	): PageContent {
@@ -19,7 +18,7 @@ export class WithdrawPage {
 			balance.currency.decimals,
 		)
 
-		let message = `Balance: ${formattedBalance} ${balance.currency.symbol} ${formatUsd(formattedBalance, price)}\n\n`
+		let message = `Balance: ${formattedBalance} ${balance.currency.symbol} ${toUsd(balance)}\n\n`
 
 		message += recipientAddress
 			? `Recipient: <code>${recipientAddress}</code>\n`
@@ -30,7 +29,7 @@ export class WithdrawPage {
 				BigInt(amount),
 				balance.currency.decimals,
 			)
-			message += `Amount: ${formattedAmount} ${balance.currency.symbol} ${formatUsd(formattedAmount, price)}\n`
+			message += `Amount: ${formattedAmount} ${balance.currency.symbol} ${toUsd(balance)}\n`
 		} else {
 			message += `Amount: —\n`
 		}

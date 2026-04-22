@@ -1,37 +1,59 @@
 import { InlineKeyboard } from 'grammy'
-import { BuyTickets, Stake } from '../../api/schemas'
+import {
+	BuyTicketsPurchaseResponseDtoOutput,
+	RoundDto,
+} from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
+import { formatUnits, toUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
-import { readableStake } from '../utils'
+import { configName } from '../utils'
 
 export class SuccessPurchasePage {
 	static render(
-		stake: Stake,
-		purchase: BuyTickets,
-		ethPrice: number,
+		purchase: BuyTicketsPurchaseResponseDtoOutput,
+		round?: RoundDto,
 	): PageContent {
-		const { decimals, symbol } = stake.ticketPrice.currency
-		const ticketsCost = formatUnits(
-			BigInt(stake.ticketPrice.amount) * BigInt(purchase.ticketAmount),
-			decimals,
-		)
-		const blockchainFee = formatUnits(
-			BigInt(purchase.cost.amount),
-			decimals,
-		)
+		const lines = [`✅ Purchase successful!`, '']
 
-		const message =
-			`✅ Purchase successful!\n\n` +
-			`Stake: ${readableStake(stake)}\n` +
-			`Round: #${purchase.roundId}\n` +
-			`Tickets: ${purchase.ticketAmount}\n` +
-			`Tickets cost: ${ticketsCost} ${symbol} ${formatUsd(ticketsCost, ethPrice)}\n` +
-			`Blockchain fee: ${blockchainFee} ${symbol} ${formatUsd(blockchainFee, ethPrice)}`
+		if (round !== undefined) {
+			lines.push(`Stake: ${configName(round.config)}`)
+		}
+
+		lines.push(`Round: #${purchase.roundId}`)
+		lines.push(`Tickets: ${purchase.ticketCount}`)
+
+		if (round !== undefined) {
+			const ticketCost =
+				BigInt(purchase.ticketCount) *
+				BigInt(round.config.ticketPrice.amount)
+
+			const currency = round.config.ticketPrice.currency
+
+			const ticketCostFormatted = formatUnits(
+				ticketCost,
+				currency.decimals,
+			)
+
+			lines.push(
+				`Tickets cost: ${ticketCostFormatted} ${currency.symbol} ${toUsd({ amount: ticketCost.toString(), currency: currency })}`,
+			)
+		}
+
+		const cost = purchase.transaction.cost
+		if (cost !== undefined) {
+			const costFormatted = formatUnits(
+				BigInt(cost.amount),
+				cost.currency.decimals,
+			)
+
+			lines.push(
+				`Blockchain fee: ${costFormatted} ${cost.currency.symbol} ${toUsd(cost)}`,
+			)
+		}
 
 		return {
-			message,
+			message: lines.join('\n'),
 			keyboard: new InlineKeyboard().text(
 				'Home',
 				buildCommand({

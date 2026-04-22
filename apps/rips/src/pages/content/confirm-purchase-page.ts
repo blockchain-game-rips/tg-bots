@@ -1,25 +1,28 @@
 import { InlineKeyboard } from 'grammy'
-import { Stake } from '../../api/schemas'
+import { AvailableStakeDto } from '../../../generated/api-client'
 import { buildCommand } from '../../button-handler/utils'
 import { PageContent } from '../../types'
-import { formatUnits, formatUsd } from '../../utils/units'
 import { pageIds } from '../page-ids'
+import { configName, getConfig } from '../utils'
 
 export class ConfirmPurchasePage {
 	static render(
-		stake: Stake,
-		ticketAmount: number,
-		ethPrice: number,
+		availableStake: AvailableStakeDto,
+		ticketCount: number,
 	): PageContent {
-		const priceRaw = BigInt(stake.ticketPrice.amount)
-		const { decimals, symbol } = stake.ticketPrice.currency
-		const totalCostRaw = priceRaw * BigInt(ticketAmount)
+		const config = getConfig(availableStake)
 
-		const price = formatUnits(priceRaw, decimals)
-		const totalCost = formatUnits(totalCostRaw, decimals)
+		const lines = [
+			`${configName(config)} stake`,
+			`Ticket count: ${ticketCount}`,
+			'',
+			'Confirm to proceed',
+		]
+
+		const message = lines.join('\n')
 
 		return {
-			message: `You're about to buy ${ticketAmount} ticket${ticketAmount > 1 ? 's' : ''} at ${price} ${symbol} ${formatUsd(price, ethPrice)} each.\nTotal: ${totalCost} ${symbol} ${formatUsd(totalCost, ethPrice)}\n\nConfirm to proceed.`,
+			message,
 			keyboard: new InlineKeyboard()
 				.text(
 					'Confirm',
@@ -35,7 +38,7 @@ export class ConfirmPurchasePage {
 					buildCommand({
 						pageId: pageIds.chooseTicketAmount,
 						type: 'open',
-						payloads: [stake.id.toString()],
+						payloads: [availableStake.stake.id.toString()],
 					}),
 				)
 				.text(

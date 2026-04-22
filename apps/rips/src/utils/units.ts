@@ -1,6 +1,14 @@
-export function formatUsd(ethAmount: string, price: number): string {
-	const usd = parseFloat(ethAmount) * price
-	return `($${usd.toFixed(2)})`
+import { CurrencyAmountDto } from '../../generated/api-client'
+
+export function toUsd(currencyAmount: CurrencyAmountDto): string {
+	const formattedAmount = formatUnits(
+		BigInt(currencyAmount.amount),
+		currencyAmount.currency.decimals,
+	)
+
+	const usd = Number(formattedAmount) * currencyAmount.currency.priceUsd
+
+	return `$${usd.toFixed(2)}`
 }
 
 export function formatUnits(amount: bigint, decimals: number): string {

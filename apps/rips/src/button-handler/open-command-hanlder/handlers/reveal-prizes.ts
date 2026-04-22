@@ -1,9 +1,9 @@
 import { Filter } from 'grammy'
-import { getMainCurrencyPrice } from '../../../api/endpoints/price'
 import {
-	getUnrevealedPrizes,
-	revealTicketPrizes,
-} from '../../../api/endpoints/users'
+	ripsControllerGetPrizes,
+	ripsControllerGetRounds,
+	ripsControllerRevealPrizes,
+} from '../../../../generated/api-client'
 import {
 	REVEAL_ALL_PAYLOAD,
 	REVEAL_ONE_PAYLOAD,
@@ -22,35 +22,49 @@ export async function handleRevealPrizesPageId(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 	const action = payloads[0]
 
 	if (action === REVEAL_ONE_PAYLOAD || action === REVEAL_ALL_PAYLOAD) {
 		const revealAll = action === REVEAL_ALL_PAYLOAD
 
-		const revealed = await revealTicketPrizes(telegramId, revealAll)
+		const { data: revealData } = await ripsControllerRevealPrizes({
+			headers: { 'x-telegram-id': telegramId },
+			body: { revealAll },
+			throwOnError: true,
+		})
 
-		const [unrevealed, { price }] = await Promise.all([
-			getUnrevealedPrizes(telegramId),
-			getMainCurrencyPrice(),
-		])
+		const { data: prizesData } = await ripsControllerGetPrizes({
+			headers: { 'x-telegram-id': telegramId },
+			throwOnError: true,
+		})
 
-		const revealedPrizesPage = RevealPrizesPage.render(
-			unrevealed,
-			price,
-			revealed,
+		const unrevealedPrizes = prizesData.prizes.filter((p) => !p.revealed)
+		const roundIds = [...new Set(revealData.prizes.map((p) => p.roundId))]
+
+		const { data: roundsData } = await ripsControllerGetRounds({
+			query: { ids: roundIds },
+			throwOnError: true,
+		})
+
+		await editMessage(
+			ctx,
+			RevealPrizesPage.render(
+				roundsData.rounds,
+				unrevealedPrizes,
+				revealData.prizes,
+			),
 		)
-
-		await editMessage(ctx, revealedPrizesPage)
 
 		return
 	}
 
-	const [prizes, { price }] = await Promise.all([
-		getUnrevealedPrizes(telegramId),
-		getMainCurrencyPrice(),
-	])
-	const revealPrizesPage = RevealPrizesPage.render(prizes, price)
+	const { data: prizesData } = await ripsControllerGetPrizes({
+		headers: { 'x-telegram-id': telegramId },
+		throwOnError: true,
+	})
 
-	await editMessage(ctx, revealPrizesPage)
+	const unrevealedPrizes = prizesData.prizes.filter((p) => !p.revealed)
+
+	await editMessage(ctx, RevealPrizesPage.render([], unrevealedPrizes))
 }

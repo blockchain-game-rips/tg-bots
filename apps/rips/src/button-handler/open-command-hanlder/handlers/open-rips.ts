@@ -1,6 +1,5 @@
 import { Filter } from 'grammy'
-import { getMainCurrencyPrice } from '../../../api/endpoints/price'
-import { getUnrevealedPrizes } from '../../../api/endpoints/users'
+import { ripsControllerGetPrizes } from '../../../../generated/api-client'
 import { RevealPrizesPage } from '../../../pages/content/reveal-prizes-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
@@ -14,12 +13,14 @@ export async function handleOpenRipsPageId(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
-	const [prizes, { price }] = await Promise.all([
-		getUnrevealedPrizes(telegramId),
-		getMainCurrencyPrice(),
-	])
-	const revealPrizesPage = RevealPrizesPage.render(prizes, price)
+	const telegramId = String(ctx.from.id)
 
-	await editMessage(ctx, revealPrizesPage)
+	const { data } = await ripsControllerGetPrizes({
+		headers: { 'x-telegram-id': telegramId },
+		throwOnError: true,
+	})
+
+	const unrevealedPrizes = data.prizes.filter((p) => !p.revealed)
+
+	await editMessage(ctx, RevealPrizesPage.render([], unrevealedPrizes))
 }

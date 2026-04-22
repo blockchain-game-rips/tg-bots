@@ -1,6 +1,5 @@
 import { Filter } from 'grammy'
-import { getMainCurrencyPrice } from '../../../api/endpoints/price'
-import { getStakes } from '../../../api/endpoints/rips'
+import { ripsControllerGetStakes } from '../../../../generated/api-client'
 import { AboutPage } from '../../../pages/content/about-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
@@ -10,11 +9,11 @@ export async function handleAboutPageId(
 ) {
 	clearFlow(ctx)
 
-	const [stakes, { price }] = await Promise.all([
-		getStakes(),
-		getMainCurrencyPrice(),
-	])
-	const aboutPage = AboutPage.render(stakes, price)
+	const { data } = await ripsControllerGetStakes({ throwOnError: true })
 
-	await editMessage(ctx, aboutPage)
+	const configs = data.availableStakes
+		.map((s) => s.fillingRound?.config ?? s.stake.currentConfig)
+		.filter((c) => c !== null && c !== undefined)
+
+	await editMessage(ctx, AboutPage.render(configs))
 }

@@ -1,5 +1,5 @@
 import { Filter } from 'grammy'
-import { getUnrevealedPrizes } from '../../../api/endpoints/users'
+import { ripsControllerGetPrizes } from '../../../../generated/api-client'
 import { PlayPage } from '../../../pages/content/play-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
@@ -13,9 +13,14 @@ export async function handlePlayPageId(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
-	const prizes = await getUnrevealedPrizes(telegramId)
-	const playPage = PlayPage.render(prizes.length > 0)
+	const telegramId = String(ctx.from.id)
 
-	await editMessage(ctx, playPage)
+	const { data } = await ripsControllerGetPrizes({
+		headers: { 'x-telegram-id': telegramId },
+		throwOnError: true,
+	})
+
+	const hasUnrevealedPrizes = data.prizes.some((p) => !p.revealed)
+
+	await editMessage(ctx, PlayPage.render(hasUnrevealedPrizes))
 }

@@ -1,6 +1,8 @@
 import { Filter } from 'grammy'
-import { getRounds } from '../../../api/endpoints/rips'
-import { getUser } from '../../../api/endpoints/users'
+import {
+	ripsControllerGetOngoingRounds,
+	usersControllerGetUser,
+} from '../../../../generated/api-client'
 import { EIP155_NAMESPACE } from '../../../constants'
 import { StatusPage } from '../../../pages/content/status-page'
 import { Context } from '../../../types'
@@ -15,9 +17,12 @@ export async function handleStatusPageId(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 
-	const [rounds, user] = await Promise.all([getRounds(), getUser(telegramId)])
+	const [{ data: roundsData }, { data: user }] = await Promise.all([
+		ripsControllerGetOngoingRounds({ throwOnError: true }),
+		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
+	])
 
 	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
 
@@ -25,7 +30,5 @@ export async function handleStatusPageId(
 		throw new Error('User has no EVM wallet')
 	}
 
-	const statusPage = StatusPage.render(rounds, userEvmAddress)
-
-	await editMessage(ctx, statusPage)
+	await editMessage(ctx, StatusPage.render(roundsData.rounds, userEvmAddress))
 }

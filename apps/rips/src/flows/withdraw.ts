@@ -1,17 +1,36 @@
-import { getMainCurrencyPrice } from '../api/endpoints/price'
-import { getBalance, withdraw } from '../api/endpoints/wallets'
+import {
+	walletsControllerCreateWithdrawal,
+	walletsControllerGetBalances,
+} from '../../generated/api-client'
+import { NATIVE_ON_BASE } from '../constants'
 import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
 import { WithdrawPage } from '../pages/content/withdraw-page'
 import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
 import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
 import { ActiveFlow, Context, PageContent, WithdrawStep } from '../types'
+import { chainAddressToString } from '../utils/units'
 
 type MessageToEdit = { pageContent: PageContent; messageId: number }
+
+async function getBalance(telegramId: string) {
+	const { data } = await walletsControllerGetBalances({
+		headers: { 'x-telegram-id': telegramId },
+		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
+		throwOnError: true,
+	})
+
+	const balance = data.balances[0]
+
+	if (balance === undefined) {
+		throw new Error('No balance found for native asset')
+	}
+
+	return balance
+}
 
 export async function enterWithdrawPage(
 	ctx: Context,
 	messageToEdit: MessageToEdit,
-	price: number,
 	amount?: string,
 	recipientAddress?: string,
 ): Promise<PageContent> {
@@ -19,7 +38,7 @@ export async function enterWithdrawPage(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 	const balance = await getBalance(telegramId)
 
 	ctx.session = {
@@ -30,7 +49,7 @@ export async function enterWithdrawPage(
 		recipientAddress,
 	}
 
-	return WithdrawPage.render(balance, price, amount, recipientAddress)
+	return WithdrawPage.render(balance, amount, recipientAddress)
 }
 
 export async function enterChoosingRecipientStep(
@@ -86,14 +105,19 @@ export async function enterWithdrawalStep(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
-	const [result, balance, { price }] = await Promise.all([
-		withdraw(telegramId, BigInt(amount), recipientAddress),
-		getBalance(telegramId),
-		getMainCurrencyPrice(),
-	])
+	const telegramId = String(ctx.from.id)
+
+	const { data } = await walletsControllerCreateWithdrawal({
+		headers: { 'x-telegram-id': telegramId },
+		body: {
+			amount,
+			currencyChainAddress: NATIVE_ON_BASE,
+			recipientAddress,
+		},
+		throwOnError: true,
+	})
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessWithdrawPage.render(result, BigInt(amount), balance, price)
+	return SuccessWithdrawPage.render(data)
 }

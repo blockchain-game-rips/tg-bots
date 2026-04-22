@@ -1,5 +1,5 @@
 import { Filter } from 'grammy'
-import { getRounds } from '../../../api/endpoints/rips'
+import { ripsControllerGetCompletedRounds } from '../../../../generated/api-client'
 import { FinishedRoundsPage } from '../../../pages/content/finished-rounds-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
@@ -9,8 +9,9 @@ export async function handleCompletedRoundsPageId(
 ) {
 	clearFlow(ctx)
 
-	const rounds = await getRounds()
-	const completedRoundsPage = FinishedRoundsPage.render(rounds)
+	const { data } = await ripsControllerGetCompletedRounds({
+		throwOnError: true,
+	})
 
-	await editMessage(ctx, completedRoundsPage)
+	await editMessage(ctx, FinishedRoundsPage.render(data.rounds))
 }

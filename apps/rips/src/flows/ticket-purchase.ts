@@ -1,20 +1,28 @@
-import { ApiError } from '../api/client'
-import { getMainCurrencyPrice } from '../api/endpoints/price'
-import { buyTickets, getStakes } from '../api/endpoints/rips'
-import { getBalance } from '../api/endpoints/wallets'
+import type { HTTPError } from 'ky'
+import {
+	AvailableStakeDto,
+	ripsControllerBuyTicketsPurchase,
+	ripsControllerGetOngoingRounds,
+	ripsControllerGetStakes,
+	walletsControllerGetBalances,
+} from '../../generated/api-client'
+import { NATIVE_ON_BASE } from '../constants'
 import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
 import { ConfirmPurchasePage } from '../pages/content/confirm-purchase-page'
 import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
 import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
+import { getConfig } from '../pages/utils'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
 import { ErrorToRender } from '../utils/error-to-render'
-import { calcAvailableBalance } from '../utils/tx'
+import { chainAddressToString } from '../utils/units'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
-async function getStakeByIdOrThrow(stakeId: number) {
-	const stakes = await getStakes()
-	const stake = stakes.find((s) => s.id === stakeId)
+async function getAvailableStakeByIdOrThrow(
+	stakeId: number,
+): Promise<AvailableStakeDto> {
+	const { data } = await ripsControllerGetStakes({ throwOnError: true })
+	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
 
 	if (stake === undefined) {
 		throw new Error(`stakeId ${stakeId} is invalid`)
@@ -27,10 +35,7 @@ export async function enterTicketAmountStep(
 	ctx: Context,
 	stakeId: string,
 ): Promise<PageContent> {
-	const [stake, { price }] = await Promise.all([
-		getStakeByIdOrThrow(Number(stakeId)),
-		getMainCurrencyPrice(),
-	])
+	const stake = await getAvailableStakeByIdOrThrow(Number(stakeId))
 
 	ctx.session = {
 		activeFlow: ActiveFlow.TicketPurchase,
@@ -38,7 +43,7 @@ export async function enterTicketAmountStep(
 		step: TicketPurchaseStep.ChoosingTicketAmount,
 	}
 
-	return ChooseTicketAmountPage.render(stake, price)
+	return ChooseTicketAmountPage.render(stake)
 }
 
 export async function enterConfirmingStep(
@@ -50,20 +55,29 @@ export async function enterConfirmingStep(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 
-	const [stake, balance, { price }] = await Promise.all([
-		getStakeByIdOrThrow(Number(stakeId)),
-		getBalance(telegramId),
-		getMainCurrencyPrice(),
+	const [stake, { data: balancesData }] = await Promise.all([
+		getAvailableStakeByIdOrThrow(Number(stakeId)),
+		walletsControllerGetBalances({
+			headers: { 'x-telegram-id': telegramId },
+			query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
+			throwOnError: true,
+		}),
 	])
 
-	const totalCostRaw = BigInt(stake.ticketPrice.amount) * BigInt(ticketAmount)
-	const balanceRaw = BigInt(balance.amount)
-	const availableBalance = calcAvailableBalance(balanceRaw)
+	const balance = balancesData.balances[0]
 
-	if (availableBalance < totalCostRaw) {
-		return InsufficientFundsPage.render(stake, ticketAmount, balance, price)
+	if (balance === undefined) {
+		throw new Error('No balance found for native asset')
+	}
+
+	const config = getConfig(stake)
+	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketAmount)
+	const balanceAmount = BigInt(balance.amount)
+
+	if (balanceAmount < totalCost) {
+		return InsufficientFundsPage.render(balance, stake, ticketAmount)
 	}
 
 	ctx.session = {
@@ -73,7 +87,7 @@ export async function enterConfirmingStep(
 		stakeId,
 	}
 
-	return ConfirmPurchasePage.render(stake, ticketAmount, price)
+	return ConfirmPurchasePage.render(stake, ticketAmount)
 }
 
 export async function enterBuyingStep(
@@ -85,27 +99,31 @@ export async function enterBuyingStep(
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 
-	const [stake, { price }] = await Promise.all([
-		getStakeByIdOrThrow(Number(stakeId)),
-		getMainCurrencyPrice(),
-	])
-
-	const purchase = await buyTickets(telegramId, stake.id, ticketAmount).catch(
-		(error) => {
-			if (
-				error instanceof ApiError &&
-				error.status === TRANSACTION_REVERTED_STATUS
-			) {
-				throw new ErrorToRender(error.message)
-			}
-
-			throw error
+	const { data: purchase } = await ripsControllerBuyTicketsPurchase({
+		headers: { 'x-telegram-id': telegramId },
+		body: {
+			stakeId: Number(stakeId),
+			ticketCount: ticketAmount,
+			paymentCurrencyChainAddress: NATIVE_ON_BASE,
 		},
-	)
+		throwOnError: true,
+	}).catch((error: HTTPError) => {
+		if (error.response?.status === TRANSACTION_REVERTED_STATUS) {
+			throw new ErrorToRender(error.message)
+		}
+
+		throw error
+	})
+
+	const { data: roundsData } = await ripsControllerGetOngoingRounds({
+		throwOnError: true,
+	})
+
+	const round = roundsData.rounds.find((r) => r.id === purchase.roundId)
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessPurchasePage.render(stake, purchase, price)
+	return SuccessPurchasePage.render(purchase, round)
 }

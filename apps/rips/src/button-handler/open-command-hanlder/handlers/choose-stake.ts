@@ -1,6 +1,5 @@
 import { Filter } from 'grammy'
-import { getMainCurrencyPrice } from '../../../api/endpoints/price'
-import { getStakes } from '../../../api/endpoints/rips'
+import { ripsControllerGetStakes } from '../../../../generated/api-client'
 import { ChooseStakePage } from '../../../pages/content/choose-stake-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
@@ -10,11 +9,7 @@ export async function handleChooseStakePageId(
 ) {
 	clearFlow(ctx)
 
-	const [stakes, { price }] = await Promise.all([
-		getStakes(),
-		getMainCurrencyPrice(),
-	])
-	const chooseStakePage = ChooseStakePage.render(stakes, price)
+	const { data } = await ripsControllerGetStakes({ throwOnError: true })
 
-	await editMessage(ctx, chooseStakePage)
+	await editMessage(ctx, ChooseStakePage.render(data.availableStakes))
 }

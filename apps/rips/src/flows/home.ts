@@ -1,5 +1,8 @@
-import { ApiError } from '../api/client'
-import { createUser, getUser } from '../api/endpoints/users'
+import type { HTTPError } from 'ky'
+import {
+	usersControllerCreateUser,
+	usersControllerGetUser,
+} from '../../generated/api-client'
 import { HomePage } from '../pages/content/home-page'
 import { Context, PageContent } from '../types'
 
@@ -10,11 +13,17 @@ export async function enterHomeFlow(ctx: Context): Promise<PageContent> {
 		throw new Error('ctx.from is undefined')
 	}
 
-	const telegramId = BigInt(ctx.from.id)
+	const telegramId = String(ctx.from.id)
 
-	await getUser(telegramId).catch(async (error) => {
-		if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {
-			return await createUser(telegramId)
+	await usersControllerGetUser({
+		path: { telegramId },
+		throwOnError: true,
+	}).catch(async (error: HTTPError) => {
+		if (error.response?.status === NOT_FOUND_STATUS) {
+			return usersControllerCreateUser({
+				body: { telegramId },
+				throwOnError: true,
+			})
 		}
 
 		throw error

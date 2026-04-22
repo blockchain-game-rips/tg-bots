@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '../../generated/api-client'
+import { ChainAddressDto, CurrencyAmountDto } from '../../generated/api-client'
 
 export function toUsd(currencyAmount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
@@ -74,4 +74,8 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 	}
 
 	return BigInt(`${negative ? '-' : ''}${integer}${fraction}`)
+}
+
+export function chainAddressToString(chainAddress: ChainAddressDto): string {
+	return `${chainAddress.chain.namespace}:${chainAddress.chain.reference}:${chainAddress.address}`
 }

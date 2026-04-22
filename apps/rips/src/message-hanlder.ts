@@ -1,7 +1,15 @@
+import { Message } from '@grammyjs/types'
 import { Bot, Filter, GrammyError } from 'grammy'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { enterWithdrawPage } from './flows/withdraw'
-import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from './types'
+import {
+	ActiveFlow,
+	Context,
+	MessageToEdit,
+	PageContent,
+	TicketPurchaseStep,
+	WithdrawStep,
+} from './types'
 import { fireAndForget } from './utils/common'
 import {
 	composePageContentWithError,
@@ -26,51 +34,20 @@ export async function handleMessage(
 	switch (ctx.session.activeFlow) {
 		case ActiveFlow.TicketPurchase: {
 			if (ctx.session.step === TicketPurchaseStep.WaitingForInput) {
-				const messageIdToEdit = ctx.session.messageToEdit.messageId
-				const stakeId = ctx.session.stakeId
+				const { messageToEdit, stakeId } = ctx.session
 
-				try {
-					const ticketAmount = parseTicketNumber(
-						ctx.update.message.text,
-					)
-					const pageContent = await enterConfirmingStep(
-						ctx,
-						stakeId,
-						ticketAmount,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							pageContent,
-						),
-					)
-				} catch (error) {
-					if (error instanceof GrammyError) throw error
-
-					const pageContent = composePageContentWithError(
-						ctx.session.messageToEdit.pageContent,
-						error,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							pageContent,
-						),
-					)
-				} finally {
-					bot.api
-						.deleteMessages(ctx.chatId, [
-							repliedTo.message_id,
-							ctx.update.message.message_id,
-						])
-						.catch((error) => console.log(error))
-				}
+				await handleFlowInput(
+					bot,
+					ctx,
+					repliedTo,
+					messageToEdit,
+					() => {
+						const ticketAmount = parseTicketNumber(
+							ctx.update.message.text,
+						)
+						return enterConfirmingStep(ctx, stakeId, ticketAmount)
+					},
+				)
 			}
 
 			break
@@ -81,110 +58,82 @@ export async function handleMessage(
 
 			if (session.step === WithdrawStep.WaitingForRecipient) {
 				const { messageToEdit, amount } = session
-				const messageIdToEdit = messageToEdit.messageId
 
-				try {
-					const recipientAddress = parseRecipientAddress(
-						ctx.update.message.text,
-					)
-
-					const withdrawPage = await enterWithdrawPage(
-						ctx,
-						messageToEdit,
-						amount,
-						recipientAddress,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							withdrawPage,
-						),
-					)
-				} catch (error) {
-					if (error instanceof GrammyError) throw error
-
-					const pageContent = composePageContentWithError(
-						messageToEdit.pageContent,
-						error,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							pageContent,
-						),
-					)
-				} finally {
-					bot.api
-						.deleteMessages(ctx.chatId, [
-							repliedTo.message_id,
-							ctx.update.message.message_id,
-						])
-						.catch((error) => console.log(error))
-				}
+				await handleFlowInput(
+					bot,
+					ctx,
+					repliedTo,
+					messageToEdit,
+					() => {
+						const recipientAddress = parseRecipientAddress(
+							ctx.update.message.text,
+						)
+						return enterWithdrawPage(
+							ctx,
+							messageToEdit,
+							amount,
+							recipientAddress,
+						)
+					},
+				)
 			} else if (session.step === WithdrawStep.WaitingForCustomAmount) {
 				const { messageToEdit, recipientAddress } = session
-				const messageIdToEdit = messageToEdit.messageId
 
-				try {
-					const telegramId = String(ctx.from.id)
+				await handleFlowInput(
+					bot,
+					ctx,
+					repliedTo,
+					messageToEdit,
+					async () => {
+						const telegramId = String(ctx.from.id)
+						const balance = await fetchNativeBalance(telegramId)
 
-					const balance = await fetchNativeBalance(telegramId)
+						const amount = parseWithdrawAmount(
+							ctx.update.message.text,
+							balance.currency.decimals,
+							BigInt(balance.amount),
+						)
 
-					const amount = parseWithdrawAmount(
-						ctx.update.message.text,
-						balance.currency.decimals,
-						BigInt(balance.amount),
-					)
-
-					const withdrawPage = await enterWithdrawPage(
-						ctx,
-						messageToEdit,
-						amount,
-						recipientAddress,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							withdrawPage,
-						),
-					)
-				} catch (error) {
-					if (error instanceof GrammyError) throw error
-
-					const pageContent = composePageContentWithError(
-						messageToEdit.pageContent,
-						error,
-					)
-
-					fireAndForget(
-						editSpecificMessage(
-							bot,
-							ctx.chatId,
-							messageIdToEdit,
-							pageContent,
-						),
-					)
-				} finally {
-					bot.api
-						.deleteMessages(ctx.chatId, [
-							repliedTo.message_id,
-							ctx.update.message.message_id,
-						])
-						.catch((error) => console.log(error))
-				}
+						return enterWithdrawPage(
+							ctx,
+							messageToEdit,
+							amount,
+							recipientAddress,
+						)
+					},
+				)
 			}
 
 			break
 		}
+	}
+}
+
+async function handleFlowInput(
+	bot: Bot<Context>,
+	ctx: Filter<Context, 'message:text'>,
+	repliedTo: Message,
+	messageToEdit: MessageToEdit,
+	action: () => Promise<PageContent>,
+): Promise<void> {
+	const { messageId, pageContent } = messageToEdit
+
+	try {
+		const result = await action()
+		fireAndForget(editSpecificMessage(bot, ctx.chatId, messageId, result))
+	} catch (error) {
+		if (error instanceof GrammyError) throw error
+		const errorPage = composePageContentWithError(pageContent, error)
+		fireAndForget(
+			editSpecificMessage(bot, ctx.chatId, messageId, errorPage),
+		)
+	} finally {
+		bot.api
+			.deleteMessages(ctx.chatId, [
+				repliedTo.message_id,
+				ctx.update.message.message_id,
+			])
+			.catch((error) => console.log(error))
 	}
 }
 

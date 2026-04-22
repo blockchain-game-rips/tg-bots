@@ -4,10 +4,14 @@ import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
 import { WithdrawPage } from '../pages/content/withdraw-page'
 import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
 import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
-import { ActiveFlow, Context, PageContent, WithdrawStep } from '../types'
+import {
+	ActiveFlow,
+	Context,
+	MessageToEdit,
+	PageContent,
+	WithdrawStep,
+} from '../types'
 import { fetchNativeBalance } from '../utils/units'
-
-type MessageToEdit = { pageContent: PageContent; messageId: number }
 
 export async function enterWithdrawPage(
 	ctx: Context,

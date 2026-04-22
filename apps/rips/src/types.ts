@@ -44,7 +44,7 @@ export enum WithdrawStep {
 	WaitingForCustomAmount,
 }
 
-type MessageToEdit = { pageContent: PageContent; messageId: number }
+export type MessageToEdit = { pageContent: PageContent; messageId: number }
 
 export type WithdrawSession = {
 	activeFlow: ActiveFlow.Withdraw

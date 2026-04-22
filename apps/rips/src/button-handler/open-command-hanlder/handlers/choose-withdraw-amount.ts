@@ -15,10 +15,6 @@ export async function handleChooseWithdrawAmountPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 	payloads: string[],
 ) {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 	const payload = payloads[0]
 	const currentPage = getCurrentPage(ctx)

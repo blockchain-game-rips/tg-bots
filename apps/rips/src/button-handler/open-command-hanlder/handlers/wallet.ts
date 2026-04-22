@@ -14,10 +14,6 @@ export async function handleWalletPageId(
 ) {
 	clearFlow(ctx)
 
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 
 	const [{ data: balancesData }, { data: user }] = await Promise.all([

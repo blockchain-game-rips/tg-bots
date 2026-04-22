@@ -1,3 +1,4 @@
+import { User } from '@grammyjs/types'
 import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
 
 export enum ActiveFlow {
@@ -68,7 +69,8 @@ export type WithdrawSession = {
 
 export type SessionData = EmptySession | TicketPurshaseSession | WithdrawSession
 
-export type Context = GrammyContext & SessionFlavor<SessionData>
+export type Context = GrammyContext &
+	SessionFlavor<SessionData> & { from: User }
 
 export type PageContent = {
 	message: string

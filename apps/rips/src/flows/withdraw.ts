@@ -34,11 +34,8 @@ export async function enterWithdrawPage(
 	amount?: string,
 	recipientAddress?: string,
 ): Promise<PageContent> {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
+
 	const balance = await getBalance(telegramId)
 
 	ctx.session = {
@@ -101,10 +98,6 @@ export async function enterWithdrawalStep(
 	amount: string,
 	recipientAddress: string,
 ): Promise<PageContent> {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 
 	const { data } = await walletsControllerCreateWithdrawal({

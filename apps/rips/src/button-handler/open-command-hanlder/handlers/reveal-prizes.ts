@@ -18,10 +18,6 @@ export async function handleRevealPrizesPageId(
 ) {
 	clearFlow(ctx)
 
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 	const action = payloads[0]
 

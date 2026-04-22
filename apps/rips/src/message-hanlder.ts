@@ -86,9 +86,6 @@ export async function handleMessage(
 				const messageIdToEdit = messageToEdit.messageId
 
 				try {
-					if (ctx.from === undefined)
-						throw new Error('ctx.from is undefined')
-
 					const recipientAddress = parseRecipientAddress(
 						ctx.update.message.text,
 					)
@@ -137,9 +134,6 @@ export async function handleMessage(
 				const messageIdToEdit = messageToEdit.messageId
 
 				try {
-					if (ctx.from === undefined)
-						throw new Error('ctx.from is undefined')
-
 					const telegramId = String(ctx.from.id)
 
 					const { data: balancesData } =

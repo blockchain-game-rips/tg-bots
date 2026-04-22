@@ -9,10 +9,6 @@ import { Context, PageContent } from '../types'
 const NOT_FOUND_STATUS = 404
 
 export async function enterHomeFlow(ctx: Context): Promise<PageContent> {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 
 	await usersControllerGetUser({

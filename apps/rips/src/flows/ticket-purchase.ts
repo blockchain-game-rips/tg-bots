@@ -51,10 +51,6 @@ export async function enterConfirmingStep(
 	stakeId: string,
 	ticketAmount: number,
 ): Promise<PageContent> {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 
 	const [stake, { data: balancesData }] = await Promise.all([
@@ -95,10 +91,6 @@ export async function enterBuyingStep(
 	stakeId: string,
 	ticketAmount: number,
 ): Promise<PageContent> {
-	if (ctx.from === undefined) {
-		throw new Error('ctx.from is undefined')
-	}
-
 	const telegramId = String(ctx.from.id)
 
 	const { data: purchase } = await ripsControllerBuyTicketsPurchase({

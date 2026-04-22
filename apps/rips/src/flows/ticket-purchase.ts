@@ -4,7 +4,6 @@ import {
 	ripsControllerBuyTicketsPurchase,
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
-	walletsControllerGetBalances,
 } from '../../generated/api-client'
 import { NATIVE_ON_BASE } from '../constants'
 import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
@@ -14,7 +13,7 @@ import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
 import { getConfig } from '../pages/utils'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
 import { ErrorToRender } from '../utils/error-to-render'
-import { chainAddressToString } from '../utils/units'
+import { fetchNativeBalance } from '../utils/units'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
@@ -53,20 +52,10 @@ export async function enterConfirmingStep(
 ): Promise<PageContent> {
 	const telegramId = String(ctx.from.id)
 
-	const [stake, { data: balancesData }] = await Promise.all([
+	const [stake, balance] = await Promise.all([
 		getAvailableStakeByIdOrThrow(Number(stakeId)),
-		walletsControllerGetBalances({
-			headers: { 'x-telegram-id': telegramId },
-			query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
-			throwOnError: true,
-		}),
+		fetchNativeBalance(telegramId),
 	])
-
-	const balance = balancesData.balances[0]
-
-	if (balance === undefined) {
-		throw new Error('No balance found for native asset')
-	}
 
 	const config = getConfig(stake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketAmount)

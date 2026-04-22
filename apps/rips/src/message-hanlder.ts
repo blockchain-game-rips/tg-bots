@@ -1,6 +1,4 @@
 import { Bot, Filter, GrammyError } from 'grammy'
-import { walletsControllerGetBalances } from '../generated/api-client'
-import { NATIVE_ON_BASE } from './constants'
 import { enterConfirmingStep } from './flows/ticket-purchase'
 import { enterWithdrawPage } from './flows/withdraw'
 import { ActiveFlow, Context, TicketPurchaseStep, WithdrawStep } from './types'
@@ -10,7 +8,7 @@ import {
 	ErrorToRender,
 } from './utils/error-to-render'
 import { editSpecificMessage } from './utils/grammy'
-import { chainAddressToString, parseUnits } from './utils/units'
+import { fetchNativeBalance, parseUnits } from './utils/units'
 
 const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
@@ -136,22 +134,7 @@ export async function handleMessage(
 				try {
 					const telegramId = String(ctx.from.id)
 
-					const { data: balancesData } =
-						await walletsControllerGetBalances({
-							headers: { 'x-telegram-id': telegramId },
-							query: {
-								chainAddress: [
-									chainAddressToString(NATIVE_ON_BASE),
-								],
-							},
-							throwOnError: true,
-						})
-
-					const balance = balancesData.balances[0]
-
-					if (balance === undefined) {
-						throw new Error('No balance found for native asset')
-					}
+					const balance = await fetchNativeBalance(telegramId)
 
 					const amount = parseWithdrawAmount(
 						ctx.update.message.text,

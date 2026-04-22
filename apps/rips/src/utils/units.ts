@@ -1,4 +1,9 @@
-import { ChainAddressDto, CurrencyAmountDto } from '../../generated/api-client'
+import {
+	ChainAddressDto,
+	CurrencyAmountDto,
+	walletsControllerGetBalances,
+} from '../../generated/api-client'
+import { NATIVE_ON_BASE } from '../constants'
 
 export function toUsd(currencyAmount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
@@ -78,4 +83,20 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 
 export function chainAddressToString(chainAddress: ChainAddressDto): string {
 	return `${chainAddress.chain.namespace}:${chainAddress.chain.reference}:${chainAddress.address}`
+}
+
+export async function fetchNativeBalance(telegramId: string) {
+	const { data } = await walletsControllerGetBalances({
+		headers: { 'x-telegram-id': telegramId },
+		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
+		throwOnError: true,
+	})
+
+	const balance = data.balances[0]
+
+	if (balance === undefined) {
+		throw new Error('No balance found for native asset')
+	}
+
+	return balance
 }

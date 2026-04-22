@@ -1,32 +1,13 @@
-import {
-	walletsControllerCreateWithdrawal,
-	walletsControllerGetBalances,
-} from '../../generated/api-client'
+import { walletsControllerCreateWithdrawal } from '../../generated/api-client'
 import { NATIVE_ON_BASE } from '../constants'
 import { SuccessWithdrawPage } from '../pages/content/success-withdraw-page'
 import { WithdrawPage } from '../pages/content/withdraw-page'
 import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
 import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
 import { ActiveFlow, Context, PageContent, WithdrawStep } from '../types'
-import { chainAddressToString } from '../utils/units'
+import { fetchNativeBalance } from '../utils/units'
 
 type MessageToEdit = { pageContent: PageContent; messageId: number }
-
-async function getBalance(telegramId: string) {
-	const { data } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': telegramId },
-		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
-		throwOnError: true,
-	})
-
-	const balance = data.balances[0]
-
-	if (balance === undefined) {
-		throw new Error('No balance found for native asset')
-	}
-
-	return balance
-}
 
 export async function enterWithdrawPage(
 	ctx: Context,
@@ -36,7 +17,7 @@ export async function enterWithdrawPage(
 ): Promise<PageContent> {
 	const telegramId = String(ctx.from.id)
 
-	const balance = await getBalance(telegramId)
+	const balance = await fetchNativeBalance(telegramId)
 
 	ctx.session = {
 		activeFlow: ActiveFlow.Withdraw,

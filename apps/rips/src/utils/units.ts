@@ -3,6 +3,7 @@ import {
 	CurrencyAmountDto,
 	walletsControllerGetBalances,
 } from '../../generated/api-client'
+import { createQuerySerializer } from '../../generated/api-client/client/utils.gen'
 import { NATIVE_ON_BASE } from '../constants'
 
 export function toUsd(currencyAmount: CurrencyAmountDto): string {
@@ -89,7 +90,7 @@ export async function fetchNativeBalance(telegramId: string) {
 	const { data } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
 		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
-		throwOnError: true,
+		querySerializer: createQuerySerializer({ allowReserved: true }),
 	})
 
 	const balance = data.balances[0]

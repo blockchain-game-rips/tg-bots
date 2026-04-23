@@ -6,9 +6,17 @@ import { handleButton } from './button-handler/button-hanlder'
 import { enterHomeFlow } from './flows/home'
 import { handleMessage } from './message-hanlder'
 import { Context, PageContent, SessionData } from './types'
+import { ApiError } from './utils/api-error'
 import { getEnvSafe } from './utils/common'
 
-client.setConfig({ baseUrl: getEnvSafe('BACKEND_URL') })
+client.setConfig({
+	baseUrl: getEnvSafe('BACKEND_URL'),
+	kyOptions: { throwHttpErrors: false },
+})
+
+client.interceptors.error.use((error, response) => {
+	return new ApiError(response.status, error)
+})
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 

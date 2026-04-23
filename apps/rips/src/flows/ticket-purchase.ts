@@ -1,4 +1,3 @@
-import type { HTTPError } from 'ky'
 import {
 	AvailableStakeDto,
 	ripsControllerBuyTicketsPurchase,
@@ -12,6 +11,7 @@ import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
 import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
 import { getConfig } from '../pages/utils'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
+import { ApiError } from '../utils/api-error'
 import { ErrorToRender } from '../utils/error-to-render'
 import { fetchNativeBalance } from '../utils/units'
 
@@ -90,8 +90,11 @@ export async function enterBuyingStep(
 			paymentCurrencyChainAddress: NATIVE_ON_BASE,
 		},
 		throwOnError: true,
-	}).catch((error: HTTPError) => {
-		if (error.response?.status === TRANSACTION_REVERTED_STATUS) {
+	}).catch((error: unknown) => {
+		if (
+			error instanceof ApiError &&
+			error.status === TRANSACTION_REVERTED_STATUS
+		) {
 			throw new ErrorToRender(error.message)
 		}
 

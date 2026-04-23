@@ -8,6 +8,8 @@ export const pageIds = {
 	successPurchase: 'successPurchase',
 	openRips: 'openRips',
 	revealPrizes: 'revealPrizes',
+	revealAll: 'revealAll',
+	revealSingle: 'revealSingle',
 	status: 'status',
 	ongoingRounds: 'ongoingRounds',
 	completedRounds: 'completedRounds',

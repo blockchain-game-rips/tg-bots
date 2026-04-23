@@ -14,6 +14,7 @@ export class InsufficientFundsPage {
 		balance: CurrencyAmountDto,
 		availableStake: AvailableStakeDto,
 		ticketCount: number,
+		// userEvmAddress: string,
 	): PageContent {
 		const config = getConfig(availableStake)
 
@@ -34,6 +35,15 @@ export class InsufficientFundsPage {
 		return {
 			message,
 			keyboard: new InlineKeyboard()
+				.text(
+					'Enter from another token',
+					buildCommand({
+						pageId: pageIds.zapChooseChain,
+						type: 'open',
+						payloads: [],
+					}),
+				)
+				.row()
 				.text(
 					'Back',
 					buildCommand({

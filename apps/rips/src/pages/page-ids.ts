@@ -16,4 +16,9 @@ export const pageIds = {
 	withdraw: 'withdraw',
 	chooseWithdrawAmount: 'chooseWA',
 	successWithdraw: 'successWithdraw',
+	zapChooseChain: 'zapChain',
+	zapChooseToken: 'zapToken',
+	zapConfirm: 'zapConfirm',
+	zapInsufficientFunds: 'zapInsufFunds',
+	zapSuccess: 'zapSuccess',
 } as const

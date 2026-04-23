@@ -17,6 +17,20 @@ export function toUsd(currencyAmount: CurrencyAmountDto): string {
 	return `$${usd.toFixed(2)}`
 }
 
+export function formattedAmountWithUsd(
+	currencyAmount: CurrencyAmountDto,
+): string {
+	const formattedAmount = formatUnits(
+		BigInt(currencyAmount.amount),
+		currencyAmount.currency.decimals,
+	)
+
+	const usd = Number(formattedAmount) * currencyAmount.currency.priceUsd
+	const symbol = currencyAmount.currency.symbol
+
+	return `${formattedAmount} ${symbol} ($${usd.toFixed(2)})`
+}
+
 export function formatUnits(amount: bigint, decimals: number): string {
 	let display = amount.toString()
 

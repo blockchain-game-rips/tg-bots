@@ -94,3 +94,9 @@ export type PromptContent = {
 	message: string
 	placeholder: string
 }
+
+export type Chain = {
+	namespace: string
+	reference: string
+	name: string
+}

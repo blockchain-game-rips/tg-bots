@@ -2,12 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import {
 	AvailableStakeDto,
 	CurrencyAmountDto,
-} from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { formatUnits, toUsd } from '../../utils/units'
-import { pageIds } from '../page-ids'
-import { configName, getConfig } from '../utils'
+} from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { formatUnits, toUsd } from '../../../utils/units'
+import { pageIds } from '../../page-ids'
+import { configName, getConfig } from '../../utils'
 
 export class InsufficientFundsPage {
 	static render(

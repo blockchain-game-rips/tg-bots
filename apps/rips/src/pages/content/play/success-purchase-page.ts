@@ -2,12 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import {
 	BuyTicketsPurchaseResponseDtoOutput,
 	RoundDto,
-} from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { formatUnits, toUsd } from '../../utils/units'
-import { pageIds } from '../page-ids'
-import { configName } from '../utils'
+} from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { formatUnits, toUsd } from '../../../utils/units'
+import { pageIds } from '../../page-ids'
+import { configName } from '../../utils'
 
 export class SuccessPurchasePage {
 	static render(

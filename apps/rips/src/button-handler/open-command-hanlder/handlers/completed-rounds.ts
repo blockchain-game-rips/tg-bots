@@ -1,6 +1,6 @@
 import { Filter } from 'grammy'
 import { ripsControllerGetCompletedRounds } from '../../../../generated/api-client'
-import { FinishedRoundsPage } from '../../../pages/content/finished-rounds-page'
+import { FinishedRoundsPage } from '../../../pages/content/play/finished-rounds-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

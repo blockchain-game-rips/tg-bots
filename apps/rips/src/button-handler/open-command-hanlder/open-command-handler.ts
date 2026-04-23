@@ -3,7 +3,7 @@ import { pageIds } from '../../pages/page-ids'
 import { Context } from '../../types'
 import { handleAboutPageId } from './handlers/about'
 import { handleChooseStakePageId } from './handlers/choose-stake'
-import { handleChooseTicketAmountPageId } from './handlers/choose-ticket-amount'
+import { handleChooseTicketCountPageId } from './handlers/choose-ticket-amount'
 import { handleChooseWithdrawAmountPageId } from './handlers/choose-withdraw-amount'
 import { handleCompletedRoundsPageId } from './handlers/completed-rounds'
 import { handleConfirmPurchasePageId } from './handlers/confirm-purchase'
@@ -49,7 +49,7 @@ export async function handleOpenCommand(
 			return await handleChooseStakePageId(ctx)
 
 		case pageIds.chooseTicketAmount:
-			return await handleChooseTicketAmountPageId(ctx, payloads)
+			return await handleChooseTicketCountPageId(ctx, payloads)
 
 		case pageIds.confirmPurchase:
 			return await handleConfirmPurchasePageId(ctx, payloads)

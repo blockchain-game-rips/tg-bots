@@ -5,10 +5,10 @@ import {
 	ripsControllerGetStakes,
 } from '../../generated/api-client'
 import { NATIVE_ON_BASE } from '../constants'
-import { ChooseTicketAmountPage } from '../pages/content/choose-ticket-amount-page'
-import { ConfirmPurchasePage } from '../pages/content/confirm-purchase-page'
-import { InsufficientFundsPage } from '../pages/content/insufficient-funds-page'
-import { SuccessPurchasePage } from '../pages/content/success-purchase-page'
+import { ChooseTicketCountPage } from '../pages/content/play/choose-ticket-count-page'
+import { ConfirmPurchasePage } from '../pages/content/play/confirm-purchase-page'
+import { InsufficientFundsPage } from '../pages/content/play/insufficient-funds-page'
+import { SuccessPurchasePage } from '../pages/content/play/success-purchase-page'
 import { getConfig } from '../pages/utils'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
 import { ApiError } from '../utils/api-error'
@@ -42,7 +42,7 @@ export async function enterTicketAmountStep(
 		step: TicketPurchaseStep.ChoosingTicketAmount,
 	}
 
-	return ChooseTicketAmountPage.render(stake)
+	return ChooseTicketCountPage.render(stake)
 }
 
 export async function enterConfirmingStep(

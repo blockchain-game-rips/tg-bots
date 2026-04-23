@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { AvailableStakeDto } from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { configName, getConfig } from '../utils'
+import { AvailableStakeDto } from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { configName, getConfig } from '../../utils'
 
 export class ConfirmPurchasePage {
 	static render(

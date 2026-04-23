@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { RoundDto } from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { addNav } from '../utils'
+import { RoundDto } from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { addNav } from '../../utils'
 
 export class StatusPage {
 	static render(

@@ -1,11 +1,11 @@
 import { InlineKeyboard } from 'grammy'
-import { CurrencyAmountDto } from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { promptIds } from '../../prompts/prompt-ids'
-import { PageContent } from '../../types'
-import { formatUnits, toUsd } from '../../utils/units'
-import { pageIds } from '../page-ids'
-import { addNav } from '../utils'
+import { CurrencyAmountDto } from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { promptIds } from '../../../prompts/prompt-ids'
+import { PageContent } from '../../../types'
+import { formatUnits, toUsd } from '../../../utils/units'
+import { pageIds } from '../../page-ids'
+import { addNav } from '../../utils'
 
 export class WithdrawPage {
 	static render(

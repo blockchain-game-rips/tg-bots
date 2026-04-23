@@ -1,4 +1,4 @@
-import { RoundDto } from '../../../generated/api-client'
+import { RoundDto } from '../../generated/api-client'
 
 type RoundStatus = RoundDto['status']
 

@@ -1,6 +1,6 @@
 import { Filter } from 'grammy'
 import { ripsControllerGetPrizes } from '../../../../generated/api-client'
-import { PlayPage } from '../../../pages/content/play-page'
+import { PlayPage } from '../../../pages/content/play/play-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

@@ -3,7 +3,7 @@ import {
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
 } from '../../../../generated/api-client'
-import { OngoingRoundsPage } from '../../../pages/content/active-rounds-page'
+import { OngoingRoundsPage } from '../../../pages/content/play/active-rounds-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

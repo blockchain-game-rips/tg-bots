@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { RoundDto } from '../../../generated/api-client'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { addNav, configName } from '../utils'
-import { displayStatus } from './round-statuses'
+import { RoundDto } from '../../../../generated/api-client'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { displayStatus } from '../../round-statuses'
+import { addNav, configName } from '../../utils'
 
 export class FinishedRoundsPage {
 	static render(completedRounds: RoundDto[]): PageContent {

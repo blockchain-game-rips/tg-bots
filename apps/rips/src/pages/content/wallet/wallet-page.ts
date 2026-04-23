@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { CurrencyAmountDto } from '../../../generated/api-client'
-import { PageContent } from '../../types'
-import { formatUnits, toUsd } from '../../utils/units'
-import { pageIds } from '../page-ids'
-import { addNav, composeMarkup } from '../utils'
+import { CurrencyAmountDto } from '../../../../generated/api-client'
+import { PageContent } from '../../../types'
+import { formatUnits, toUsd } from '../../../utils/units'
+import { pageIds } from '../../page-ids'
+import { addNav, composeMarkup } from '../../utils'
 
 export class WalletPage {
 	static render(

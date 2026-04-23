@@ -8,7 +8,7 @@ import {
 	REVEAL_ALL_PAYLOAD,
 	REVEAL_ONE_PAYLOAD,
 	RevealPrizesPage,
-} from '../../../pages/content/reveal-prizes-page'
+} from '../../../pages/content/play/reveal-prizes-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

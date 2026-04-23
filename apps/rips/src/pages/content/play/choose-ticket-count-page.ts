@@ -1,12 +1,12 @@
 import { InlineKeyboard } from 'grammy'
-import { AvailableStakeDto } from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { promptIds } from '../../prompts/prompt-ids'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { addNav, configName, getConfig } from '../utils'
+import { AvailableStakeDto } from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { promptIds } from '../../../prompts/prompt-ids'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { addNav, configName, getConfig } from '../../utils'
 
-export class ChooseTicketAmountPage {
+export class ChooseTicketCountPage {
 	static render(availableStake: AvailableStakeDto): PageContent {
 		const config = getConfig(availableStake)
 

@@ -4,7 +4,7 @@ import {
 	usersControllerGetUser,
 } from '../../../../generated/api-client'
 import { EIP155_NAMESPACE } from '../../../constants'
-import { StatusPage } from '../../../pages/content/status-page'
+import { StatusPage } from '../../../pages/content/play/status-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

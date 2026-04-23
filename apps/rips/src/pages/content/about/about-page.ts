@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
-import { ConfigDto } from '../../../generated/api-client'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { toShortDurationFormat } from '../ui-utils'
-import { addNav, configName } from '../utils'
+import { ConfigDto } from '../../../../generated/api-client'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { toShortDurationFormat } from '../../ui-utils'
+import { addNav, configName } from '../../utils'
 
 function renderConfig(config: ConfigDto): string {
 	return [

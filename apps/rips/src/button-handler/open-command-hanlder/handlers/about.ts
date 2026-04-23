@@ -1,6 +1,6 @@
 import { Filter } from 'grammy'
 import { ripsControllerGetStakes } from '../../../../generated/api-client'
-import { AboutPage } from '../../../pages/content/about-page'
+import { AboutPage } from '../../../pages/content/about/about-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

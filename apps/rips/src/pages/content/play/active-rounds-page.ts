@@ -1,10 +1,10 @@
 import { InlineKeyboard } from 'grammy'
-import { AvailableStakeDto, RoundDto } from '../../../generated/api-client'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { toShortDurationFormat } from '../ui-utils'
-import { addNav, configName, getConfig } from '../utils'
-import { displayStatus } from './round-statuses'
+import { AvailableStakeDto, RoundDto } from '../../../../generated/api-client'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { displayStatus } from '../../round-statuses'
+import { toShortDurationFormat } from '../../ui-utils'
+import { addNav, configName, getConfig } from '../../utils'
 
 function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)

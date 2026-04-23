@@ -3,12 +3,12 @@ import {
 	CurrencyAmountDto,
 	PrizeDto,
 	RoundDto,
-} from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { formatUnits, toUsd } from '../../utils/units'
-import { pageIds } from '../page-ids'
-import { addNav } from '../utils'
+} from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { formatUnits, toUsd } from '../../../utils/units'
+import { pageIds } from '../../page-ids'
+import { addNav } from '../../utils'
 
 export const REVEAL_ONE_PAYLOAD = 'one'
 export const REVEAL_ALL_PAYLOAD = 'all'

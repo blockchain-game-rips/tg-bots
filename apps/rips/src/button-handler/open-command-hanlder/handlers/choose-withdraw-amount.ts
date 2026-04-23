@@ -3,7 +3,7 @@ import { enterWithdrawPage } from '../../../flows/withdraw'
 import {
 	ChooseWithdrawAmountPage,
 	MAX_AMOUNT_PAYLOAD,
-} from '../../../pages/content/choose-withdraw-amount-page'
+} from '../../../pages/content/wallet/choose-withdraw-amount-page'
 import { ActiveFlow, Context, WithdrawStep } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 import { fetchNativeBalance } from '../../../utils/units'

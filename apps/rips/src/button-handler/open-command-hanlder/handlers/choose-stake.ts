@@ -1,6 +1,6 @@
 import { Filter } from 'grammy'
 import { ripsControllerGetStakes } from '../../../../generated/api-client'
-import { ChooseStakePage } from '../../../pages/content/choose-stake-page'
+import { ChooseStakePage } from '../../../pages/content/play/choose-stake-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 

@@ -1,7 +1,7 @@
 import { Filter } from 'grammy'
 import { usersControllerGetUser } from '../../../../generated/api-client'
 import { EIP155_NAMESPACE } from '../../../constants'
-import { WalletPage } from '../../../pages/content/wallet-page'
+import { WalletPage } from '../../../pages/content/wallet/wallet-page'
 import { Context } from '../../../types'
 import { clearFlow, editMessage } from '../../../utils/grammy'
 import { fetchNativeBalance } from '../../../utils/units'

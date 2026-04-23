@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
-import { KeyboardLayout, PageContent } from '../../types'
-import { pageIds } from '../page-ids'
-import { addNav, composeMarkup } from '../utils'
+import { KeyboardLayout, PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
+import { addNav, composeMarkup } from '../../utils'
 
 export class PlayPage {
 	static render(hasUnrevealedPrizes: boolean): PageContent {

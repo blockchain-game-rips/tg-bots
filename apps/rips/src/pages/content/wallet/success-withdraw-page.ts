@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
-import { TransactionDto } from '../../../generated/api-client'
-import { buildCommand } from '../../button-handler/utils'
-import { PageContent } from '../../types'
-import { pageIds } from '../page-ids'
+import { TransactionDto } from '../../../../generated/api-client'
+import { buildCommand } from '../../../button-handler/utils'
+import { PageContent } from '../../../types'
+import { pageIds } from '../../page-ids'
 
 export class SuccessWithdrawPage {
 	static render(transaction: TransactionDto): PageContent {

@@ -88,9 +88,12 @@ export async function enterWithdrawalStep(
 	const { data } = await walletsControllerCreateWithdrawal({
 		headers: { 'x-telegram-id': telegramId },
 		body: {
-			amount,
-			currencyChainAddress: NATIVE_ON_BASE,
+			amountIn: {
+				amount: amount,
+				currencyChainAddress: NATIVE_ON_BASE,
+			},
 			recipientAddress,
+			currencyOutChainAddress: NATIVE_ON_BASE,
 		},
 		throwOnError: true,
 	})

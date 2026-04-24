@@ -4,12 +4,14 @@ import { PlayPage } from '../../src/pages/content/play/play-page'
 import { RevealAllPage } from '../../src/pages/content/play/reveal-all-page'
 import { RevealPrizesPage } from '../../src/pages/content/play/reveal-prizes-page'
 import { RevealSinglePage } from '../../src/pages/content/play/reveal-single-page'
+import { StatusPage } from '../../src/pages/content/play/status-page'
 import { PageContent } from '../../src/types'
 import {
 	mockConfigs,
 	mockRevealedPrizes,
 	mockRound,
 	mockUnrevealedPrizes,
+	mockUserEvmAddress,
 } from './static-data'
 
 export type PageEntry = {
@@ -27,6 +29,11 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
 		render: () => PlayPage.render(),
+	},
+	status: {
+		description:
+			"Overview of the user's activity — shows their tickets in ongoing rounds, with navigation to Ongoing Rounds and Completed Rounds lists.",
+		render: () => StatusPage.render([mockRound], mockUserEvmAddress),
 	},
 	'reveal-prizes': {
 		description:

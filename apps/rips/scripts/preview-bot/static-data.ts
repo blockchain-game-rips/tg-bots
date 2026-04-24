@@ -13,6 +13,8 @@ const mockEth: ConfigDto['ticketPrice']['currency'] = {
 	decimals: 18,
 }
 
+export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
+
 export const mockRound: RoundDto = {
 	id: 1,
 	stakeId: 1,

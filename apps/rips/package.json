@@ -9,7 +9,8 @@
         "test": "jest",
         "build": "tsc -p tsconfig.build.json",
         "start": "node dist/main.js",
-        "dev": "ts-node-dev --respawn src/main.ts"
+        "dev": "ts-node-dev --respawn src/main.ts",
+        "preview-bot": "ts-node-dev --respawn scripts/preview-bot/index.ts"
     },
     "dependencies": {
         "@grammyjs/auto-retry": "^2.0.2",

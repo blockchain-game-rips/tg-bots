@@ -45,11 +45,7 @@ export async function handleRevealPrizesPageId(
 
 		await editMessage(
 			ctx,
-			RevealPrizesPage.render(
-				roundsData.rounds,
-				unrevealedPrizes,
-				revealData.prizes,
-			),
+			RevealPrizesPage.render(roundsData.rounds, unrevealedPrizes),
 		)
 
 		return

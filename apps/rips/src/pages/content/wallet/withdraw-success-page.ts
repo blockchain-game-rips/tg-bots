@@ -4,7 +4,7 @@ import { buildCommand } from '../../../button-handler/utils'
 import { PageContent } from '../../../types'
 import { pageIds } from '../../page-ids'
 
-export class SuccessWithdrawPage {
+export class WithdrawSuccessPage {
 	static render(transaction: TransactionDto): PageContent {
 		const lines = [
 			`✅ Withdrawal successful!`,

@@ -29,6 +29,13 @@ import { SwapConfirmPage } from '../../src/pages/content/wallet/swap-confirm'
 import { SwapInsufficientFundsPage } from '../../src/pages/content/wallet/swap-insufficient'
 import { SwapPage } from '../../src/pages/content/wallet/swap-page'
 import { WalletPage } from '../../src/pages/content/wallet/wallet-page'
+import { WithdrawChooseAmountPage } from '../../src/pages/content/wallet/withdraw-choose-amount-page'
+import { WithdrawChooseChainPage } from '../../src/pages/content/wallet/withdraw-choose-chain-page'
+import { WithdrawChooseReceiverPage } from '../../src/pages/content/wallet/withdraw-choose-receiver-page'
+import { WithdrawChooseTokenPage } from '../../src/pages/content/wallet/withdraw-choose-token-page'
+import { WithdrawConfirmPage } from '../../src/pages/content/wallet/withdraw-confirm-page'
+import { WithdrawInsufficientFundsPage } from '../../src/pages/content/wallet/withdraw-insufficient-funds-page'
+import { WithdrawSuccessPage } from '../../src/pages/content/wallet/withdraw-success-page'
 import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
@@ -37,6 +44,7 @@ import {
 	mockConfigs,
 	mockFinishedRounds,
 	mockPurchase,
+	mockReceiverAddress,
 	mockReferrerData,
 	mockRevealedPrizes,
 	mockRound,
@@ -49,7 +57,12 @@ import {
 	mockTierTables,
 	mockUnrevealedPrizes,
 	mockUserEvmAddress,
+	mockWithdrawAmount,
+	mockWithdrawChainIndex,
+	mockWithdrawCurrencyIndex,
+	mockWithdrawNetworkFee,
 	mockWithdrawRewardResponse,
+	mockWithdrawTransaction,
 	mockZapCurrencyInBalance,
 	mockZapQuote,
 	mockZapSuccessResult,
@@ -210,6 +223,68 @@ export const pages: Record<string, PageEntry> = {
 				mockRevealedPrizes,
 				mockUnrevealedPrizes,
 			),
+	},
+	'withdraw-choose-chain': {
+		description:
+			'First step of the withdraw flow. Choose a chain to withdraw from.',
+		render: () => WithdrawChooseChainPage.render(),
+	},
+	'withdraw-choose-token': {
+		description:
+			'Second step of the withdraw flow. Choose a token on the selected chain.',
+		render: () =>
+			WithdrawChooseTokenPage.render({
+				chainIndex: mockWithdrawChainIndex,
+			}),
+	},
+	'withdraw-choose-amount': {
+		description:
+			'Third step of the withdraw flow. Choose amount — max or custom.',
+		render: () =>
+			WithdrawChooseAmountPage.render({
+				chainIndex: mockWithdrawChainIndex,
+				currencyIndex: mockWithdrawCurrencyIndex,
+				balance: mockBalance,
+			}),
+	},
+	'withdraw-choose-receiver': {
+		description:
+			'Fourth step of the withdraw flow. Enter the recipient address.',
+		render: () =>
+			WithdrawChooseReceiverPage.render({
+				chainIndex: mockWithdrawChainIndex,
+				currencyIndex: mockWithdrawCurrencyIndex,
+				amount: '0.005',
+			}),
+	},
+	'withdraw-confirm': {
+		description:
+			'Fifth step of the withdraw flow. Summary: chain, token, amount, recipient, network fee. Confirm to proceed.',
+		render: () =>
+			WithdrawConfirmPage.render({
+				chainIndex: mockWithdrawChainIndex,
+				currencyIndex: mockWithdrawCurrencyIndex,
+				amount: mockWithdrawAmount,
+				networkFee: mockWithdrawNetworkFee,
+				receiverAddress: mockReceiverAddress,
+			}),
+	},
+	'withdraw-success': {
+		description:
+			'Confirms a successful withdrawal — shows transaction ID. Opened after withdraw-confirm.',
+		render: () => WithdrawSuccessPage.render(mockWithdrawTransaction),
+	},
+	'withdraw-insufficient-funds': {
+		description:
+			'Shown when balance is too low to withdraw. Shows required vs available and user address to top up. Has a "Choose amount" button to go back and pick a different amount.',
+		render: () =>
+			WithdrawInsufficientFundsPage.render({
+				chainIndex: mockWithdrawChainIndex,
+				currencyIndex: mockWithdrawCurrencyIndex,
+				amount: mockWithdrawAmount,
+				balance: mockBalance,
+				userEvmAddress: mockUserEvmAddress,
+			}),
 	},
 	swap: {
 		description:

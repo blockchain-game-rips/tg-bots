@@ -1,7 +1,7 @@
 import { walletsControllerCreateWithdrawal } from '../../generated/api-client'
 import { NATIVE_ON_BASE } from '../constants'
-import { SuccessWithdrawPage } from '../pages/content/wallet/success-withdraw-page'
 import { WithdrawPage } from '../pages/content/wallet/withdraw-page'
+import { WithdrawSuccessPage } from '../pages/content/wallet/withdraw-success-page'
 import { CustomWithdrawAmountPrompt } from '../prompts/custom-withdraw-amount-prompt'
 import { WithdrawAddressPrompt } from '../prompts/withdraw-address-prompt'
 import {
@@ -100,5 +100,5 @@ export async function enterWithdrawalStep(
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessWithdrawPage.render(data)
+	return WithdrawSuccessPage.render(data)
 }

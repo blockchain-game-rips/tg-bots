@@ -11,6 +11,7 @@ import {
 	QuoteSwapResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	RoundDto,
+	TransactionDto,
 	WithdrawRewardResponseDtoOutput,
 } from '../../generated/api-client'
 
@@ -127,6 +128,23 @@ export const mockSwapAmountIn: CurrencyAmountDto = {
 	currency: mockEth,
 	amount: '5000000000000000', // 0.005 ETH
 }
+
+export const mockWithdrawTransaction: TransactionDto = {
+	id: '0xjkl012',
+	cost: { currency: mockEth, amount: '210000000000000' },
+}
+
+export const mockWithdrawChainIndex = 0 // Arbitrum
+export const mockWithdrawCurrencyIndex = 1 // ETH on Arbitrum
+export const mockWithdrawAmount: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '5000000000000000', // 0.005 ETH
+}
+export const mockWithdrawNetworkFee: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '210000000000000', // ~0.00021 ETH
+}
+export const mockReceiverAddress = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef'
 
 export const mockTierTables: GetTierTablesResponseDtoOutput = {
 	tierTables: [

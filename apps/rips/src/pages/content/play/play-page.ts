@@ -4,9 +4,11 @@ import { pageIds } from '../../page-ids'
 import { addNav, composeMarkup } from '../../utils'
 
 export class PlayPage {
-	static render(hasUnrevealedPrizes: boolean): PageContent {
+	static render(): PageContent {
 		const buttons: KeyboardLayout = [
 			{ label: 'Buy tickets', pageId: pageIds.chooseStake },
+			'row',
+			{ label: 'Open Rips', pageId: pageIds.openRips },
 			'row',
 			{ label: 'Status', pageId: pageIds.status },
 			'row',
@@ -15,10 +17,6 @@ export class PlayPage {
 				pageId: pageIds.cardCollectionChooseStake,
 			},
 		]
-
-		if (hasUnrevealedPrizes) {
-			buttons.push({ label: 'Open Rips!', pageId: pageIds.openRips })
-		}
 
 		return {
 			message:

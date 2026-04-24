@@ -4,10 +4,13 @@ import {
 	ConfigDto,
 	CurrencyAmountDto,
 	GetCardCollectionResponseDtoOutput,
+	GetReferrerResponseDtoOutput,
+	GetTierTablesResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
 	PrizeDto,
 	QuoteZapResponseDtoOutput,
 	RoundDto,
+	WithdrawRewardResponseDtoOutput,
 } from '../../generated/api-client'
 
 const mockChainAddress = {
@@ -92,6 +95,49 @@ export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
 			},
 		],
 	],
+}
+
+export const mockTierTables: GetTierTablesResponseDtoOutput = {
+	tierTables: [
+		{
+			currency: mockEth,
+			tiers: [
+				{ minVolume: '100000000000000000', feePercent: 500 }, // ≥0.1 ETH → 5%
+				{ minVolume: '500000000000000000', feePercent: 1000 }, // ≥0.5 ETH → 10%
+				{ minVolume: '1000000000000000000', feePercent: 1500 }, // ≥1 ETH → 15%
+			],
+		},
+	],
+}
+
+export const mockReferrerData: GetReferrerResponseDtoOutput = {
+	referrer: '0x1234567890abcdef1234567890abcdef12345678',
+	states: [
+		{
+			defaultFeePercent: 500,
+			activeFeePercent: 1000,
+			customFeePercent: 0,
+			monthStartTimestamp: '1745280000', // 2026-04-22
+			currMonthVolume: {
+				currency: mockEth,
+				amount: '600000000000000000',
+			}, // 0.6 ETH
+		},
+	],
+	rewards: {
+		availableToWithdraw: [
+			{ currency: mockEth, amount: '12000000000000000' },
+		], // 0.012 ETH
+		withdrawnRewards: [{ currency: mockEth, amount: '30000000000000000' }], // 0.03 ETH
+	},
+}
+
+export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
+	transaction: {
+		id: '0xghi789',
+		cost: { currency: mockEth, amount: '210000000000000' },
+	},
+	amount: { currency: mockEth, amount: '12000000000000000' },
 }
 
 export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {

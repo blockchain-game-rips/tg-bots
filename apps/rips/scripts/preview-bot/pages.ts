@@ -1,12 +1,12 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
-import { CardCollectionChooseStakePage } from '../../src/pages/content/play/card-collection-choose-stake'
-import { CardCollectionPage } from '../../src/pages/content/play/card-collection'
 import { BuyChooseStakePage } from '../../src/pages/content/play/buy-choose-stake-page'
 import { BuyChooseTicketCountPage } from '../../src/pages/content/play/buy-choose-ticket-count-page'
 import { BuyConfirmPage } from '../../src/pages/content/play/buy-confirm-page'
 import { BuyInsufficientFundsPage } from '../../src/pages/content/play/buy-insufficient-funds-page'
 import { BuySuccessPage } from '../../src/pages/content/play/buy-success-page'
+import { CardCollectionPage } from '../../src/pages/content/play/card-collection'
+import { CardCollectionChooseStakePage } from '../../src/pages/content/play/card-collection-choose-stake'
 import { FinishedRoundsPage } from '../../src/pages/content/play/finished-rounds-page'
 import { OngoingRoundsPage } from '../../src/pages/content/play/ongoing-rounds-page'
 import { PlayPage } from '../../src/pages/content/play/play-page'
@@ -19,6 +19,9 @@ import { ZapChooseTokenPage } from '../../src/pages/content/play/zap-choose-toke
 import { ZapConfirmPage } from '../../src/pages/content/play/zap-confirm-page'
 import { ZapInsufficientFundsPage } from '../../src/pages/content/play/zap-insufficient-funds-page'
 import { ZapSuccessPage } from '../../src/pages/content/play/zap-success-page'
+import { ReferralAboutPage } from '../../src/pages/content/referral-system/referral-about-page'
+import { ReferralSystemPage } from '../../src/pages/content/referral-system/referral-system'
+import { WithdrawRewardSuccessPage } from '../../src/pages/content/referral-system/withdraw-reward-success-page'
 import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
@@ -27,11 +30,14 @@ import {
 	mockConfigs,
 	mockFinishedRounds,
 	mockPurchase,
+	mockReferrerData,
 	mockRevealedPrizes,
 	mockRound,
 	mockRound2,
+	mockTierTables,
 	mockUnrevealedPrizes,
 	mockUserEvmAddress,
+	mockWithdrawRewardResponse,
 	mockZapCurrencyInBalance,
 	mockZapQuote,
 	mockZapSuccessResult,
@@ -54,11 +60,13 @@ export const pages: Record<string, PageEntry> = {
 		render: () => PlayPage.render(),
 	},
 	'card-collection-choose-stake': {
-		description: 'Entry to the card collection, opened from Play. Choose a stake tier to view the card collection for.',
+		description:
+			'Entry to the card collection, opened from Play. Choose a stake tier to view the card collection for.',
 		render: () => CardCollectionChooseStakePage.render(mockAvailableStakes),
 	},
 	'card-collection': {
-		description: 'Shows the full card collection for the selected stake tier — each card with name (linked to image) and how many the user owns.',
+		description:
+			'Shows the full card collection for the selected stake tier — each card with name (linked to image) and how many the user owns.',
 		render: () => CardCollectionPage.render(mockCardCollection),
 	},
 	'buy-choose-stake': {
@@ -190,6 +198,27 @@ export const pages: Record<string, PageEntry> = {
 				mockRevealedPrizes,
 				mockUnrevealedPrizes,
 			),
+	},
+	'referral-system': {
+		description:
+			'Main referral dashboard. Shows available/withdrawn rewards, current fee share, monthly volume, tier table, and links to copy referral link, withdraw rewards, and learn more.',
+		render: () =>
+			ReferralSystemPage.render({
+				referrerData: mockReferrerData,
+				tierTables: mockTierTables,
+				referralLink: 'https://t.me/rips_bot?start=ref_abc123',
+			}),
+	},
+	'referral-about': {
+		description:
+			'Explains how the referral system works: fee share tiers based on 30-day volume, custom percent override. Back leads to referral-system.',
+		render: () => ReferralAboutPage.render(mockTierTables),
+	},
+	'referral-withdraw-success': {
+		description:
+			'Confirms a successful reward withdrawal — shows amount and network fee. Back leads to referral-system.',
+		render: () =>
+			WithdrawRewardSuccessPage.render(mockWithdrawRewardResponse),
 	},
 	about: {
 		description:

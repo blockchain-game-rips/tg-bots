@@ -9,6 +9,11 @@ export class PlayPage {
 			{ label: 'Buy tickets', pageId: pageIds.chooseStake },
 			'row',
 			{ label: 'Status', pageId: pageIds.status },
+			'row',
+			{
+				label: 'Card Collection',
+				pageId: pageIds.cardCollectionChooseStake,
+			},
 		]
 
 		if (hasUnrevealedPrizes) {

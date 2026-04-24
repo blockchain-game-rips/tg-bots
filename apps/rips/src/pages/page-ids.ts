@@ -38,4 +38,6 @@ export const pageIds = {
 	referralSystem: 'referral',
 	referralAbout: 'referralAbout',
 	withdrawRewardSuccess: 'wdRewardSuccess',
+	cardCollectionChooseStake: 'cardStake',
+	cardCollection: 'cardCollection',
 } as const

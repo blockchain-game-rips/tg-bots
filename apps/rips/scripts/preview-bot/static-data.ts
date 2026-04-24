@@ -3,6 +3,7 @@ import {
 	BuyTicketsPurchaseResponseDtoOutput,
 	ConfigDto,
 	CurrencyAmountDto,
+	GetCardCollectionResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
 	PrizeDto,
 	QuoteZapResponseDtoOutput,
@@ -20,6 +21,77 @@ const mockEth: ConfigDto['ticketPrice']['currency'] = {
 	symbol: 'ETH',
 	name: 'Ethereum',
 	decimals: 18,
+}
+
+export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
+	tiers: [
+		[
+			{
+				card: {
+					id: 1,
+					name: 'Common Card 1',
+					tier: 0,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Common-Cards.png',
+				},
+				count: 3,
+			},
+			{
+				card: {
+					id: 2,
+					name: 'Common Card 2',
+					tier: 0,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Common-Cards.png',
+				},
+				count: 1,
+			},
+			{
+				card: {
+					id: 3,
+					name: 'Common Card 3',
+					tier: 0,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Common-Cards.png',
+				},
+				count: 0,
+			},
+		],
+		[
+			{
+				card: {
+					id: 4,
+					name: 'Rare Card 1',
+					tier: 1,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Rare-Cards.png',
+				},
+				count: 1,
+			},
+			{
+				card: {
+					id: 5,
+					name: 'Rare Card 2',
+					tier: 1,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Rare-Cards.png',
+				},
+				count: 0,
+			},
+		],
+		[
+			{
+				card: {
+					id: 6,
+					name: 'Epic Card 1',
+					tier: 2,
+					imageUrl:
+						'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Epic-Cards.png',
+				},
+				count: 0,
+			},
+		],
+	],
 }
 
 export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {

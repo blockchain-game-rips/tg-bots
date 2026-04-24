@@ -1,5 +1,7 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
+import { CardCollectionChooseStakePage } from '../../src/pages/content/play/card-collection-choose-stake'
+import { CardCollectionPage } from '../../src/pages/content/play/card-collection'
 import { BuyChooseStakePage } from '../../src/pages/content/play/buy-choose-stake-page'
 import { BuyChooseTicketCountPage } from '../../src/pages/content/play/buy-choose-ticket-count-page'
 import { BuyConfirmPage } from '../../src/pages/content/play/buy-confirm-page'
@@ -21,6 +23,7 @@ import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
 	mockBalance,
+	mockCardCollection,
 	mockConfigs,
 	mockFinishedRounds,
 	mockPurchase,
@@ -49,6 +52,14 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
 		render: () => PlayPage.render(),
+	},
+	'card-collection-choose-stake': {
+		description: 'Entry to the card collection, opened from Play. Choose a stake tier to view the card collection for.',
+		render: () => CardCollectionChooseStakePage.render(mockAvailableStakes),
+	},
+	'card-collection': {
+		description: 'Shows the full card collection for the selected stake tier — each card with name (linked to image) and how many the user owns.',
+		render: () => CardCollectionPage.render(mockCardCollection),
 	},
 	'buy-choose-stake': {
 		description:

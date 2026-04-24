@@ -5,7 +5,7 @@ import { PageContent } from '../../../types'
 import { pageIds } from '../../page-ids'
 import { configName, getConfig } from '../../utils'
 
-export class ConfirmPurchasePage {
+export class BuyConfirmPage {
 	static render(
 		availableStake: AvailableStakeDto,
 		ticketCount: number,

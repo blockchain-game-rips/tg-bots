@@ -3,7 +3,7 @@ import { enterTicketAmountStep } from '../../../flows/ticket-purchase'
 import { Context } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 
-export async function handleChooseTicketCountPageId(
+export async function handleBuyChooseTicketCountPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 	payloads: string[],
 ) {

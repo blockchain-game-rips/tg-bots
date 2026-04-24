@@ -2,18 +2,18 @@ import { Filter } from 'grammy'
 import { pageIds } from '../../pages/page-ids'
 import { Context } from '../../types'
 import { handleAboutPageId } from './handlers/about'
-import { handleChooseStakePageId } from './handlers/choose-stake'
-import { handleChooseTicketCountPageId } from './handlers/choose-ticket-amount'
+import { handleBuyChooseStakePageId } from './handlers/choose-stake'
+import { handleBuyChooseTicketCountPageId } from './handlers/choose-ticket-amount'
 import { handleChooseWithdrawAmountPageId } from './handlers/choose-withdraw-amount'
 import { handleCompletedRoundsPageId } from './handlers/completed-rounds'
-import { handleConfirmPurchasePageId } from './handlers/confirm-purchase'
+import { handleBuyConfirmPageId } from './handlers/confirm-purchase'
 import { handleHomePageId } from './handlers/home'
 import { handleOngoingRoundsPageId } from './handlers/ongoing-rounds'
 import { handleOpenRipsPageId } from './handlers/open-rips'
 import { handlePlayPageId } from './handlers/play'
 import { handleRevealPrizesPageId } from './handlers/reveal-prizes'
 import { handleStatusPageId } from './handlers/status'
-import { handleSuccessPurchasePageId } from './handlers/success-purchase'
+import { handleBuySuccessPageId } from './handlers/success-purchase'
 import { handleSuccessWithdrawPageId } from './handlers/success-withdraw'
 import { handleWalletPageId } from './handlers/wallet'
 import { handleWithdrawPageId } from './handlers/withdraw'
@@ -46,13 +46,13 @@ export async function handleOpenCommand(
 			return await handlePlayPageId(ctx)
 
 		case pageIds.chooseStake:
-			return await handleChooseStakePageId(ctx)
+			return await handleBuyChooseStakePageId(ctx)
 
 		case pageIds.chooseTicketAmount:
-			return await handleChooseTicketCountPageId(ctx, payloads)
+			return await handleBuyChooseTicketCountPageId(ctx, payloads)
 
 		case pageIds.confirmPurchase:
-			return await handleConfirmPurchasePageId(ctx, payloads)
+			return await handleBuyConfirmPageId(ctx, payloads)
 
 		case pageIds.openRips:
 			return await handleOpenRipsPageId(ctx)
@@ -70,7 +70,7 @@ export async function handleOpenCommand(
 			return await handleCompletedRoundsPageId(ctx)
 
 		case pageIds.successPurchase:
-			return await handleSuccessPurchasePageId(ctx)
+			return await handleBuySuccessPageId(ctx)
 
 		default:
 			throw Error(`unknown pageId: ${pageId}`)

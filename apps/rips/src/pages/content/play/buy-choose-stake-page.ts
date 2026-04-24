@@ -5,7 +5,7 @@ import { PageContent } from '../../../types'
 import { pageIds } from '../../page-ids'
 import { addNav, configName, getConfig } from '../../utils'
 
-export class ChooseStakePage {
+export class BuyChooseStakePage {
 	static render(availableStakes: AvailableStakeDto[]): PageContent {
 		const keyboard = new InlineKeyboard()
 

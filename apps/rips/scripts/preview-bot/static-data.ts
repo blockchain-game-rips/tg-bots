@@ -1,6 +1,8 @@
 import {
 	AvailableStakeDto,
+	BuyTicketsPurchaseResponseDtoOutput,
 	ConfigDto,
+	CurrencyAmountDto,
 	PrizeDto,
 	RoundDto,
 } from '../../generated/api-client'
@@ -16,6 +18,20 @@ const mockEth: ConfigDto['ticketPrice']['currency'] = {
 	symbol: 'ETH',
 	name: 'Ethereum',
 	decimals: 18,
+}
+
+export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {
+	transaction: {
+		id: '0xabc123',
+		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
+	},
+	roundId: 1,
+	ticketCount: 3,
+}
+
+export const mockBalance: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '2000000000000000', // 0.002 ETH — intentionally low for insufficient-funds preview
 }
 
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'

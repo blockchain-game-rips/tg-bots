@@ -5,10 +5,10 @@ import {
 	ripsControllerGetStakes,
 } from '../../generated/api-client'
 import { NATIVE_ON_BASE } from '../constants'
-import { ChooseTicketCountPage } from '../pages/content/play/choose-ticket-count-page'
-import { ConfirmPurchasePage } from '../pages/content/play/confirm-purchase-page'
-import { InsufficientFundsPage } from '../pages/content/play/insufficient-funds-page'
-import { SuccessPurchasePage } from '../pages/content/play/success-purchase-page'
+import { BuyChooseTicketCountPage } from '../pages/content/play/buy-choose-ticket-count-page'
+import { BuyConfirmPage } from '../pages/content/play/buy-confirm-page'
+import { BuyInsufficientFundsPage } from '../pages/content/play/buy-insufficient-funds-page'
+import { BuySuccessPage } from '../pages/content/play/buy-success-page'
 import { getConfig } from '../pages/utils'
 import { ActiveFlow, Context, PageContent, TicketPurchaseStep } from '../types'
 import { ApiError } from '../utils/api-error'
@@ -42,7 +42,7 @@ export async function enterTicketAmountStep(
 		step: TicketPurchaseStep.ChoosingTicketAmount,
 	}
 
-	return ChooseTicketCountPage.render(stake)
+	return BuyChooseTicketCountPage.render(stake)
 }
 
 export async function enterConfirmingStep(
@@ -62,7 +62,7 @@ export async function enterConfirmingStep(
 	const balanceAmount = BigInt(balance.amount)
 
 	if (balanceAmount < totalCost) {
-		return InsufficientFundsPage.render(balance, stake, ticketAmount)
+		return BuyInsufficientFundsPage.render(balance, stake, ticketAmount)
 	}
 
 	ctx.session = {
@@ -72,7 +72,7 @@ export async function enterConfirmingStep(
 		stakeId,
 	}
 
-	return ConfirmPurchasePage.render(stake, ticketAmount)
+	return BuyConfirmPage.render(stake, ticketAmount)
 }
 
 export async function enterBuyingStep(
@@ -109,5 +109,5 @@ export async function enterBuyingStep(
 
 	ctx.session = { activeFlow: null }
 
-	return SuccessPurchasePage.render(purchase, round)
+	return BuySuccessPage.render(purchase, round)
 }

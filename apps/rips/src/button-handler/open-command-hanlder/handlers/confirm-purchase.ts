@@ -3,7 +3,7 @@ import { enterConfirmingStep } from '../../../flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 
-export async function handleConfirmPurchasePageId(
+export async function handleBuyConfirmPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 	payloads: string[],
 ) {

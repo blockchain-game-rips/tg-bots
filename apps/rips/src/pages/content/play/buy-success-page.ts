@@ -9,7 +9,7 @@ import { formatUnits, toUsd } from '../../../utils/units'
 import { pageIds } from '../../page-ids'
 import { configName } from '../../utils'
 
-export class SuccessPurchasePage {
+export class BuySuccessPage {
 	static render(
 		purchase: BuyTicketsPurchaseResponseDtoOutput,
 		round?: RoundDto,

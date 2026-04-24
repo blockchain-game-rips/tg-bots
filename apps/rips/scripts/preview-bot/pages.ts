@@ -1,5 +1,10 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
+import { BuyChooseStakePage } from '../../src/pages/content/play/buy-choose-stake-page'
+import { BuyChooseTicketCountPage } from '../../src/pages/content/play/buy-choose-ticket-count-page'
+import { BuyConfirmPage } from '../../src/pages/content/play/buy-confirm-page'
+import { BuyInsufficientFundsPage } from '../../src/pages/content/play/buy-insufficient-funds-page'
+import { BuySuccessPage } from '../../src/pages/content/play/buy-success-page'
 import { FinishedRoundsPage } from '../../src/pages/content/play/finished-rounds-page'
 import { OngoingRoundsPage } from '../../src/pages/content/play/ongoing-rounds-page'
 import { PlayPage } from '../../src/pages/content/play/play-page'
@@ -10,8 +15,10 @@ import { StatusPage } from '../../src/pages/content/play/status-page'
 import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
+	mockBalance,
 	mockConfigs,
 	mockFinishedRounds,
+	mockPurchase,
 	mockRevealedPrizes,
 	mockRound,
 	mockRound2,
@@ -34,6 +41,36 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
 		render: () => PlayPage.render(),
+	},
+	'buy-choose-stake': {
+		description:
+			'First step of buying tickets. Shows available stake tiers to pick from. Opened from Play.',
+		render: () => BuyChooseStakePage.render(mockAvailableStakes),
+	},
+	'buy-choose-ticket-count': {
+		description:
+			'Second step of buying tickets. Choose how many tickets to buy: preset options or custom amount. Opened from choose-stake.',
+		render: () => BuyChooseTicketCountPage.render(mockAvailableStakes[0]),
+	},
+	'buy-confirm': {
+		description:
+			'Third step of buying tickets. Summary of the purchase with a Confirm button. Opened from choose-ticket-count.',
+		render: () => BuyConfirmPage.render(mockAvailableStakes[0], 3),
+	},
+	'buy-success': {
+		description:
+			'Final step of the buy flow. Confirms a successful ticket purchase — shows round number, ticket count, total cost, and blockchain fee. Opened after buy-confirm.',
+		render: () => BuySuccessPage.render(mockPurchase, mockRound),
+	},
+	'buy-insufficient-funds': {
+		description:
+			"Shown instead of confirm-purchase when the user's balance is too low. Offers option to enter from another token (zap flow) or go back.",
+		render: () =>
+			BuyInsufficientFundsPage.render(
+				mockBalance,
+				mockAvailableStakes[0],
+				3,
+			),
 	},
 	status: {
 		description:

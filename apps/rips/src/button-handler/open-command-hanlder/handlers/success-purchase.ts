@@ -3,7 +3,7 @@ import { enterBuyingStep } from '../../../flows/ticket-purchase'
 import { ActiveFlow, Context, TicketPurchaseStep } from '../../../types'
 import { editMessage } from '../../../utils/grammy'
 
-export async function handleSuccessPurchasePageId(
+export async function handleBuySuccessPageId(
 	ctx: Filter<Context, 'callback_query:data'>,
 ) {
 	const sessionData = ctx.session

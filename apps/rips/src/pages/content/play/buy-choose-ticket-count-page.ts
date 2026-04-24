@@ -6,7 +6,7 @@ import { PageContent } from '../../../types'
 import { pageIds } from '../../page-ids'
 import { addNav, configName, getConfig } from '../../utils'
 
-export class ChooseTicketCountPage {
+export class BuyChooseTicketCountPage {
 	static render(availableStake: AvailableStakeDto): PageContent {
 		const config = getConfig(availableStake)
 

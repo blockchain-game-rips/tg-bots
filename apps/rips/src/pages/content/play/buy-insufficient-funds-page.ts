@@ -9,7 +9,7 @@ import { formatUnits, toUsd } from '../../../utils/units'
 import { pageIds } from '../../page-ids'
 import { configName, getConfig } from '../../utils'
 
-export class InsufficientFundsPage {
+export class BuyInsufficientFundsPage {
 	static render(
 		balance: CurrencyAmountDto,
 		availableStake: AvailableStakeDto,

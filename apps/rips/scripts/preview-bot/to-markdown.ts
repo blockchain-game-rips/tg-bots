@@ -4,8 +4,7 @@ import { PageEntry, pages } from './pages'
 export function pagesToMarkdown(pages: Record<string, PageEntry>): string {
 	return Object.entries(pages)
 		.map(([name, page]) => {
-			const title = capitalize(name)
-			return `## ${title}\n\n${page.description}`
+			return `## ${name}\n\n${page.description}`
 		})
 		.join('\n\n')
 }

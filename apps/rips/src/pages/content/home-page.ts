@@ -27,6 +27,8 @@ export class HomePage {
 					{ label: 'Wallet', pageId: pageIds.wallet },
 					'row',
 					{ label: 'About', pageId: pageIds.about },
+					'row',
+					{ label: 'Referral System', pageId: pageIds.referralSystem },
 				]),
 			),
 		}

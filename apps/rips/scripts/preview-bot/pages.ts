@@ -22,6 +22,7 @@ import { ZapSuccessPage } from '../../src/pages/content/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/content/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/content/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/content/referral-system/withdraw-reward-success-page'
+import { WalletPage } from '../../src/pages/content/wallet/wallet-page'
 import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
@@ -198,6 +199,11 @@ export const pages: Record<string, PageEntry> = {
 				mockRevealedPrizes,
 				mockUnrevealedPrizes,
 			),
+	},
+	wallet: {
+		description:
+			"Wallet hub. Shows the user's ETH balance and deposit address, with navigation to Withdraw and Swap. Opened from Home.",
+		render: () => WalletPage.render(mockBalance, mockUserEvmAddress),
 	},
 	'referral-system': {
 		description:

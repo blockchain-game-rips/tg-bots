@@ -31,7 +31,10 @@ bot.command('r', async (ctx) => {
 
 	const { message, keyboard } = page.render()
 
-	await ctx.reply(message, { reply_markup: keyboard })
+	await ctx.reply(message, {
+		reply_markup: keyboard,
+		parse_mode: 'HTML',
+	})
 })
 
 bot.command('d', async (ctx) => {

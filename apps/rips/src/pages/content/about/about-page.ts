@@ -17,7 +17,9 @@ export class AboutPage {
 	static render(configs: ConfigDto[]): PageContent {
 		const sections = configs.map((config) => renderConfig(config))
 
-		const message = sections.join('\n\n')
+		const message =
+			'*Detailed description of the game*\n\nStakes:\n\n' +
+			sections.join('\n\n')
 
 		return {
 			message,

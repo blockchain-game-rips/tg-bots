@@ -22,6 +22,12 @@ import { ZapSuccessPage } from '../../src/pages/content/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/content/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/content/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/content/referral-system/withdraw-reward-success-page'
+import { SwapChooseAmountPage } from '../../src/pages/content/wallet/swap-choose-amount'
+import { SwapChooseChainPage } from '../../src/pages/content/wallet/swap-choose-chain'
+import { SwapChooseTokenPage } from '../../src/pages/content/wallet/swap-choose-token'
+import { SwapConfirmPage } from '../../src/pages/content/wallet/swap-confirm'
+import { SwapInsufficientFundsPage } from '../../src/pages/content/wallet/swap-insufficient'
+import { SwapPage } from '../../src/pages/content/wallet/swap-page'
 import { WalletPage } from '../../src/pages/content/wallet/wallet-page'
 import { PageContent } from '../../src/types'
 import {
@@ -35,6 +41,11 @@ import {
 	mockRevealedPrizes,
 	mockRound,
 	mockRound2,
+	mockSwapAmountIn,
+	mockSwapNetworkFee,
+	mockSwapQuote,
+	mockSwapTokenInIndex,
+	mockSwapTokenOutIndex,
 	mockTierTables,
 	mockUnrevealedPrizes,
 	mockUserEvmAddress,
@@ -199,6 +210,62 @@ export const pages: Record<string, PageEntry> = {
 				mockRevealedPrizes,
 				mockUnrevealedPrizes,
 			),
+	},
+	swap: {
+		description:
+			'Swap hub. Select token in and token out, then proceed to choose amount. Opened from Wallet.',
+		render: () =>
+			SwapPage.render({
+				in: { tokenIndex: mockSwapTokenInIndex, chainIndex: 0 },
+				out: { tokenIndex: mockSwapTokenOutIndex, chainIndex: 1 },
+			}),
+	},
+	'swap-choose-chain': {
+		description:
+			'Choose a chain when selecting a token for the swap. Opened from swap.',
+		render: () => SwapChooseChainPage.render(),
+	},
+	'swap-choose-token': {
+		description:
+			'Choose a token on the selected chain. Opened from swap-choose-chain.',
+		render: () => SwapChooseTokenPage.render({ chainIndex: 0 }),
+	},
+	'swap-choose-amount': {
+		description:
+			'Choose how much to swap — max or custom amount. Opened from swap after both tokens are selected.',
+		render: () =>
+			SwapChooseAmountPage.render({
+				tokenInIndex: mockSwapTokenInIndex,
+				tokenOutIndex: mockSwapTokenOutIndex,
+				chainInIndex: 0,
+				chainOutIndex: 1,
+				balance: mockBalance,
+			}),
+	},
+	'swap-confirm': {
+		description:
+			'Shows swap quote: amount in, amount out, swap fee, network fee. Confirm to proceed. Opened from swap-choose-amount.',
+		render: () =>
+			SwapConfirmPage.render({
+				tokenInIndex: mockSwapTokenInIndex,
+				tokenOutIndex: mockSwapTokenOutIndex,
+				amountIn: mockSwapAmountIn,
+				networkFee: mockSwapNetworkFee,
+				swapQuote: mockSwapQuote,
+			}),
+	},
+	'swap-insufficient-funds': {
+		description:
+			'Shown when token balance is too low for the swap. Shows required vs available. User can go back and choose a different amount.',
+		render: () =>
+			SwapInsufficientFundsPage.render({
+				tokenInIndex: mockSwapTokenInIndex,
+				tokenOutIndex: mockSwapTokenOutIndex,
+				amountIn: mockSwapAmountIn,
+				balance: mockBalance,
+				swapQuote: mockSwapQuote,
+				userEvmAddress: mockUserEvmAddress,
+			}),
 	},
 	wallet: {
 		description:

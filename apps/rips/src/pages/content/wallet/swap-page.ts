@@ -1,36 +1,26 @@
 import { InlineKeyboard } from 'grammy'
 import { buildCommand } from '../../../button-handler/utils'
-import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
 import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
+import { TokenSelection, tokenLabel } from './swap-utils'
 
 export class SwapPage {
 	static render(args: {
-		tokenInIndex?: number
-		tokenOutIndex?: number
+		in?: TokenSelection
+		out?: TokenSelection
 	}): PageContent {
-		const { tokenInIndex, tokenOutIndex } = args
-
-		const tokenIn =
-			tokenInIndex !== undefined
-				? SUPPORTED_CURRENCIES[tokenInIndex]
-				: undefined
-		const tokenOut =
-			tokenOutIndex !== undefined
-				? SUPPORTED_CURRENCIES[tokenOutIndex]
-				: undefined
+		const tokenIn = args.in
+		const tokenOut = args.out
 
 		const lines = [
-			`Token in: ${tokenIn ? tokenIn.symbol : '—'}`,
-			`Token out: ${tokenOut ? tokenOut.symbol : '—'}`,
+			`Token in: ${tokenIn ? tokenLabel(tokenIn) : '—'}`,
+			`Token out: ${tokenOut ? tokenLabel(tokenOut) : '—'}`,
 		]
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				tokenIn
-					? `Change token in (${tokenIn.symbol})`
-					: 'Choose token in',
+				tokenIn ? `Change token in` : 'Choose token in',
 				buildCommand({
 					pageId: pageIds.swapChooseChain,
 					type: 'open',
@@ -39,9 +29,7 @@ export class SwapPage {
 			)
 			.row()
 			.text(
-				tokenOut
-					? `Change token out (${tokenOut.symbol})`
-					: 'Choose token out',
+				tokenOut ? `Change token out` : 'Choose token out',
 				buildCommand({
 					pageId: pageIds.swapChooseChain,
 					type: 'open',

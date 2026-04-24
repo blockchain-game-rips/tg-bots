@@ -1,12 +1,12 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { buildCommand } from '../../../button-handler/utils'
-import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { promptIds } from '../../../prompts/prompt-ids'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
 import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
+import { tokenLabel } from './swap-utils'
 
 export const SWAP_MAX_PAYLOAD = 'max'
 
@@ -14,15 +14,21 @@ export class SwapChooseAmountPage {
 	static render(args: {
 		tokenInIndex: number
 		tokenOutIndex: number
+		chainInIndex: number
+		chainOutIndex: number
 		balance: CurrencyAmountDto
 	}): PageContent {
-		const { tokenInIndex, tokenOutIndex, balance } = args
-		const tokenIn = SUPPORTED_CURRENCIES[tokenInIndex]
-		const tokenOut = SUPPORTED_CURRENCIES[tokenOutIndex]
+		const {
+			tokenInIndex,
+			tokenOutIndex,
+			chainInIndex,
+			chainOutIndex,
+			balance,
+		} = args
 
 		const lines = [
-			`Token in: ${tokenIn.symbol}`,
-			`Token out: ${tokenOut.symbol}`,
+			`Token in: ${tokenLabel({ tokenIndex: tokenInIndex, chainIndex: chainInIndex })}`,
+			`Token out: ${tokenLabel({ tokenIndex: tokenOutIndex, chainIndex: chainOutIndex })}`,
 			`Balance: ${formattedAmountWithUsd(balance)}`,
 			'',
 			'Choose amount to swap:',

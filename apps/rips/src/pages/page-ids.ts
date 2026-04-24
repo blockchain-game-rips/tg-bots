@@ -35,4 +35,7 @@ export const pageIds = {
 	swapChooseAmount: 'swapAmount',
 	swapConfirm: 'swapConfirm',
 	swapInsufficientFunds: 'swapInsufFunds',
+	referralSystem: 'referral',
+	referralAbout: 'referralAbout',
+	withdrawRewardSuccess: 'wdRewardSuccess',
 } as const

@@ -29,4 +29,10 @@ export const pageIds = {
 	withdrawChooseReceiver: 'wdReceiver',
 	withdrawConfirm: 'wdConfirm',
 	withdrawInsufficientFunds: 'wdInsufFunds',
+	swap: 'swap',
+	swapChooseChain: 'swapChain',
+	swapChooseToken: 'swapToken',
+	swapChooseAmount: 'swapAmount',
+	swapConfirm: 'swapConfirm',
+	swapInsufficientFunds: 'swapInsufFunds',
 } as const

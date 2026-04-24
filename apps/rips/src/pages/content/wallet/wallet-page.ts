@@ -26,6 +26,8 @@ export class WalletPage {
 					{ label: 'Update', pageId: pageIds.wallet },
 					'row',
 					{ label: 'Withdraw', pageId: pageIds.withdraw },
+					'row',
+					{ label: 'Swap', pageId: pageIds.swap },
 				]),
 			),
 			{ home: pageIds.home, parent: pageIds.home },

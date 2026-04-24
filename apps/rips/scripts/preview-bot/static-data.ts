@@ -1,4 +1,9 @@
-import { ConfigDto, PrizeDto, RoundDto } from '../../generated/api-client'
+import {
+	AvailableStakeDto,
+	ConfigDto,
+	PrizeDto,
+	RoundDto,
+} from '../../generated/api-client'
 
 const mockChainAddress = {
 	address: '0x0000000000000000000000000000000000000000',
@@ -112,6 +117,144 @@ export const mockUnrevealedPrizes: PrizeDto[] = [
 			imageUrl:
 				'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Common-Cards.png',
 		},
+	},
+]
+
+const mockRoundConfig = {
+	ticketCap: 8,
+	feePercent: 5,
+	ticketPrice: { currency: mockEth, amount: '5000000000000000' },
+	durationSeconds: 3600,
+	prizeDistribution: [
+		{
+			prizeCount: '5',
+			minPrize: '800000000000000',
+			maxPrize: '1200000000000000',
+		},
+		{
+			prizeCount: '2',
+			minPrize: '7000000000000000',
+			maxPrize: '8000000000000000',
+		},
+		{
+			prizeCount: '1',
+			minPrize: '18000000000000000',
+			maxPrize: '18000000000000000',
+		},
+	],
+}
+
+const mockRoundConfig2 = {
+	ticketCap: 20,
+	feePercent: 5,
+	ticketPrice: { currency: mockEth, amount: '50000000000000000' },
+	durationSeconds: 86400,
+	prizeDistribution: [
+		{
+			prizeCount: '10',
+			minPrize: '10000000000000000',
+			maxPrize: '50000000000000000',
+		},
+		{
+			prizeCount: '5',
+			minPrize: '100000000000000000',
+			maxPrize: '200000000000000000',
+		},
+		{
+			prizeCount: '2',
+			minPrize: '300000000000000000',
+			maxPrize: '400000000000000000',
+		},
+		{
+			prizeCount: '1',
+			minPrize: '500000000000000000',
+			maxPrize: '500000000000000000',
+		},
+	],
+}
+
+export const mockFinishedRounds: RoundDto[] = [
+	{
+		id: 2,
+		stakeId: 1,
+		currency: mockEth,
+		config: mockRoundConfig,
+		actions: {
+			purchases: [
+				{
+					userAddress: mockUserEvmAddress,
+					ticketCount: '8',
+					startTicketIndex: '0',
+				},
+			],
+			claims: [
+				{
+					userAddress: mockUserEvmAddress,
+					amount: '36000000000000000',
+				},
+			],
+			refunds: [],
+		},
+		status: 'CLAIMED',
+		startTime: '2026-04-23T08:00:00.000Z',
+	},
+	{
+		id: 3,
+		stakeId: 1,
+		currency: mockEth,
+		config: mockRoundConfig,
+		actions: {
+			purchases: [
+				{
+					userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+					ticketCount: '8',
+					startTicketIndex: '0',
+				},
+			],
+			claims: [],
+			refunds: [],
+		},
+		status: 'REFUNDED',
+		startTime: '2026-04-22T06:00:00.000Z',
+	},
+]
+
+export const mockRound2: RoundDto = {
+	id: 4,
+	stakeId: 2,
+	currency: mockEth,
+	config: mockRoundConfig2,
+	actions: {
+		purchases: [
+			{
+				userAddress: mockUserEvmAddress,
+				ticketCount: '5',
+				startTicketIndex: '0',
+			},
+			{
+				userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+				ticketCount: '8',
+				startTicketIndex: '5',
+			},
+		],
+		claims: [],
+		refunds: [],
+	},
+	status: 'FILLING',
+	startTime: '2026-04-24T09:00:00.000Z',
+}
+
+export const mockAvailableStakes: AvailableStakeDto[] = [
+	{
+		stake: { id: 1, currentConfig: mockRoundConfig },
+		fillingRound: {
+			...mockRound,
+			id: 1,
+		},
+	},
+	{
+		stake: { id: 2, currentConfig: mockRoundConfig2 },
+		fillingRound: mockRound2,
 	},
 ]
 

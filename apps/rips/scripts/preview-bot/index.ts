@@ -7,9 +7,9 @@ const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 const pageNames = Object.keys(pages)
 
 bot.command('pages', async (ctx) => {
-	const list = pageNames.map((name) => `${name}`).join('\n')
+	const list = pageNames.map((name) => `<code>${name}</code>`).join('\n')
 
-	await ctx.reply(`Available pages:\n\n${list}`)
+	await ctx.reply(`Available pages:\n\n${list}`, { parse_mode: 'HTML' })
 })
 
 bot.command('r', async (ctx) => {

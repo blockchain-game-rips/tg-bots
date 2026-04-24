@@ -1,5 +1,7 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
+import { FinishedRoundsPage } from '../../src/pages/content/play/finished-rounds-page'
+import { OngoingRoundsPage } from '../../src/pages/content/play/ongoing-rounds-page'
 import { PlayPage } from '../../src/pages/content/play/play-page'
 import { RevealAllPage } from '../../src/pages/content/play/reveal-all-page'
 import { RevealPrizesPage } from '../../src/pages/content/play/reveal-prizes-page'
@@ -7,9 +9,12 @@ import { RevealSinglePage } from '../../src/pages/content/play/reveal-single-pag
 import { StatusPage } from '../../src/pages/content/play/status-page'
 import { PageContent } from '../../src/types'
 import {
+	mockAvailableStakes,
 	mockConfigs,
+	mockFinishedRounds,
 	mockRevealedPrizes,
 	mockRound,
+	mockRound2,
 	mockUnrevealedPrizes,
 	mockUserEvmAddress,
 } from './static-data'
@@ -34,6 +39,20 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Overview of the user's activity — shows their tickets in ongoing rounds, with navigation to Ongoing Rounds and Completed Rounds lists.",
 		render: () => StatusPage.render([mockRound], mockUserEvmAddress),
+	},
+	'ongoing-rounds': {
+		description:
+			'List of all active rounds grouped by stake tier, showing tickets remaining and time left per round. Back leads to Status.',
+		render: () =>
+			OngoingRoundsPage.render(
+				[mockRound, mockRound2],
+				mockAvailableStakes,
+			),
+	},
+	'finished-rounds': {
+		description:
+			'Global list of all completed rounds, showing stake tier, round number, and status. Back leads to Status.',
+		render: () => FinishedRoundsPage.render(mockFinishedRounds),
 	},
 	'reveal-prizes': {
 		description:

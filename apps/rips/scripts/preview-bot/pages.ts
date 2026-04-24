@@ -1,8 +1,16 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
 import { PlayPage } from '../../src/pages/content/play/play-page'
+import { RevealAllPage } from '../../src/pages/content/play/reveal-all-page'
+import { RevealPrizesPage } from '../../src/pages/content/play/reveal-prizes-page'
+import { RevealSinglePage } from '../../src/pages/content/play/reveal-single-page'
 import { PageContent } from '../../src/types'
-import { mockConfigs } from './static-data'
+import {
+	mockConfigs,
+	mockRevealedPrizes,
+	mockRound,
+	mockUnrevealedPrizes,
+} from './static-data'
 
 export type PageEntry = {
 	description: string
@@ -19,6 +27,32 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
 		render: () => PlayPage.render(),
+	},
+	'reveal-prizes': {
+		description:
+			'Entry point for revealing tickets ("Open Rips" in the Play menu). Shows unrevealed ticket count with "Reveal next" and "Reveal all" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
+		render: () =>
+			RevealPrizesPage.render([mockRound], mockUnrevealedPrizes),
+	},
+	'reveal-single': {
+		description:
+			'Shows the result of revealing one ticket. Also shows remaining unrevealed count with options to continue. Only opened from reveal-prizes. Part of the reveal flow — back leads to Play.',
+		render: () =>
+			RevealSinglePage.render(
+				mockRound,
+				mockRevealedPrizes[0],
+				mockUnrevealedPrizes,
+			),
+	},
+	'reveal-all': {
+		description:
+			'Shows all revealed prizes as a list. Also shows remaining unrevealed count. Can be opened from reveal-prizes or reveal-single. Part of the reveal flow — back leads to Play.',
+		render: () =>
+			RevealAllPage.render(
+				[mockRound],
+				mockRevealedPrizes,
+				mockUnrevealedPrizes,
+			),
 	},
 	about: {
 		description:

@@ -18,7 +18,7 @@ export class RevealSinglePage {
 		}
 
 		const lines = [
-			`Ticket #${revealedPrize.ticketNumber} — ${formattedAmountWithUsd(prizeCurrencyAmount)}`,
+			`<a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> — Ticket #${revealedPrize.ticketNumber} — ${formattedAmountWithUsd(prizeCurrencyAmount)}`,
 			`Unrevealed tickets: ${unrevealedPrizes.length}`,
 		]
 
@@ -52,7 +52,6 @@ export class RevealSinglePage {
 				home: pageIds.home,
 				parent: pageIds.play,
 			}),
-			imgUrl: revealedPrize.card.imageUrl,
 		}
 	}
 }

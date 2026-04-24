@@ -75,7 +75,6 @@ export type Context = GrammyContext &
 export type PageContent = {
 	message: string
 	keyboard: InlineKeyboard
-	imgUrl?: string
 }
 
 export type NavIds = {

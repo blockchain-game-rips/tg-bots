@@ -3,7 +3,9 @@ import {
 	BuyTicketsPurchaseResponseDtoOutput,
 	ConfigDto,
 	CurrencyAmountDto,
+	GetZapResultResponseDtoOutput,
 	PrizeDto,
+	QuoteZapResponseDtoOutput,
 	RoundDto,
 } from '../../generated/api-client'
 
@@ -27,6 +29,39 @@ export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {
 	},
 	roundId: 1,
 	ticketCount: 3,
+}
+
+const mockUsdc = {
+	priceUsd: 1,
+	chainAddress: {
+		address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+		chain: { namespace: 'eip155', reference: '42161' },
+	},
+	symbol: 'USDC',
+	name: 'USD Coin',
+	decimals: 6,
+}
+
+export const mockZapQuote: QuoteZapResponseDtoOutput = {
+	amountIn: { currency: mockUsdc, amount: '13500000' }, // 13.5 USDC
+	durationMs: 45000,
+	fee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
+}
+
+export const mockZapCurrencyInBalance: CurrencyAmountDto = {
+	currency: mockUsdc,
+	amount: '8000000', // 8 USDC — intentionally low for zap-insufficient-funds preview
+}
+
+export const mockZapSuccessResult: NonNullable<
+	GetZapResultResponseDtoOutput['success']
+> = {
+	dstTransaction: {
+		id: '0xdef456',
+		cost: { currency: mockEth, amount: '210000000000000' },
+	},
+	ticketCount: 3,
+	roundId: 1,
 }
 
 export const mockBalance: CurrencyAmountDto = {

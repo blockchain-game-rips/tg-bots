@@ -12,6 +12,11 @@ import { RevealAllPage } from '../../src/pages/content/play/reveal-all-page'
 import { RevealPrizesPage } from '../../src/pages/content/play/reveal-prizes-page'
 import { RevealSinglePage } from '../../src/pages/content/play/reveal-single-page'
 import { StatusPage } from '../../src/pages/content/play/status-page'
+import { ZapChooseChainPage } from '../../src/pages/content/play/zap-choose-chain-page'
+import { ZapChooseTokenPage } from '../../src/pages/content/play/zap-choose-token-page'
+import { ZapConfirmPage } from '../../src/pages/content/play/zap-confirm-page'
+import { ZapInsufficientFundsPage } from '../../src/pages/content/play/zap-insufficient-funds-page'
+import { ZapSuccessPage } from '../../src/pages/content/play/zap-success-page'
 import { PageContent } from '../../src/types'
 import {
 	mockAvailableStakes,
@@ -24,6 +29,9 @@ import {
 	mockRound2,
 	mockUnrevealedPrizes,
 	mockUserEvmAddress,
+	mockZapCurrencyInBalance,
+	mockZapQuote,
+	mockZapSuccessResult,
 } from './static-data'
 
 export type PageEntry = {
@@ -61,6 +69,61 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Final step of the buy flow. Confirms a successful ticket purchase — shows round number, ticket count, total cost, and blockchain fee. Opened after buy-confirm.',
 		render: () => BuySuccessPage.render(mockPurchase, mockRound),
+	},
+	'zap-choose-chain': {
+		description:
+			'First step of the zap flow. Entered from buy-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
+		render: () =>
+			ZapChooseChainPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+			}),
+	},
+	'zap-choose-token': {
+		description:
+			'Second step of the zap flow. Choose a token on the selected chain to pay with.',
+		render: () =>
+			ZapChooseTokenPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+				chainIndex: 0,
+			}),
+	},
+	'zap-confirm': {
+		description:
+			'Third step of the zap flow. Shows zap quote: amount to pay, token balance, and network fee. Confirm to proceed.',
+		render: () =>
+			ZapConfirmPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+				nativeBalance: mockBalance,
+				currencyInBalance: mockZapCurrencyInBalance,
+				zapQuote: mockZapQuote,
+			}),
+	},
+	'zap-insufficient-funds': {
+		description:
+			'Shown instead of zap-confirm when token balance is too low. Shows required vs available amount. User can top up and retry.',
+		render: () =>
+			ZapInsufficientFundsPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+				nativeBalance: mockBalance,
+				currencyInBalance: mockZapCurrencyInBalance,
+				zapQuote: mockZapQuote,
+				userEvmAddress: mockUserEvmAddress,
+			}),
+	},
+	'zap-success': {
+		description:
+			'Final step of the zap flow. Confirms zap + ticket purchase succeeded — shows stake, round, ticket count, amount paid, and blockchain fee.',
+		render: () =>
+			ZapSuccessPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+				amountIn: mockZapCurrencyInBalance,
+				zapSuccessResult: mockZapSuccessResult,
+			}),
 	},
 	'buy-insufficient-funds': {
 		description:

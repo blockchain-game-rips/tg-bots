@@ -11,9 +11,6 @@ export class HomePage {
 			'Get started in two steps:',
 			'· Deposit ETH on Base via the Wallet menu',
 			'· Play the game and earn rewards',
-			'',
-			//TODO: better message
-			'When a round completes, go to play/open rips',
 		]
 
 		const message = lines.join('\n')
@@ -26,9 +23,12 @@ export class HomePage {
 					'row',
 					{ label: 'Wallet', pageId: pageIds.wallet },
 					'row',
-					{ label: 'About', pageId: pageIds.about },
+					{
+						label: 'Referral System',
+						pageId: pageIds.referralSystem,
+					},
 					'row',
-					{ label: 'Referral System', pageId: pageIds.referralSystem },
+					{ label: 'About', pageId: pageIds.about },
 				]),
 			),
 		}

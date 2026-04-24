@@ -5,7 +5,7 @@
     "license": "MIT",
     "author": "Micro <0xmicro222@gmail.com>",
     "scripts": {
-        "fmt": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+        "fmt": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
         "test": "jest",
         "build": "tsc -p tsconfig.build.json",
         "start": "node dist/main.js",

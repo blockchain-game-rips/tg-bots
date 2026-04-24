@@ -11,15 +11,18 @@ export type PageEntry = {
 
 export const pages: Record<string, PageEntry> = {
 	home: {
-		description: 'Main entry point of the bot. Shows navigation to Play, Wallet, About, and Referral System.',
+		description:
+			'Main entry point of the bot. Shows navigation to Play, Wallet, About, and Referral System.',
 		render: () => HomePage.render(),
 	},
 	play: {
-		description: 'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
+		description:
+			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
 		render: () => PlayPage.render(),
 	},
 	about: {
-		description: 'Explains how the game works and lists all available stake tiers. Each tier shows the ticket price (with USD equivalent), round duration, and ticket cap.',
+		description:
+			'Explains how the game works and lists all available stake tiers. Each tier shows the ticket price (with USD equivalent), round duration, and ticket cap.',
 		render: () => AboutPage.render(mockConfigs),
 	},
 }

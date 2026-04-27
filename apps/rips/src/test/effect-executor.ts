@@ -1,0 +1,109 @@
+import { Api } from 'grammy'
+import { fireAndForget } from '../utils/common'
+import { composePageContentWithError } from '../utils/error-to-render'
+import { Effect, EffectType, MessageToEdit, SessionData } from './types'
+
+async function executeEffect(
+	effect: Effect,
+	api: Api,
+	chatId: number,
+	messageToEdit: MessageToEdit,
+	session: SessionData,
+	messagesToDelete: number[] = [],
+): Promise<void> {
+	if (messagesToDelete.length !== 0) {
+		fireAndForget(api.deleteMessages(chatId, messagesToDelete))
+	}
+
+	switch (effect.type) {
+		case EffectType.EDIT:
+			await api.editMessageText(
+				chatId,
+				messageToEdit.messageId,
+				effect.page.message,
+				{
+					reply_markup: effect.page.keyboard,
+					parse_mode: 'HTML',
+				},
+			)
+			break
+
+		case EffectType.ASK:
+			await api.sendMessage(chatId, effect.prompt.message, {
+				reply_markup: {
+					force_reply: true,
+					input_field_placeholder: effect.prompt.placeholder,
+				},
+				parse_mode: 'HTML',
+			})
+			session.lastAsk = {
+				onSubmit: effect.onSubmit,
+				pageToEdit: messageToEdit,
+			}
+			break
+
+		case EffectType.SEND_LOADING:
+			await api.editMessageText(
+				chatId,
+				messageToEdit.messageId,
+				effect.message,
+				{
+					parse_mode: 'HTML',
+				},
+			)
+
+			await executeEffect(
+				await effect.next(),
+				api,
+				chatId,
+				messageToEdit,
+				session,
+			)
+
+			break
+	}
+}
+
+export async function executeEffectOrDisplayError(
+	api: Api,
+	chatId: number,
+	messageToEdit: MessageToEdit,
+	session: SessionData,
+	action: () => Promise<Effect> | Effect,
+	messagesToDelete: number[] = [],
+): Promise<void> {
+	try {
+		const effect = await action()
+		await executeEffect(
+			effect,
+			api,
+			chatId,
+			messageToEdit,
+			session,
+			messagesToDelete,
+		)
+	} catch (error) {
+		const errorPage = composePageContentWithError(
+			messageToEdit.pageContent,
+			error,
+		)
+
+		fireAndForget(
+			api.editMessageText(
+				chatId,
+				messageToEdit.messageId,
+				errorPage.message,
+				{
+					reply_markup: errorPage.keyboard,
+					parse_mode: 'HTML',
+				},
+			),
+		)
+
+		fireAndForget(
+			api
+				.deleteMessages(chatId, messagesToDelete)
+				.catch((e) => console.log(e)),
+		)
+	}
+}

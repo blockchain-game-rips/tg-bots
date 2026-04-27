@@ -9,7 +9,7 @@
         "test": "jest",
         "build": "tsc -p tsconfig.build.json",
         "start": "node dist/main.js",
-        "dev": "ts-node-dev --respawn src/main.ts",
+        "dev": "ts-node-dev --respawn src/test/main.ts",
         "preview-bot-dev": "ts-node-dev --respawn scripts/preview-bot/index.ts",
         "preview-bot": "ts-node scripts/preview-bot/index.ts",
         "openapi-ts": "openapi-ts"

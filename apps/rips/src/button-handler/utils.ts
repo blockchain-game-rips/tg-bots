@@ -2,7 +2,7 @@ import { Filter, InlineKeyboard } from 'grammy'
 import { Context, PageContent } from '../types'
 import { Command } from './types'
 
-const COMMAND_SEPARATOR = ':'
+export const COMMAND_SEPARATOR = ':'
 
 export function buildCommand(command: Command): string {
 	let commandStr = ''

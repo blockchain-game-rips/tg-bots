@@ -16,12 +16,6 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000
 type State = GetReferrerResponseDtoOutput['states'][number]
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 
-function effectiveFeePercent(state: State): number {
-	if (state.customFeePercent > 0) return state.customFeePercent
-
-	return Math.max(state.activeFeePercent, state.defaultFeePercent)
-}
-
 function formatPercent(basisPoints: number): string {
 	return `${((basisPoints / FEE_BASE) * 100).toFixed(2)}%`
 }
@@ -55,30 +49,31 @@ export class ReferralSystemPage {
 	}): PageContent {
 		const { referrerData, tierTables, referralLink } = args
 
-		const state = referrerData.states[0]
-		const availableToWithdraw = referrerData.rewards.availableToWithdraw[0]
-		const withdrawnRewards = referrerData.rewards.withdrawnRewards[0]
+		const state: State =
+			referrerData.states[0] ??
+			(() => {
+				throw new Error('No referrer state found')
+			})()
+
+		const periodStart =
+			state.period.startTime !== null
+				? new Date(state.period.startTime)
+				: null
+		const periodEnd =
+			periodStart !== null
+				? new Date(periodStart.getTime() + PERIOD_DAYS * MS_PER_DAY)
+				: null
 
 		const lines = [
-			`Available to withdraw: ${availableToWithdraw !== undefined ? formattedAmountWithUsd(availableToWithdraw) : '—'}`,
-			`Withdrawn: ${withdrawnRewards !== undefined ? formattedAmountWithUsd(withdrawnRewards) : '—'}`,
+			`Available to withdraw: ${state.rewards.available} ${state.currency}`,
+			`Withdrawn: ${state.rewards.withdrawn} ${state.currency}`,
 			'',
-			`Current fee share: ${formatPercent(state !== undefined ? effectiveFeePercent(state) : 0)}`,
+			`Current fee share: ${formatPercent(state.fee)}`,
+			`Month volume: ${state.period.volume} ${state.currency}`,
+			...(periodEnd !== null
+				? ['', `Next period starts: ${formatDate(periodEnd)}`]
+				: []),
 		]
-
-		if (state !== undefined) {
-			const periodEnd = new Date(
-				Number(state.monthStartTimestamp) * 1000 +
-					PERIOD_DAYS * MS_PER_DAY,
-			)
-
-			lines.push(
-				`Month volume: ${formattedAmountWithUsd(state.currMonthVolume)}`,
-				'',
-				`Next period starts: ${formatDate(periodEnd)}`,
-				`Fee share after recalc: ${formatPercent(state.defaultFeePercent)}`,
-			)
-		}
 
 		if (tierTables.tierTables.length > 0) {
 			lines.push('', ...tierTables.tierTables.flatMap(tierTableLines))

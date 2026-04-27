@@ -150,6 +150,7 @@ export const mockTierTables: GetTierTablesResponseDtoOutput = {
 	tierTables: [
 		{
 			currency: mockEth,
+			defaultFeePercent: 500,
 			tiers: [
 				{ minVolume: '100000000000000000', feePercent: 500 }, // ≥0.1 ETH → 5%
 				{ minVolume: '500000000000000000', feePercent: 1000 }, // ≥0.5 ETH → 10%
@@ -163,22 +164,18 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 	referrer: '0x1234567890abcdef1234567890abcdef12345678',
 	states: [
 		{
-			defaultFeePercent: 500,
-			activeFeePercent: 1000,
-			customFeePercent: 0,
-			monthStartTimestamp: '1745280000', // 2026-04-22
-			currMonthVolume: {
-				currency: mockEth,
-				amount: '600000000000000000',
-			}, // 0.6 ETH
+			currency: 'ETH',
+			fee: 1000,
+			period: {
+				startTime: '2026-04-22T00:00:00.000Z',
+				volume: '0.6',
+			},
+			rewards: {
+				available: '0.012',
+				withdrawn: '0.03',
+			},
 		},
 	],
-	rewards: {
-		availableToWithdraw: [
-			{ currency: mockEth, amount: '12000000000000000' },
-		], // 0.012 ETH
-		withdrawnRewards: [{ currency: mockEth, amount: '30000000000000000' }], // 0.03 ETH
-	},
 }
 
 export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {

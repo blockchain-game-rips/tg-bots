@@ -11,12 +11,12 @@ export class BuyChooseTicketCountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'1 Ticket',
-				buildActionData(actionIds.showConfirmPurchase, '1'),
+				buildActionData(actionIds.handleTicketCountChosen, '1'),
 			)
 			.row()
 			.text(
 				'3 Tickets',
-				buildActionData(actionIds.showConfirmPurchase, '3'),
+				buildActionData(actionIds.handleTicketCountChosen, '3'),
 			)
 			.row()
 			.text('Custom Amount', actionIds.requestCustomTicketAmount)

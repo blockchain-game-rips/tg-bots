@@ -42,7 +42,7 @@ const actionDefs = {
 		id: 'rcta',
 		handler: requestCustomTicketAmount,
 	},
-	showConfirmPurchase: { id: 'scp', handler: handleTicketCountChosen },
+	handleTicketCountChosen: { id: 'htcs', handler: handleTicketCountChosen },
 	buyTickets: { id: 'bts', handler: buyTickets },
 
 	// Open RIPs / rounds

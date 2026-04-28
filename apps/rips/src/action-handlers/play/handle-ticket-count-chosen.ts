@@ -15,9 +15,10 @@ export async function handleTicketCountChosen(
 	assertFlow(session, 'buyTickets', 'stake-chosen')
 	const { stakeId } = session.flow.data
 
-	const availableStake = await fetchStake(stakeId)
-
-	const balance = await fetchNativeBalance(session.telegramId)
+	const [availableStake, balance] = await Promise.all([
+		fetchStake(stakeId),
+		fetchNativeBalance(session.telegramId),
+	])
 
 	const config = resolveConfig(availableStake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)

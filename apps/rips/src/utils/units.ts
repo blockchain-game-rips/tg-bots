@@ -1,6 +1,8 @@
 import {
 	ChainAddressDto,
 	CurrencyAmountDto,
+	ripsControllerGetStakes,
+	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
 } from '../../generated/api-client'
 import { createQuerySerializer } from '../../generated/api-client/client/utils.gen'
@@ -114,4 +116,18 @@ export async function fetchNativeBalance(telegramId: string) {
 	}
 
 	return balance
+}
+
+export async function fetchStake(
+	stakeId: number,
+): Promise<RipsControllerGetStakesResponse['availableStakes'][number]> {
+	const { data } = await ripsControllerGetStakes()
+
+	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
+
+	if (stake === undefined) {
+		throw new Error(`Stake with id ${stakeId} not found`)
+	}
+
+	return stake
 }

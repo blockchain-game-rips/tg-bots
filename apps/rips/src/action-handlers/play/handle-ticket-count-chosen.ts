@@ -1,11 +1,9 @@
-import { ripsControllerGetStakes } from '../../../generated/api-client'
 import { BuyConfirmPage } from '../../pages/content/play/buy-confirm-page'
 import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insufficient-funds-page'
 import { resolveConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
-import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
-import { fetchNativeBalance } from '../../utils/units'
+import { fetchNativeBalance, fetchStake } from '../../utils/units'
 import { parseTicketCount } from '../../validation/ticket-count'
 
 export async function handleTicketCountChosen(
@@ -17,14 +15,7 @@ export async function handleTicketCountChosen(
 	assertFlow(session, 'buyTickets', 'stake-chosen')
 	const { stakeId } = session.flow.data
 
-	const { data } = await ripsControllerGetStakes()
-	const availableStake = data.availableStakes.find(
-		(s) => s.stake.id === stakeId,
-	)
-
-	if (availableStake === undefined) {
-		throw new ErrorToRender('Stake not found')
-	}
+	const availableStake = await fetchStake(stakeId)
 
 	const balance = await fetchNativeBalance(session.telegramId)
 

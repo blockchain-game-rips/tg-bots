@@ -1,9 +1,9 @@
 import { walletsControllerCreateWithdrawal } from '../../../generated/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
 import { WithdrawSuccessPage } from '../../pages/content/wallet/withdraw-success-page'
-import { getFlowData } from '../../session-utils'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
+import { getFlowData } from '../../utils/session-utils'
 
 export async function executeWithdraw(
 	session: SessionData,

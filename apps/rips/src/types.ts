@@ -1,26 +1,7 @@
 import { User } from '@grammyjs/types'
 import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
 import { ActionId } from './actions'
-
-export type BuyTicketsFlow =
-	| {
-			flowType: 'buyTickets'
-			step: 'stake-chosen'
-			data: { stakeId: number }
-	  }
-	| {
-			flowType: 'buyTickets'
-			step: 'ticket-count-chosen'
-			data: { stakeId: number; ticketCount: number }
-	  }
-
-export type WithdrawFlow = {
-	flowType: 'withdraw'
-	step: 'on-withdraw-page'
-	data: { amount?: string; recipientAddress?: string }
-}
-
-export type FlowData = BuyTicketsFlow | WithdrawFlow | null
+import { Flow } from './flows'
 
 export type MessageToEdit = {
 	pageContent: PageContent
@@ -33,7 +14,7 @@ export type SessionData = {
 		onSubmit: ActionId
 		pageToEdit: MessageToEdit
 	} | null
-	flow: FlowData
+	flow: Flow
 }
 
 export type Context = GrammyContext &

@@ -2,14 +2,14 @@ import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData, configName, getConfig } from '../../utils'
+import { addNav, buildActionData, configName, resolveConfig } from '../../utils'
 
 export class BuyChooseStakePage {
 	static render(availableStakes: AvailableStakeDto[]): PageContent {
 		const keyboard = new InlineKeyboard()
 
 		for (const availableStake of availableStakes) {
-			const config = getConfig(availableStake)
+			const config = resolveConfig(availableStake)
 
 			keyboard
 				.text(

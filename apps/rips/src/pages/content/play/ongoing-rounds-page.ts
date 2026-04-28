@@ -4,7 +4,12 @@ import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { displayStatus } from '../../round-statuses'
 import { toShortDurationFormat } from '../../ui-utils'
-import { addNav, configName, getConfig, messageFromLines } from '../../utils'
+import {
+	addNav,
+	configName,
+	messageFromLines,
+	resolveConfig,
+} from '../../utils'
 
 function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)
@@ -53,7 +58,7 @@ export class OngoingRoundsPage {
 			// stakeIds is set from availableStakes, thus stake is not undefined
 			const stake = availableStakes.find((s) => s.stake.id === stakeId)!
 
-			const config = getConfig(stake)
+			const config = resolveConfig(stake)
 
 			lines.push(`${configName(config)} stake:`)
 

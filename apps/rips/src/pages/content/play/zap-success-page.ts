@@ -7,7 +7,7 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { configName, getConfig, messageFromLines } from '../../utils'
+import { configName, messageFromLines, resolveConfig } from '../../utils'
 
 export class ZapSuccessPage {
 	static render(args: {
@@ -18,7 +18,7 @@ export class ZapSuccessPage {
 	}): PageContent {
 		const { availableStake, ticketCount, amountIn, zapSuccessResult } = args
 
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const lines = [
 			`✅ Zap successful!`,

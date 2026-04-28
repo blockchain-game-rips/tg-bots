@@ -1,7 +1,7 @@
 import { ripsControllerGetStakes } from '../../../generated/api-client'
 import { BuyConfirmPage } from '../../pages/content/play/buy-confirm-page'
 import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insufficient-funds-page'
-import { getConfig } from '../../pages/utils'
+import { resolveConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
@@ -28,7 +28,7 @@ export async function showConfirmPurchase(
 
 	const balance = await fetchNativeBalance(session.telegramId)
 
-	const config = getConfig(availableStake)
+	const config = resolveConfig(availableStake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
 	const balanceAmount = BigInt(balance.amount)
 

@@ -7,8 +7,8 @@ import {
 	addNav,
 	buildActionData,
 	configName,
-	getConfig,
 	messageFromLines,
+	resolveConfig,
 } from '../../utils'
 
 export class ZapChooseTokenPage {
@@ -18,7 +18,7 @@ export class ZapChooseTokenPage {
 		chainIndex: number
 	}): PageContent {
 		const { availableStake, ticketCount, chainIndex } = args
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 		const chain = SUPPORTED_CHAINS[chainIndex]
 
 		const chainCurrencies = SUPPORTED_CURRENCIES.filter(

@@ -7,7 +7,12 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, configName, getConfig, messageFromLines } from '../../utils'
+import {
+	addNav,
+	configName,
+	messageFromLines,
+	resolveConfig,
+} from '../../utils'
 
 export class ZapConfirmPage {
 	static render(args: {
@@ -25,7 +30,7 @@ export class ZapConfirmPage {
 			zapQuote,
 		} = args
 
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const lines = [
 			`${configName(config)} stake`,

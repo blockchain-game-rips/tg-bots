@@ -2,11 +2,11 @@ import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData, configName, getConfig } from '../../utils'
+import { addNav, buildActionData, configName, resolveConfig } from '../../utils'
 
 export class BuyChooseTicketCountPage {
 	static render(availableStake: AvailableStakeDto): PageContent {
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const keyboard = new InlineKeyboard()
 			.text(

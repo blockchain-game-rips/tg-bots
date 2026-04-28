@@ -5,8 +5,8 @@ import { PageContent } from '../../../types'
 import {
 	buildActionData,
 	configName,
-	getConfig,
 	messageFromLines,
+	resolveConfig,
 } from '../../utils'
 
 export class BuyConfirmPage {
@@ -14,7 +14,7 @@ export class BuyConfirmPage {
 		availableStake: AvailableStakeDto,
 		ticketCount: number,
 	): PageContent {
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const lines = [
 			`${configName(config)} stake`,

@@ -7,8 +7,8 @@ import {
 	addNav,
 	buildActionData,
 	configName,
-	getConfig,
 	messageFromLines,
+	resolveConfig,
 } from '../../utils'
 
 export class ZapChooseChainPage {
@@ -17,7 +17,7 @@ export class ZapChooseChainPage {
 		ticketCount: number
 	}): PageContent {
 		const { availableStake, ticketCount } = args
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const lines = [
 			`${configName(config)} stake`,

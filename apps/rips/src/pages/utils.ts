@@ -12,7 +12,7 @@ export function buildActionData(actionId: ActionId, payload?: string): string {
 	return `${actionId}${COMMAND_SEPARATOR}${payload}`
 }
 
-export function getConfig(availableStake: AvailableStakeDto) {
+export function resolveConfig(availableStake: AvailableStakeDto) {
 	if (availableStake.fillingRound) return availableStake.fillingRound.config
 	if (availableStake.stake.currentConfig)
 		return availableStake.stake.currentConfig

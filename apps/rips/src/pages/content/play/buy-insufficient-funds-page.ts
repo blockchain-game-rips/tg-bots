@@ -9,8 +9,8 @@ import { formatUnits, toUsd } from '../../../utils/units'
 import {
 	buildActionData,
 	configName,
-	getConfig,
 	messageFromLines,
+	resolveConfig,
 } from '../../utils'
 
 export class BuyInsufficientFundsPage {
@@ -19,7 +19,7 @@ export class BuyInsufficientFundsPage {
 		availableStake: AvailableStakeDto,
 		ticketCount: number,
 	): PageContent {
-		const config = getConfig(availableStake)
+		const config = resolveConfig(availableStake)
 
 		const formattedBalance = formatUnits(
 			BigInt(balance.amount),

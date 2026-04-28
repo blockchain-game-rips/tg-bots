@@ -37,21 +37,19 @@ export function composeMarkup(
 	layout: KeyboardLayout,
 ): InlineKeyboardButton[][] {
 	const rows: InlineKeyboardButton[][] = []
-	let current: InlineKeyboardButton[] = []
 
-	for (const button of layout) {
-		if (button === 'row') {
-			if (current.length > 0) rows.push(current)
-			current = []
-		} else {
-			current.push({
+	for (const rowOfButtons of layout) {
+		const row: InlineKeyboardButton[] = []
+
+		for (const button of rowOfButtons) {
+			row.push({
 				text: button.label,
 				callback_data: buildActionData(button.actionId, button.payload),
 			})
 		}
-	}
 
-	if (current.length > 0) rows.push(current)
+		rows.push(row)
+	}
 
 	return rows
 }

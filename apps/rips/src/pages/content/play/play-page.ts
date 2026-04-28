@@ -6,16 +6,15 @@ import { addNav, composeMarkup } from '../../utils'
 export class PlayPage {
 	static render(): PageContent {
 		const buttons: KeyboardLayout = [
-			{ label: 'Buy tickets', actionId: actionIds.showChooseStake },
-			'row',
-			{ label: 'Open Rips', actionId: actionIds.showOpenRips },
-			'row',
-			{ label: 'Status', actionId: actionIds.showStatus },
-			'row',
-			{
-				label: 'Card Collection',
-				actionId: actionIds.showCardChooseStake,
-			},
+			[{ label: 'Buy tickets', actionId: actionIds.showChooseStake }],
+			[{ label: 'Open Rips', actionId: actionIds.showOpenRips }],
+			[{ label: 'Status', actionId: actionIds.showStatus }],
+			[
+				{
+					label: 'Card Collection',
+					actionId: actionIds.showCardChooseStake,
+				},
+			],
 		]
 
 		return {

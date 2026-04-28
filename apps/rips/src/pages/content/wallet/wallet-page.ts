@@ -23,11 +23,14 @@ export class WalletPage {
 		const keyboard = addNav(
 			new InlineKeyboard(
 				composeMarkup([
-					{ label: 'Update', actionId: actionIds.showWallet },
-					'row',
-					{ label: 'Withdraw', actionId: actionIds.showWithdraw },
-					'row',
-					{ label: 'Swap', actionId: actionIds.showSwapChooseChain },
+					[{ label: 'Update', actionId: actionIds.showWallet }],
+					[{ label: 'Withdraw', actionId: actionIds.showWithdraw }],
+					[
+						{
+							label: 'Swap',
+							actionId: actionIds.showSwapChooseChain,
+						},
+					],
 				]),
 			),
 			{ home: actionIds.showHome, parent: actionIds.showHome },

@@ -19,16 +19,15 @@ export class HomePage {
 			message,
 			keyboard: new InlineKeyboard(
 				composeMarkup([
-					{ label: 'Play', actionId: actionIds.showPlay },
-					'row',
-					{ label: 'Wallet', actionId: actionIds.showWallet },
-					'row',
-					{
-						label: 'Referral System',
-						actionId: actionIds.showReferral,
-					},
-					'row',
-					{ label: 'About', actionId: actionIds.showAbout },
+					[{ label: 'Play', actionId: actionIds.showPlay }],
+					[{ label: 'Wallet', actionId: actionIds.showWallet }],
+					[
+						{
+							label: 'Referral System',
+							actionId: actionIds.showReferral,
+						},
+					],
+					[{ label: 'About', actionId: actionIds.showAbout }],
 				]),
 			),
 		}

@@ -1,6 +1,5 @@
 import { Bot, Filter } from 'grammy'
-import { ActionId } from './actions'
-import { actions } from './actions'
+import { ActionId, actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
 import { Context, MessageToEdit } from './types'
 

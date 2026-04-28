@@ -71,13 +71,13 @@ export type NavIds = {
 
 export type Row = 'row'
 
-export type StaticLayout = {
+export type StaticButton = {
 	label: string
 	actionId: ActionId
 	payload?: string
 }
 
-export type KeyboardLayout = (StaticLayout | Row)[]
+export type KeyboardLayout = StaticButton[][]
 
 export type PromptContent = {
 	message: string

@@ -54,3 +54,15 @@ export function setFlowStep<
 export function resetFlow(session: SessionData<ActiveFlow>) {
 	;(session as SessionData).flow = null
 }
+
+export function setFlow<
+	FT extends ActiveFlow['flowType'],
+	S extends StepOf<FT>,
+>(
+	session: SessionData,
+	flowType: FT,
+	step: S,
+	data: Extract<FlowByType<FT>, { step: S }>['data'],
+) {
+	session.flow = { flowType, step, data } as ActiveFlow
+}

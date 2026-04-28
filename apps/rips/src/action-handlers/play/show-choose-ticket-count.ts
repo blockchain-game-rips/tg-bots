@@ -2,6 +2,7 @@ import { ripsControllerGetStakes } from '../../../generated/api-client'
 import { BuyChooseTicketCountPage } from '../../pages/content/play/buy-choose-ticket-count-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
+import { setFlow } from '../../utils/session-utils'
 import { parseStakeId } from '../../validation/stake-id'
 
 export async function showChooseTicketCount(
@@ -16,14 +17,10 @@ export async function showChooseTicketCount(
 	)
 
 	if (availableStake === undefined) {
-		throw new ErrorToRender('Stake not found')
+		throw new ErrorToRender(`Stake with id ${stakeId} not found`)
 	}
 
-	session.flow = {
-		flowType: 'buyTickets',
-		step: 'stake-chosen',
-		data: { stakeId },
-	}
+	setFlow(session, 'buyTickets', 'stake-chosen', { stakeId })
 
 	return {
 		type: EffectType.EDIT,

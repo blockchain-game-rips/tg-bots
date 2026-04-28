@@ -112,8 +112,12 @@ const mockUsdcOnBase = {
 
 export const mockSwapQuote: QuoteSwapResponseDtoOutput = {
 	amountOut: { currency: mockUsdcOnBase, amount: '12400000' }, // 12.4 USDC
-	fee: { currency: mockEth, amount: '50000000000000' }, // ~0.00005 ETH
+	fee: { currency: mockEth, amount: '1000000000000000' }, // ~0.001 ETH
 	durationMs: 30000,
+	blockchainFee: {
+		currency: mockEth,
+		amount: '100000000000000', // 0.0001 ETH
+	},
 }
 
 export const mockSwapNetworkFee: CurrencyAmountDto = {
@@ -209,7 +213,11 @@ const mockUsdc = {
 export const mockZapQuote: QuoteZapResponseDtoOutput = {
 	amountIn: { currency: mockUsdc, amount: '13500000' }, // 13.5 USDC
 	durationMs: 45000,
-	fee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
+	fee: { currency: mockEth, amount: '1000000000000000' }, // ~0.001 ETH
+	blockchainFee: {
+		currency: mockEth,
+		amount: '100000000000000', // 0.0001 ETH
+	},
 }
 
 export const mockZapCurrencyInBalance: CurrencyAmountDto = {

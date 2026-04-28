@@ -4,7 +4,7 @@ import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insuffici
 import { getConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
-import { getFlowData } from '../../utils/session-utils'
+import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { fetchNativeBalance } from '../../utils/units'
 import { parseTicketCount } from '../../validation/ticket-count'
 
@@ -14,7 +14,8 @@ export async function showConfirmPurchase(
 ): Promise<Effect> {
 	const ticketCount = parseTicketCount(payload)
 
-	const { stakeId } = getFlowData(session, 'buyTickets', 'stake-chosen')
+	assertFlow(session, 'buyTickets', 'stake-chosen')
+	const { stakeId } = session.flow.data
 
 	const { data } = await ripsControllerGetStakes()
 	const availableStake = data.availableStakes.find(
@@ -31,11 +32,7 @@ export async function showConfirmPurchase(
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
 	const balanceAmount = BigInt(balance.amount)
 
-	session.flow = {
-		flowType: 'buyTickets',
-		step: 'ticket-count-chosen',
-		data: { stakeId, ticketCount },
-	}
+	setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
 
 	if (balanceAmount < totalCost) {
 		return {

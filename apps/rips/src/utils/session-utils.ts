@@ -2,25 +2,55 @@ import { Flow } from '../flows'
 import { SessionData } from '../types'
 import { ErrorToRender } from '../utils/error-to-render'
 
-type NonNullableFlow = NonNullable<Flow>
+type ActiveFlow = NonNullable<Flow>
 
-type ExtractFlowData<
-	FT extends NonNullableFlow['flowType'],
-	S extends NonNullableFlow['step'],
-> = Extract<NonNullableFlow, { flowType: FT; step: S }>['data']
+type FlowByType<FT extends ActiveFlow['flowType']> = Extract<
+	ActiveFlow,
+	{ flowType: FT }
+>
 
-export function getFlowData<
-	FT extends NonNullableFlow['flowType'],
-	S extends Extract<
-		NonNullableFlow & { flowType: FT },
-		NonNullableFlow
-	>['step'],
->(session: SessionData, flowType: FT, step: S): ExtractFlowData<FT, S> {
+type StepOf<FT extends ActiveFlow['flowType']> = FlowByType<FT>['step']
+
+type ValidateStep<
+	FT extends ActiveFlow['flowType'],
+	S extends ActiveFlow['step'],
+> = S extends StepOf<FT> ? S : StepOf<FT>
+
+export function assertFlow<
+	FT extends ActiveFlow['flowType'],
+	S extends ActiveFlow['step'],
+>(
+	session: SessionData,
+	flowType: FT,
+	...steps: ValidateStep<FT, S>[]
+): asserts session is SessionData<
+	Extract<ActiveFlow, { flowType: FT; step: S }>
+> {
 	const { flow } = session
 
-	if (flow?.flowType === flowType && flow.step === step) {
-		return flow.data as ExtractFlowData<FT, S>
+	if (
+		flow?.flowType !== flowType ||
+		!(steps as string[]).includes(flow.step)
+	) {
+		throw new ErrorToRender('Invalid session state')
 	}
+}
 
-	throw new ErrorToRender('Invalid session state')
+export function setFlowStep<
+	FT extends ActiveFlow['flowType'],
+	S extends FlowByType<FT>['step'],
+>(
+	session: SessionData<FlowByType<FT>>,
+	step: S,
+	data: Extract<FlowByType<FT>, { step: S }>['data'],
+) {
+	;(session as SessionData).flow = {
+		flowType: session.flow.flowType,
+		step,
+		data,
+	} as ActiveFlow
+}
+
+export function resetFlow(session: SessionData<ActiveFlow>) {
+	;(session as SessionData).flow = null
 }

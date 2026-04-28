@@ -3,17 +3,14 @@ import { NATIVE_ON_BASE } from '../../constants'
 import { WithdrawSuccessPage } from '../../pages/content/wallet/withdraw-success-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
-import { getFlowData } from '../../utils/session-utils'
+import { assertFlow, resetFlow } from '../../utils/session-utils'
 
 export async function executeWithdraw(
 	session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { amount, recipientAddress } = getFlowData(
-		session,
-		'withdraw',
-		'on-withdraw-page',
-	)
+	assertFlow(session, 'withdraw', 'on-withdraw-page')
+	const { amount, recipientAddress } = session.flow.data
 
 	if (amount === undefined || recipientAddress === undefined) {
 		throw new ErrorToRender(
@@ -33,7 +30,7 @@ export async function executeWithdraw(
 		},
 	})
 
-	session.flow = null
+	resetFlow(session)
 
 	return { type: EffectType.EDIT, page: WithdrawSuccessPage.render(data) }
 }

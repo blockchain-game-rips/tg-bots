@@ -8,13 +8,13 @@ export type MessageToEdit = {
 	messageId: number
 }
 
-export type SessionData = {
+export type SessionData<F extends Flow = Flow> = {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId
 		pageToEdit: MessageToEdit
 	} | null
-	flow: Flow
+	flow: F
 }
 
 export type Context = GrammyContext &

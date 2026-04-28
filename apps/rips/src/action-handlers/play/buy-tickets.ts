@@ -7,7 +7,7 @@ import { BuySuccessPage } from '../../pages/content/play/buy-success-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { isApiErrorWithStatus } from '../../utils/action-handler-utils'
 import { ErrorToRender } from '../../utils/error-to-render'
-import { getFlowData } from '../../utils/session-utils'
+import { assertFlow, resetFlow } from '../../utils/session-utils'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
@@ -15,11 +15,8 @@ export async function buyTickets(
 	session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { stakeId, ticketCount } = getFlowData(
-		session,
-		'buyTickets',
-		'ticket-count-chosen',
-	)
+	assertFlow(session, 'buyTickets', 'ticket-count-chosen')
+	const { stakeId, ticketCount } = session.flow.data
 
 	const { data: purchase } = await ripsControllerBuyTicketsPurchase({
 		headers: { 'x-telegram-id': session.telegramId },
@@ -40,7 +37,7 @@ export async function buyTickets(
 
 	const round = roundsData.rounds.find((r) => r.id === purchase.roundId)
 
-	session.flow = null
+	resetFlow(session)
 
 	return {
 		type: EffectType.EDIT,

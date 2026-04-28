@@ -1,10 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 export class WithdrawInsufficientFundsPage {
@@ -33,16 +32,12 @@ export class WithdrawInsufficientFundsPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Choose amount',
-			buildCommand({
-				pageId: pageIds.withdrawChooseAmount,
-				type: 'open',
-				payloads: [],
-			}),
+			actionIds.showWithdrawChooseAmount,
 		)
 
 		addNav(keyboard, {
-			parent: pageIds.withdrawChooseToken,
-			home: pageIds.home,
+			parent: actionIds.showWithdrawChooseToken,
+			home: actionIds.showHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

@@ -2,9 +2,11 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
-import { handleButton } from './button-handler/button-hanlder'
-import { enterHomeFlow } from './flows/home'
-import { handleMessage } from './message-hanlder'
+import { actionIds } from './actions'
+import { actions } from './actions'
+import { handleButton } from './button-handler'
+import { executeEffectOrDisplayError } from './effect-executor'
+import { handleMessage } from './message-handler'
 import { Context, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
 import { getEnvSafe } from './utils/common'
@@ -35,42 +37,50 @@ bot.use((ctx, next) => {
 	return next()
 })
 
-bot.api.config.use((prev, method, payload, signal) => {
-	console.log(`API call: ${method}`, payload)
-	return prev(method, payload, signal)
-})
+function initial(): SessionData {
+	return { telegramId: '', lastAsk: null, flow: null }
+}
+
+bot.use(session({ initial }))
 
 bot.use((ctx, next) => {
-	console.log('Update received:', JSON.stringify(ctx.update, null, 2))
+	if (ctx.from !== undefined) {
+		ctx.session.telegramId = String(ctx.from.id)
+	}
 	return next()
 })
 
-function initial(): SessionData {
-	return { activeFlow: null }
-}
-bot.use(session({ initial }))
-
 bot.command('start', async (ctx) => {
-	console.log('start')
 	let pageContent: PageContent = {
 		keyboard: new InlineKeyboard(),
 		message: 'Failed to get or create user',
 	}
 
-	try {
-		pageContent = await enterHomeFlow(ctx)
-	} catch (error) {
-		console.log(error)
+	const fakeMessageToEdit = {
+		pageContent,
+		messageId: -1,
 	}
 
-	await ctx.reply(pageContent.message, {
-		reply_markup: pageContent.keyboard,
-	})
+	const sentMessage = await ctx.reply('Loading...', { parse_mode: 'HTML' })
+
+	fakeMessageToEdit.messageId = sentMessage.message_id
+	fakeMessageToEdit.pageContent = {
+		message: 'Loading...',
+		keyboard: new InlineKeyboard(),
+	}
+
+	await executeEffectOrDisplayError(
+		bot.api,
+		ctx.chatId,
+		fakeMessageToEdit,
+		ctx.session,
+		() => actions[actionIds.showHome](ctx.session, undefined),
+	)
 })
 
-bot.on('callback_query:data', async (ctx) => await handleButton(ctx))
+bot.on('callback_query:data', async (ctx) => handleButton(ctx))
 
-bot.on('message:text', async (ctx) => await handleMessage(ctx, bot))
+bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 

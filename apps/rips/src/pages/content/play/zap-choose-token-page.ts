@@ -1,10 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav, configName, getConfig } from '../../utils'
+import { addNav, buildActionData, configName, getConfig } from '../../utils'
 
 export class ZapChooseTokenPage {
 	static render(args: {
@@ -35,18 +34,21 @@ export class ZapChooseTokenPage {
 		chainCurrencies.forEach((currency) => {
 			const currencyIndex = SUPPORTED_CURRENCIES.indexOf(currency)
 
-			keyboard.text(
-				currency.symbol,
-				buildCommand({
-					pageId: pageIds.zapConfirm,
-					type: 'open',
-					payloads: [currencyIndex.toString()],
-				}),
-			)
-			keyboard.row()
+			keyboard
+				.text(
+					currency.symbol,
+					buildActionData(
+						actionIds.showZapConfirm,
+						currencyIndex.toString(),
+					),
+				)
+				.row()
 		})
 
-		addNav(keyboard, { parent: pageIds.zapChooseChain, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showZapChooseChain,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

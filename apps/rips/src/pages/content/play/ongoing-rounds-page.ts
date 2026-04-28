@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto, RoundDto } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
 import { displayStatus } from '../../round-statuses'
 import { toShortDurationFormat } from '../../ui-utils'
 import { addNav, configName, getConfig } from '../../utils'
@@ -43,7 +43,7 @@ export class OngoingRoundsPage {
 		const lines: string[] = []
 
 		for (const stakeId of stakeIds) {
-			// empty string betwee stakes
+			// empty string between stakes
 			if (lines.length > 0) lines.push('')
 
 			const stakeRounds = ongoingRounds.filter(
@@ -75,8 +75,8 @@ export class OngoingRoundsPage {
 		return {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
-				home: pageIds.home,
-				parent: pageIds.status,
+				home: actionIds.showHome,
+				parent: actionIds.showStatus,
 			}),
 		}
 	}

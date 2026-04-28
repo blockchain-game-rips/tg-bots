@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
 import { displayStatus } from '../../round-statuses'
 import { addNav, configName } from '../../utils'
 
@@ -21,8 +21,8 @@ export class FinishedRoundsPage {
 		return {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
-				home: pageIds.home,
-				parent: pageIds.status,
+				home: actionIds.showHome,
+				parent: actionIds.showStatus,
 			}),
 		}
 	}

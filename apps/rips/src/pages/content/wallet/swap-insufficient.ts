@@ -3,11 +3,10 @@ import {
 	CurrencyAmountDto,
 	QuoteSwapResponseDtoOutput,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 export class SwapInsufficientFundsPage {
@@ -45,16 +44,12 @@ export class SwapInsufficientFundsPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Choose amount',
-			buildCommand({
-				pageId: pageIds.swapChooseAmount,
-				type: 'open',
-				payloads: [],
-			}),
+			actionIds.showSwapChooseAmount,
 		)
 
 		addNav(keyboard, {
-			parent: pageIds.swapChooseAmount,
-			home: pageIds.home,
+			parent: actionIds.showSwapChooseAmount,
+			home: actionIds.showHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

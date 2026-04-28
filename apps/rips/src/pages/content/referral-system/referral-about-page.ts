@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { GetTierTablesResponseDtoOutput } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 const FEE_BASE = 10000
@@ -48,8 +48,8 @@ export class ReferralAboutPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				parent: pageIds.referralSystem,
-				home: pageIds.home,
+				parent: actionIds.showReferral,
+				home: actionIds.showHome,
 			}),
 		}
 	}

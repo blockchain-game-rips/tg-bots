@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { ConfigDto } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
 import { toShortDurationFormat } from '../../ui-utils'
 import { addNav, configName } from '../../utils'
 
@@ -24,8 +24,8 @@ export class AboutPage {
 		return {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
-				home: pageIds.home,
-				parent: pageIds.home,
+				home: actionIds.showHome,
+				parent: actionIds.showHome,
 			}),
 		}
 	}

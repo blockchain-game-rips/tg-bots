@@ -1,11 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
-import { promptIds } from '../../../prompts/prompt-ids'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 
 export const MAX_AMOUNT_PAYLOAD = 'max'
 
@@ -21,22 +19,18 @@ export class ChooseWithdrawAmountPage {
 			keyboard: addNav(
 				new InlineKeyboard()
 					.text(
-						`Withdraw Max`,
-						buildCommand({
-							type: 'open',
-							pageId: pageIds.chooseWithdrawAmount,
-							payloads: [MAX_AMOUNT_PAYLOAD],
-						}),
+						'Withdraw Max',
+						buildActionData(
+							actionIds.showChooseWithdrawAmount,
+							MAX_AMOUNT_PAYLOAD,
+						),
 					)
 					.row()
 					.text(
 						'Custom amount',
-						buildCommand({
-							type: 'reply',
-							promptId: promptIds.customWithdrawAmount,
-						}),
+						actionIds.requestWithdrawCustomAmount,
 					),
-				{ home: pageIds.home, parent: pageIds.withdraw },
+				{ home: actionIds.showHome, parent: actionIds.showWithdraw },
 			),
 		}
 	}

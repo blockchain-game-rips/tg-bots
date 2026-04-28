@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { configName, getConfig } from '../../utils'
+import { buildActionData, configName, getConfig } from '../../utils'
 
 export class BuyConfirmPage {
 	static render(
@@ -24,31 +23,16 @@ export class BuyConfirmPage {
 		return {
 			message,
 			keyboard: new InlineKeyboard()
-				.text(
-					'Confirm',
-					buildCommand({
-						pageId: pageIds.successPurchase,
-						type: 'open',
-						payloads: [],
-					}),
-				)
+				.text('Confirm', actionIds.buyTickets)
 				.row()
 				.text(
 					'Back',
-					buildCommand({
-						pageId: pageIds.chooseTicketAmount,
-						type: 'open',
-						payloads: [availableStake.stake.id.toString()],
-					}),
+					buildActionData(
+						actionIds.showChooseTicketAmount,
+						availableStake.stake.id.toString(),
+					),
 				)
-				.text(
-					'Home',
-					buildCommand({
-						pageId: pageIds.home,
-						type: 'open',
-						payloads: [],
-					}),
-				),
+				.text('Home', actionIds.showHome),
 		}
 	}
 }

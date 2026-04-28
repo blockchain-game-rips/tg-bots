@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 
 export class StatusPage {
 	static render(
@@ -46,22 +45,14 @@ export class StatusPage {
 			new InlineKeyboard()
 				.text(
 					'Ongoing rounds',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.ongoingRounds,
-						payloads: [],
-					}),
+					buildActionData(actionIds.showOngoingRounds),
 				)
 				.row()
 				.text(
 					'Completed rounds',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.completedRounds,
-						payloads: [],
-					}),
+					buildActionData(actionIds.showCompletedRounds),
 				),
-			{ home: pageIds.home, parent: pageIds.play },
+			{ home: actionIds.showHome, parent: actionIds.showPlay },
 		)
 
 		return { message: lines.join('\n'), keyboard }

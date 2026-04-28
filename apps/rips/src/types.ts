@@ -1,76 +1,63 @@
 import { User } from '@grammyjs/types'
 import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
+import { ActionId } from './actions'
 
-export enum ActiveFlow {
-	TicketPurchase,
-	Withdraw,
+export type BuyTicketsFlow =
+	| {
+			flowType: 'buyTickets'
+			step: 'stake-chosen'
+			data: { stakeId: number }
+	  }
+	| {
+			flowType: 'buyTickets'
+			step: 'ticket-count-chosen'
+			data: { stakeId: number; ticketCount: number }
+	  }
+
+export type WithdrawFlow = {
+	flowType: 'withdraw'
+	step: 'on-withdraw-page'
+	data: { amount?: string; recipientAddress?: string }
 }
 
-export enum TicketPurchaseStep {
-	ChoosingTicketAmount,
-	WaitingForInput,
-	Confirming,
+export type FlowData = BuyTicketsFlow | WithdrawFlow | null
+
+export type MessageToEdit = {
+	pageContent: PageContent
+	messageId: number
 }
 
-export type EmptySession = {
-	activeFlow: null
+export type SessionData = {
+	telegramId: string
+	lastAsk: {
+		onSubmit: ActionId
+		pageToEdit: MessageToEdit
+	} | null
+	flow: FlowData
 }
-
-export type TicketPurshaseSession = {
-	activeFlow: ActiveFlow.TicketPurchase
-} & (
-	| {
-			stakeId: string
-			step: TicketPurchaseStep.ChoosingTicketAmount
-	  }
-	| {
-			stakeId: string
-			step: TicketPurchaseStep.WaitingForInput
-			messageToEdit: {
-				pageContent: PageContent
-				messageId: number
-			}
-	  }
-	| {
-			stakeId: string
-			ticketAmount: number
-			step: TicketPurchaseStep.Confirming
-	  }
-)
-
-export enum WithdrawStep {
-	OnWithdrawPage,
-	WaitingForRecipient,
-	WaitingForCustomAmount,
-}
-
-export type MessageToEdit = { pageContent: PageContent; messageId: number }
-
-export type WithdrawSession = {
-	activeFlow: ActiveFlow.Withdraw
-} & (
-	| {
-			step: WithdrawStep.OnWithdrawPage
-			messageToEdit: MessageToEdit
-			amount?: string
-			recipientAddress?: string
-	  }
-	| {
-			step: WithdrawStep.WaitingForRecipient
-			messageToEdit: MessageToEdit
-			amount?: string
-	  }
-	| {
-			step: WithdrawStep.WaitingForCustomAmount
-			messageToEdit: MessageToEdit
-			recipientAddress?: string
-	  }
-)
-
-export type SessionData = EmptySession | TicketPurshaseSession | WithdrawSession
 
 export type Context = GrammyContext &
 	SessionFlavor<SessionData> & { from: User }
+
+export enum EffectType {
+	EDIT,
+	ASK,
+	SEND_LOADING,
+}
+
+export type Effect =
+	| { type: EffectType.EDIT; page: PageContent }
+	| { type: EffectType.ASK; prompt: PromptContent; onSubmit: ActionId }
+	| {
+			type: EffectType.SEND_LOADING
+			message: string
+			next: () => Promise<Effect>
+	  }
+
+export type ActionHandler = (
+	session: SessionData,
+	payload: string | undefined,
+) => Promise<Effect> | Effect
 
 export type PageContent = {
 	message: string
@@ -78,14 +65,16 @@ export type PageContent = {
 }
 
 export type NavIds = {
-	home: string
-	parent: string
+	home: ActionId
+	parent: ActionId
 }
 
 export type Row = 'row'
+
 export type StaticLayout = {
 	label: string
-	pageId: string
+	actionId: ActionId
+	payload?: string
 }
 
 export type KeyboardLayout = (StaticLayout | Row)[]

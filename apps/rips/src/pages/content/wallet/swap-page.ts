@@ -1,7 +1,6 @@
 import { InlineKeyboard } from 'grammy'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 import { TokenSelection, tokenLabel } from './swap-utils'
 
@@ -20,38 +19,24 @@ export class SwapPage {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				tokenIn ? `Change token in` : 'Choose token in',
-				buildCommand({
-					pageId: pageIds.swapChooseChain,
-					type: 'open',
-					payloads: [],
-				}),
+				tokenIn ? 'Change token in' : 'Choose token in',
+				actionIds.showSwapChooseChain,
 			)
 			.row()
 			.text(
-				tokenOut ? `Change token out` : 'Choose token out',
-				buildCommand({
-					pageId: pageIds.swapChooseChain,
-					type: 'open',
-					payloads: [],
-				}),
+				tokenOut ? 'Change token out' : 'Choose token out',
+				actionIds.showSwapChooseChain,
 			)
 			.row()
 
 		if (tokenIn !== undefined && tokenOut !== undefined) {
-			keyboard
-				.text(
-					'Choose amount',
-					buildCommand({
-						pageId: pageIds.swapChooseAmount,
-						type: 'open',
-						payloads: [],
-					}),
-				)
-				.row()
+			keyboard.text('Choose amount', actionIds.showSwapChooseAmount).row()
 		}
 
-		addNav(keyboard, { parent: pageIds.wallet, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showWallet,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

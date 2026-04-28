@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav, configName, getConfig } from '../../utils'
+import { addNav, buildActionData, configName, getConfig } from '../../utils'
 
 export class BuyChooseStakePage {
 	static render(availableStakes: AvailableStakeDto[]): PageContent {
@@ -14,12 +13,11 @@ export class BuyChooseStakePage {
 
 			keyboard
 				.text(
-					`${configName(config)}`,
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.chooseTicketAmount,
-						payloads: [availableStake.stake.id.toString()],
-					}),
+					configName(config),
+					buildActionData(
+						actionIds.showChooseTicketAmount,
+						availableStake.stake.id.toString(),
+					),
 				)
 				.row()
 		}
@@ -28,8 +26,8 @@ export class BuyChooseStakePage {
 			message:
 				'Choose your stake — the higher the ticket price, the bigger the potential reward.',
 			keyboard: addNav(keyboard, {
-				home: pageIds.home,
-				parent: pageIds.play,
+				home: actionIds.showHome,
+				parent: actionIds.showPlay,
 			}),
 		}
 	}

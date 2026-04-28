@@ -1,11 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
-import { promptIds } from '../../../prompts/prompt-ids'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 import { tokenLabel } from './swap-utils'
 
 export const SWAP_MAX_PAYLOAD = 'max'
@@ -37,23 +35,16 @@ export class SwapChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Swap Max',
-				buildCommand({
-					pageId: pageIds.swapConfirm,
-					type: 'open',
-					payloads: [SWAP_MAX_PAYLOAD],
-				}),
+				buildActionData(actionIds.showSwapConfirm, SWAP_MAX_PAYLOAD),
 			)
 			.row()
-			.text(
-				'Custom amount',
-				buildCommand({
-					type: 'reply',
-					promptId: promptIds.customWithdrawAmount,
-				}),
-			)
+			.text('Custom amount', actionIds.requestWithdrawCustomAmount)
 			.row()
 
-		addNav(keyboard, { parent: pageIds.swap, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showSwapChooseChain,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

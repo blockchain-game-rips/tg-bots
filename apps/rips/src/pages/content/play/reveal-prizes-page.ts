@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 
 export const REVEAL_ONE_PAYLOAD = 'one'
 export const REVEAL_ALL_PAYLOAD = 'all'
@@ -23,20 +22,18 @@ export class RevealPrizesPage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.revealSingle,
-						payloads: [],
-					}),
+					buildActionData(
+						actionIds.showRevealPrizes,
+						REVEAL_ONE_PAYLOAD,
+					),
 				)
 				.row()
 				.text(
 					'Reveal all',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.revealAll,
-						payloads: [],
-					}),
+					buildActionData(
+						actionIds.showRevealPrizes,
+						REVEAL_ALL_PAYLOAD,
+					),
 				)
 				.row()
 		}
@@ -44,8 +41,8 @@ export class RevealPrizesPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(keyboard, {
-				home: pageIds.home,
-				parent: pageIds.play,
+				home: actionIds.showHome,
+				parent: actionIds.showPlay,
 			}),
 		}
 	}

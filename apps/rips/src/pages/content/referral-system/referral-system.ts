@@ -3,10 +3,9 @@ import {
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 const FEE_BASE = 10000
@@ -82,26 +81,15 @@ export class ReferralSystemPage {
 		const keyboard = new InlineKeyboard()
 			.url('Copy referral link', referralLink)
 			.row()
-			.text(
-				'Withdraw rewards',
-				buildCommand({
-					pageId: pageIds.withdraw,
-					type: 'open',
-					payloads: [],
-				}),
-			)
+			.text('Withdraw rewards', actionIds.showReferralWithdrawReward)
 			.row()
-			.text(
-				'About',
-				buildCommand({
-					pageId: pageIds.referralAbout,
-					type: 'open',
-					payloads: [],
-				}),
-			)
+			.text('About', actionIds.showReferralAbout)
 			.row()
 
-		addNav(keyboard, { parent: pageIds.home, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showHome,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

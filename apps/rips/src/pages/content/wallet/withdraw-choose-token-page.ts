@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 
 export class WithdrawChooseTokenPage {
 	static render(args: { chainIndex: number }): PageContent {
@@ -27,20 +26,20 @@ export class WithdrawChooseTokenPage {
 		chainCurrencies.forEach((currency) => {
 			const currencyIndex = SUPPORTED_CURRENCIES.indexOf(currency)
 
-			keyboard.text(
-				currency.symbol,
-				buildCommand({
-					pageId: pageIds.withdrawChooseAmount,
-					type: 'open',
-					payloads: [currencyIndex.toString()],
-				}),
-			)
-			keyboard.row()
+			keyboard
+				.text(
+					currency.symbol,
+					buildActionData(
+						actionIds.showWithdrawChooseAmount,
+						currencyIndex.toString(),
+					),
+				)
+				.row()
 		})
 
 		addNav(keyboard, {
-			parent: pageIds.withdrawChooseChain,
-			home: pageIds.home,
+			parent: actionIds.showWithdrawChooseChain,
+			home: actionIds.showHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

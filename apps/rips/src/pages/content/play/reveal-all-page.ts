@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 export class RevealAllPage {
@@ -38,8 +38,8 @@ export class RevealAllPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				home: pageIds.home,
-				parent: pageIds.play,
+				home: actionIds.showHome,
+				parent: actionIds.showPlay,
 			}),
 		}
 	}

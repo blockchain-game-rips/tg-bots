@@ -3,18 +3,16 @@ import {
 	AvailableStakeDto,
 	CurrencyAmountDto,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
-import { configName, getConfig } from '../../utils'
+import { buildActionData, configName, getConfig } from '../../utils'
 
 export class BuyInsufficientFundsPage {
 	static render(
 		balance: CurrencyAmountDto,
 		availableStake: AvailableStakeDto,
 		ticketCount: number,
-		// userEvmAddress: string,
 	): PageContent {
 		const config = getConfig(availableStake)
 
@@ -35,31 +33,16 @@ export class BuyInsufficientFundsPage {
 		return {
 			message,
 			keyboard: new InlineKeyboard()
-				.text(
-					'Enter from another token',
-					buildCommand({
-						pageId: pageIds.zapChooseChain,
-						type: 'open',
-						payloads: [],
-					}),
-				)
+				.text('Enter from another token', actionIds.showZapChooseChain)
 				.row()
 				.text(
 					'Back',
-					buildCommand({
-						pageId: pageIds.chooseTicketAmount,
-						type: 'open',
-						payloads: [availableStake.stake.id.toString()],
-					}),
+					buildActionData(
+						actionIds.showChooseTicketAmount,
+						availableStake.stake.id.toString(),
+					),
 				)
-				.text(
-					'Home',
-					buildCommand({
-						pageId: pageIds.home,
-						type: 'open',
-						payloads: [],
-					}),
-				),
+				.text('Home', actionIds.showHome),
 		}
 	}
 }

@@ -1,8 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { TransactionDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
 
 export class WithdrawSuccessPage {
 	static render(transaction: TransactionDto): PageContent {
@@ -14,14 +13,7 @@ export class WithdrawSuccessPage {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text(
-				'Home',
-				buildCommand({
-					type: 'open',
-					pageId: pageIds.home,
-					payloads: [],
-				}),
-			),
+			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}
 }

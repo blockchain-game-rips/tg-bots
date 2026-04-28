@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav, composeMarkup } from '../../utils'
 
 export class WalletPage {
@@ -23,19 +23,16 @@ export class WalletPage {
 		const keyboard = addNav(
 			new InlineKeyboard(
 				composeMarkup([
-					{ label: 'Update', pageId: pageIds.wallet },
+					{ label: 'Update', actionId: actionIds.showWallet },
 					'row',
-					{ label: 'Withdraw', pageId: pageIds.withdraw },
+					{ label: 'Withdraw', actionId: actionIds.showWithdraw },
 					'row',
-					{ label: 'Swap', pageId: pageIds.swap },
+					{ label: 'Swap', actionId: actionIds.showSwapChooseChain },
 				]),
 			),
-			{ home: pageIds.home, parent: pageIds.home },
+			{ home: actionIds.showHome, parent: actionIds.showHome },
 		)
 
-		return {
-			message,
-			keyboard,
-		}
+		return { message, keyboard }
 	}
 }

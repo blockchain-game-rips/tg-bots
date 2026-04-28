@@ -3,10 +3,9 @@ import {
 	BuyTicketsPurchaseResponseDtoOutput,
 	RoundDto,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { configName } from '../../utils'
 
 export class BuySuccessPage {
@@ -54,14 +53,7 @@ export class BuySuccessPage {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text(
-				'Home',
-				buildCommand({
-					pageId: pageIds.home,
-					type: 'open',
-					payloads: [],
-				}),
-			),
+			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}
 }

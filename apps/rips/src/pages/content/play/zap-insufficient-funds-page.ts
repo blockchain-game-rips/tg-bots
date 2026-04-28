@@ -4,10 +4,9 @@ import {
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav, configName, getConfig } from '../../utils'
 
 export class ZapInsufficientFundsPage {
@@ -42,14 +41,13 @@ export class ZapInsufficientFundsPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Update balance and continue',
-			buildCommand({
-				pageId: pageIds.zapConfirm,
-				type: 'open',
-				payloads: [],
-			}),
+			actionIds.showZapConfirm,
 		)
 
-		addNav(keyboard, { parent: pageIds.zapChooseToken, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showZapChooseToken,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

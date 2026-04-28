@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS } from '../../../constants'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
 
 export class SwapChooseChainPage {
 	static render(): PageContent {
@@ -12,18 +11,21 @@ export class SwapChooseChainPage {
 		const keyboard = new InlineKeyboard()
 
 		SUPPORTED_CHAINS.forEach((chain, chainIndex) => {
-			keyboard.text(
-				chain.name,
-				buildCommand({
-					pageId: pageIds.swapChooseToken,
-					type: 'open',
-					payloads: [chainIndex.toString()],
-				}),
-			)
-			keyboard.row()
+			keyboard
+				.text(
+					chain.name,
+					buildActionData(
+						actionIds.showSwapChooseToken,
+						chainIndex.toString(),
+					),
+				)
+				.row()
 		})
 
-		addNav(keyboard, { parent: pageIds.swap, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showSwapChooseChain,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

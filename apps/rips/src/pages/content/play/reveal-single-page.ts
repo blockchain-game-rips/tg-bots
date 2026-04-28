@@ -1,10 +1,10 @@
 import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
-import { addNav } from '../../utils'
+import { addNav, buildActionData } from '../../utils'
+import { REVEAL_ALL_PAYLOAD, REVEAL_ONE_PAYLOAD } from './reveal-prizes-page'
 
 export class RevealSinglePage {
 	static render(
@@ -28,20 +28,18 @@ export class RevealSinglePage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.revealSingle,
-						payloads: [],
-					}),
+					buildActionData(
+						actionIds.showRevealPrizes,
+						REVEAL_ONE_PAYLOAD,
+					),
 				)
 				.row()
 				.text(
 					'Reveal all',
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.revealAll,
-						payloads: [],
-					}),
+					buildActionData(
+						actionIds.showRevealPrizes,
+						REVEAL_ALL_PAYLOAD,
+					),
 				)
 				.row()
 		}
@@ -49,8 +47,8 @@ export class RevealSinglePage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(keyboard, {
-				home: pageIds.home,
-				parent: pageIds.play,
+				home: actionIds.showHome,
+				parent: actionIds.showPlay,
 			}),
 		}
 	}

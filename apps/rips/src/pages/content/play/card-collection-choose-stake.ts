@@ -1,9 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { pageIds } from '../../page-ids'
-import { addNav, configName, getConfig } from '../../utils'
+import { addNav, buildActionData, configName, getConfig } from '../../utils'
 
 export class CardCollectionChooseStakePage {
 	static render(availableStakes: AvailableStakeDto[]): PageContent {
@@ -15,11 +14,10 @@ export class CardCollectionChooseStakePage {
 			keyboard
 				.text(
 					configName(config),
-					buildCommand({
-						type: 'open',
-						pageId: pageIds.cardCollection,
-						payloads: [availableStake.stake.id.toString()],
-					}),
+					buildActionData(
+						actionIds.showCardCollection,
+						availableStake.stake.id.toString(),
+					),
 				)
 				.row()
 		}
@@ -27,8 +25,8 @@ export class CardCollectionChooseStakePage {
 		return {
 			message: 'Choose a stake to view your card collection:',
 			keyboard: addNav(keyboard, {
-				home: pageIds.home,
-				parent: pageIds.play,
+				home: actionIds.showHome,
+				parent: actionIds.showPlay,
 			}),
 		}
 	}

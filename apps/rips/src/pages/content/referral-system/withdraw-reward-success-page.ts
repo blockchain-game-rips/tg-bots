@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { WithdrawRewardResponseDtoOutput } from '../../../../generated/api-client'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav } from '../../utils'
 
 export class WithdrawRewardSuccessPage {
@@ -22,8 +22,8 @@ export class WithdrawRewardSuccessPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				parent: pageIds.referralSystem,
-				home: pageIds.home,
+				parent: actionIds.showReferral,
+				home: actionIds.showHome,
 			}),
 		}
 	}

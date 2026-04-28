@@ -1,9 +1,16 @@
 import { InlineKeyboard } from 'grammy'
 import { InlineKeyboardButton } from 'grammy/types'
 import { AvailableStakeDto, ConfigDto } from '../../generated/api-client'
-import { buildCommand } from '../button-handler/utils'
+import { ActionId } from '../actions'
 import { KeyboardLayout, NavIds } from '../types'
 import { formatUnits } from '../utils/units'
+
+export const COMMAND_SEPARATOR = ':'
+
+export function buildActionData(actionId: ActionId, payload?: string): string {
+	if (payload === undefined) return actionId
+	return `${actionId}${COMMAND_SEPARATOR}${payload}`
+}
 
 export function getConfig(availableStake: AvailableStakeDto) {
 	if (availableStake.fillingRound) return availableStake.fillingRound.config
@@ -39,11 +46,7 @@ export function composeMarkup(
 		} else {
 			current.push({
 				text: button.label,
-				callback_data: buildCommand({
-					type: 'open',
-					pageId: button.pageId,
-					payloads: [],
-				}),
+				callback_data: buildActionData(button.actionId, button.payload),
 			})
 		}
 	}
@@ -54,18 +57,10 @@ export function composeMarkup(
 }
 
 export function addNav(keyboard: InlineKeyboard, ids: NavIds) {
-	keyboard
-		.row()
-		.text(
-			'Back',
-			buildCommand({ type: 'open', pageId: ids.parent, payloads: [] }),
-		)
+	keyboard.row().text('Back', buildActionData(ids.parent))
 
 	if (ids.home !== ids.parent) {
-		keyboard.text(
-			'Home',
-			buildCommand({ type: 'open', pageId: ids.home, payloads: [] }),
-		)
+		keyboard.text('Home', buildActionData(ids.home))
 	}
 
 	return keyboard

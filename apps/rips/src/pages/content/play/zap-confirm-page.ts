@@ -4,10 +4,9 @@ import {
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
 } from '../../../../generated/api-client'
-import { buildCommand } from '../../../button-handler/utils'
+import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { pageIds } from '../../page-ids'
 import { addNav, configName, getConfig } from '../../utils'
 
 export class ZapConfirmPage {
@@ -43,14 +42,13 @@ export class ZapConfirmPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Confirm',
-			buildCommand({
-				pageId: pageIds.zapSuccess,
-				type: 'open',
-				payloads: [],
-			}),
+			actionIds.executeZap,
 		)
 
-		addNav(keyboard, { parent: pageIds.zapChooseToken, home: pageIds.home })
+		addNav(keyboard, {
+			parent: actionIds.showZapChooseToken,
+			home: actionIds.showHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

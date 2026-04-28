@@ -4,7 +4,7 @@ import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { parseStakeId } from '../../validation/stake-id'
 
-export async function showChooseTicketAmount(
+export async function showChooseTicketCount(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {

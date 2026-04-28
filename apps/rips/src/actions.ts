@@ -99,9 +99,25 @@ const actionDefs = {
 	showSwapChooseAmount: { id: 'sssa', handler: notImplemented },
 	showSwapConfirm: { id: 'sscp', handler: notImplemented },
 	executeSwap: { id: 'es', handler: notImplemented },
-} as const
+} as const satisfies Record<string, { id: string; handler: ActionHandler }>
 
-type ActionDefs = typeof actionDefs
+function validateUniqueIds<
+	T extends Record<string, { id: string; handler: ActionHandler }>,
+>(defs: T): T {
+	const seen = new Set<string>()
+
+	for (const [key, { id }] of Object.entries(defs)) {
+		if (seen.has(id))
+			throw new Error(`Duplicate action id "${id}" on "${key}"`)
+		seen.add(id)
+	}
+
+	return defs
+}
+
+const validatedActionDefs = validateUniqueIds(actionDefs)
+
+type ActionDefs = typeof validatedActionDefs
 type ActionName = keyof ActionDefs
 
 export type ActionId = ActionDefs[ActionName]['id']
@@ -130,6 +146,6 @@ function buildActions<
 	return result
 }
 
-export const actionIds = buildActionIds(actionDefs)
+export const actionIds = buildActionIds(validatedActionDefs)
 
-export const actions = buildActions(actionDefs)
+export const actions = buildActions(validatedActionDefs)

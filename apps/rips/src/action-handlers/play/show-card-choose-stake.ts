@@ -6,7 +6,7 @@ export async function showCardChooseStake(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { data } = await ripsControllerGetStakes({ throwOnError: true })
+	const { data } = await ripsControllerGetStakes()
 
 	return {
 		type: EffectType.EDIT,

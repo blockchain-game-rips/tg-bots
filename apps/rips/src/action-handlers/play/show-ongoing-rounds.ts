@@ -10,8 +10,8 @@ export async function showOngoingRounds(
 	_payload: string | undefined,
 ): Promise<Effect> {
 	const [{ data: roundsData }, { data: stakesData }] = await Promise.all([
-		ripsControllerGetOngoingRounds({ throwOnError: true }),
-		ripsControllerGetStakes({ throwOnError: true }),
+		ripsControllerGetOngoingRounds(),
+		ripsControllerGetStakes(),
 	])
 
 	return {

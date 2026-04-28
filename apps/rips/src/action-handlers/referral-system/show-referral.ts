@@ -19,7 +19,7 @@ export async function showReferral(
 		referralSystemControllerGetReferrer({
 			headers: { 'x-telegram-id': telegramId },
 		}),
-		referralSystemControllerGetTierTables({ throwOnError: true }),
+		referralSystemControllerGetTierTables(),
 	])
 
 	return {

@@ -16,7 +16,7 @@ export async function showConfirmPurchase(
 
 	const { stakeId } = getFlowData(session, 'buyTickets', 'stake-chosen')
 
-	const { data } = await ripsControllerGetStakes({ throwOnError: true })
+	const { data } = await ripsControllerGetStakes()
 	const availableStake = data.availableStakes.find(
 		(s) => s.stake.id === stakeId,
 	)

@@ -6,7 +6,7 @@ export async function showAbout(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { data } = await ripsControllerGetStakes({ throwOnError: true })
+	const { data } = await ripsControllerGetStakes()
 
 	const configs = data.availableStakes
 		.map((s) => s.fillingRound?.config ?? s.stake.currentConfig)

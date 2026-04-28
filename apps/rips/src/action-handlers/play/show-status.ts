@@ -13,7 +13,7 @@ export async function showStatus(
 	const { telegramId } = session
 
 	const [{ data: roundsData }, { data: user }] = await Promise.all([
-		ripsControllerGetOngoingRounds({ throwOnError: true }),
+		ripsControllerGetOngoingRounds(),
 		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
 	])
 

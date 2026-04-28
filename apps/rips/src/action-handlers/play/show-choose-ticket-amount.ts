@@ -10,7 +10,7 @@ export async function showChooseTicketAmount(
 ): Promise<Effect> {
 	const stakeId = parseStakeId(payload)
 
-	const { data } = await ripsControllerGetStakes({ throwOnError: true })
+	const { data } = await ripsControllerGetStakes()
 	const availableStake = data.availableStakes.find(
 		(s) => s.stake.id === stakeId,
 	)

@@ -6,9 +6,7 @@ export async function showCompletedRounds(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { data } = await ripsControllerGetCompletedRounds({
-		throwOnError: true,
-	})
+	const { data } = await ripsControllerGetCompletedRounds()
 
 	return {
 		type: EffectType.EDIT,

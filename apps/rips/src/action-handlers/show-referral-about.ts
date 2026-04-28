@@ -6,9 +6,7 @@ export async function showReferralAbout(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
-	const { data: tierTables } = await referralSystemControllerGetTierTables({
-		throwOnError: true,
-	})
+	const { data: tierTables } = await referralSystemControllerGetTierTables()
 
 	return {
 		type: EffectType.EDIT,

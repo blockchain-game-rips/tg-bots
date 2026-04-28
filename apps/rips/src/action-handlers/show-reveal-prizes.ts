@@ -22,12 +22,10 @@ export async function showRevealPrizes(
 		const { data: revealData } = await ripsControllerRevealPrizes({
 			headers: { 'x-telegram-id': telegramId },
 			body: { revealAll },
-			throwOnError: true,
 		})
 
 		const { data: prizesData } = await ripsControllerGetPrizes({
 			headers: { 'x-telegram-id': telegramId },
-			throwOnError: true,
 		})
 
 		const unrevealedPrizes = prizesData.prizes.filter((p) => !p.revealed)
@@ -35,7 +33,6 @@ export async function showRevealPrizes(
 
 		const { data: roundsData } = await ripsControllerGetRounds({
 			query: { ids: roundIds },
-			throwOnError: true,
 		})
 
 		return {
@@ -46,7 +43,6 @@ export async function showRevealPrizes(
 
 	const { data: prizesData } = await ripsControllerGetPrizes({
 		headers: { 'x-telegram-id': telegramId },
-		throwOnError: true,
 	})
 
 	const unrevealedPrizes = prizesData.prizes.filter((p) => !p.revealed)

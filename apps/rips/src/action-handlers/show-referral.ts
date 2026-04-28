@@ -18,7 +18,6 @@ export async function showReferral(
 	const [{ data: referrerData }, { data: tierTables }] = await Promise.all([
 		referralSystemControllerGetReferrer({
 			headers: { 'x-telegram-id': telegramId },
-			throwOnError: true,
 		}),
 		referralSystemControllerGetTierTables({ throwOnError: true }),
 	])

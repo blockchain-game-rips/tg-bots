@@ -28,7 +28,6 @@ export async function buyTickets(
 			ticketCount,
 			paymentCurrencyChainAddress: NATIVE_ON_BASE,
 		},
-		throwOnError: true,
 	}).catch((error: unknown) => {
 		if (
 			error instanceof ApiError &&
@@ -40,9 +39,7 @@ export async function buyTickets(
 		throw error
 	})
 
-	const { data: roundsData } = await ripsControllerGetOngoingRounds({
-		throwOnError: true,
-	})
+	const { data: roundsData } = await ripsControllerGetOngoingRounds()
 
 	const round = roundsData.rounds.find((r) => r.id === purchase.roundId)
 

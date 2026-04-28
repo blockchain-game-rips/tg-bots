@@ -12,7 +12,6 @@ export async function showCardCollection(
 	const { data } = await ripsControllerGetCardCollection({
 		headers: { 'x-telegram-id': session.telegramId },
 		query: { stakeId },
-		throwOnError: true,
 	})
 
 	return {

@@ -10,7 +10,6 @@ export async function showReferralWithdrawReward(
 	const { data } = await referralSystemControllerWithdrawReward({
 		headers: { 'x-telegram-id': session.telegramId },
 		body: { currencyAddress: NATIVE_ON_BASE.address },
-		throwOnError: true,
 	})
 
 	return {

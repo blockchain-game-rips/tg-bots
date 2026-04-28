@@ -31,7 +31,6 @@ export async function executeWithdraw(
 			recipientAddress,
 			currencyOutChainAddress: NATIVE_ON_BASE,
 		},
-		throwOnError: true,
 	})
 
 	session.flow = null

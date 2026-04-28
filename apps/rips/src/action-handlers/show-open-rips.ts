@@ -8,7 +8,6 @@ export async function showOpenRips(
 ): Promise<Effect> {
 	const { data } = await ripsControllerGetPrizes({
 		headers: { 'x-telegram-id': session.telegramId },
-		throwOnError: true,
 	})
 
 	const unrevealedPrizes = data.prizes.filter((p) => !p.revealed)

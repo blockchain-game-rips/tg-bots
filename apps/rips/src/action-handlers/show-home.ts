@@ -4,7 +4,7 @@ import {
 } from '../../generated/api-client'
 import { HomePage } from '../pages/content/home-page'
 import { Effect, EffectType, SessionData } from '../types'
-import { ApiError } from '../utils/api-error'
+import { isApiErrorWithStatus } from '../utils/action-handler-utils'
 
 const NOT_FOUND_STATUS = 404
 
@@ -16,10 +16,7 @@ export async function showHome(
 
 	await usersControllerGetUser({ path: { telegramId } }).catch(
 		async (error: unknown) => {
-			if (
-				error instanceof ApiError &&
-				error.status === NOT_FOUND_STATUS
-			) {
+			if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) {
 				return usersControllerCreateUser({ body: { telegramId } })
 			}
 

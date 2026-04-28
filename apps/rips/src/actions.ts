@@ -1,9 +1,9 @@
 import { notImplemented } from './action-handlers/not-implemented'
 import { buyTickets } from './action-handlers/play/buy-tickets'
 import { requestCustomTicketAmount } from './action-handlers/play/request-custom-ticket-amount'
+import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
 import { showCardChooseStake } from './action-handlers/play/show-card-choose-stake'
 import { showCardCollection } from './action-handlers/play/show-card-collection'
-import { showChooseStake } from './action-handlers/play/show-choose-stake'
 import { showChooseTicketAmount } from './action-handlers/play/show-choose-ticket-amount'
 import { showCompletedRounds } from './action-handlers/play/show-completed-rounds'
 import { showConfirmPurchase } from './action-handlers/play/show-confirm-purchase'
@@ -36,7 +36,7 @@ const actionDefs = {
 
 	// Play
 	showPlay: { id: 'sp', handler: showPlay },
-	showChooseStake: { id: 'scs', handler: showChooseStake },
+	showChooseStake: { id: 'scs', handler: showBuyChooseStake },
 	showChooseTicketAmount: { id: 'scta', handler: showChooseTicketAmount },
 	requestCustomTicketAmount: {
 		id: 'rcta',

@@ -1,3 +1,7 @@
+import {
+	CurrencyAmountDto,
+	QuotePurchaseResponseDtoOutput,
+} from '../../generated/api-client'
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
 import { BuyChooseStakePage } from '../../src/pages/content/play/buy-choose-stake-page'
@@ -173,11 +177,15 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Shown instead of confirm-purchase when the user's balance is too low. Offers option to enter from another token (zap flow) or go back.",
 		render: () =>
-			BuyInsufficientFundsPage.render(
-				mockBalance,
-				mockAvailableStakes[0],
-				3,
-			),
+			// TODO: delete as casting
+			BuyInsufficientFundsPage.render({
+				availableStake: mockAvailableStakes[0],
+				currencyInAmount: {} as CurrencyAmountDto,
+				currencyInBalance: mockBalance,
+				nativeBalance: mockBalance,
+				purchaseQuote: {} as QuotePurchaseResponseDtoOutput,
+				ticketCount: 3,
+			}),
 	},
 	status: {
 		description:

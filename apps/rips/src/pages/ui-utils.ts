@@ -1,3 +1,35 @@
+import { CurrencyAmountDto } from '../../generated/api-client'
+import { formattedAmountWithUsd } from '../utils/units'
+
+export type Expense = {
+	label: string
+	amount: CurrencyAmountDto
+}
+
+export function fundsBreakdown(
+	expenses: Expense[],
+	balances: CurrencyAmountDto[],
+): string[] {
+	const expenseLines = expenses.map(
+		({ amount, label }) => `${label}: ${formattedAmountWithUsd(amount)}`,
+	)
+
+	const balanceLines = balances.map((balance) => {
+		const totalRequired = expenses.reduce((sum, { amount }) => {
+			if (amount.currency.id === balance.currency.id) return sum
+
+			return sum + BigInt(amount.amount)
+		}, 0n)
+
+		const insufficient = BigInt(balance.amount) < totalRequired
+		const suffix = insufficient ? ' ⚠️' : ''
+
+		return `${balance.currency.symbol} balance: ${formattedAmountWithUsd(balance)}${suffix}`
+	})
+
+	return [...expenseLines, '', ...balanceLines]
+}
+
 type Duration = {
 	days: number
 	hours: number

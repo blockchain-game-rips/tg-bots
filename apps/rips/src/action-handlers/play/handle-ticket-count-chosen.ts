@@ -1,3 +1,5 @@
+import { ripsControllerQuotePurchase } from '../../../generated/api-client'
+import { NATIVE_ON_BASE } from '../../constants'
 import { BuyConfirmPage } from '../../pages/content/play/buy-confirm-page'
 import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insufficient-funds-page'
 import { resolveConfig } from '../../pages/utils'
@@ -15,10 +17,18 @@ export async function handleTicketCountChosen(
 	assertFlow(session, 'buyTickets', 'stake-chosen')
 	const { stakeId } = session.flow.data
 
-	const [availableStake, balance] = await Promise.all([
-		fetchStake(stakeId),
-		fetchNativeBalance(session.telegramId),
-	])
+	const [availableStake, balance, { data: purchaseQuote }] =
+		await Promise.all([
+			fetchStake(stakeId),
+			fetchNativeBalance(session.telegramId),
+			ripsControllerQuotePurchase({
+				body: {
+					paymentCurrencyChainAddress: NATIVE_ON_BASE,
+					stakeId,
+					ticketCount,
+				},
+			}),
+		])
 
 	const config = resolveConfig(availableStake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
@@ -29,11 +39,17 @@ export async function handleTicketCountChosen(
 	if (balanceAmount < totalCost) {
 		return {
 			type: EffectType.EDIT,
-			page: BuyInsufficientFundsPage.render(
-				balance,
+			page: BuyInsufficientFundsPage.render({
 				availableStake,
+				currencyInAmount: {
+					amount: totalCost.toString(),
+					currency: balance.currency,
+				},
+				currencyInBalance: balance,
+				nativeBalance: balance,
+				purchaseQuote,
 				ticketCount,
-			),
+			}),
 		}
 	}
 

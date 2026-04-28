@@ -6,7 +6,7 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
+import { fundsBreakdown } from '../../ui-utils'
 import {
 	addNav,
 	configName,
@@ -16,11 +16,14 @@ import {
 
 export class ZapInsufficientFundsPage {
 	static render(args: {
+		currencyInBalance: CurrencyAmountDto
+		nativeBalance: CurrencyAmountDto
+
+		zapQuote: QuoteZapResponseDtoOutput
+
 		availableStake: AvailableStakeDto
 		ticketCount: number
-		nativeBalance: CurrencyAmountDto
-		currencyInBalance: CurrencyAmountDto
-		zapQuote: QuoteZapResponseDtoOutput
+
 		userEvmAddress: string
 	}): PageContent {
 		const {
@@ -29,6 +32,7 @@ export class ZapInsufficientFundsPage {
 			currencyInBalance,
 			zapQuote,
 			userEvmAddress,
+			nativeBalance,
 		} = args
 
 		const config = resolveConfig(availableStake)
@@ -37,9 +41,23 @@ export class ZapInsufficientFundsPage {
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
 			'',
-			`⚠️ Not enough funds.`,
-			`Required: ${formattedAmountWithUsd(zapQuote.amountIn)}`,
-			`Your balance: ${formattedAmountWithUsd(currencyInBalance)}`,
+			...fundsBreakdown(
+				[
+					{
+						label: 'Ticket cost',
+						amount: zapQuote.amountIn,
+					},
+					{
+						label: 'Zap service fee',
+						amount: zapQuote.fee,
+					},
+					{
+						label: 'Blockchain fee',
+						amount: zapQuote.blockchainFee,
+					},
+				],
+				[nativeBalance, currencyInBalance],
+			),
 			'',
 			`Address: ${userEvmAddress}`,
 		]

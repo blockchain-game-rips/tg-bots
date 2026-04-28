@@ -2,10 +2,11 @@ import { InlineKeyboard } from 'grammy'
 import {
 	AvailableStakeDto,
 	CurrencyAmountDto,
+	QuotePurchaseResponseDtoOutput,
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formatUnits, toUsd } from '../../../utils/units'
+import { fundsBreakdown } from '../../ui-utils'
 import {
 	buildActionData,
 	configName,
@@ -14,23 +15,44 @@ import {
 } from '../../utils'
 
 export class BuyInsufficientFundsPage {
-	static render(
-		balance: CurrencyAmountDto,
-		availableStake: AvailableStakeDto,
-		ticketCount: number,
-	): PageContent {
-		const config = resolveConfig(availableStake)
+	static render(args: {
+		currencyInBalance: CurrencyAmountDto
+		nativeBalance: CurrencyAmountDto
 
-		const formattedBalance = formatUnits(
-			BigInt(balance.amount),
-			balance.currency.decimals,
-		)
+		purchaseQuote: QuotePurchaseResponseDtoOutput
+		currencyInAmount: CurrencyAmountDto
+
+		availableStake: AvailableStakeDto
+		ticketCount: number
+	}): PageContent {
+		const {
+			availableStake,
+			currencyInAmount,
+			currencyInBalance,
+			purchaseQuote,
+			nativeBalance,
+			ticketCount,
+		} = args
+
+		const config = resolveConfig(availableStake)
 
 		const lines = [
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
 			'',
-			`⚠️ Not enough funds. Your balance: ${formattedBalance} ${toUsd(balance)}`,
+			...fundsBreakdown(
+				[
+					{
+						label: 'Ticket cost',
+						amount: currencyInAmount,
+					},
+					{
+						label: 'Blockchain fee',
+						amount: purchaseQuote.blockchainFee,
+					},
+				],
+				[nativeBalance, currencyInBalance],
+			),
 		]
 
 		return {

@@ -21,6 +21,7 @@ const mockChainAddress = {
 }
 
 const mockEth: ConfigDto['ticketPrice']['currency'] = {
+	id: 'eip155:8453:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockChainAddress,
 	symbol: 'ETH',
@@ -100,6 +101,7 @@ export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
 }
 
 const mockUsdcOnBase = {
+	id: 'eip155:8453:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 	priceUsd: 1,
 	chainAddress: {
 		address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
@@ -200,6 +202,7 @@ export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {
 }
 
 const mockUsdc = {
+	id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 	priceUsd: 1,
 	chainAddress: {
 		address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',

@@ -27,6 +27,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
 
 export const SUPPORTED_CURRENCIES: Omit<CurrencyDto, 'priceUsd'>[] = [
 	{
+		//TODO: parse id from chain address or vise versa
+		id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 		symbol: 'USDC',
 		name: 'USD Coin',
 		decimals: 6,
@@ -36,6 +38,7 @@ export const SUPPORTED_CURRENCIES: Omit<CurrencyDto, 'priceUsd'>[] = [
 		},
 	},
 	{
+		id: '2',
 		symbol: 'ETH',
 		name: 'Ethereum',
 		decimals: 18,
@@ -45,6 +48,7 @@ export const SUPPORTED_CURRENCIES: Omit<CurrencyDto, 'priceUsd'>[] = [
 		},
 	},
 	{
+		id: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 		symbol: 'USDC',
 		name: 'USD Coin',
 		decimals: 6,

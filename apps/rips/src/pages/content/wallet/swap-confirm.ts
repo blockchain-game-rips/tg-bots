@@ -7,7 +7,7 @@ import { actionIds } from '../../../actions'
 import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 export class SwapConfirmPage {
 	static render(args: {
@@ -45,6 +45,6 @@ export class SwapConfirmPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

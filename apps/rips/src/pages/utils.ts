@@ -39,6 +39,12 @@ export function keyboardFromLayout(layout: KeyboardLayout) {
 	return keyboard
 }
 
+export function messageFromLines(lines: string[]) {
+	const message = lines.join('\n')
+
+	return message
+}
+
 export function composeMarkup(
 	layout: KeyboardLayout,
 ): InlineKeyboardButton[][] {

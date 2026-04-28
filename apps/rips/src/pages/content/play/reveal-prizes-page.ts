@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 
 export const REVEAL_ONE_PAYLOAD = 'one'
 export const REVEAL_ALL_PAYLOAD = 'all'
@@ -39,7 +39,7 @@ export class RevealPrizesPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(keyboard, {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

@@ -3,7 +3,13 @@ import { AvailableStakeDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS } from '../../../constants'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData, configName, getConfig } from '../../utils'
+import {
+	addNav,
+	buildActionData,
+	configName,
+	getConfig,
+	messageFromLines,
+} from '../../utils'
 
 export class ZapChooseChainPage {
 	static render(args: {
@@ -39,6 +45,6 @@ export class ZapChooseChainPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

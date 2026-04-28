@@ -3,7 +3,7 @@ import { GetTierTablesResponseDtoOutput } from '../../../../generated/api-client
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 const FEE_BASE = 10000
 
@@ -46,7 +46,7 @@ export class ReferralAboutPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showReferral,
 				home: actionIds.showHome,

@@ -2,7 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { buildActionData, configName, getConfig } from '../../utils'
+import {
+	buildActionData,
+	configName,
+	getConfig,
+	messageFromLines,
+} from '../../utils'
 
 export class BuyConfirmPage {
 	static render(
@@ -18,10 +23,8 @@ export class BuyConfirmPage {
 			'Confirm to proceed',
 		]
 
-		const message = lines.join('\n')
-
 		return {
-			message,
+			message: messageFromLines(lines),
 			keyboard: new InlineKeyboard()
 				.text('Confirm', actionIds.buyTickets)
 				.row()

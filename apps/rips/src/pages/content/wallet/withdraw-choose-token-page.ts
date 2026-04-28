@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 
 export class WithdrawChooseTokenPage {
 	static render(args: { chainIndex: number }): PageContent {
@@ -42,6 +42,6 @@ export class WithdrawChooseTokenPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

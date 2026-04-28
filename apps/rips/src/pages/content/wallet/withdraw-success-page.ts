@@ -2,6 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { TransactionDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
+import { messageFromLines } from '../../utils'
 
 export class WithdrawSuccessPage {
 	static render(transaction: TransactionDto): PageContent {
@@ -12,7 +13,7 @@ export class WithdrawSuccessPage {
 		]
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

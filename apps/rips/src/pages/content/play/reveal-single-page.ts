@@ -3,7 +3,7 @@ import { PrizeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 import { REVEAL_ALL_PAYLOAD, REVEAL_ONE_PAYLOAD } from './reveal-prizes-page'
 
 export class RevealSinglePage {
@@ -45,7 +45,7 @@ export class RevealSinglePage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(keyboard, {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

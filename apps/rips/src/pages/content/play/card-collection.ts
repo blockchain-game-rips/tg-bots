@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { GetCardCollectionResponseDtoOutput } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 type CollectedCard = GetCardCollectionResponseDtoOutput['tiers'][number][number]
 
@@ -23,7 +23,7 @@ export class CardCollectionPage {
 		]
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showCardChooseStake,
 				home: actionIds.showHome,

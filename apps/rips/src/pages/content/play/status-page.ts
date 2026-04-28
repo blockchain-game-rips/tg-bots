@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 
 export class StatusPage {
 	static render(
@@ -55,6 +55,6 @@ export class StatusPage {
 			{ home: actionIds.showHome, parent: actionIds.showPlay },
 		)
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

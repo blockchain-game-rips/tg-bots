@@ -6,7 +6,12 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { buildActionData, configName, getConfig } from '../../utils'
+import {
+	buildActionData,
+	configName,
+	getConfig,
+	messageFromLines,
+} from '../../utils'
 
 export class BuyInsufficientFundsPage {
 	static render(
@@ -28,10 +33,8 @@ export class BuyInsufficientFundsPage {
 			`⚠️ Not enough funds. Your balance: ${formattedBalance} ${toUsd(balance)}`,
 		]
 
-		const message = lines.join('\n')
-
 		return {
-			message,
+			message: messageFromLines(lines),
 			keyboard: new InlineKeyboard()
 				.text('Enter from another token', actionIds.showZapChooseChain)
 				.row()

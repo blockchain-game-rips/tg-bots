@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 import { TokenSelection, tokenLabel } from './swap-utils'
 
 export class SwapPage {
@@ -38,6 +38,6 @@ export class SwapPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

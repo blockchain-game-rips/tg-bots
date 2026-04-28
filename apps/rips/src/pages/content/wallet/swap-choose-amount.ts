@@ -3,7 +3,7 @@ import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 import { tokenLabel } from './swap-utils'
 
 export const SWAP_MAX_PAYLOAD = 'max'
@@ -46,6 +46,6 @@ export class SwapChooseAmountPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

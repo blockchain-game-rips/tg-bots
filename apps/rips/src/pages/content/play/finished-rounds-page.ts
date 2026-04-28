@@ -3,7 +3,7 @@ import { RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { displayStatus } from '../../round-statuses'
-import { addNav, configName } from '../../utils'
+import { addNav, configName, messageFromLines } from '../../utils'
 
 export class FinishedRoundsPage {
 	static render(completedRounds: RoundDto[]): PageContent {
@@ -16,7 +16,9 @@ export class FinishedRoundsPage {
 		}
 
 		const message =
-			lines.length > 0 ? lines.join('\n') : 'No completed rounds yet'
+			lines.length > 0
+				? messageFromLines(lines)
+				: 'No completed rounds yet'
 
 		return {
 			message,

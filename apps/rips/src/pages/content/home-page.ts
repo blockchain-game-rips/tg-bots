@@ -1,6 +1,6 @@
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { keyboardFromLayout } from '../utils'
+import { keyboardFromLayout, messageFromLines } from '../utils'
 
 export class HomePage {
 	static render(): PageContent {
@@ -12,10 +12,8 @@ export class HomePage {
 			'· Play the game and earn rewards',
 		]
 
-		const message = lines.join('\n')
-
 		return {
-			message,
+			message: messageFromLines(lines),
 			keyboard: keyboardFromLayout([
 				[{ label: 'Play', actionId: actionIds.showPlay }],
 				[{ label: 'Wallet', actionId: actionIds.showWallet }],

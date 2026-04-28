@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS } from '../../../constants'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData } from '../../utils'
+import { addNav, buildActionData, messageFromLines } from '../../utils'
 
 export class SwapChooseChainPage {
 	static render(): PageContent {
@@ -27,6 +27,6 @@ export class SwapChooseChainPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

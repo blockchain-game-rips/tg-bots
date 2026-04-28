@@ -6,7 +6,7 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 const FEE_BASE = 10000
 const PERIOD_DAYS = 30
@@ -91,6 +91,6 @@ export class ReferralSystemPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

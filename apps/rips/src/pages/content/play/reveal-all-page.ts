@@ -3,7 +3,7 @@ import { PrizeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 export class RevealAllPage {
 	static render(
@@ -36,7 +36,7 @@ export class RevealAllPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

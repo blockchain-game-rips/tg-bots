@@ -6,7 +6,7 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formatUnits, toUsd } from '../../../utils/units'
-import { configName } from '../../utils'
+import { configName, messageFromLines } from '../../utils'
 
 export class BuySuccessPage {
 	static render(
@@ -52,7 +52,7 @@ export class BuySuccessPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

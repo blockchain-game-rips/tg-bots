@@ -4,7 +4,7 @@ import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 export class WithdrawInsufficientFundsPage {
 	static render(args: {
@@ -40,6 +40,6 @@ export class WithdrawInsufficientFundsPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

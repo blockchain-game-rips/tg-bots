@@ -7,7 +7,7 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { configName, getConfig } from '../../utils'
+import { configName, getConfig, messageFromLines } from '../../utils'
 
 export class ZapSuccessPage {
 	static render(args: {
@@ -36,7 +36,7 @@ export class ZapSuccessPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

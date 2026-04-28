@@ -7,7 +7,7 @@ import {
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, configName, getConfig } from '../../utils'
+import { addNav, configName, getConfig, messageFromLines } from '../../utils'
 
 export class ZapInsufficientFundsPage {
 	static render(args: {
@@ -49,6 +49,6 @@ export class ZapInsufficientFundsPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

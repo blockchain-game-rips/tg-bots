@@ -3,7 +3,7 @@ import { WithdrawRewardResponseDtoOutput } from '../../../../generated/api-clien
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
 import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { addNav, messageFromLines } from '../../utils'
 
 export class WithdrawRewardSuccessPage {
 	static render(response: WithdrawRewardResponseDtoOutput): PageContent {
@@ -20,7 +20,7 @@ export class WithdrawRewardSuccessPage {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: messageFromLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showReferral,
 				home: actionIds.showHome,

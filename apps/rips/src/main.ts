@@ -2,9 +2,8 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
-import { actionIds, actions } from './actions'
+import { showHome } from './action-handlers/show-home'
 import { handleButton } from './button-handler'
-import { executeEffectOrDisplayError } from './effect-executor'
 import { handleMessage } from './message-handler'
 import { Context, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
@@ -55,26 +54,17 @@ bot.command('start', async (ctx) => {
 		message: 'Failed to get or create user',
 	}
 
-	const fakeMessageToEdit = {
-		pageContent,
-		messageId: -1,
+	try {
+		const showHomeEffect = await showHome(ctx.session, undefined)
+		pageContent = showHomeEffect.page
+	} catch (error) {
+		console.log(error)
 	}
 
-	const sentMessage = await ctx.reply('Loading...', { parse_mode: 'HTML' })
-
-	fakeMessageToEdit.messageId = sentMessage.message_id
-	fakeMessageToEdit.pageContent = {
-		message: 'Loading...',
-		keyboard: new InlineKeyboard(),
-	}
-
-	await executeEffectOrDisplayError(
-		bot.api,
-		ctx.chatId,
-		fakeMessageToEdit,
-		ctx.session,
-		() => actions[actionIds.showHome](ctx.session, undefined),
-	)
+	await ctx.reply(pageContent.message, {
+		reply_markup: pageContent.keyboard,
+		parse_mode: 'HTML',
+	})
 })
 
 bot.on('callback_query:data', async (ctx) => handleButton(ctx))

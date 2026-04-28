@@ -3,7 +3,7 @@ import {
 	usersControllerGetUser,
 } from '../../generated/api-client'
 import { HomePage } from '../pages/content/home-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { EffectEdit, EffectType, SessionData } from '../types'
 import { isApiErrorWithStatus } from '../utils/action-handler-utils'
 
 const NOT_FOUND_STATUS = 404
@@ -11,7 +11,7 @@ const NOT_FOUND_STATUS = 404
 export async function showHome(
 	session: SessionData,
 	_payload: string | undefined,
-): Promise<Effect> {
+): Promise<EffectEdit> {
 	const { telegramId } = session
 
 	await usersControllerGetUser({ path: { telegramId } }).catch(

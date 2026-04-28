@@ -26,14 +26,19 @@ export enum EffectType {
 	SEND_LOADING,
 }
 
-export type Effect =
-	| { type: EffectType.EDIT; page: PageContent }
-	| { type: EffectType.ASK; prompt: PromptContent; onSubmit: ActionId }
-	| {
-			type: EffectType.SEND_LOADING
-			message: string
-			next: () => Promise<Effect>
-	  }
+export type EffectEdit = { type: EffectType.EDIT; page: PageContent }
+export type EffectAsk = {
+	type: EffectType.ASK
+	prompt: PromptContent
+	onSubmit: ActionId
+}
+export type EffectLoading = {
+	type: EffectType.SEND_LOADING
+	message: string
+	next: () => Promise<Effect>
+}
+
+export type Effect = EffectEdit | EffectAsk | EffectLoading
 
 export type ActionHandler = (
 	session: SessionData,

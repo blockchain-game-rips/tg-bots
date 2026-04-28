@@ -2,13 +2,13 @@ import {
 	ripsControllerGetPrizes,
 	ripsControllerGetRounds,
 	ripsControllerRevealPrizes,
-} from '../../generated/api-client'
+} from '../../../generated/api-client'
 import {
 	REVEAL_ALL_PAYLOAD,
 	REVEAL_ONE_PAYLOAD,
 	RevealPrizesPage,
-} from '../pages/content/play/reveal-prizes-page'
-import { Effect, EffectType, SessionData } from '../types'
+} from '../../pages/content/play/reveal-prizes-page'
+import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showRevealPrizes(
 	session: SessionData,

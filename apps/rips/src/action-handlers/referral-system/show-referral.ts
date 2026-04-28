@@ -1,10 +1,10 @@
 import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
-} from '../../generated/api-client'
-import { ReferralSystemPage } from '../pages/content/referral-system/referral-system'
-import { Effect, EffectType, SessionData } from '../types'
-import { getEnvSafe } from '../utils/common'
+} from '../../../generated/api-client'
+import { ReferralSystemPage } from '../../pages/content/referral-system/referral-system'
+import { Effect, EffectType, SessionData } from '../../types'
+import { getEnvSafe } from '../../utils/common'
 
 export async function showReferral(
 	session: SessionData,

@@ -1,7 +1,7 @@
-import { ripsControllerGetCardCollection } from '../../generated/api-client'
-import { CardCollectionPage } from '../pages/content/play/card-collection'
-import { Effect, EffectType, SessionData } from '../types'
-import { parseStakeId } from '../validation/stake-id'
+import { ripsControllerGetCardCollection } from '../../../generated/api-client'
+import { CardCollectionPage } from '../../pages/content/play/card-collection'
+import { Effect, EffectType, SessionData } from '../../types'
+import { parseStakeId } from '../../validation/stake-id'
 
 export async function showCardCollection(
 	session: SessionData,

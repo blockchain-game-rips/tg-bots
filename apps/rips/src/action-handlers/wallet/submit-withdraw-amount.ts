@@ -1,7 +1,7 @@
-import { WithdrawPage } from '../pages/content/wallet/withdraw-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { fetchNativeBalance } from '../utils/units'
-import { parseWithdrawAmount } from '../validation/withdraw-amount'
+import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance } from '../../utils/units'
+import { parseWithdrawAmount } from '../../validation/withdraw-amount'
 
 export async function submitWithdrawAmount(
 	session: SessionData,

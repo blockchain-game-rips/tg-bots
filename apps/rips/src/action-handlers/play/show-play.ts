@@ -1,5 +1,5 @@
-import { PlayPage } from '../pages/content/play/play-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { PlayPage } from '../../pages/content/play/play-page'
+import { Effect, EffectType, SessionData } from '../../types'
 
 export function showPlay(
 	_session: SessionData,

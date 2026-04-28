@@ -1,7 +1,7 @@
-import { referralSystemControllerWithdrawReward } from '../../generated/api-client'
-import { NATIVE_ON_BASE } from '../constants'
-import { WithdrawRewardSuccessPage } from '../pages/content/referral-system/withdraw-reward-success-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { referralSystemControllerWithdrawReward } from '../../../generated/api-client'
+import { NATIVE_ON_BASE } from '../../constants'
+import { WithdrawRewardSuccessPage } from '../../pages/content/referral-system/withdraw-reward-success-page'
+import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showReferralWithdrawReward(
 	session: SessionData,

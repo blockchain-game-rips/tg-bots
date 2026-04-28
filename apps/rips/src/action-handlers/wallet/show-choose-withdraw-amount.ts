@@ -1,10 +1,10 @@
 import {
 	ChooseWithdrawAmountPage,
 	MAX_AMOUNT_PAYLOAD,
-} from '../pages/content/wallet/choose-withdraw-amount-page'
-import { WithdrawPage } from '../pages/content/wallet/withdraw-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { fetchNativeBalance } from '../utils/units'
+} from '../../pages/content/wallet/choose-withdraw-amount-page'
+import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance } from '../../utils/units'
 
 export async function showChooseWithdrawAmount(
 	session: SessionData,

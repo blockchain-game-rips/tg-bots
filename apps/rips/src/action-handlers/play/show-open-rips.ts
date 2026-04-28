@@ -1,6 +1,6 @@
-import { ripsControllerGetPrizes } from '../../generated/api-client'
-import { RevealPrizesPage } from '../pages/content/play/reveal-prizes-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { ripsControllerGetPrizes } from '../../../generated/api-client'
+import { RevealPrizesPage } from '../../pages/content/play/reveal-prizes-page'
+import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showOpenRips(
 	session: SessionData,

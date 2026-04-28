@@ -1,8 +1,8 @@
-import { ripsControllerGetStakes } from '../../generated/api-client'
-import { BuyChooseTicketCountPage } from '../pages/content/play/buy-choose-ticket-count-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { ErrorToRender } from '../utils/error-to-render'
-import { parseStakeId } from '../validation/stake-id'
+import { ripsControllerGetStakes } from '../../../generated/api-client'
+import { BuyChooseTicketCountPage } from '../../pages/content/play/buy-choose-ticket-count-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { ErrorToRender } from '../../utils/error-to-render'
+import { parseStakeId } from '../../validation/stake-id'
 
 export async function showChooseTicketAmount(
 	session: SessionData,

@@ -1,12 +1,12 @@
-import { ripsControllerGetStakes } from '../../generated/api-client'
-import { BuyConfirmPage } from '../pages/content/play/buy-confirm-page'
-import { BuyInsufficientFundsPage } from '../pages/content/play/buy-insufficient-funds-page'
-import { getConfig } from '../pages/utils'
-import { getFlowData } from '../session-utils'
-import { Effect, EffectType, SessionData } from '../types'
-import { ErrorToRender } from '../utils/error-to-render'
-import { fetchNativeBalance } from '../utils/units'
-import { parseTicketCount } from '../validation/ticket-count'
+import { ripsControllerGetStakes } from '../../../generated/api-client'
+import { BuyConfirmPage } from '../../pages/content/play/buy-confirm-page'
+import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insufficient-funds-page'
+import { getConfig } from '../../pages/utils'
+import { getFlowData } from '../../session-utils'
+import { Effect, EffectType, SessionData } from '../../types'
+import { ErrorToRender } from '../../utils/error-to-render'
+import { fetchNativeBalance } from '../../utils/units'
+import { parseTicketCount } from '../../validation/ticket-count'
 
 export async function showConfirmPurchase(
 	session: SessionData,

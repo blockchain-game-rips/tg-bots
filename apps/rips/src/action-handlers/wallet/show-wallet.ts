@@ -1,8 +1,8 @@
-import { usersControllerGetUser } from '../../generated/api-client'
-import { EIP155_NAMESPACE } from '../constants'
-import { WalletPage } from '../pages/content/wallet/wallet-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { fetchNativeBalance } from '../utils/units'
+import { usersControllerGetUser } from '../../../generated/api-client'
+import { EIP155_NAMESPACE } from '../../constants'
+import { WalletPage } from '../../pages/content/wallet/wallet-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance } from '../../utils/units'
 
 export async function showWallet(
 	session: SessionData,

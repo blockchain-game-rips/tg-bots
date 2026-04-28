@@ -1,13 +1,13 @@
+import { NATIVE_ON_BASE } from '../../constants'
 import {
 	ripsControllerBuyTicketsPurchase,
 	ripsControllerGetOngoingRounds,
-} from '../../generated/api-client'
-import { NATIVE_ON_BASE } from '../constants'
-import { BuySuccessPage } from '../pages/content/play/buy-success-page'
-import { getFlowData } from '../session-utils'
-import { Effect, EffectType, SessionData } from '../types'
-import { ApiError } from '../utils/api-error'
-import { ErrorToRender } from '../utils/error-to-render'
+} from '../../../generated/api-client'
+import { BuySuccessPage } from '../../pages/content/play/buy-success-page'
+import { getFlowData } from '../../session-utils'
+import { Effect, EffectType, SessionData } from '../../types'
+import { ApiError } from '../../utils/api-error'
+import { ErrorToRender } from '../../utils/error-to-render'
 
 const TRANSACTION_REVERTED_STATUS = 502
 

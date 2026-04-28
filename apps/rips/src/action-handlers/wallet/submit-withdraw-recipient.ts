@@ -1,7 +1,7 @@
-import { WithdrawPage } from '../pages/content/wallet/withdraw-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { fetchNativeBalance } from '../utils/units'
-import { parseEvmAddress } from '../validation/evm-address'
+import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance } from '../../utils/units'
+import { parseEvmAddress } from '../../validation/evm-address'
 
 export async function submitWithdrawRecipient(
 	session: SessionData,

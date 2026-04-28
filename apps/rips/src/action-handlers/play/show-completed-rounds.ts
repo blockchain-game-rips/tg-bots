@@ -1,6 +1,6 @@
-import { ripsControllerGetCompletedRounds } from '../../generated/api-client'
-import { FinishedRoundsPage } from '../pages/content/play/finished-rounds-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { ripsControllerGetCompletedRounds } from '../../../generated/api-client'
+import { FinishedRoundsPage } from '../../pages/content/play/finished-rounds-page'
+import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showCompletedRounds(
 	_session: SessionData,

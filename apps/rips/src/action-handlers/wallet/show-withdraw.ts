@@ -1,6 +1,6 @@
-import { WithdrawPage } from '../pages/content/wallet/withdraw-page'
-import { Effect, EffectType, SessionData } from '../types'
-import { fetchNativeBalance } from '../utils/units'
+import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
+import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance } from '../../utils/units'
 
 export async function showWithdraw(
 	session: SessionData,

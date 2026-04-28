@@ -1,12 +1,12 @@
 import { notImplemented } from './action-handlers/not-implemented'
 import { buyTickets } from './action-handlers/play/buy-tickets'
+import { handleTicketCountChosen } from './action-handlers/play/handle-ticket-count-chosen'
 import { requestCustomTicketAmount } from './action-handlers/play/request-custom-ticket-amount'
 import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
 import { showCardChooseStake } from './action-handlers/play/show-card-choose-stake'
 import { showCardCollection } from './action-handlers/play/show-card-collection'
 import { showChooseTicketCount } from './action-handlers/play/show-choose-ticket-count'
 import { showCompletedRounds } from './action-handlers/play/show-completed-rounds'
-import { showConfirmPurchase } from './action-handlers/play/show-confirm-purchase'
 import { showOngoingRounds } from './action-handlers/play/show-ongoing-rounds'
 import { showOpenRips } from './action-handlers/play/show-open-rips'
 import { showPlay } from './action-handlers/play/show-play'
@@ -42,7 +42,7 @@ const actionDefs = {
 		id: 'rcta',
 		handler: requestCustomTicketAmount,
 	},
-	showConfirmPurchase: { id: 'scp', handler: showConfirmPurchase },
+	showConfirmPurchase: { id: 'scp', handler: handleTicketCountChosen },
 	buyTickets: { id: 'bts', handler: buyTickets },
 
 	// Open RIPs / rounds

@@ -8,7 +8,7 @@ import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { fetchNativeBalance } from '../../utils/units'
 import { parseTicketCount } from '../../validation/ticket-count'
 
-export async function showConfirmPurchase(
+export async function handleTicketCountChosen(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {

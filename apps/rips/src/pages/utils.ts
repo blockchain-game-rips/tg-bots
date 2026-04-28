@@ -33,6 +33,12 @@ export function configName(config: ConfigDto): string {
 	return `${formattedAmount} ${symbol} $${usd.toFixed(2)}`
 }
 
+export function keyboardFromLayout(layout: KeyboardLayout) {
+	const keyboard = new InlineKeyboard(composeMarkup(layout))
+
+	return keyboard
+}
+
 export function composeMarkup(
 	layout: KeyboardLayout,
 ): InlineKeyboardButton[][] {

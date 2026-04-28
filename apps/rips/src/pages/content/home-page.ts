@@ -1,7 +1,6 @@
-import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { composeMarkup } from '../utils'
+import { keyboardFromLayout } from '../utils'
 
 export class HomePage {
 	static render(): PageContent {
@@ -17,19 +16,17 @@ export class HomePage {
 
 		return {
 			message,
-			keyboard: new InlineKeyboard(
-				composeMarkup([
-					[{ label: 'Play', actionId: actionIds.showPlay }],
-					[{ label: 'Wallet', actionId: actionIds.showWallet }],
-					[
-						{
-							label: 'Referral System',
-							actionId: actionIds.showReferral,
-						},
-					],
-					[{ label: 'About', actionId: actionIds.showAbout }],
-				]),
-			),
+			keyboard: keyboardFromLayout([
+				[{ label: 'Play', actionId: actionIds.showPlay }],
+				[{ label: 'Wallet', actionId: actionIds.showWallet }],
+				[
+					{
+						label: 'Referral System',
+						actionId: actionIds.showReferral,
+					},
+				],
+				[{ label: 'About', actionId: actionIds.showAbout }],
+			]),
 		}
 	}
 }

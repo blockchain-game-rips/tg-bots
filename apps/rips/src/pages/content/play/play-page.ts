@@ -1,7 +1,6 @@
-import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { KeyboardLayout, PageContent } from '../../../types'
-import { addNav, composeMarkup } from '../../utils'
+import { addNav, keyboardFromLayout } from '../../utils'
 
 export class PlayPage {
 	static render(): PageContent {
@@ -20,7 +19,7 @@ export class PlayPage {
 		return {
 			message:
 				'Buy tickets to enter the game, or check your tickets and round statuses in Status.',
-			keyboard: addNav(new InlineKeyboard(composeMarkup(buttons)), {
+			keyboard: addNav(keyboardFromLayout(buttons), {
 				home: actionIds.showHome,
 				parent: actionIds.showHome,
 			}),

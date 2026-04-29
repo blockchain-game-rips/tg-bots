@@ -1,19 +1,13 @@
 import { InlineKeyboard } from 'grammy'
-import { PrizeDto, RoundDto } from '../../../generated/api-client'
+import { PrizeDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
-export const REVEAL_ONE_PAYLOAD = 'one'
-export const REVEAL_ALL_PAYLOAD = 'all'
-
 export class RevealPrizesPage {
-	static render(
-		_rounds: RoundDto[],
-		unrevealedPrizes: PrizeDto[],
-	): PageContent {
+	static render(unrevealedPrizes: PrizeDto[]): PageContent {
 		const lines: string[] = []
 
 		lines.push(`Unrevealed tickets: ${unrevealedPrizes.length}`)
@@ -24,19 +18,10 @@ export class RevealPrizesPage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildActionData(
-						actionIds.showRevealPrizes,
-						REVEAL_ONE_PAYLOAD,
-					),
+					buildActionData(actionIds.showRevealSingle),
 				)
 				.row()
-				.text(
-					'Reveal all',
-					buildActionData(
-						actionIds.showRevealPrizes,
-						REVEAL_ALL_PAYLOAD,
-					),
-				)
+				.text('Reveal all', buildActionData(actionIds.showRevealAll))
 				.row()
 		}
 

@@ -10,7 +10,9 @@ import { showCompletedRounds } from './action-handlers/play/show-completed-round
 import { showOngoingRounds } from './action-handlers/play/show-ongoing-rounds'
 import { showOpenRips } from './action-handlers/play/show-open-rips'
 import { showPlay } from './action-handlers/play/show-play'
+import { showRevealAll } from './action-handlers/play/show-reveal-all'
 import { showRevealPrizes } from './action-handlers/play/show-reveal-prizes'
+import { showRevealSingle } from './action-handlers/play/show-reveal-single'
 import { showStatus } from './action-handlers/play/show-status'
 import { showReferral } from './action-handlers/referral-system/show-referral'
 import { showReferralAbout } from './action-handlers/referral-system/show-referral-about'
@@ -48,6 +50,8 @@ const actionDefs = {
 	// Open RIPs / rounds
 	showOpenRips: { id: 'sor', handler: showOpenRips },
 	showRevealPrizes: { id: 'srp', handler: showRevealPrizes },
+	showRevealSingle: { id: 'srps', handler: showRevealSingle },
+	showRevealAll: { id: 'srpa', handler: showRevealAll },
 	showStatus: { id: 'sst', handler: showStatus },
 	showOngoingRounds: { id: 'sogr', handler: showOngoingRounds },
 	showCompletedRounds: { id: 'scr', handler: showCompletedRounds },

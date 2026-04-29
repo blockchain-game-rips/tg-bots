@@ -6,7 +6,6 @@ import { buildActionData } from '../../utils/action-data'
 import { formattedAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
-import { REVEAL_ALL_PAYLOAD, REVEAL_ONE_PAYLOAD } from './reveal-prizes-page'
 
 export class RevealSinglePage {
 	static render(
@@ -30,19 +29,10 @@ export class RevealSinglePage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildActionData(
-						actionIds.showRevealPrizes,
-						REVEAL_ONE_PAYLOAD,
-					),
+					buildActionData(actionIds.showRevealSingle),
 				)
 				.row()
-				.text(
-					'Reveal all',
-					buildActionData(
-						actionIds.showRevealPrizes,
-						REVEAL_ALL_PAYLOAD,
-					),
-				)
+				.text('Reveal all', buildActionData(actionIds.showRevealAll))
 				.row()
 		}
 

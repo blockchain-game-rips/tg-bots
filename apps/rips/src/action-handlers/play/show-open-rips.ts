@@ -14,6 +14,6 @@ export async function showOpenRips(
 
 	return {
 		type: EffectType.EDIT,
-		page: RevealPrizesPage.render([], unrevealedPrizes),
+		page: RevealPrizesPage.render(unrevealedPrizes),
 	}
 }

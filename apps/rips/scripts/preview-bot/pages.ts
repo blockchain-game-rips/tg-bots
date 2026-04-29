@@ -238,8 +238,7 @@ export const pages: Record<string, PageEntry> = {
 	'reveal-prizes': {
 		description:
 			'Entry point for revealing tickets ("Open Rips" in the Play menu). Shows unrevealed ticket count with "Reveal next" and "Reveal all" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
-		render: () =>
-			RevealPrizesPage.render([mockRound], mockUnrevealedPrizes),
+		render: () => RevealPrizesPage.render(mockUnrevealedPrizes),
 	},
 	'reveal-single': {
 		description:

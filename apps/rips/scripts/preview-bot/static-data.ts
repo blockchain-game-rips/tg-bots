@@ -8,6 +8,7 @@ import {
 	GetTierTablesResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
 	PrizeDto,
+	QuotePurchaseResponseDtoOutput,
 	QuoteSwapResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	RoundDto,
@@ -237,6 +238,16 @@ export const mockZapSuccessResult: NonNullable<
 	},
 	ticketCount: 3,
 	roundId: 1,
+}
+
+export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {
+	blockchainFee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
+}
+
+// 3 tickets × 0.005 ETH = 0.015 ETH
+export const mockTicketCost: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '15000000000000000',
 }
 
 export const mockBalance: CurrencyAmountDto = {

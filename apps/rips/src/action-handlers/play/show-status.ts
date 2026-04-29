@@ -2,9 +2,9 @@ import {
 	ripsControllerGetOngoingRounds,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
-import { EIP155_NAMESPACE } from '../../constants'
 import { StatusPage } from '../../pages/play/status-page'
 import { Effect, EffectType, SessionData } from '../../types'
+import { evmAddressFromUser } from '../../utils/wallet'
 
 export async function showStatus(
 	session: SessionData,
@@ -17,14 +17,8 @@ export async function showStatus(
 		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
 	])
 
-	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
-
-	if (userEvmAddress === undefined) {
-		throw new Error('User has no EVM wallet')
-	}
-
 	return {
 		type: EffectType.EDIT,
-		page: StatusPage.render(roundsData.rounds, userEvmAddress),
+		page: StatusPage.render(roundsData.rounds, evmAddressFromUser(user)),
 	}
 }

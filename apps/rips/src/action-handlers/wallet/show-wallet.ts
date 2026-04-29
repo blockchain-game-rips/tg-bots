@@ -1,8 +1,8 @@
 import { usersControllerGetUser } from '../../../generated/api-client'
-import { EIP155_NAMESPACE } from '../../constants'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchNativeBalance } from '../../utils/api'
+import { evmAddressFromUser } from '../../utils/wallet'
 
 export async function showWallet(
 	session: SessionData,
@@ -15,10 +15,8 @@ export async function showWallet(
 		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
 	])
 
-	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
-
 	return {
 		type: EffectType.EDIT,
-		page: WalletPage.render(balance, userEvmAddress),
+		page: WalletPage.render(balance, evmAddressFromUser(user)),
 	}
 }

@@ -2,12 +2,13 @@ import {
 	ripsControllerQuotePurchase,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
-import { EIP155_NAMESPACE, NATIVE_ON_BASE } from '../../constants'
+import { NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchNativeBalance, fetchStake } from '../../utils/api'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { resolveConfig } from '../../utils/stake'
+import { evmAddressFromUser } from '../../utils/wallet'
 import { parseTicketCount } from '../../validation/ticket-count'
 
 export async function showBuyCheckout(
@@ -58,7 +59,7 @@ export async function showBuyCheckout(
 			purchaseQuote,
 			nativeBalance,
 			currencyInBalance: nativeBalance,
-			userEvmAddress: user.wallets[EIP155_NAMESPACE],
+			userEvmAddress: evmAddressFromUser(user),
 		}),
 	}
 }

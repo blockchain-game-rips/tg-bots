@@ -44,15 +44,15 @@ export class ZapInsufficientFundsPage {
 			...fundsBreakdown(
 				[
 					{
-						label: 'Ticket cost',
+						label: 'Ticket',
 						amount: zapQuote.amountIn,
 					},
 					{
-						label: 'Zap service fee',
+						label: 'Zap fee',
 						amount: zapQuote.fee,
 					},
 					{
-						label: 'Blockchain fee',
+						label: 'Net fee',
 						amount: zapQuote.blockchainFee,
 					},
 				],

@@ -1,33 +1,110 @@
 import { CurrencyAmountDto } from '../../generated/api-client'
-import { formattedAmountWithUsd } from '../utils/units'
+import { SUPPORTED_CHAINS } from '../constants'
+import { formatUnits, toUsd } from '../utils/units'
 
 export type Expense = {
 	label: string
 	amount: CurrencyAmountDto
 }
 
+function formatCryptoAmount(amount: CurrencyAmountDto): string {
+	const formattedAmount = formatUnits(
+		BigInt(amount.amount),
+		amount.currency.decimals,
+	)
+
+	return `${formattedAmount} ${amount.currency.symbol}`
+}
+
+function twoLineEntry(
+	label: string,
+	cryptoAmount: string,
+	usdAmount: string,
+	suffix = '',
+): string[] {
+	const indent = ' '.repeat(label.length + 3)
+
+	return [`${label}   ${cryptoAmount}${suffix}`, `${indent}${usdAmount}`]
+}
+
+function labelColumnWidth(labels: string[]): number {
+	return Math.max(...labels.map((l) => l.length))
+}
+
+function padLabel(label: string, width: number): string {
+	return label.padEnd(width)
+}
+
 export function fundsBreakdown(
 	expenses: Expense[],
 	balances: CurrencyAmountDto[],
 ): string[] {
-	const expenseLines = expenses.map(
-		({ amount, label }) => `${label}: ${formattedAmountWithUsd(amount)}`,
+	const expenseLabels = expenses.map(({ label }) => label)
+	const uniqueBalances = balances.filter(
+		(b, i, arr) =>
+			arr.findIndex((x) => x.currency.id === b.currency.id) === i,
+	)
+	const balanceLabels = uniqueBalances.map((b) => b.currency.symbol)
+
+	const costsWidth = labelColumnWidth(expenseLabels)
+	const balanceWidth = labelColumnWidth(balanceLabels)
+
+	const expenseLines = expenses.flatMap(({ amount, label }) =>
+		twoLineEntry(
+			padLabel(label, costsWidth),
+			formatCryptoAmount(amount),
+			toUsd(amount),
+		),
 	)
 
-	const balanceLines = balances.map((balance) => {
+	const balanceLines = uniqueBalances.flatMap((balance) => {
 		const totalRequired = expenses.reduce((sum, { amount }) => {
-			if (amount.currency.id === balance.currency.id) return sum
-
+			if (amount.currency.id !== balance.currency.id) return sum
 			return sum + BigInt(amount.amount)
 		}, 0n)
 
 		const insufficient = BigInt(balance.amount) < totalRequired
 		const suffix = insufficient ? ' ⚠️' : ''
 
-		return `${balance.currency.symbol} balance: ${formattedAmountWithUsd(balance)}${suffix}`
+		return twoLineEntry(
+			padLabel(balance.currency.symbol, balanceWidth),
+			formatCryptoAmount(balance),
+			toUsd(balance),
+			suffix,
+		)
 	})
 
-	return [...expenseLines, '', ...balanceLines]
+	const firstChain = expenses[0].amount.currency.chainAddress.chain
+	const chainName =
+		SUPPORTED_CHAINS.find(
+			(c) =>
+				c.reference === firstChain.reference &&
+				c.namespace === firstChain.namespace,
+		)?.name ?? firstChain.reference
+
+	const allLines = [
+		`⛓ Chain   ${chainName}`,
+		'💸 Costs',
+		...expenseLines,
+		'💼 Balance',
+		...balanceLines,
+	]
+	const maxWidth = Math.max(...allLines.map((l) => l.length))
+	const divider = '─'.repeat(maxWidth)
+
+	const block = [
+		`⛓ Chain   ${chainName}`,
+		divider,
+		'💸 Costs',
+		'',
+		...expenseLines,
+		divider,
+		'💼 Balance',
+		'',
+		...balanceLines,
+	].join('\n')
+
+	return [`<pre>${block}</pre>`]
 }
 
 type Duration = {

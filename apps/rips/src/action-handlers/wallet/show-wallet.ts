@@ -1,6 +1,6 @@
 import { usersControllerGetUser } from '../../../generated/api-client'
 import { EIP155_NAMESPACE } from '../../constants'
-import { WalletPage } from '../../pages/content/wallet/wallet-page'
+import { WalletPage } from '../../pages/wallet/wallet-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchNativeBalance } from '../../utils/api'
 

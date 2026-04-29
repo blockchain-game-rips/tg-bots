@@ -1,5 +1,5 @@
 import { ripsControllerGetStakes } from '../../../generated/api-client'
-import { CardCollectionChooseStakePage } from '../../pages/content/play/card-collection-choose-stake'
+import { CardCollectionChooseStakePage } from '../../pages/play/card-collection-choose-stake'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showCardChooseStake(

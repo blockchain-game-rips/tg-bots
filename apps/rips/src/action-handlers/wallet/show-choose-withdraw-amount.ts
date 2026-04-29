@@ -1,8 +1,8 @@
 import {
 	ChooseWithdrawAmountPage,
 	MAX_AMOUNT_PAYLOAD,
-} from '../../pages/content/wallet/choose-withdraw-amount-page'
-import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
+} from '../../pages/wallet/choose-withdraw-amount-page'
+import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchNativeBalance } from '../../utils/api'
 

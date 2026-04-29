@@ -3,7 +3,7 @@ import {
 	usersControllerGetUser,
 } from '../../../generated/api-client'
 import { EIP155_NAMESPACE } from '../../constants'
-import { StatusPage } from '../../pages/content/play/status-page'
+import { StatusPage } from '../../pages/play/status-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showStatus(

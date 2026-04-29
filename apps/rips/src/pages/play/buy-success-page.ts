@@ -1,0 +1,60 @@
+import { InlineKeyboard } from 'grammy'
+import {
+	BuyTicketsPurchaseResponseDtoOutput,
+	RoundDto,
+} from '../../../generated/api-client'
+import { actionIds } from '../../actions'
+import { PageContent } from '../../types'
+import { formatUnits, toUsd } from '../../utils/currency'
+import { messageFromLines } from '../../utils/message'
+import { configName } from '../../utils/stake'
+
+export class BuySuccessPage {
+	static render(
+		purchase: BuyTicketsPurchaseResponseDtoOutput,
+		round?: RoundDto,
+	): PageContent {
+		const lines = [`✅ Purchase successful!`, '']
+
+		if (round !== undefined) {
+			lines.push(`Stake: ${configName(round.config)}`)
+		}
+
+		lines.push(`Round: #${purchase.roundId}`)
+		lines.push(`Tickets: ${purchase.ticketCount}`)
+
+		if (round !== undefined) {
+			const ticketCost =
+				BigInt(purchase.ticketCount) *
+				BigInt(round.config.ticketPrice.amount)
+
+			const currency = round.config.ticketPrice.currency
+
+			const ticketCostFormatted = formatUnits(
+				ticketCost,
+				currency.decimals,
+			)
+
+			lines.push(
+				`Tickets cost: ${ticketCostFormatted} ${currency.symbol} ${toUsd({ amount: ticketCost.toString(), currency: currency })}`,
+			)
+		}
+
+		const cost = purchase.transaction.cost
+		if (cost !== undefined) {
+			const costFormatted = formatUnits(
+				BigInt(cost.amount),
+				cost.currency.decimals,
+			)
+
+			lines.push(
+				`Blockchain fee: ${costFormatted} ${cost.currency.symbol} ${toUsd(cost)}`,
+			)
+		}
+
+		return {
+			message: messageFromLines(lines),
+			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
+		}
+	}
+}

@@ -1,5 +1,5 @@
 import { referralSystemControllerGetTierTables } from '../../../generated/api-client'
-import { ReferralAboutPage } from '../../pages/content/referral-system/referral-about-page'
+import { ReferralAboutPage } from '../../pages/referral-system/referral-about-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showReferralAbout(

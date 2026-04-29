@@ -1,4 +1,4 @@
-import { BuyChooseTicketCountPage } from '../../pages/content/play/buy-choose-ticket-count-page'
+import { BuyChooseTicketCountPage } from '../../pages/play/buy-choose-ticket-count-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { setFlow } from '../../utils/session-utils'

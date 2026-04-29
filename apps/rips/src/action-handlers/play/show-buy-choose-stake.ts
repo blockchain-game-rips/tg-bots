@@ -1,5 +1,5 @@
 import { ripsControllerGetStakes } from '../../../generated/api-client'
-import { BuyChooseStakePage } from '../../pages/content/play/buy-choose-stake-page'
+import { BuyChooseStakePage } from '../../pages/play/buy-choose-stake-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showBuyChooseStake(

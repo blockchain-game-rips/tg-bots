@@ -2,7 +2,7 @@ import {
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
 } from '../../../generated/api-client'
-import { OngoingRoundsPage } from '../../pages/content/play/ongoing-rounds-page'
+import { OngoingRoundsPage } from '../../pages/play/ongoing-rounds-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showOngoingRounds(

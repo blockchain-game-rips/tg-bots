@@ -3,7 +3,7 @@ import {
 	usersControllerGetUser,
 } from '../../../generated/api-client'
 import { EIP155_NAMESPACE, NATIVE_ON_BASE } from '../../constants'
-import { BuyCheckoutPage } from '../../pages/content/play/buy-checkout-page'
+import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchNativeBalance, fetchStake } from '../../utils/api'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'

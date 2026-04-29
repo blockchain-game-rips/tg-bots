@@ -1,5 +1,5 @@
 import { ripsControllerGetPrizes } from '../../../generated/api-client'
-import { RevealPrizesPage } from '../../pages/content/play/reveal-prizes-page'
+import { RevealPrizesPage } from '../../pages/play/reveal-prizes-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showOpenRips(

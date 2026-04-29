@@ -1,6 +1,6 @@
 import { walletsControllerCreateWithdrawal } from '../../../generated/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
-import { WithdrawSuccessPage } from '../../pages/content/wallet/withdraw-success-page'
+import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow, resetFlow } from '../../utils/session-utils'

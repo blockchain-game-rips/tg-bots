@@ -3,7 +3,7 @@ import {
 	ripsControllerGetOngoingRounds,
 } from '../../../generated/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
-import { BuySuccessPage } from '../../pages/content/play/buy-success-page'
+import { BuySuccessPage } from '../../pages/play/buy-success-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { isApiErrorWithStatus } from '../../utils/action-handler-utils'
 import { ErrorToRender } from '../../utils/error-to-render'

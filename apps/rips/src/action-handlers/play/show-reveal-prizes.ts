@@ -7,7 +7,7 @@ import {
 	REVEAL_ALL_PAYLOAD,
 	REVEAL_ONE_PAYLOAD,
 	RevealPrizesPage,
-} from '../../pages/content/play/reveal-prizes-page'
+} from '../../pages/play/reveal-prizes-page'
 import { Effect, EffectType, SessionData } from '../../types'
 
 export async function showRevealPrizes(

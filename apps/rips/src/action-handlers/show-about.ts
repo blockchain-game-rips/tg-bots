@@ -1,5 +1,5 @@
 import { ripsControllerGetStakes } from '../../generated/api-client'
-import { AboutPage } from '../pages/content/about/about-page'
+import { AboutPage } from '../pages/about/about-page'
 import { Effect, EffectType, SessionData } from '../types'
 
 export async function showAbout(

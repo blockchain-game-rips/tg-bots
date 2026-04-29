@@ -2,7 +2,7 @@ import {
 	usersControllerCreateUser,
 	usersControllerGetUser,
 } from '../../generated/api-client'
-import { HomePage } from '../pages/content/home-page'
+import { HomePage } from '../pages/home-page'
 import { EffectEdit, EffectType, SessionData } from '../types'
 import { isApiErrorWithStatus } from '../utils/action-handler-utils'
 

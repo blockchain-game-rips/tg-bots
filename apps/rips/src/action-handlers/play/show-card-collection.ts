@@ -1,5 +1,5 @@
 import { ripsControllerGetCardCollection } from '../../../generated/api-client'
-import { CardCollectionPage } from '../../pages/content/play/card-collection'
+import { CardCollectionPage } from '../../pages/play/card-collection'
 import { Effect, EffectType, SessionData } from '../../types'
 import { parseStakeId } from '../../validation/stake-id'
 

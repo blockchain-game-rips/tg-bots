@@ -7,7 +7,7 @@ export type Expense = {
 	amount: CurrencyAmountDto
 }
 
-function formatCryptoAmount(amount: CurrencyAmountDto): string {
+function formatCurrencyAmount(amount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
 		BigInt(amount.amount),
 		amount.currency.decimals,
@@ -57,7 +57,7 @@ export function fundsBreakdown(
 	const expenseLines = expenses.flatMap(({ amount, label }) =>
 		twoLineEntry(
 			padLabel(label, costsWidth),
-			formatCryptoAmount(amount),
+			formatCurrencyAmount(amount),
 			toUsd(amount),
 		),
 	)
@@ -77,7 +77,7 @@ export function fundsBreakdown(
 
 		return twoLineEntry(
 			padLabel(balance.currency.symbol, balanceWidth),
-			formatCryptoAmount(balance),
+			formatCurrencyAmount(balance),
 			toUsd(balance),
 			suffix,
 		)

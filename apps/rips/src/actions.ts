@@ -1,6 +1,6 @@
 import { notImplemented } from './action-handlers/not-implemented'
 import { buyTickets } from './action-handlers/play/buy-tickets'
-import { requestCustomTicketAmount } from './action-handlers/play/request-custom-ticket-amount'
+import { requestCustomTicketCount } from './action-handlers/play/request-custom-ticket-count'
 import { showBuyCheckout } from './action-handlers/play/show-buy-checkout'
 import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
 import { showCardChooseStake } from './action-handlers/play/show-card-choose-stake'
@@ -40,7 +40,7 @@ const actionDefs = {
 	showChooseTicketAmount: { id: 'scta', handler: showChooseTicketCount },
 	requestCustomTicketAmount: {
 		id: 'rcta',
-		handler: requestCustomTicketAmount,
+		handler: requestCustomTicketCount,
 	},
 	showBuyCheckout: { id: 'sbc', handler: showBuyCheckout },
 	buyTickets: { id: 'bts', handler: buyTickets },

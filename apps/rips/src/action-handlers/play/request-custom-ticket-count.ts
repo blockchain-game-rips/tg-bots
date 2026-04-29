@@ -2,7 +2,7 @@ import { actionIds } from '../../actions'
 import { CustomTicketAmountPrompt } from '../../prompts/custom-ticket-amount-prompt'
 import { Effect, EffectType, SessionData } from '../../types'
 
-export function requestCustomTicketAmount(
+export function requestCustomTicketCount(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Effect {

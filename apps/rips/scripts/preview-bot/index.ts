@@ -1,22 +1,36 @@
 import { Bot } from 'grammy'
 import { getEnvSafe } from '../../src/utils/common'
-import { pages } from './pages'
+import { pages, VariantError } from './pages'
 
 const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
 const pageNames = Object.keys(pages)
 
 bot.command('pages', async (ctx) => {
-	const list = pageNames.map((name) => `<code>${name}</code>`).join('\n')
+	const list = pageNames
+		.map((name) => {
+			const { variants } = pages[name]
+
+			if (!variants?.length) return `<code>${name}</code>`
+
+			const [first, ...rest] = variants
+			const indent = ' '.repeat(name.length)
+
+			return [
+				`<code>${name} ${first}</code>`,
+				...rest.map((v) => `<code>${indent} ${v}</code>`),
+			].join('\n')
+		})
+		.join('\n')
 
 	await ctx.reply(`Available pages:\n\n${list}`, { parse_mode: 'HTML' })
 })
 
 bot.command('r', async (ctx) => {
-	const pageName = ctx.match.trim()
+	const [pageName, variant] = ctx.match.trim().split(' ')
 
 	if (!pageName) {
-		await ctx.reply('Usage: /render <page-name>')
+		await ctx.reply('Usage: /r <page-name> [variant]')
 		return
 	}
 
@@ -29,7 +43,25 @@ bot.command('r', async (ctx) => {
 		return
 	}
 
-	const { message, keyboard } = page.render()
+	let rendered
+	try {
+		rendered = page.render(variant)
+	} catch (e) {
+		if (e instanceof VariantError) {
+			const available = e.available
+				.map((v) => `<code>${v}</code>`)
+				.join(', ')
+			const received = e.received ? `<code>${e.received}</code>` : 'none'
+			await ctx.reply(
+				`Unknown variant ${received} for page "${pageName}".\n\nAvailable: ${available}`,
+				{ parse_mode: 'HTML' },
+			)
+			return
+		}
+		throw e
+	}
+
+	const { message, keyboard } = rendered
 
 	await ctx.reply(message, {
 		reply_markup: keyboard,

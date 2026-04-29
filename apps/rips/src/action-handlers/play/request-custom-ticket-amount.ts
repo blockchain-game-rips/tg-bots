@@ -9,6 +9,6 @@ export function requestCustomTicketAmount(
 	return {
 		type: EffectType.ASK,
 		prompt: CustomTicketAmountPrompt.render(),
-		onSubmit: actionIds.handleTicketCountChosen,
+		onSubmit: actionIds.showBuyCheckout,
 	}
 }

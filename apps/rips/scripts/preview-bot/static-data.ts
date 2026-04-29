@@ -255,6 +255,11 @@ export const mockBalance: CurrencyAmountDto = {
 	amount: '2000000000000000', // 0.002 ETH — intentionally low for insufficient-funds preview
 }
 
+export const mockSufficientBalance: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '100000000000000000', // 0.1 ETH
+}
+
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
 
 export const mockRound: RoundDto = {

@@ -1,9 +1,8 @@
 import { AboutPage } from '../../src/pages/content/about/about-page'
 import { HomePage } from '../../src/pages/content/home-page'
+import { BuyCheckoutPage } from '../../src/pages/content/play/buy-checkout-page'
 import { BuyChooseStakePage } from '../../src/pages/content/play/buy-choose-stake-page'
 import { BuyChooseTicketCountPage } from '../../src/pages/content/play/buy-choose-ticket-count-page'
-import { BuyConfirmPage } from '../../src/pages/content/play/buy-confirm-page'
-import { BuyInsufficientFundsPage } from '../../src/pages/content/play/buy-insufficient-funds-page'
 import { BuySuccessPage } from '../../src/pages/content/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/content/play/card-collection'
 import { CardCollectionChooseStakePage } from '../../src/pages/content/play/card-collection-choose-stake'
@@ -50,6 +49,7 @@ import {
 	mockRevealedPrizes,
 	mockRound,
 	mockRound2,
+	mockSufficientBalance,
 	mockSwapAmountIn,
 	mockSwapNetworkFee,
 	mockSwapQuote,
@@ -72,7 +72,30 @@ import {
 
 export type PageEntry = {
 	description: string
-	render: () => PageContent
+	variants?: string[]
+	render: (variant?: string) => PageContent
+}
+
+export class VariantError extends Error {
+	constructor(
+		readonly received: string | undefined,
+		readonly available: string[],
+	) {
+		super()
+	}
+}
+
+export function resolveVariant(
+	entry: PageEntry,
+	variant: string | undefined,
+): string {
+	if (!entry.variants?.length) return variant ?? ''
+
+	const match = entry.variants.find((v) => v === variant)
+
+	if (!match) throw new VariantError(variant, entry.variants)
+
+	return match
 }
 
 export const pages: Record<string, PageEntry> = {
@@ -106,10 +129,31 @@ export const pages: Record<string, PageEntry> = {
 			'Second step of buying tickets. Choose how many tickets to buy: preset options or custom amount. Opened from choose-stake.',
 		render: () => BuyChooseTicketCountPage.render(mockAvailableStakes[0]),
 	},
-	'buy-confirm': {
+	'buy-checkout': {
 		description:
-			'Third step of buying tickets. Summary of the purchase with a Confirm button. Opened from choose-ticket-count.',
-		render: () => BuyConfirmPage.render(mockAvailableStakes[0], 3),
+			'Third step of buying tickets. Shows costs and balance breakdown. Confirm button if funds are sufficient, zap option if not.',
+		variants: ['insufficient', 'sufficient'],
+		render(variant) {
+			const balance = (() => {
+				switch (resolveVariant(this, variant)) {
+					case 'insufficient':
+						return mockBalance
+					case 'sufficient':
+						return mockSufficientBalance
+					default:
+						throw new VariantError(variant, this.variants ?? [])
+				}
+			})()
+
+			return BuyCheckoutPage.render({
+				availableStake: mockAvailableStakes[0],
+				ticketCount: 3,
+				currencyInAmount: mockTicketCost,
+				purchaseQuote: mockPurchaseQuote,
+				nativeBalance: balance,
+				currencyInBalance: balance,
+			})
+		},
 	},
 	'buy-success': {
 		description:
@@ -169,19 +213,6 @@ export const pages: Record<string, PageEntry> = {
 				ticketCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				zapSuccessResult: mockZapSuccessResult,
-			}),
-	},
-	'buy-insufficient-funds': {
-		description:
-			"Shown instead of confirm-purchase when the user's balance is too low. Offers option to enter from another token (zap flow) or go back.",
-		render: () =>
-			BuyInsufficientFundsPage.render({
-				availableStake: mockAvailableStakes[0],
-				currencyInAmount: mockTicketCost,
-				currencyInBalance: mockBalance,
-				nativeBalance: mockBalance,
-				purchaseQuote: mockPurchaseQuote,
-				ticketCount: 3,
 			}),
 	},
 	status: {

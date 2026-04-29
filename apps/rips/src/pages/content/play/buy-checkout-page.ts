@@ -14,34 +14,29 @@ import {
 	resolveConfig,
 } from '../../utils'
 
-export class BuyInsufficientFundsPage {
+export class BuyCheckoutPage {
 	static render(args: {
-		currencyInBalance: CurrencyAmountDto
-		nativeBalance: CurrencyAmountDto
-
-		purchaseQuote: QuotePurchaseResponseDtoOutput
-		currencyInAmount: CurrencyAmountDto
-
 		availableStake: AvailableStakeDto
 		ticketCount: number
+		currencyInAmount: CurrencyAmountDto
+		purchaseQuote: QuotePurchaseResponseDtoOutput
+		nativeBalance: CurrencyAmountDto
+		currencyInBalance: CurrencyAmountDto
 	}): PageContent {
 		const {
 			availableStake,
+			ticketCount,
 			currencyInAmount,
-			currencyInBalance,
 			purchaseQuote,
 			nativeBalance,
-			ticketCount,
+			currencyInBalance,
 		} = args
 
 		const config = resolveConfig(availableStake)
 
-		const { lines: breakdownLines } = fundsBreakdown(
+		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
-				{
-					label: 'Ticket cost',
-					amount: currencyInAmount,
-				},
+				{ label: 'Ticket cost', amount: currencyInAmount },
 				{
 					label: 'Blockchain fee',
 					amount: purchaseQuote.blockchainFee,
@@ -57,19 +52,28 @@ export class BuyInsufficientFundsPage {
 			...breakdownLines,
 		]
 
-		return {
-			message: messageFromLines(lines),
-			keyboard: new InlineKeyboard()
+		const insufficient = insufficientAmounts.length > 0
+
+		const keyboard = new InlineKeyboard()
+
+		if (insufficient) {
+			keyboard
 				.text('Enter from another token', actionIds.showZapChooseChain)
 				.row()
-				.text(
-					'Back',
-					buildActionData(
-						actionIds.showChooseTicketAmount,
-						availableStake.stake.id.toString(),
-					),
-				)
-				.text('Home', actionIds.showHome),
+		} else {
+			keyboard.text('Confirm', actionIds.buyTickets).row()
 		}
+
+		keyboard
+			.text(
+				'Back',
+				buildActionData(
+					actionIds.showChooseTicketAmount,
+					availableStake.stake.id.toString(),
+				),
+			)
+			.text('Home', actionIds.showHome)
+
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

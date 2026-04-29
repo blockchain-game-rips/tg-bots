@@ -1,14 +1,13 @@
 import { ripsControllerQuotePurchase } from '../../../generated/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
-import { BuyConfirmPage } from '../../pages/content/play/buy-confirm-page'
-import { BuyInsufficientFundsPage } from '../../pages/content/play/buy-insufficient-funds-page'
+import { BuyCheckoutPage } from '../../pages/content/play/buy-checkout-page'
 import { resolveConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { fetchNativeBalance, fetchStake } from '../../utils/units'
 import { parseTicketCount } from '../../validation/ticket-count'
 
-export async function handleTicketCountChosen(
+export async function showBuyCheckout(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {
@@ -17,7 +16,9 @@ export async function handleTicketCountChosen(
 	assertFlow(session, 'buyTickets', 'stake-chosen')
 	const { stakeId } = session.flow.data
 
-	const [availableStake, balance, { data: purchaseQuote }] =
+	setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
+
+	const [availableStake, nativeBalance, { data: purchaseQuote }] =
 		await Promise.all([
 			fetchStake(stakeId),
 			fetchNativeBalance(session.telegramId),
@@ -32,29 +33,21 @@ export async function handleTicketCountChosen(
 
 	const config = resolveConfig(availableStake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
-	const balanceAmount = BigInt(balance.amount)
 
-	setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
-
-	if (balanceAmount < totalCost) {
-		return {
-			type: EffectType.EDIT,
-			page: BuyInsufficientFundsPage.render({
-				availableStake,
-				currencyInAmount: {
-					amount: totalCost.toString(),
-					currency: balance.currency,
-				},
-				currencyInBalance: balance,
-				nativeBalance: balance,
-				purchaseQuote,
-				ticketCount,
-			}),
-		}
+	const currencyInAmount: typeof nativeBalance = {
+		amount: totalCost.toString(),
+		currency: nativeBalance.currency,
 	}
 
 	return {
 		type: EffectType.EDIT,
-		page: BuyConfirmPage.render(availableStake, ticketCount),
+		page: BuyCheckoutPage.render({
+			availableStake,
+			ticketCount,
+			currencyInAmount,
+			purchaseQuote,
+			nativeBalance,
+			currencyInBalance: nativeBalance,
+		}),
 	}
 }

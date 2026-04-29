@@ -24,22 +24,22 @@ function formatUsd(usd: number): string {
 function formatTokenAmount(
 	amount: number,
 	priceUsd: number,
-	symbol: string,
 ): string {
-	if (amount === 0) return `0 ${symbol}`
+	if (amount === 0) return `0`
 
 	const decimals = tokenDecimalsFromPrice(priceUsd)
 	const minDisplayAmount = Math.pow(10, -decimals)
 
 	if (amount < minDisplayAmount)
-		return `<${minDisplayAmount.toFixed(decimals)} ${symbol}`
+		return `<${minDisplayAmount.toFixed(decimals)}`
 
-	return `${amount.toFixed(decimals)} ${symbol}`
+	return `${amount.toFixed(decimals)}`
 }
 
 export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
-	amountAndSymbol: string
-	usdAmount: string
+	displayAmount: string
+    symbol: string
+	displayUsdAmount: string
 } {
 	const { symbol, priceUsd, decimals } = currencyAmount.currency
 
@@ -47,8 +47,9 @@ export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
 	const usd = amount * priceUsd
 
 	return {
-		amountAndSymbol: formatTokenAmount(amount, priceUsd, symbol),
-		usdAmount: formatUsd(usd),
+		displayAmount: formatTokenAmount(amount, priceUsd ),
+        symbol: symbol,
+		displayUsdAmount: formatUsd(usd),
 	}
 }
 
@@ -66,15 +67,9 @@ export function toUsd(currencyAmount: CurrencyAmountDto): string {
 export function formattedAmountWithUsd(
 	currencyAmount: CurrencyAmountDto,
 ): string {
-	const formattedAmount = formatUnits(
-		BigInt(currencyAmount.amount),
-		currencyAmount.currency.decimals,
-	)
+	const { displayAmount, symbol, displayUsdAmount } = formatCurrencyAmount(currencyAmount)
 
-	const usd = Number(formattedAmount) * currencyAmount.currency.priceUsd
-	const symbol = currencyAmount.currency.symbol
-
-	return `${formattedAmount} ${symbol} ($${usd.toFixed(2)})`
+	return `${displayAmount} ${symbol} (${displayUsdAmount})`
 }
 
 export function formatUnits(amount: bigint, decimals: number): string {

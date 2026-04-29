@@ -18,12 +18,12 @@ function makeCurrencyAmount(
 }
 
 describe('formatCurrencyAmount', () => {
-	describe('usdAmount', () => {
+	describe('displayUsdAmount', () => {
 		it('returns $0 when amount is zero', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('0', 18, 2000, 'ETH'),
 			)
-			expect(result.usdAmount).toBe('$0')
+			expect(result.displayUsdAmount).toBe('$0')
 		})
 
 		it('returns formatted usd when above $0.01', () => {
@@ -31,7 +31,7 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('10000000000000000', 18, 2000, 'ETH'),
 			)
-			expect(result.usdAmount).toBe('$20.00')
+			expect(result.displayUsdAmount).toBe('$20.00')
 		})
 
 		it('returns <$0.01 when usd value is below minimum', () => {
@@ -39,16 +39,17 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('1', 18, 2000, 'ETH'),
 			)
-			expect(result.usdAmount).toBe('<$0.01')
+			expect(result.displayUsdAmount).toBe('<$0.01')
 		})
 	})
 
-	describe('amountAndSymbol', () => {
-		it('returns 0 TOKEN when amount is zero', () => {
+	describe('displayAmount and symbol', () => {
+		it('returns 0 and symbol when amount is zero', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('0', 18, 2000, 'ETH'),
 			)
-			expect(result.amountAndSymbol).toBe('0 ETH')
+			expect(result.displayAmount).toBe('0')
+			expect(result.symbol).toBe('ETH')
 		})
 
 		it('formats ETH with correct decimals based on price', () => {
@@ -57,7 +58,8 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('1234000000000000', 18, 2000, 'ETH'),
 			)
-			expect(result.amountAndSymbol).toBe('0.001234 ETH')
+			expect(result.displayAmount).toBe('0.001234')
+			expect(result.symbol).toBe('ETH')
 		})
 
 		it('formats BTC with more decimals due to high price', () => {
@@ -66,7 +68,8 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('10', 8, 90000, 'BTC'),
 			)
-			expect(result.amountAndSymbol).toBe('0.0000001 BTC')
+			expect(result.displayAmount).toBe('0.0000001')
+			expect(result.symbol).toBe('BTC')
 		})
 
 		it('formats USDC with 2 decimals', () => {
@@ -75,7 +78,8 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('1500000', 6, 1, 'USDC'),
 			)
-			expect(result.amountAndSymbol).toBe('1.50 USDC')
+			expect(result.displayAmount).toBe('1.50')
+			expect(result.symbol).toBe('USDC')
 		})
 
 		it('handles USDT slightly above $1 with 3 decimals', () => {
@@ -84,16 +88,18 @@ describe('formatCurrencyAmount', () => {
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('1000000', 6, 1.02, 'USDT'),
 			)
-			expect(result.amountAndSymbol).toBe('1.000 USDT')
+			expect(result.displayAmount).toBe('1.000')
+			expect(result.symbol).toBe('USDT')
 		})
 
-		it('returns <minDisplayAmount TOKEN when below displayable threshold', () => {
+		it('returns <minDisplayAmount when below displayable threshold', () => {
 			// ETH @ $2000 → 6 decimals → min = 0.000001 ETH
 			// 0.0000005 ETH → below threshold
 			const result = formatCurrencyAmount(
 				makeCurrencyAmount('500000000000', 18, 2000, 'ETH'),
 			)
-			expect(result.amountAndSymbol).toBe('<0.000001 ETH')
+			expect(result.displayAmount).toBe('<0.000001')
+			expect(result.symbol).toBe('ETH')
 		})
 	})
 })

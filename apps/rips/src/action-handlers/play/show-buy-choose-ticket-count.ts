@@ -4,7 +4,7 @@ import { fetchStake } from '../../utils/api'
 import { setFlow } from '../../utils/session-utils'
 import { parseStakeId } from '../../validation/stake-id'
 
-export async function showChooseTicketCount(
+export async function showBuyChooseTicketCount(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {

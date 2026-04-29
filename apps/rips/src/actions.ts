@@ -3,9 +3,9 @@ import { buyTickets } from './action-handlers/play/buy-tickets'
 import { requestCustomTicketCount } from './action-handlers/play/request-custom-ticket-count'
 import { showBuyCheckout } from './action-handlers/play/show-buy-checkout'
 import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
+import { showBuyChooseTicketCount } from './action-handlers/play/show-buy-choose-ticket-count'
 import { showCardChooseStake } from './action-handlers/play/show-card-choose-stake'
 import { showCardCollection } from './action-handlers/play/show-card-collection'
-import { showChooseTicketCount } from './action-handlers/play/show-choose-ticket-count'
 import { showCompletedRounds } from './action-handlers/play/show-completed-rounds'
 import { showOngoingRounds } from './action-handlers/play/show-ongoing-rounds'
 import { showOpenRips } from './action-handlers/play/show-open-rips'
@@ -37,7 +37,7 @@ const actionDefs = {
 	// Play
 	showPlay: { id: 'sp', handler: showPlay },
 	showChooseStake: { id: 'scs', handler: showBuyChooseStake },
-	showChooseTicketAmount: { id: 'scta', handler: showChooseTicketCount },
+	showChooseTicketAmount: { id: 'scta', handler: showBuyChooseTicketCount },
 	requestCustomTicketAmount: {
 		id: 'rcta',
 		handler: requestCustomTicketCount,

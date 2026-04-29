@@ -37,27 +37,29 @@ export class ZapInsufficientFundsPage {
 
 		const config = resolveConfig(availableStake)
 
+		const { lines: breakdownLines } = fundsBreakdown(
+			[
+				{
+					label: 'Ticket',
+					amount: zapQuote.amountIn,
+				},
+				{
+					label: 'Zap fee',
+					amount: zapQuote.fee,
+				},
+				{
+					label: 'Net fee',
+					amount: zapQuote.blockchainFee,
+				},
+			],
+			[nativeBalance, currencyInBalance],
+		)
+
 		const lines = [
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
 			'',
-			...fundsBreakdown(
-				[
-					{
-						label: 'Ticket',
-						amount: zapQuote.amountIn,
-					},
-					{
-						label: 'Zap fee',
-						amount: zapQuote.fee,
-					},
-					{
-						label: 'Net fee',
-						amount: zapQuote.blockchainFee,
-					},
-				],
-				[nativeBalance, currencyInBalance],
-			),
+			...breakdownLines,
 			'',
 			`Address: ${userEvmAddress}`,
 		]

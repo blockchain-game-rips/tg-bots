@@ -36,23 +36,25 @@ export class BuyInsufficientFundsPage {
 
 		const config = resolveConfig(availableStake)
 
+		const { lines: breakdownLines } = fundsBreakdown(
+			[
+				{
+					label: 'Ticket cost',
+					amount: currencyInAmount,
+				},
+				{
+					label: 'Blockchain fee',
+					amount: purchaseQuote.blockchainFee,
+				},
+			],
+			[nativeBalance, currencyInBalance],
+		)
+
 		const lines = [
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
 			'',
-			...fundsBreakdown(
-				[
-					{
-						label: 'Ticket cost',
-						amount: currencyInAmount,
-					},
-					{
-						label: 'Blockchain fee',
-						amount: purchaseQuote.blockchainFee,
-					},
-				],
-				[nativeBalance, currencyInBalance],
-			),
+			...breakdownLines,
 		]
 
 		return {

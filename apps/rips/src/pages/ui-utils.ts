@@ -35,10 +35,15 @@ function padLabel(label: string, width: number): string {
 	return label.padEnd(width)
 }
 
+export type FundsBreakdownResult = {
+	lines: string[]
+	insufficientAmounts: CurrencyAmountDto[]
+}
+
 export function fundsBreakdown(
 	expenses: Expense[],
 	balances: CurrencyAmountDto[],
-): string[] {
+): FundsBreakdownResult {
 	const expenseLabels = expenses.map(({ label }) => label)
 	const uniqueBalances = balances.filter(
 		(b, i, arr) =>
@@ -57,6 +62,8 @@ export function fundsBreakdown(
 		),
 	)
 
+	const insufficientAmounts: CurrencyAmountDto[] = []
+
 	const balanceLines = uniqueBalances.flatMap((balance) => {
 		const totalRequired = expenses.reduce((sum, { amount }) => {
 			if (amount.currency.id !== balance.currency.id) return sum
@@ -64,6 +71,8 @@ export function fundsBreakdown(
 		}, 0n)
 
 		const insufficient = BigInt(balance.amount) < totalRequired
+		if (insufficient) insufficientAmounts.push(balance)
+
 		const suffix = insufficient ? ' ⚠️' : ''
 
 		return twoLineEntry(
@@ -104,7 +113,7 @@ export function fundsBreakdown(
 		...balanceLines,
 	].join('\n')
 
-	return [`<pre>${block}</pre>`]
+	return { lines: [`<pre>${block}</pre>`], insufficientAmounts }
 }
 
 type Duration = {

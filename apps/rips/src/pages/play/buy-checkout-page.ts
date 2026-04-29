@@ -57,7 +57,13 @@ export class BuyCheckoutPage {
 
 		if (insufficient) {
 			keyboard
-				.text('Update', actionIds.showBuyCheckout)
+				.text(
+					'Update',
+					buildActionData(
+						actionIds.showBuyCheckout,
+						ticketCount.toString(),
+					),
+				)
 				.row()
 				.text('Enter from another token', actionIds.showZapChooseChain)
 				.row()

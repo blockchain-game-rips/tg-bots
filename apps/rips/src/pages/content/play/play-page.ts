@@ -1,6 +1,6 @@
 import { actionIds } from '../../../actions'
 import { KeyboardLayout, PageContent } from '../../../types'
-import { addNav, keyboardFromLayout } from '../../utils'
+import { addNav, keyboardFromLayout } from '../../../utils/keyboard'
 
 export class PlayPage {
 	static render(): PageContent {

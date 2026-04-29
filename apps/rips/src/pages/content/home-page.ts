@@ -1,6 +1,7 @@
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { keyboardFromLayout, messageFromLines } from '../utils'
+import { keyboardFromLayout } from '../../utils/keyboard'
+import { messageFromLines } from '../../utils/message'
 
 export class HomePage {
 	static render(): PageContent {

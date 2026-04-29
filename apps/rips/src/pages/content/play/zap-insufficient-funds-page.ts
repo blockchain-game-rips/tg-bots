@@ -6,13 +6,10 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { fundsBreakdown } from '../../ui-utils'
-import {
-	addNav,
-	configName,
-	messageFromLines,
-	resolveConfig,
-} from '../../utils'
+import { fundsBreakdown } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 export class ZapInsufficientFundsPage {
 	static render(args: {

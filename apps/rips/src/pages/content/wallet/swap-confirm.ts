@@ -6,8 +6,9 @@ import {
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, messageFromLines } from '../../utils'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 
 export class SwapConfirmPage {
 	static render(args: {

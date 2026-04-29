@@ -6,13 +6,10 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { fundsBreakdown } from '../../ui-utils'
-import {
-	buildActionData,
-	configName,
-	messageFromLines,
-	resolveConfig,
-} from '../../utils'
+import { buildActionData } from '../../../utils/action-data'
+import { fundsBreakdown } from '../../../utils/currency'
+import { messageFromLines } from '../../../utils/message'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 export class BuyCheckoutPage {
 	static render(args: {

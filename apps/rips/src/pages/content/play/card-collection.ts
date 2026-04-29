@@ -2,7 +2,8 @@ import { InlineKeyboard } from 'grammy'
 import { GetCardCollectionResponseDtoOutput } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, messageFromLines } from '../../utils'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 
 type CollectedCard = GetCardCollectionResponseDtoOutput['tiers'][number][number]
 

@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { TransactionDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { messageFromLines } from '../../utils'
+import { messageFromLines } from '../../../utils/message'
 
 export class WithdrawSuccessPage {
 	static render(transaction: TransactionDto): PageContent {

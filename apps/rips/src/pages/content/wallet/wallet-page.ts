@@ -1,8 +1,8 @@
 import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formatUnits, toUsd } from '../../../utils/units'
-import { addNav, keyboardFromLayout } from '../../utils'
+import { formatUnits, toUsd } from '../../../utils/currency'
+import { addNav, keyboardFromLayout } from '../../../utils/keyboard'
 
 export class WalletPage {
 	static render(

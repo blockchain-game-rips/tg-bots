@@ -2,14 +2,11 @@ import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { displayStatus } from '../../round-statuses'
-import { toShortDurationFormat } from '../../ui-utils'
-import {
-	addNav,
-	configName,
-	messageFromLines,
-	resolveConfig,
-} from '../../utils'
+import { toShortDurationFormat } from '../../../utils/duration'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
+import { displayStatus } from '../../../utils/round-statuses'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)

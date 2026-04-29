@@ -3,8 +3,10 @@ import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, buildActionData, messageFromLines } from '../../utils'
+import { buildActionData } from '../../../utils/action-data'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 
 export const WITHDRAW_MAX_PAYLOAD = 'max'
 

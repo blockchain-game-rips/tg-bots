@@ -4,10 +4,10 @@ import {
 } from '../../../generated/api-client'
 import { EIP155_NAMESPACE, NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/content/play/buy-checkout-page'
-import { resolveConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
+import { fetchNativeBalance, fetchStake } from '../../utils/api'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
-import { fetchNativeBalance, fetchStake } from '../../utils/units'
+import { resolveConfig } from '../../utils/stake'
 import { parseTicketCount } from '../../validation/ticket-count'
 
 export async function showBuyCheckout(

@@ -6,8 +6,9 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import { configName, messageFromLines, resolveConfig } from '../../utils'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { messageFromLines } from '../../../utils/message'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 export class ZapSuccessPage {
 	static render(args: {

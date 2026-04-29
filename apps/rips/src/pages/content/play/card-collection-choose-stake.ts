@@ -2,7 +2,9 @@ import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, buildActionData, configName, resolveConfig } from '../../utils'
+import { buildActionData } from '../../../utils/action-data'
+import { addNav } from '../../../utils/keyboard'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 export class CardCollectionChooseStakePage {
 	static render(availableStakes: AvailableStakeDto[]): PageContent {

@@ -2,8 +2,10 @@ import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, buildActionData, messageFromLines } from '../../utils'
+import { buildActionData } from '../../../utils/action-data'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 import { REVEAL_ALL_PAYLOAD, REVEAL_ONE_PAYLOAD } from './reveal-prizes-page'
 
 export class RevealSinglePage {

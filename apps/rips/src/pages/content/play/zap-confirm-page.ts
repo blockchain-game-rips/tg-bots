@@ -6,13 +6,10 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import {
-	addNav,
-	configName,
-	messageFromLines,
-	resolveConfig,
-} from '../../utils'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
+import { configName, resolveConfig } from '../../../utils/stake'
 
 export class ZapConfirmPage {
 	static render(args: {

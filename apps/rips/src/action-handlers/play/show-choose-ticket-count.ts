@@ -1,7 +1,7 @@
 import { BuyChooseTicketCountPage } from '../../pages/content/play/buy-choose-ticket-count-page'
 import { Effect, EffectType, SessionData } from '../../types'
+import { fetchStake } from '../../utils/api'
 import { setFlow } from '../../utils/session-utils'
-import { fetchStake } from '../../utils/units'
 import { parseStakeId } from '../../validation/stake-id'
 
 export async function showChooseTicketCount(

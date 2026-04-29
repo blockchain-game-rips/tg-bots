@@ -1,4 +1,4 @@
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
+import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../constants'
 
 export type TokenSelection = { tokenIndex: number; chainIndex: number }
 

@@ -2,8 +2,8 @@ import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formatUnits, toUsd } from '../../../utils/units'
-import { addNav } from '../../utils'
+import { formatUnits, toUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
 
 export class WithdrawPage {
 	static render(

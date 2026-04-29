@@ -2,8 +2,10 @@ import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { displayStatus } from '../../round-statuses'
-import { addNav, configName, messageFromLines } from '../../utils'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
+import { displayStatus } from '../../../utils/round-statuses'
+import { configName } from '../../../utils/stake'
 
 export class FinishedRoundsPage {
 	static render(completedRounds: RoundDto[]): PageContent {

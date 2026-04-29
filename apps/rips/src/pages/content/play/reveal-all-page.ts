@@ -2,8 +2,9 @@ import { InlineKeyboard } from 'grammy'
 import { PrizeDto, RoundDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formattedAmountWithUsd } from '../../../utils/units'
-import { addNav, messageFromLines } from '../../utils'
+import { formattedAmountWithUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 
 export class RevealAllPage {
 	static render(

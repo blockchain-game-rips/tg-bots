@@ -2,7 +2,8 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../../constants'
 import { PageContent } from '../../../types'
-import { addNav, messageFromLines } from '../../utils'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
 
 export class WithdrawChooseReceiverPage {
 	static render(args: {

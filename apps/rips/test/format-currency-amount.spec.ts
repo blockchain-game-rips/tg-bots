@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '../generated/api-client'
-import { formatCurrencyAmount } from '../src/utils/units'
+import { formatCurrencyAmount } from '../src/utils/currency'
 
 function makeCurrencyAmount(
 	amount: string,

@@ -1,8 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { addNav, messageFromLines } from '../../utils'
-import { TokenSelection, tokenLabel } from './swap-utils'
+import { addNav } from '../../../utils/keyboard'
+import { messageFromLines } from '../../../utils/message'
+import { TokenSelection, tokenLabel } from '../../../utils/swap-utils'
 
 export class SwapPage {
 	static render(args: {

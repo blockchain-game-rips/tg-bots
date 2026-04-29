@@ -1,19 +1,82 @@
-import { CurrencyAmountDto } from '../../generated/api-client'
+import { ChainAddressDto, CurrencyAmountDto } from '../../generated/api-client'
 import { SUPPORTED_CHAINS } from '../constants'
-import { formatUnits, toUsd } from '../utils/units'
+import { formatUnits } from './units'
+export { formatUnits, parseUnits } from './units'
+
+const USD_MIN_DISPLAY = 0.01
 
 export type Expense = {
 	label: string
 	amount: CurrencyAmountDto
 }
 
-export function formatCurrencyAmount(amount: CurrencyAmountDto): string {
+export type FundsBreakdownResult = {
+	lines: string[]
+	insufficientAmounts: CurrencyAmountDto[]
+}
+
+function tokenDecimalsFromPrice(priceUsd: number): number {
+	const minTokenAmount = USD_MIN_DISPLAY / priceUsd
+	return Math.ceil(-Math.log10(minTokenAmount))
+}
+
+function formatUsd(usd: number): string {
+	if (usd === 0) return '$0'
+	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
+	return `$${usd.toFixed(2)}`
+}
+
+function formatTokenAmount(amount: number, priceUsd: number): string {
+	if (amount === 0) return `0`
+
+	const decimals = tokenDecimalsFromPrice(priceUsd)
+	const minDisplayAmount = Math.pow(10, -decimals)
+
+	if (amount < minDisplayAmount)
+		return `<${minDisplayAmount.toFixed(decimals)}`
+
+	return `${amount.toFixed(decimals)}`
+}
+
+export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
+	displayAmount: string
+	symbol: string
+	displayUsdAmount: string
+} {
+	const { symbol, priceUsd, decimals } = currencyAmount.currency
+
+	const amount = Number(formatUnits(BigInt(currencyAmount.amount), decimals))
+	const usd = amount * priceUsd
+
+	return {
+		displayAmount: formatTokenAmount(amount, priceUsd),
+		symbol,
+		displayUsdAmount: formatUsd(usd),
+	}
+}
+
+export function toUsd(currencyAmount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
-		BigInt(amount.amount),
-		amount.currency.decimals,
+		BigInt(currencyAmount.amount),
+		currencyAmount.currency.decimals,
 	)
 
-	return `${formattedAmount} ${amount.currency.symbol}`
+	const usd = Number(formattedAmount) * currencyAmount.currency.priceUsd
+
+	return `$${usd.toFixed(2)}`
+}
+
+export function formattedAmountWithUsd(
+	currencyAmount: CurrencyAmountDto,
+): string {
+	const { displayAmount, symbol, displayUsdAmount } =
+		formatCurrencyAmount(currencyAmount)
+
+	return `${displayAmount} ${symbol} (${displayUsdAmount})`
+}
+
+export function chainAddressToString(chainAddress: ChainAddressDto): string {
+	return `${chainAddress.chain.namespace}:${chainAddress.chain.reference}:${chainAddress.address}`
 }
 
 function twoLineEntry(
@@ -23,7 +86,6 @@ function twoLineEntry(
 	suffix = '',
 ): string[] {
 	const indent = ' '.repeat(label.length + 3)
-
 	return [`${label}   ${cryptoAmount}${suffix}`, `${indent}${usdAmount}`]
 }
 
@@ -35,9 +97,12 @@ function padLabel(label: string, width: number): string {
 	return label.padEnd(width)
 }
 
-export type FundsBreakdownResult = {
-	lines: string[]
-	insufficientAmounts: CurrencyAmountDto[]
+function formatCurrencyAmountSimple(amount: CurrencyAmountDto): string {
+	const formattedAmount = formatUnits(
+		BigInt(amount.amount),
+		amount.currency.decimals,
+	)
+	return `${formattedAmount} ${amount.currency.symbol}`
 }
 
 export function fundsBreakdown(
@@ -57,7 +122,7 @@ export function fundsBreakdown(
 	const expenseLines = expenses.flatMap(({ amount, label }) =>
 		twoLineEntry(
 			padLabel(label, costsWidth),
-			formatCurrencyAmount(amount),
+			formatCurrencyAmountSimple(amount),
 			toUsd(amount),
 		),
 	)
@@ -77,7 +142,7 @@ export function fundsBreakdown(
 
 		return twoLineEntry(
 			padLabel(balance.currency.symbol, balanceWidth),
-			formatCurrencyAmount(balance),
+			formatCurrencyAmountSimple(balance),
 			toUsd(balance),
 			suffix,
 		)
@@ -114,60 +179,4 @@ export function fundsBreakdown(
 	].join('\n')
 
 	return { lines: [`<pre>${block}</pre>`], insufficientAmounts }
-}
-
-type Duration = {
-	days: number
-	hours: number
-	minutes: number
-	seconds: number
-}
-
-const SECONDS_PER_MINUTE = 60
-const SECONDS_PER_HOUR = 3600
-const SECONDS_PER_DAY = 86400
-
-function parseDuration(totalSeconds: number): Duration {
-	const days = Math.floor(totalSeconds / SECONDS_PER_DAY)
-	const hours = Math.floor(
-		(totalSeconds % SECONDS_PER_DAY) / SECONDS_PER_HOUR,
-	)
-	const minutes = Math.floor(
-		(totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE,
-	)
-	const seconds = totalSeconds % SECONDS_PER_MINUTE
-
-	return { days, hours, minutes, seconds }
-}
-
-/**
- * @returns string in format `${days}d ${hours}h ${minutes}m ${seconds}s`
- */
-export function toShortDurationFormat(seconds: number) {
-	const duration = parseDuration(seconds)
-
-	return [
-		duration.days > 0 ? `${duration.days}d` : null,
-		duration.hours > 0 ? `${duration.hours}h` : null,
-		duration.minutes > 0 ? `${duration.minutes}m` : null,
-		duration.seconds > 0 ? `${duration.seconds}s` : null,
-	]
-		.filter(Boolean)
-		.join(' ')
-}
-
-/**
- * @returns string in format `${days}days ${hours}hours ${minutes}minutes ${seconds}seconds`
- */
-export function toLongDurationFormat(seconds: number) {
-	const duration = parseDuration(seconds)
-
-	return [
-		duration.days > 0 ? `${duration.days}days` : null,
-		duration.hours > 0 ? `${duration.hours}hours` : null,
-		duration.minutes > 0 ? `${duration.minutes}minutes` : null,
-		duration.seconds > 0 ? `${duration.seconds}seconds` : null,
-	]
-		.filter(Boolean)
-		.join(' ')
 }

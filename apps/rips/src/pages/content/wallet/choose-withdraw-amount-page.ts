@@ -2,8 +2,9 @@ import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formatUnits, toUsd } from '../../../utils/units'
-import { addNav, buildActionData } from '../../utils'
+import { buildActionData } from '../../../utils/action-data'
+import { formatUnits, toUsd } from '../../../utils/currency'
+import { addNav } from '../../../utils/keyboard'
 
 export const MAX_AMOUNT_PAYLOAD = 'max'
 

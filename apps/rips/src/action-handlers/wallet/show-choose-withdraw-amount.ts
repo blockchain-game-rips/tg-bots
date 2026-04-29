@@ -4,7 +4,7 @@ import {
 } from '../../pages/content/wallet/choose-withdraw-amount-page'
 import { WithdrawPage } from '../../pages/content/wallet/withdraw-page'
 import { Effect, EffectType, SessionData } from '../../types'
-import { fetchNativeBalance } from '../../utils/units'
+import { fetchNativeBalance } from '../../utils/api'
 
 export async function showChooseWithdrawAmount(
 	session: SessionData,

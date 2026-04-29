@@ -1,8 +1,8 @@
 import { Filter, GrammyError, InlineKeyboard } from 'grammy'
 import { ActionId, actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
-import { COMMAND_SEPARATOR } from './pages/utils'
 import { Context, MessageToEdit } from './types'
+import { COMMAND_SEPARATOR } from './utils/action-data'
 import { fireAndForget } from './utils/common'
 
 const processingUsers = new Set<number>()

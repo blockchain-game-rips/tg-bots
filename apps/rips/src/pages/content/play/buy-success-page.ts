@@ -5,8 +5,9 @@ import {
 } from '../../../../generated/api-client'
 import { actionIds } from '../../../actions'
 import { PageContent } from '../../../types'
-import { formatUnits, toUsd } from '../../../utils/units'
-import { configName, messageFromLines } from '../../utils'
+import { formatUnits, toUsd } from '../../../utils/currency'
+import { messageFromLines } from '../../../utils/message'
+import { configName } from '../../../utils/stake'
 
 export class BuySuccessPage {
 	static render(

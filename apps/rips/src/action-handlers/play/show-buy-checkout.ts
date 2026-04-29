@@ -1,5 +1,8 @@
-import { ripsControllerQuotePurchase } from '../../../generated/api-client'
-import { NATIVE_ON_BASE } from '../../constants'
+import {
+	ripsControllerQuotePurchase,
+	usersControllerGetUser,
+} from '../../../generated/api-client'
+import { EIP155_NAMESPACE, NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/content/play/buy-checkout-page'
 import { resolveConfig } from '../../pages/utils'
 import { Effect, EffectType, SessionData } from '../../types'
@@ -13,31 +16,38 @@ export async function showBuyCheckout(
 ): Promise<Effect> {
 	const ticketCount = parseTicketCount(payload)
 
-	assertFlow(session, 'buyTickets', 'stake-chosen')
+	assertFlow(session, 'buyTickets', 'stake-chosen', 'ticket-count-chosen')
 	const { stakeId } = session.flow.data
 
-	setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
-
-	const [availableStake, nativeBalance, { data: purchaseQuote }] =
-		await Promise.all([
-			fetchStake(stakeId),
-			fetchNativeBalance(session.telegramId),
-			ripsControllerQuotePurchase({
-				body: {
-					paymentCurrencyChainAddress: NATIVE_ON_BASE,
-					stakeId,
-					ticketCount,
-				},
-			}),
-		])
+	const [
+		{ data: user },
+		availableStake,
+		nativeBalance,
+		{ data: purchaseQuote },
+	] = await Promise.all([
+		usersControllerGetUser({
+			path: { telegramId: session.telegramId },
+		}),
+		fetchStake(stakeId),
+		fetchNativeBalance(session.telegramId),
+		ripsControllerQuotePurchase({
+			body: {
+				paymentCurrencyChainAddress: NATIVE_ON_BASE,
+				stakeId,
+				ticketCount,
+			},
+		}),
+	])
 
 	const config = resolveConfig(availableStake)
 	const totalCost = BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
 
-	const currencyInAmount: typeof nativeBalance = {
+	const currencyInAmount = {
 		amount: totalCost.toString(),
 		currency: nativeBalance.currency,
 	}
+
+	setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
 
 	return {
 		type: EffectType.EDIT,
@@ -48,6 +58,7 @@ export async function showBuyCheckout(
 			purchaseQuote,
 			nativeBalance,
 			currencyInBalance: nativeBalance,
+			userEvmAddress: user.wallets[EIP155_NAMESPACE],
 		}),
 	}
 }

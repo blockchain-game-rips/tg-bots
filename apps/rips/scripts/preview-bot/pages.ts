@@ -152,6 +152,7 @@ export const pages: Record<string, PageEntry> = {
 				purchaseQuote: mockPurchaseQuote,
 				nativeBalance: balance,
 				currencyInBalance: balance,
+				userEvmAddress: mockUserEvmAddress,
 			})
 		},
 	},

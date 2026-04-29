@@ -22,6 +22,7 @@ export class BuyCheckoutPage {
 		purchaseQuote: QuotePurchaseResponseDtoOutput
 		nativeBalance: CurrencyAmountDto
 		currencyInBalance: CurrencyAmountDto
+		userEvmAddress: string
 	}): PageContent {
 		const {
 			availableStake,
@@ -30,6 +31,7 @@ export class BuyCheckoutPage {
 			purchaseQuote,
 			nativeBalance,
 			currencyInBalance,
+			userEvmAddress,
 		} = args
 
 		const config = resolveConfig(availableStake)
@@ -58,9 +60,20 @@ export class BuyCheckoutPage {
 
 		if (insufficient) {
 			keyboard
+				.text('Update', actionIds.showBuyCheckout)
+				.row()
 				.text('Enter from another token', actionIds.showZapChooseChain)
 				.row()
+
+			lines.push('')
+			lines.push('Option 1: Deposit ETH on Base to')
+			lines.push(`<code>${userEvmAddress}</code>`)
+			lines.push('then press <b>Update</b>')
+			lines.push('')
+			lines.push('Option 2: <b>Enter from another token</b>')
 		} else {
+			lines.push('')
+			lines.push('Confirm to proceed')
 			keyboard.text('Confirm', actionIds.buyTickets).row()
 		}
 

@@ -7,7 +7,7 @@ export type Expense = {
 	amount: CurrencyAmountDto
 }
 
-function formatCurrencyAmount(amount: CurrencyAmountDto): string {
+export function formatCurrencyAmount(amount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
 		BigInt(amount.amount),
 		amount.currency.decimals,

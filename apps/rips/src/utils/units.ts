@@ -8,6 +8,50 @@ import {
 import { createQuerySerializer } from '../../generated/api-client/client/utils.gen'
 import { NATIVE_ON_BASE } from '../constants'
 
+const USD_MIN_DISPLAY = 0.01
+
+function tokenDecimalsFromPrice(priceUsd: number): number {
+	const minTokenAmount = USD_MIN_DISPLAY / priceUsd
+	return Math.ceil(-Math.log10(minTokenAmount))
+}
+
+function formatUsd(usd: number): string {
+	if (usd === 0) return '$0'
+	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
+	return `$${usd.toFixed(2)}`
+}
+
+function formatTokenAmount(
+	amount: number,
+	priceUsd: number,
+	symbol: string,
+): string {
+	if (amount === 0) return `0 ${symbol}`
+
+	const decimals = tokenDecimalsFromPrice(priceUsd)
+	const minDisplayAmount = Math.pow(10, -decimals)
+
+	if (amount < minDisplayAmount)
+		return `<${minDisplayAmount.toFixed(decimals)} ${symbol}`
+
+	return `${amount.toFixed(decimals)} ${symbol}`
+}
+
+export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
+	amountAndSymbol: string
+	usdAmount: string
+} {
+	const { symbol, priceUsd, decimals } = currencyAmount.currency
+
+	const amount = Number(formatUnits(BigInt(currencyAmount.amount), decimals))
+	const usd = amount * priceUsd
+
+	return {
+		amountAndSymbol: formatTokenAmount(amount, priceUsd, symbol),
+		usdAmount: formatUsd(usd),
+	}
+}
+
 export function toUsd(currencyAmount: CurrencyAmountDto): string {
 	const formattedAmount = formatUnits(
 		BigInt(currencyAmount.amount),

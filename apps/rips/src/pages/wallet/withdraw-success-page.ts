@@ -13,7 +13,7 @@ export class WithdrawSuccessPage {
 	static render(args: {
 		transaction: TransactionDto
 		currencyAmount: CurrencyAmountDto
-		blockchainFee: CurrencyAmountDto
+		blockchainFee?: CurrencyAmountDto
 		recipientAddress: string
 	}): PageContent {
 		const { transaction, currencyAmount, blockchainFee, recipientAddress } =
@@ -29,10 +29,15 @@ export class WithdrawSuccessPage {
 			'',
 			`${formatAmountWithUsd(currencyAmount)} sent to`,
 			`<code>${recipientAddress}</code>`,
-			'',
-			`Blockchain fee: ${formatAmountWithUsd(blockchainFee)}`,
-			`Transaction: <code>${transaction.id}</code>`,
 		]
+
+		if (blockchainFee !== undefined) {
+			lines.push('')
+			lines.push(`Blockchain fee: ${formatAmountWithUsd(blockchainFee)}`)
+		}
+
+		lines.push('')
+		lines.push(`Transaction: <code>${transaction.id}</code>`)
 
 		return {
 			message: messageFromLines(lines),

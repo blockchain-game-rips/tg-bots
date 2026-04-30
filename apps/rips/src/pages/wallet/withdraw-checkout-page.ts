@@ -96,7 +96,7 @@ export class WithdrawCheckoutPage {
 		if (insufficient) {
 			keyboard.text('Update', actionIds.showWithdraw).row()
 		} else {
-			keyboard.text('Confirm', actionIds.confirmWithdraw).row()
+			keyboard.text('Confirm', actionIds.sendWithdrawTx).row()
 		}
 
 		keyboard

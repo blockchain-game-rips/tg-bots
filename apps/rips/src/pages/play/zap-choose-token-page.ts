@@ -21,9 +21,9 @@ export class ZapChooseTokenPage {
 		const chain = currencies[0].chainAddress.chain
 
 		const lines = [
-			`${configName(config)} stake`,
+			`<b>🎮 Buy Tickets › ${configName(config)} › ${chainToName(chain)}</b>`,
+			'',
 			`Ticket count: ${ticketCount}`,
-			`Chain: ${chainToName(chain)}`,
 			'',
 			'Choose a token to pay with:',
 		]

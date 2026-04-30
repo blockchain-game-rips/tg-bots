@@ -16,7 +16,7 @@ import { StatusPage } from '../../src/pages/play/status-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapConfirmPage } from '../../src/pages/play/zap-confirm-page'
-import { ZapInsufficientFundsPage } from '../../src/pages/play/zap-insufficient-funds-page'
+import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
@@ -196,17 +196,15 @@ export const pages: Record<string, PageEntry> = {
 				userEvmAddress: mockUserEvmAddress,
 			}),
 	},
-	'zap-insufficient-funds': {
+	'zap-failed': {
 		description:
-			'Shown instead of zap-confirm when token balance is too low. Shows required vs available amount. User can top up and retry.',
+			'Shown when the zap transaction fails. Shows stake, ticket count, amount paid, and refund amount.',
 		render: () =>
-			ZapInsufficientFundsPage.render({
+			ZapFailedPage.render({
 				availableStake: mockAvailableStakes[0],
 				ticketCount: 3,
-				nativeBalance: mockBalance,
-				currencyInBalance: mockZapCurrencyInBalance,
-				zapQuote: mockZapQuote,
-				userEvmAddress: mockUserEvmAddress,
+				amountIn: mockZapCurrencyInBalance,
+				refund: mockZapCurrencyInBalance,
 			}),
 	},
 	'zap-success': {

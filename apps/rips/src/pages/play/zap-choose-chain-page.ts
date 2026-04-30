@@ -18,7 +18,8 @@ export class ZapChooseChainPage {
 		const config = resolveConfig(availableStake)
 
 		const lines = [
-			`${configName(config)} stake`,
+			`<b>🎮 Buy Tickets › ${configName(config)}</b>`,
+			'',
 			`Ticket count: ${ticketCount}`,
 			'',
 			'Choose a chain to pay from:',

@@ -80,7 +80,12 @@ export async function executeZap(
 	if (outcome.status === 'failed') {
 		return {
 			type: EffectType.EDIT,
-			page: ZapFailedPage.render(outcome.refund),
+			page: ZapFailedPage.render({
+				availableStake,
+				ticketCount,
+				amountIn,
+				refund: outcome.refund,
+			}),
 		}
 	}
 

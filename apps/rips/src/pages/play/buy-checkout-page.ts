@@ -45,7 +45,8 @@ export class BuyCheckoutPage {
 		)
 
 		const lines = [
-			`${configName(config)} stake`,
+			`<b>🎮 Buy Tickets › ${configName(config)}</b>`,
+			'',
 			`Ticket count: ${ticketCount}`,
 			'',
 			...breakdownLines,

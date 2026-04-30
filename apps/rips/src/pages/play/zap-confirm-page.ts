@@ -6,7 +6,8 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
+import { chainToName } from '../../utils/chain'
+import { fundsBreakdown } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -30,10 +31,12 @@ export class ZapConfirmPage {
 		} = args
 
 		const config = resolveConfig(availableStake)
+		const { currency } = zapQuote.amountIn
+		const chain = currency.chainAddress.chain
 
 		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
-				{ label: 'Amount', amount: zapQuote.amountIn },
+				{ label: 'Ticket cost', amount: zapQuote.amountIn },
 				{ label: 'Zap fee', amount: zapQuote.fee },
 				{ label: 'Blockchain fee', amount: zapQuote.blockchainFee },
 			],
@@ -43,11 +46,9 @@ export class ZapConfirmPage {
 		const insufficient = insufficientAmounts.length > 0
 
 		const lines = [
-			`${configName(config)} stake`,
-			`Ticket count: ${ticketCount}`,
+			`<b>🎮 Buy Tickets › ${configName(config)} › ${chainToName(chain)} › ${currency.symbol}</b>`,
 			'',
-			`Pay: ${formatAmountWithUsd(zapQuote.amountIn)}`,
-			`Your balance: ${formatAmountWithUsd(currencyInBalance)}`,
+			`Ticket count: ${ticketCount}`,
 			'',
 			...breakdownLines,
 		]

@@ -6,6 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -20,11 +21,14 @@ export class ZapSuccessPage {
 		const { availableStake, ticketCount, amountIn, zapSuccessResult } = args
 
 		const config = resolveConfig(availableStake)
+		const { currency } = amountIn
+		const chain = currency.chainAddress.chain
 
 		const lines = [
-			`✅ Zap successful!`,
+			`<b>🎮 Buy Tickets › ${configName(config)} › ${chainToName(chain)} › ${currency.symbol}</b>`,
 			'',
-			`${configName(config)} stake`,
+			'✅ Zap successful!',
+			'',
 			`Round: #${zapSuccessResult.roundId}`,
 			`Ticket count: ${ticketCount}`,
 			`Paid: ${formatAmountWithUsd(amountIn)}`,

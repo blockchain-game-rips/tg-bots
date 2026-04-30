@@ -31,7 +31,7 @@ import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
 import { WithdrawChooseChainPage } from '../../src/pages/wallet/withdraw-choose-chain-page'
 import { WithdrawChooseReceiverPage } from '../../src/pages/wallet/withdraw-choose-receiver-page'
-import { WithdrawChooseTokenPage } from '../../src/pages/wallet/withdraw-choose-token-page'
+import { WithdrawChooseCurrencyPage } from '../../src/pages/wallet/withdraw-choose-token-page'
 import { WithdrawConfirmPage } from '../../src/pages/wallet/withdraw-confirm-page'
 import { WithdrawInsufficientFundsPage } from '../../src/pages/wallet/withdraw-insufficient-funds-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
@@ -269,7 +269,7 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Second step of the withdraw flow. Choose a token on the selected chain.',
 		render: () =>
-			WithdrawChooseTokenPage.render({
+			WithdrawChooseCurrencyPage.render({
 				chainIndex: mockWithdrawChainIndex,
 			}),
 	},

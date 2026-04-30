@@ -73,5 +73,4 @@ export type PromptContent = {
 export type Chain = {
 	namespace: string
 	reference: string
-	name: string
 }

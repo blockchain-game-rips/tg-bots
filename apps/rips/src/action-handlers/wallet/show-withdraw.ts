@@ -1,30 +1,33 @@
+import { walletsControllerGetBalances } from '../../../generated/api-client'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
-import { Effect, EffectType, SessionData } from '../../types'
-import { fetchNativeBalance } from '../../utils/api'
+import { EffectEdit, EffectType, SessionData } from '../../types'
+import { toCurrencyId } from '../../utils/currency'
+import { assertFlow, setFlowStep } from '../../utils/session-utils'
+import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
 export async function showWithdraw(
 	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
-	const { telegramId } = session
+	payload: string | undefined,
+): Promise<EffectEdit> {
+	assertFlow(session, 'withdraw', 'chain-chosen')
+	const sessionData = session.flow.data
 
-	const balance = await fetchNativeBalance(telegramId)
+	const currencyChainAddress = parseCurrencyChainAddress(payload)
 
-	const existingData =
-		session.flow?.flowType === 'withdraw' ? session.flow.data : undefined
+	const { data: balancesData } = await walletsControllerGetBalances({
+		headers: { 'x-telegram-id': session.telegramId },
+		query: { chainAddress: [toCurrencyId(currencyChainAddress)] },
+	})
 
-	session.flow = {
-		flowType: 'withdraw',
-		step: 'on-withdraw-page',
-		data: existingData ?? {},
-	}
+	const currencyBalance = balancesData.balances[0]
+
+	setFlowStep(session, 'currency-chosen', {
+		chain: sessionData.chain,
+		currency: currencyBalance.currency,
+	})
 
 	return {
 		type: EffectType.EDIT,
-		page: WithdrawPage.render(
-			balance,
-			existingData?.amount,
-			existingData?.recipientAddress,
-		),
+		page: WithdrawPage.render(currencyBalance, undefined, undefined),
 	}
 }

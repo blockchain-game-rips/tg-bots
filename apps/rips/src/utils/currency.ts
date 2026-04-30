@@ -1,4 +1,8 @@
-import { ChainAddressDto, CurrencyAmountDto } from '../../generated/api-client'
+import {
+	ChainAddressDto,
+	CurrencyAmountDto,
+	CurrencyDto,
+} from '../../generated/api-client'
 import { SUPPORTED_CHAINS } from '../constants'
 import { formatUnits } from './units'
 export { formatUnits, parseUnits } from './units'
@@ -24,6 +28,14 @@ function formatUsd(usd: number): string {
 	if (usd === 0) return '$0'
 	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
 	return `$${usd.toFixed(2)}`
+}
+
+export function toCurrencyId(currencyChainAddress: ChainAddressDto) {
+	const { address, chain } = currencyChainAddress
+
+	const { namespace, reference } = chain
+
+	return `${namespace}:${reference}:${address}`
 }
 
 function formatTokenAmount(amount: number, priceUsd: number): string {
@@ -73,6 +85,13 @@ export function formattedAmountWithUsd(
 		formatCurrencyAmount(currencyAmount)
 
 	return `${displayAmount} ${symbol} (${displayUsdAmount})`
+}
+
+export function toCurrencyAmount(
+	amount: bigint,
+	currency: CurrencyDto,
+): CurrencyAmountDto {
+	return { currency, amount: amount.toString() }
 }
 
 export function chainAddressToString(chainAddress: ChainAddressDto): string {

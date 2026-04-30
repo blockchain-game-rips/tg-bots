@@ -25,7 +25,7 @@ export class WithdrawChooseReceiverPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Enter address',
-			actionIds.requestWithdrawRecipient,
+			actionIds.askWithdrawRecipient,
 		)
 
 		addNav(keyboard, {

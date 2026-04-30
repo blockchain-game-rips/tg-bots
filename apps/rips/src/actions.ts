@@ -19,14 +19,14 @@ import { showReferralAbout } from './action-handlers/referral-system/show-referr
 import { showReferralWithdrawReward } from './action-handlers/referral-system/show-referral-withdraw-reward'
 import { showAbout } from './action-handlers/show-about'
 import { showHome } from './action-handlers/show-home'
-import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
-import { requestWithdrawCustomAmount } from './action-handlers/wallet/request-withdraw-custom-amount'
-import { requestWithdrawRecipient } from './action-handlers/wallet/request-withdraw-recipient'
-import { showChooseWithdrawAmount } from './action-handlers/wallet/show-choose-withdraw-amount'
+import { askWithdrawCustomAmount } from './action-handlers/wallet/ask-withdraw-custom-amount'
+import { askWithdrawRecipient } from './action-handlers/wallet/ask-withdraw-recipient'
+import { respondWithdrawChosenAmount } from './action-handlers/wallet/respond-withdraw-chosen-amount'
+import { respondWithdrawChosenRecipient } from './action-handlers/wallet/respond-withdraw-chosen-recipient'
 import { showWallet } from './action-handlers/wallet/show-wallet'
 import { showWithdraw } from './action-handlers/wallet/show-withdraw'
-import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
-import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
+import { showWithdrawChooseChain } from './action-handlers/wallet/show-withdraw-choose-chain'
+import { showWithdrawChooseCurrency } from './action-handlers/wallet/show-withdraw-choose-currency'
 import { ActionHandler } from './types'
 
 const actionDefs = {
@@ -63,17 +63,23 @@ const actionDefs = {
 	// Wallet
 	showWallet: { id: 'sw', handler: showWallet },
 
-	// Withdraw (legacy single-chain)
-	showWithdraw: { id: 'swp', handler: showWithdraw },
-	showChooseWithdrawAmount: { id: 'scwa', handler: showChooseWithdrawAmount },
-	requestWithdrawRecipient: { id: 'rwr', handler: requestWithdrawRecipient },
-	submitWithdrawRecipient: { id: 'sbrec', handler: submitWithdrawRecipient },
-	requestWithdrawCustomAmount: {
-		id: 'rwca',
-		handler: requestWithdrawCustomAmount,
+	// Withdraw
+	showWithdrawChooseChain: { id: 'swcc', handler: showWithdrawChooseChain },
+	showWithdrawChooseToken: {
+		id: 'swct',
+		handler: showWithdrawChooseCurrency,
 	},
-	submitWithdrawAmount: { id: 'sbamt', handler: submitWithdrawAmount },
-	executeWithdraw: { id: 'ew', handler: executeWithdraw },
+	showWithdraw: { id: 'swp', handler: showWithdraw },
+	askWithdrawRecipient: { id: 'awr', handler: askWithdrawRecipient },
+	respondWithdrawRecipient: {
+		id: 'rwr',
+		handler: respondWithdrawChosenRecipient,
+	},
+	respondWithdrawCustomAmount: {
+		id: 'rwca',
+		handler: respondWithdrawChosenAmount,
+	},
+	askWithdrawAmount: { id: 'sbamt', handler: askWithdrawCustomAmount },
 
 	// Referral
 	showReferral: { id: 'sref', handler: showReferral },
@@ -88,14 +94,6 @@ const actionDefs = {
 	showZapChooseToken: { id: 'szt', handler: notImplemented },
 	showZapConfirm: { id: 'szcp', handler: notImplemented },
 	executeZap: { id: 'ez', handler: notImplemented },
-
-	// Withdraw new multi-chain (in progress)
-	showWithdrawChooseChain: { id: 'swdc', handler: notImplemented },
-	showWithdrawChooseToken: { id: 'swdt', handler: notImplemented },
-	showWithdrawChooseAmount: { id: 'swda', handler: notImplemented },
-	showWithdrawChooseReceiver: { id: 'swdr', handler: notImplemented },
-	showWithdrawConfirm: { id: 'swdcp', handler: notImplemented },
-	executeWithdrawNewChain: { id: 'ewdc', handler: notImplemented },
 
 	// Swap (in progress)
 	showSwapChooseChain: { id: 'sssc', handler: notImplemented },

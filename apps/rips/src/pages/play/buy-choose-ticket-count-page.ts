@@ -4,6 +4,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
+import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class BuyChooseTicketCountPage {
@@ -18,7 +19,13 @@ export class BuyChooseTicketCountPage {
 			.text('Custom Amount', actionIds.requestCustomTicketAmount)
 
 		return {
-			message: `Choose how many tickets to buy at ${configName(config)} each.`,
+			message: messageFromLines([
+				'<b>🎮 Buy Tickets</b>',
+				'',
+				`Stake: ${configName(config)}`,
+				'',
+				'Select ticket count:',
+			]),
 			keyboard: addNav(keyboard, {
 				home: actionIds.showHome,
 				parent: actionIds.showChooseStake,

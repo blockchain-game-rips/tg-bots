@@ -14,14 +14,17 @@ export class BuySuccessPage {
 		purchase: BuyTicketsPurchaseResponseDtoOutput,
 		round?: RoundDto,
 	): PageContent {
-		const lines = [`✅ Purchase successful!`, '']
+		const stakeLabel =
+			round !== undefined ? ` › ${configName(round.config)}` : ''
 
-		if (round !== undefined) {
-			lines.push(`Stake: ${configName(round.config)}`)
-		}
-
-		lines.push(`Round: #${purchase.roundId}`)
-		lines.push(`Tickets: ${purchase.ticketCount}`)
+		const lines = [
+			`<b>🎮 Buy Tickets${stakeLabel}</b>`,
+			'',
+			'✅ Purchase successful!',
+			'',
+			`Round: #${purchase.roundId}`,
+			`Tickets: ${purchase.ticketCount}`,
+		]
 
 		if (round !== undefined) {
 			const ticketCost =
@@ -37,8 +40,12 @@ export class BuySuccessPage {
 
 		const cost = purchase.transaction.cost
 		if (cost !== undefined) {
+			lines.push('')
 			lines.push(`Blockchain fee: ${formatAmountWithUsd(cost)}`)
 		}
+
+		lines.push('')
+		lines.push(`Transaction: <code>${purchase.transaction.id}</code>`)
 
 		return {
 			message: messageFromLines(lines),

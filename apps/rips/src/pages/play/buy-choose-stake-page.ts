@@ -4,6 +4,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
+import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class BuyChooseStakePage {
@@ -25,8 +26,11 @@ export class BuyChooseStakePage {
 		}
 
 		return {
-			message:
-				'Choose your stake — the higher the ticket price, the bigger the potential reward.',
+			message: messageFromLines([
+				'<b>🎮 Buy Tickets</b>',
+				'',
+				'Select a stake:',
+			]),
 			keyboard: addNav(keyboard, {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

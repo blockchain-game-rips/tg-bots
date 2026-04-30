@@ -67,17 +67,6 @@ export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
 	}
 }
 
-export function toUsd(currencyAmount: CurrencyAmountDto): string {
-	const formattedAmount = formatUnits(
-		BigInt(currencyAmount.amount),
-		currencyAmount.currency.decimals,
-	)
-
-	const usd = Number(formattedAmount) * currencyAmount.currency.priceUsd
-
-	return `$${usd.toFixed(2)}`
-}
-
 export function formattedAmountWithUsd(
 	currencyAmount: CurrencyAmountDto,
 ): string {
@@ -100,12 +89,16 @@ export function chainAddressToString(chainAddress: ChainAddressDto): string {
 
 function twoLineEntry(
 	label: string,
-	cryptoAmount: string,
-	usdAmount: string,
+	amount: CurrencyAmountDto,
 	suffix = '',
 ): string[] {
+	const { displayAmount, symbol, displayUsdAmount } =
+		formatCurrencyAmount(amount)
 	const indent = ' '.repeat(label.length + 3)
-	return [`${label}   ${cryptoAmount}${suffix}`, `${indent}${usdAmount}`]
+	return [
+		`${label}   ${displayAmount} ${symbol}${suffix}`,
+		`${indent}${displayUsdAmount}`,
+	]
 }
 
 function labelColumnWidth(labels: string[]): number {
@@ -114,14 +107,6 @@ function labelColumnWidth(labels: string[]): number {
 
 function padLabel(label: string, width: number): string {
 	return label.padEnd(width)
-}
-
-function formatCurrencyAmountSimple(amount: CurrencyAmountDto): string {
-	const formattedAmount = formatUnits(
-		BigInt(amount.amount),
-		amount.currency.decimals,
-	)
-	return `${formattedAmount} ${amount.currency.symbol}`
 }
 
 export function fundsBreakdown(
@@ -139,11 +124,7 @@ export function fundsBreakdown(
 	const balanceWidth = labelColumnWidth(balanceLabels)
 
 	const expenseLines = expenses.flatMap(({ amount, label }) =>
-		twoLineEntry(
-			padLabel(label, costsWidth),
-			formatCurrencyAmountSimple(amount),
-			toUsd(amount),
-		),
+		twoLineEntry(padLabel(label, costsWidth), amount),
 	)
 
 	const insufficientAmounts: CurrencyAmountDto[] = []
@@ -161,8 +142,7 @@ export function fundsBreakdown(
 
 		return twoLineEntry(
 			padLabel(balance.currency.symbol, balanceWidth),
-			formatCurrencyAmountSimple(balance),
-			toUsd(balance),
+			balance,
 			suffix,
 		)
 	})

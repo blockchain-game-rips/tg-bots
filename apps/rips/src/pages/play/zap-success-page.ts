@@ -6,7 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
@@ -27,12 +27,12 @@ export class ZapSuccessPage {
 			`${configName(config)} stake`,
 			`Round: #${zapSuccessResult.roundId}`,
 			`Ticket count: ${ticketCount}`,
-			`Paid: ${formattedAmountWithUsd(amountIn)}`,
+			`Paid: ${formatAmountWithUsd(amountIn)}`,
 		]
 
 		if (zapSuccessResult.dstTransaction.cost !== undefined) {
 			lines.push(
-				`Blockchain fee: ${formattedAmountWithUsd(zapSuccessResult.dstTransaction.cost)}`,
+				`Blockchain fee: ${formatAmountWithUsd(zapSuccessResult.dstTransaction.cost)}`,
 			)
 		}
 

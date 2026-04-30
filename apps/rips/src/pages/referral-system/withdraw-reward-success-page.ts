@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { WithdrawRewardResponseDtoOutput } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -11,12 +11,12 @@ export class WithdrawRewardSuccessPage {
 		const lines = [
 			'✅ Reward withdrawn successfully!',
 			'',
-			`Amount: ${formattedAmountWithUsd(response.amount)}`,
+			`Amount: ${formatAmountWithUsd(response.amount)}`,
 		]
 
 		if (response.transaction.cost !== undefined) {
 			lines.push(
-				`Network fee: ${formattedAmountWithUsd(response.transaction.cost)}`,
+				`Network fee: ${formatAmountWithUsd(response.transaction.cost)}`,
 			)
 		}
 

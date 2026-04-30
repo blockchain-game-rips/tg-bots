@@ -5,7 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -21,11 +21,11 @@ export class SwapConfirmPage {
 			`Token in: ${amountIn.currency.symbol}`,
 			`Token out: ${swapQuote.amountOut.currency.symbol}`,
 			'',
-			`Pay: ${formattedAmountWithUsd(amountIn)}`,
-			`Receive: ${formattedAmountWithUsd(swapQuote.amountOut)}`,
+			`Pay: ${formatAmountWithUsd(amountIn)}`,
+			`Receive: ${formatAmountWithUsd(swapQuote.amountOut)}`,
 			'',
-			`Swap fee: ${formattedAmountWithUsd(swapQuote.fee)}`,
-			`Network fee: ${formattedAmountWithUsd(networkFee)}`,
+			`Swap fee: ${formatAmountWithUsd(swapQuote.fee)}`,
+			`Network fee: ${formatAmountWithUsd(networkFee)}`,
 			'',
 			'Confirm to proceed with swap',
 		]

@@ -6,7 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -33,11 +33,11 @@ export class ZapConfirmPage {
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
 			'',
-			`Pay: ${formattedAmountWithUsd(zapQuote.amountIn)}`,
-			`Your balance: ${formattedAmountWithUsd(currencyInBalance)}`,
+			`Pay: ${formatAmountWithUsd(zapQuote.amountIn)}`,
+			`Your balance: ${formatAmountWithUsd(currencyInBalance)}`,
 			'',
-			`Network fee: ${formattedAmountWithUsd(zapQuote.fee)}`,
-			`Native balance: ${formattedAmountWithUsd(nativeBalance)}`,
+			`Network fee: ${formatAmountWithUsd(zapQuote.fee)}`,
+			`Native balance: ${formatAmountWithUsd(nativeBalance)}`,
 			'',
 			'Confirm to proceed with zap',
 		]

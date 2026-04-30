@@ -2,7 +2,7 @@ import { InlineKeyboard } from 'grammy'
 import { GetTierTablesResponseDtoOutput } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -18,7 +18,7 @@ function tierTableLines(tierTable: TierTable): string[] {
 	return [
 		`<b>${tierTable.currency.symbol} volume tiers:</b>`,
 		...tierTable.tiers.map((tier, i) => {
-			const minVolume = formattedAmountWithUsd({
+			const minVolume = formatAmountWithUsd({
 				amount: tier.minVolume,
 				currency: tierTable.currency,
 			})

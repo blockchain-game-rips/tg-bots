@@ -3,7 +3,7 @@ import { PrizeDto, RoundDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -19,7 +19,7 @@ export class RevealSinglePage {
 		}
 
 		const lines = [
-			`<a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> — Ticket #${revealedPrize.ticketNumber} — ${formattedAmountWithUsd(prizeCurrencyAmount)}`,
+			`<a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> — Ticket #${revealedPrize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
 			`Unrevealed tickets: ${unrevealedPrizes.length}`,
 		]
 

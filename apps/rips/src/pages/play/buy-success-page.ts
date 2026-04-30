@@ -5,7 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { messageFromLines } from '../../utils/message'
 import { configName } from '../../utils/stake'
 
@@ -31,13 +31,13 @@ export class BuySuccessPage {
 			const currency = round.config.ticketPrice.currency
 
 			lines.push(
-				`Tickets cost: ${formattedAmountWithUsd({ amount: ticketCost.toString(), currency })}`,
+				`Tickets cost: ${formatAmountWithUsd({ amount: ticketCost.toString(), currency })}`,
 			)
 		}
 
 		const cost = purchase.transaction.cost
 		if (cost !== undefined) {
-			lines.push(`Blockchain fee: ${formattedAmountWithUsd(cost)}`)
+			lines.push(`Blockchain fee: ${formatAmountWithUsd(cost)}`)
 		}
 
 		return {

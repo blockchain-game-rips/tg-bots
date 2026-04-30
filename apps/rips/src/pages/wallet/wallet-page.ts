@@ -1,7 +1,7 @@
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav, keyboardFromLayout } from '../../utils/keyboard'
 
 export class WalletPage {
@@ -10,7 +10,7 @@ export class WalletPage {
 		userEvmAddress: string,
 	): PageContent {
 		let message = ''
-		message += `Balance: ${formattedAmountWithUsd(balance)}`
+		message += `Balance: ${formatAmountWithUsd(balance)}`
 		message += '\n\n'
 		message += `Deposit ETH on Base to this address: <code>${userEvmAddress}</code>`
 

@@ -5,7 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -23,10 +23,10 @@ export class SwapInsufficientFundsPage {
 			`Token out: ${swapQuote.amountOut.currency.symbol}`,
 			'',
 			`⚠️ Not enough funds.`,
-			`Required: ${formattedAmountWithUsd(amountIn)}`,
-			`Your balance: ${formattedAmountWithUsd(balance)}`,
+			`Required: ${formatAmountWithUsd(amountIn)}`,
+			`Your balance: ${formatAmountWithUsd(balance)}`,
 			'',
-			`Swap fee: ${formattedAmountWithUsd(swapQuote.fee)}`,
+			`Swap fee: ${formatAmountWithUsd(swapQuote.fee)}`,
 			'',
 			`Address: ${userEvmAddress}`,
 		]

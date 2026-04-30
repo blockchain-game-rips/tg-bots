@@ -4,7 +4,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
-import { formattedAmountWithUsd, formatUnits } from '../../utils/currency'
+import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -21,7 +21,7 @@ export class WithdrawChooseAmountPage {
 		const lines = [
 			`Chain: ${chainToName(chain)}`,
 			`Token: ${currency.symbol}`,
-			`Balance: ${formattedAmountWithUsd(balance)}`,
+			`Balance: ${formatAmountWithUsd(balance)}`,
 			'',
 			'Choose amount to withdraw:',
 		]

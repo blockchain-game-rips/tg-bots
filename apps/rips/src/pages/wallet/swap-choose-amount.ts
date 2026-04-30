@@ -3,7 +3,7 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
-import { formattedAmountWithUsd, formatUnits } from '../../utils/currency'
+import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { tokenLabel } from '../../utils/swap-utils'
@@ -26,7 +26,7 @@ export class SwapChooseAmountPage {
 		const lines = [
 			`Token in: ${tokenLabel(amountIn)}`,
 			`Token out: ${tokenLabel(amountOut)}`,
-			`Balance: ${formattedAmountWithUsd(balance)}`,
+			`Balance: ${formatAmountWithUsd(balance)}`,
 			'',
 			'Choose amount to swap:',
 		]

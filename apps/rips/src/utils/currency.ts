@@ -50,7 +50,7 @@ function formatTokenAmount(amount: number, priceUsd: number): string {
 	return `${parseFloat(amount.toFixed(decimals))}`
 }
 
-export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
+export function currencyAmountDisplayParts(currencyAmount: CurrencyAmountDto): {
 	displayAmount: string
 	symbol: string
 	displayUsdAmount: string
@@ -67,11 +67,9 @@ export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {
 	}
 }
 
-export function formattedAmountWithUsd(
-	currencyAmount: CurrencyAmountDto,
-): string {
+export function formatAmountWithUsd(currencyAmount: CurrencyAmountDto): string {
 	const { displayAmount, symbol, displayUsdAmount } =
-		formatCurrencyAmount(currencyAmount)
+		currencyAmountDisplayParts(currencyAmount)
 
 	return `${displayAmount} ${symbol} (${displayUsdAmount})`
 }
@@ -93,7 +91,7 @@ function twoLineEntry(
 	suffix = '',
 ): string[] {
 	const { displayAmount, symbol, displayUsdAmount } =
-		formatCurrencyAmount(amount)
+		currencyAmountDisplayParts(amount)
 	const indent = ' '.repeat(label.length + 3)
 	return [
 		`${label}   ${displayAmount} ${symbol}${suffix}`,

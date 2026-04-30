@@ -3,7 +3,7 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -19,11 +19,11 @@ export class WithdrawPage {
 		const lines = [
 			`Chain: ${chainToName(chain)}`,
 			`Token: ${currency.symbol}`,
-			`Balance: ${formattedAmountWithUsd(currencyBalance)}`,
+			`Balance: ${formatAmountWithUsd(currencyBalance)}`,
 		]
 
 		if (amountToWithdraw !== undefined) {
-			lines.push(`Amount: ${formattedAmountWithUsd(amountToWithdraw)}`)
+			lines.push(`Amount: ${formatAmountWithUsd(amountToWithdraw)}`)
 		}
 
 		if (recipientAddress !== undefined) {

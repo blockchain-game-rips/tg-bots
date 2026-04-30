@@ -193,6 +193,7 @@ export const pages: Record<string, PageEntry> = {
 				nativeBalance: mockBalance,
 				currencyInBalance: mockZapCurrencyInBalance,
 				zapQuote: mockZapQuote,
+				userEvmAddress: mockUserEvmAddress,
 			}),
 	},
 	'zap-insufficient-funds': {

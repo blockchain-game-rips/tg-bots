@@ -12,6 +12,20 @@ export type BuyTicketsFlow =
 			step: 'ticket-count-chosen'
 			data: { stakeId: number; ticketCount: number }
 	  }
+	| {
+			flowType: 'buyTickets'
+			step: 'zap-chain-chosen'
+			data: { stakeId: number; ticketCount: number; chain: Chain }
+	  }
+	| {
+			flowType: 'buyTickets'
+			step: 'zap-currency-chosen'
+			data: {
+				stakeId: number
+				ticketCount: number
+				currency: CurrencyDto
+			}
+	  }
 
 export type WithdrawFlow =
 	| {

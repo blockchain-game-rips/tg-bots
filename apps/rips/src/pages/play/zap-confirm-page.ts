@@ -6,7 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -18,6 +18,7 @@ export class ZapConfirmPage {
 		nativeBalance: CurrencyAmountDto
 		currencyInBalance: CurrencyAmountDto
 		zapQuote: QuoteZapResponseDtoOutput
+		userEvmAddress: string
 	}): PageContent {
 		const {
 			availableStake,
@@ -25,9 +26,21 @@ export class ZapConfirmPage {
 			nativeBalance,
 			currencyInBalance,
 			zapQuote,
+			userEvmAddress,
 		} = args
 
 		const config = resolveConfig(availableStake)
+
+		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
+			[
+				{ label: 'Amount', amount: zapQuote.amountIn },
+				{ label: 'Zap fee', amount: zapQuote.fee },
+				{ label: 'Blockchain fee', amount: zapQuote.blockchainFee },
+			],
+			[currencyInBalance, nativeBalance],
+		)
+
+		const insufficient = insufficientAmounts.length > 0
 
 		const lines = [
 			`${configName(config)} stake`,
@@ -36,16 +49,29 @@ export class ZapConfirmPage {
 			`Pay: ${formatAmountWithUsd(zapQuote.amountIn)}`,
 			`Your balance: ${formatAmountWithUsd(currencyInBalance)}`,
 			'',
-			`Network fee: ${formatAmountWithUsd(zapQuote.fee)}`,
-			`Native balance: ${formatAmountWithUsd(nativeBalance)}`,
-			'',
-			'Confirm to proceed with zap',
+			...breakdownLines,
 		]
 
-		const keyboard = new InlineKeyboard().text(
-			'Confirm',
-			actionIds.executeZap,
-		)
+		if (insufficient) {
+			lines.push('')
+			lines.push(`⚠️ <b>Insufficient funds</b>`)
+			lines.push('')
+			lines.push('Deposit to:')
+			lines.push(`<code>${userEvmAddress}</code>`)
+			lines.push('')
+			lines.push('Then press Update')
+		} else {
+			lines.push('')
+			lines.push('Confirm to proceed with zap')
+		}
+
+		const keyboard = new InlineKeyboard()
+
+		if (insufficient) {
+			keyboard.text('Update', actionIds.showZapConfirm).row()
+		} else {
+			keyboard.text('Confirm', actionIds.executeZap).row()
+		}
 
 		addNav(keyboard, {
 			parent: actionIds.showZapChooseToken,

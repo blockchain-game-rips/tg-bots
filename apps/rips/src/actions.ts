@@ -1,5 +1,6 @@
 import { notImplemented } from './action-handlers/not-implemented'
 import { buyTickets } from './action-handlers/play/buy-tickets'
+import { executeZap } from './action-handlers/play/execute-zap'
 import { requestCustomTicketCount } from './action-handlers/play/request-custom-ticket-count'
 import { showBuyCheckout } from './action-handlers/play/show-buy-checkout'
 import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
@@ -14,6 +15,9 @@ import { showRevealAll } from './action-handlers/play/show-reveal-all'
 import { showRevealPrizes } from './action-handlers/play/show-reveal-prizes'
 import { showRevealSingle } from './action-handlers/play/show-reveal-single'
 import { showStatus } from './action-handlers/play/show-status'
+import { showZapChooseChain } from './action-handlers/play/show-zap-choose-chain'
+import { showZapChooseToken } from './action-handlers/play/show-zap-choose-token'
+import { showZapConfirm } from './action-handlers/play/show-zap-confirm'
 import { showReferral } from './action-handlers/referral-system/show-referral'
 import { showReferralAbout } from './action-handlers/referral-system/show-referral-about'
 import { showReferralWithdrawReward } from './action-handlers/referral-system/show-referral-withdraw-reward'
@@ -93,11 +97,11 @@ const actionDefs = {
 		handler: showReferralWithdrawReward,
 	},
 
-	// Zap (in progress)
-	showZapChooseChain: { id: 'szc', handler: notImplemented },
-	showZapChooseToken: { id: 'szt', handler: notImplemented },
-	showZapConfirm: { id: 'szcp', handler: notImplemented },
-	executeZap: { id: 'ez', handler: notImplemented },
+	// Zap
+	showZapChooseChain: { id: 'szc', handler: showZapChooseChain },
+	showZapChooseToken: { id: 'szt', handler: showZapChooseToken },
+	showZapConfirm: { id: 'szcp', handler: showZapConfirm },
+	executeZap: { id: 'ez', handler: executeZap },
 
 	// Swap (in progress)
 	showSwapChooseChain: { id: 'sssc', handler: notImplemented },

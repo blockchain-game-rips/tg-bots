@@ -3,6 +3,7 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName, findChainIndex } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 
@@ -26,7 +27,7 @@ export class WithdrawPage {
 			recipientAddress !== undefined ? recipientAddress : '-'
 
 		const lines = [
-			`<b>💸 Withdraw › ${chainToName(chain)} › ${currency.symbol}</b>`,
+			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			`Balance: ${formatAmountWithUsd(currencyBalance)}`,
 			'',

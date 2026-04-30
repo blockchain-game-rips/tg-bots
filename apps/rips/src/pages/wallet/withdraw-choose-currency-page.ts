@@ -3,6 +3,7 @@ import { CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { findCurrencyIndex } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
@@ -12,7 +13,7 @@ export class WithdrawChooseCurrencyPage {
 		const chain = currencies[0].chainAddress.chain
 
 		const lines = [
-			`<b>💸 Withdraw › ${chainToName(chain)}</b>`,
+			withdrawBreadcrumb(chainToName(chain)),
 			'',
 			'Select a token:',
 		]

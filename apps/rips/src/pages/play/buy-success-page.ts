@@ -5,6 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { configName } from '../../utils/stake'
 
@@ -13,11 +14,10 @@ export class BuySuccessPage {
 		purchase: BuyTicketsPurchaseResponseDtoOutput,
 		round?: RoundDto,
 	): PageContent {
-		const stakeLabel =
-			round !== undefined ? ` › ${configName(round.config)}` : ''
-
 		const lines = [
-			`<b>🎮 Buy Tickets${stakeLabel}</b>`,
+			buyTicketsBreadcrumb(
+				round !== undefined ? configName(round.config) : undefined,
+			),
 			'',
 			'✅ Purchase successful!',
 			'',

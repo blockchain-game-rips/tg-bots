@@ -6,6 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { fundsBreakdown } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
@@ -45,7 +46,11 @@ export class ZapConfirmPage {
 		const insufficient = insufficientAmounts.length > 0
 
 		const lines = [
-			`<b>🎮 Buy Tickets › ${configName(config)} › ${chainToName(chain)} › ${currency.symbol}</b>`,
+			buyTicketsBreadcrumb(
+				configName(config),
+				chainToName(chain),
+				currency.symbol,
+			),
 			'',
 			`Ticket count: ${ticketCount}`,
 			'',

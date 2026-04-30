@@ -6,6 +6,7 @@ import {
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName, findChainIndex } from '../../utils/chain'
 import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
 
@@ -46,7 +47,7 @@ export class WithdrawCheckoutPage {
 		const insufficient = insufficientAmounts.length > 0
 
 		const lines = [
-			`<b>💸 Withdraw › ${chainToName(chain)} › ${currency.symbol}</b>`,
+			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			'Amount',
 			formatAmountWithUsd(currencyAmount),

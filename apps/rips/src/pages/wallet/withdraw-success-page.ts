@@ -5,6 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 
@@ -22,7 +23,7 @@ export class WithdrawSuccessPage {
 		const chain = currency.chainAddress.chain
 
 		const lines = [
-			`<b>💸 Withdraw › ${chainToName(chain)} › ${currency.symbol}</b>`,
+			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			'✅ Withdrawal successful!',
 			'',

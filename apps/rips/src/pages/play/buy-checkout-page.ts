@@ -7,6 +7,7 @@ import {
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { fundsBreakdown } from '../../utils/currency'
 import { configName, resolveConfig } from '../../utils/stake'
 
@@ -44,7 +45,7 @@ export class BuyCheckoutPage {
 		)
 
 		const lines = [
-			`<b>🎮 Buy Tickets › ${configName(config)}</b>`,
+			buyTicketsBreadcrumb(configName(config)),
 			'',
 			`Ticket count: ${ticketCount}`,
 			'',

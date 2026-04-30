@@ -4,6 +4,7 @@ import { actionIds } from '../../actions'
 import { SUPPORTED_CHAINS } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -17,7 +18,7 @@ export class ZapChooseChainPage {
 		const config = resolveConfig(availableStake)
 
 		const lines = [
-			`<b>🎮 Buy Tickets › ${configName(config)}</b>`,
+			buyTicketsBreadcrumb(configName(config)),
 			'',
 			`Ticket count: ${ticketCount}`,
 			'',

@@ -6,6 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -24,7 +25,11 @@ export class ZapSuccessPage {
 		const chain = currency.chainAddress.chain
 
 		const lines = [
-			`<b>🎮 Buy Tickets › ${configName(config)} › ${chainToName(chain)} › ${currency.symbol}</b>`,
+			buyTicketsBreadcrumb(
+				configName(config),
+				chainToName(chain),
+				currency.symbol,
+			),
 			'',
 			'✅ Zap successful!',
 			'',

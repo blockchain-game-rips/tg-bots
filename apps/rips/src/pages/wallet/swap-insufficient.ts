@@ -4,7 +4,6 @@ import {
 	QuoteSwapResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { PageContent } from '../../types'
 import { formattedAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
@@ -12,27 +11,16 @@ import { messageFromLines } from '../../utils/message'
 
 export class SwapInsufficientFundsPage {
 	static render(args: {
-		tokenInIndex: number
-		tokenOutIndex: number
 		amountIn: CurrencyAmountDto
 		balance: CurrencyAmountDto
 		swapQuote: QuoteSwapResponseDtoOutput
 		userEvmAddress: string
 	}): PageContent {
-		const {
-			tokenInIndex,
-			tokenOutIndex,
-			amountIn,
-			balance,
-			swapQuote,
-			userEvmAddress,
-		} = args
-		const tokenIn = SUPPORTED_CURRENCIES[tokenInIndex]
-		const tokenOut = SUPPORTED_CURRENCIES[tokenOutIndex]
+		const { amountIn, balance, swapQuote, userEvmAddress } = args
 
 		const lines = [
-			`Token in: ${tokenIn.symbol}`,
-			`Token out: ${tokenOut.symbol}`,
+			`Token in: ${amountIn.currency.symbol}`,
+			`Token out: ${swapQuote.amountOut.currency.symbol}`,
 			'',
 			`⚠️ Not enough funds.`,
 			`Required: ${formattedAmountWithUsd(amountIn)}`,

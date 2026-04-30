@@ -1,9 +1,7 @@
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../constants'
+import { CurrencyAmountDto } from '../../generated/api-client'
+import { chainToName } from './chain'
 
-export type TokenSelection = { tokenIndex: number; chainIndex: number }
-
-export function tokenLabel(selection: TokenSelection): string {
-	const token = SUPPORTED_CURRENCIES[selection.tokenIndex]
-	const chain = SUPPORTED_CHAINS[selection.chainIndex]
-	return `${token.symbol} (${chain.name})`
+export function tokenLabel(amount: CurrencyAmountDto): string {
+	const { currency } = amount
+	return `${currency.symbol} (${chainToName(currency.chainAddress.chain)})`
 }

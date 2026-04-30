@@ -3,7 +3,7 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 } from '../../generated/api-client'
-import { SUPPORTED_CHAINS } from '../constants'
+import { chainToName } from './chain'
 import { formatUnits } from './units'
 export { formatUnits, parseUnits } from './units'
 
@@ -168,12 +168,7 @@ export function fundsBreakdown(
 	})
 
 	const firstChain = expenses[0].amount.currency.chainAddress.chain
-	const chainName =
-		SUPPORTED_CHAINS.find(
-			(c) =>
-				c.reference === firstChain.reference &&
-				c.namespace === firstChain.namespace,
-		)?.name ?? firstChain.reference
+	const chainName = chainToName(firstChain)
 
 	const allLines = [
 		`⛓ Chain   ${chainName}`,

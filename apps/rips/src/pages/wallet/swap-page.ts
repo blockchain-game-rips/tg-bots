@@ -1,14 +1,15 @@
 import { InlineKeyboard } from 'grammy'
+import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
-import { TokenSelection, tokenLabel } from '../../utils/swap-utils'
+import { tokenLabel } from '../../utils/swap-utils'
 
 export class SwapPage {
 	static render(args: {
-		in?: TokenSelection
-		out?: TokenSelection
+		in?: CurrencyAmountDto
+		out?: CurrencyAmountDto
 	}): PageContent {
 		const tokenIn = args.in
 		const tokenOut = args.out

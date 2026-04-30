@@ -45,9 +45,9 @@ function formatTokenAmount(amount: number, priceUsd: number): string {
 	const minDisplayAmount = Math.pow(10, -decimals)
 
 	if (amount < minDisplayAmount)
-		return `<${minDisplayAmount.toFixed(decimals)}`
+		return `<${parseFloat(minDisplayAmount.toFixed(decimals))}`
 
-	return `${amount.toFixed(decimals)}`
+	return `${parseFloat(amount.toFixed(decimals))}`
 }
 
 export function formatCurrencyAmount(currencyAmount: CurrencyAmountDto): {

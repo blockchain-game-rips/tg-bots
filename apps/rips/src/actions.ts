@@ -25,6 +25,7 @@ import { respondWithdrawChosenAmount } from './action-handlers/wallet/respond-wi
 import { respondWithdrawChosenRecipient } from './action-handlers/wallet/respond-withdraw-chosen-recipient'
 import { showWallet } from './action-handlers/wallet/show-wallet'
 import { showWithdraw } from './action-handlers/wallet/show-withdraw'
+import { showWithdrawChooseAmount } from './action-handlers/wallet/show-withdraw-choose-amount'
 import { showWithdrawChooseChain } from './action-handlers/wallet/show-withdraw-choose-chain'
 import { showWithdrawChooseCurrency } from './action-handlers/wallet/show-withdraw-choose-currency'
 import { ActionHandler } from './types'
@@ -70,6 +71,7 @@ const actionDefs = {
 		handler: showWithdrawChooseCurrency,
 	},
 	showWithdraw: { id: 'swp', handler: showWithdraw },
+	showWithdrawChooseAmount: { id: 'swca', handler: showWithdrawChooseAmount },
 	askWithdrawRecipient: { id: 'awr', handler: askWithdrawRecipient },
 	respondWithdrawRecipient: {
 		id: 'rwr',

@@ -1,27 +1,25 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
-import { formattedAmountWithUsd } from '../../utils/currency'
+import { chainToName } from '../../utils/chain'
+import { formattedAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
-export const WITHDRAW_MAX_PAYLOAD = 'max'
-
 export class WithdrawChooseAmountPage {
-	static render(args: {
-		chainIndex: number
-		currencyIndex: number
-		balance: CurrencyAmountDto
-	}): PageContent {
-		const { chainIndex, currencyIndex, balance } = args
-		const chain = SUPPORTED_CHAINS[chainIndex]
-		const currency = SUPPORTED_CURRENCIES[currencyIndex]
+	static render(balance: CurrencyAmountDto): PageContent {
+		const { currency } = balance
+		const chain = currency.chainAddress.chain
+
+		const maxPayload = formatUnits(
+			BigInt(balance.amount),
+			currency.decimals,
+		)
 
 		const lines = [
-			`Chain: ${chain.name}`,
+			`Chain: ${chainToName(chain)}`,
 			`Token: ${currency.symbol}`,
 			`Balance: ${formattedAmountWithUsd(balance)}`,
 			'',
@@ -32,12 +30,12 @@ export class WithdrawChooseAmountPage {
 			.text(
 				'Withdraw Max',
 				buildActionData(
-					actionIds.showWithdrawChooseReceiver,
-					WITHDRAW_MAX_PAYLOAD,
+					actionIds.respondWithdrawCustomAmount,
+					maxPayload,
 				),
 			)
 			.row()
-			.text('Custom amount', actionIds.requestWithdrawCustomAmount)
+			.text('Custom amount', actionIds.askWithdrawAmount)
 			.row()
 
 		addNav(keyboard, {

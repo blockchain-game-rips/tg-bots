@@ -23,12 +23,17 @@ export class WithdrawCheckoutPage {
 		const lines = []
 		lines.push('withdraw checkout page')
 
-		return {
-			message: messageFromLines(lines),
-			keyboard: addNav(new InlineKeyboard(), {
-				home: actionIds.showHome,
-				parent: actionIds.showWallet,
-			}),
-		}
+		const keyboard = new InlineKeyboard()
+			.text('Choose amount', actionIds.showWithdrawChooseAmount)
+			.row()
+			.text('Enter recipient', actionIds.askWithdrawRecipient)
+			.row()
+
+		addNav(keyboard, {
+			home: actionIds.showHome,
+			parent: actionIds.showWallet,
+		})
+
+		return { message: messageFromLines(lines), keyboard }
 	}
 }

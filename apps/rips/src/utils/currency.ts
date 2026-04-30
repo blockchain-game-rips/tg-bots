@@ -118,11 +118,10 @@ export function fundsBreakdown(
 	)
 	const balanceLabels = uniqueBalances.map((b) => b.currency.symbol)
 
-	const costsWidth = labelColumnWidth(expenseLabels)
-	const balanceWidth = labelColumnWidth(balanceLabels)
+	const labelWidth = labelColumnWidth([...expenseLabels, ...balanceLabels])
 
 	const expenseLines = expenses.flatMap(({ amount, label }) =>
-		twoLineEntry(padLabel(label, costsWidth), amount),
+		twoLineEntry(padLabel(label, labelWidth), amount),
 	)
 
 	const insufficientAmounts: CurrencyAmountDto[] = []
@@ -139,7 +138,7 @@ export function fundsBreakdown(
 		const suffix = insufficient ? ' ⚠️' : ''
 
 		return twoLineEntry(
-			padLabel(balance.currency.symbol, balanceWidth),
+			padLabel(balance.currency.symbol, labelWidth),
 			balance,
 			suffix,
 		)
@@ -147,9 +146,12 @@ export function fundsBreakdown(
 
 	const firstChain = expenses[0].amount.currency.chainAddress.chain
 	const chainName = chainToName(firstChain)
+	const chainPrefix = '⛓ '
+	const chainLabel = padLabel('Chain', labelWidth - chainPrefix.length)
+	const chainLine = `${chainPrefix}${chainLabel}   ${chainName}`
 
 	const allLines = [
-		`⛓ Chain   ${chainName}`,
+		chainLine,
 		'💸 Costs',
 		...expenseLines,
 		'💼 Balance',
@@ -159,7 +161,7 @@ export function fundsBreakdown(
 	const divider = '─'.repeat(maxWidth)
 
 	const block = [
-		`⛓ Chain   ${chainName}`,
+		chainLine,
 		divider,
 		'💸 Costs',
 		'',

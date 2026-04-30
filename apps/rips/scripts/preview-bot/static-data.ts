@@ -30,6 +30,64 @@ const mockEth: ConfigDto['ticketPrice']['currency'] = {
 	decimals: 18,
 }
 
+const mockArbChainAddress = {
+	address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+	chain: { reference: '42161', namespace: 'eip155' },
+}
+
+const mockArbNativeChainAddress = {
+	address: '0x0000000000000000000000000000000000000000',
+	chain: { reference: '42161', namespace: 'eip155' },
+}
+
+export const mockUsdcArb: ConfigDto['ticketPrice']['currency'] = {
+	id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+	priceUsd: 1,
+	chainAddress: mockArbChainAddress,
+	symbol: 'USDC',
+	name: 'USD Coin',
+	decimals: 6,
+}
+
+export const mockEthArb: ConfigDto['ticketPrice']['currency'] = {
+	id: 'eip155:42161:0x0000000000000000000000000000000000000000',
+	priceUsd: 2500,
+	chainAddress: mockArbNativeChainAddress,
+	symbol: 'ETH',
+	name: 'Ethereum',
+	decimals: 18,
+}
+
+export const mockUsdcArbBalance: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '100000000', // 100 USDC
+}
+
+export const mockUsdcArbWithdrawAmount: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '25000000', // 25 USDC
+}
+
+export const mockUsdcArbWithdrawAmountInsufficient: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '200000000', // 200 USDC (exceeds balance)
+}
+
+export const mockEthArbBalance: CurrencyAmountDto = {
+	currency: mockEthArb,
+	amount: '1000000000000000', // 0.001 ETH
+}
+
+export const mockEthArbBalanceInsufficient: CurrencyAmountDto = {
+	currency: mockEthArb,
+	amount: '0', // no ETH for gas
+}
+
+export const mockEthArbNetworkFee: CurrencyAmountDto = {
+	currency: mockEthArb,
+	amount: '210000000000000', // ~0.00021 ETH
+}
+
 export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
 	tiers: [
 		[

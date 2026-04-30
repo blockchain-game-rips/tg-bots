@@ -14,9 +14,9 @@ export class WithdrawChooseCurrencyPage {
 		const chain = currencies[0].chainAddress.chain
 
 		const lines = [
-			`Chain: ${chainToName(chain)}`,
+			`<b>💸 Withdraw › ${chainToName(chain)}</b>`,
 			'',
-			'Choose a token to withdraw:',
+			'Select a token:',
 		]
 
 		const keyboard = new InlineKeyboard()

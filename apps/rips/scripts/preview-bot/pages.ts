@@ -40,6 +40,9 @@ import {
 	mockBalance,
 	mockCardCollection,
 	mockConfigs,
+	mockEthArbBalance,
+	mockEthArbBalanceInsufficient,
+	mockEthArbNetworkFee,
 	mockFinishedRounds,
 	mockPurchase,
 	mockPurchaseQuote,
@@ -55,9 +58,11 @@ import {
 	mockTicketCost,
 	mockTierTables,
 	mockUnrevealedPrizes,
+	mockUsdcArbBalance,
+	mockUsdcArbWithdrawAmount,
+	mockUsdcArbWithdrawAmountInsufficient,
 	mockUserEvmAddress,
 	mockWithdrawAmount,
-	mockWithdrawNetworkFee,
 	mockWithdrawRewardResponse,
 	mockWithdrawTransaction,
 	mockZapCurrencyInBalance,
@@ -277,30 +282,45 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Withdraw hub. Shows chain, token, balance, and optionally chosen amount and recipient. Buttons to choose amount and enter recipient.',
 		render: () =>
-			WithdrawPage.render(
-				mockBalance,
-				mockWithdrawAmount,
-				mockReceiverAddress,
-			),
+			WithdrawPage.render(mockBalance, mockWithdrawAmount, undefined),
 	},
 	'withdraw-checkout': {
 		description:
-			'Withdraw checkout. Shows amount and recipient with confirm button when funds are sufficient.',
-		render: () =>
-			WithdrawCheckoutPage.render({
-				currencyBalance: mockBalance,
-				nativeBalance: mockBalance,
-				currencyAmount: mockWithdrawAmount,
-				withdrawQuote: {
-					blockchainFee: mockWithdrawNetworkFee,
-				},
+			'Withdraw checkout. USDC on Arbitrum. Confirm if sufficient, error guidance if not.',
+		variants: ['sufficient', 'insufficient-token', 'insufficient-native'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const currencyAmount =
+				resolvedVariant === 'insufficient-token'
+					? mockUsdcArbWithdrawAmountInsufficient
+					: mockUsdcArbWithdrawAmount
+
+			const nativeBalance =
+				resolvedVariant === 'insufficient-native'
+					? mockEthArbBalanceInsufficient
+					: mockEthArbBalance
+
+			return WithdrawCheckoutPage.render({
+				currencyBalance: mockUsdcArbBalance,
+				nativeBalance,
+				currencyAmount,
+				withdrawQuote: { blockchainFee: mockEthArbNetworkFee },
 				recipientAddress: mockReceiverAddress,
-			}),
+				userEvmAddress: mockUserEvmAddress,
+			})
+		},
 	},
 	'withdraw-success': {
 		description:
 			'Confirms a successful withdrawal — shows transaction ID. Opened after withdraw-confirm.',
-		render: () => WithdrawSuccessPage.render(mockWithdrawTransaction),
+		render: () =>
+			WithdrawSuccessPage.render({
+				transaction: mockWithdrawTransaction,
+				currencyAmount: mockUsdcArbWithdrawAmount,
+				blockchainFee: mockEthArbNetworkFee,
+				recipientAddress: mockReceiverAddress,
+			}),
 	},
 	swap: {
 		description:

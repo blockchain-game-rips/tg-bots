@@ -72,6 +72,7 @@ const actionDefs = {
 	},
 	showWithdraw: { id: 'swp', handler: showWithdraw },
 	showWithdrawChooseAmount: { id: 'swca', handler: showWithdrawChooseAmount },
+	confirmWithdraw: { id: 'cw', handler: notImplemented },
 	askWithdrawRecipient: { id: 'awr', handler: askWithdrawRecipient },
 	respondWithdrawRecipient: {
 		id: 'rwr',

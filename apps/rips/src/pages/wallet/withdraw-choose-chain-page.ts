@@ -9,7 +9,7 @@ import { messageFromLines } from '../../utils/message'
 
 export class WithdrawChooseChainPage {
 	static render(): PageContent {
-		const lines = ['Choose a chain to withdraw from:']
+		const lines = ['<b>💸 Withdraw</b>', '', 'Select a chain:']
 
 		const keyboard = new InlineKeyboard()
 

@@ -8,6 +8,10 @@ const SUPPORTED_CHAINS: Record<string, Record<string, string> | undefined> = {
 	},
 }
 
+export function truncateAddress(address: string): string {
+	return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
 export function chainToName(chain: Chain): string {
 	const chainName = SUPPORTED_CHAINS[chain.namespace]?.[chain.reference]
 

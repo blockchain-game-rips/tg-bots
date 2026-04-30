@@ -2,6 +2,7 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 	UserDtoOutput,
+	usersControllerGetUser,
 	walletsControllerGetBalances,
 	walletsControllerQuoteWithdraw,
 } from '../../generated/api-client'
@@ -45,17 +46,20 @@ export async function resolveWithdrawPage(
 		}
 	}
 
-	const { data: withdrawQuote } = await walletsControllerQuoteWithdraw({
-		headers: { 'x-telegram-id': telegramId },
-		body: {
-			amountIn: {
-				currencyChainAddress: currency.chainAddress,
-				amount: currencyAmount.amount.toString(),
+	const [{ data: withdrawQuote }, { data: user }] = await Promise.all([
+		walletsControllerQuoteWithdraw({
+			headers: { 'x-telegram-id': telegramId },
+			body: {
+				amountIn: {
+					currencyChainAddress: currency.chainAddress,
+					amount: currencyAmount.amount.toString(),
+				},
+				currencyOutChainAddress: currency.chainAddress,
+				recipientAddress,
 			},
-			currencyOutChainAddress: currency.chainAddress,
-			recipientAddress,
-		},
-	})
+		}),
+		usersControllerGetUser({ path: { telegramId } }),
+	])
 
 	const { data: balancesData } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
@@ -84,6 +88,7 @@ export async function resolveWithdrawPage(
 			nativeBalance,
 			recipientAddress,
 			withdrawQuote,
+			userEvmAddress: evmAddressFromUser(user),
 		}),
 	}
 }

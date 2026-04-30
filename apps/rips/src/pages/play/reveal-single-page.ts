@@ -5,7 +5,6 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class RevealSinglePage {
 	static render(
@@ -37,7 +36,7 @@ export class RevealSinglePage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(keyboard, {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

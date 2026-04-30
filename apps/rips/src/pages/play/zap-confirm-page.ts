@@ -9,7 +9,6 @@ import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { fundsBreakdown } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class ZapConfirmPage {
@@ -79,6 +78,6 @@ export class ZapConfirmPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

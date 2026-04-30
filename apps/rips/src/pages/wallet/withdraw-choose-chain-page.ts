@@ -5,7 +5,6 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class WithdrawChooseChainPage {
 	static render(): PageContent {
@@ -30,6 +29,6 @@ export class WithdrawChooseChainPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

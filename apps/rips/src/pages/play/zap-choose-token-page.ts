@@ -1,13 +1,11 @@
 import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto, CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
-import { toCurrencyId } from '../../utils/currency'
+import { findCurrencyIndex } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class ZapChooseTokenPage {
@@ -31,9 +29,7 @@ export class ZapChooseTokenPage {
 		const keyboard = new InlineKeyboard()
 
 		currencies.forEach((currency) => {
-			const currencyIndex = SUPPORTED_CURRENCIES.findIndex(
-				(c) => toCurrencyId(c) === currency.id,
-			)
+			const currencyIndex = findCurrencyIndex(currency.id)
 
 			keyboard
 				.text(
@@ -51,6 +47,6 @@ export class ZapChooseTokenPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

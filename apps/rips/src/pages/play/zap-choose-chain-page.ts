@@ -6,7 +6,6 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class ZapChooseChainPage {
@@ -44,6 +43,6 @@ export class ZapChooseChainPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

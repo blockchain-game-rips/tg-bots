@@ -4,12 +4,10 @@ import {
 	QuoteWithdrawResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CHAINS } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
-import { chainToName } from '../../utils/chain'
+import { chainToName, findChainIndex } from '../../utils/chain'
 import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
-import { messageFromLines } from '../../utils/message'
 
 export class WithdrawCheckoutPage {
 	static render(args: {
@@ -32,11 +30,7 @@ export class WithdrawCheckoutPage {
 		const { currency } = currencyAmount
 		const chain = currency.chainAddress.chain
 
-		const chainIndex = SUPPORTED_CHAINS.findIndex(
-			(c) =>
-				c.namespace === chain.namespace &&
-				c.reference === chain.reference,
-		)
+		const chainIndex = findChainIndex(chain)
 
 		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
@@ -116,6 +110,6 @@ export class WithdrawCheckoutPage {
 			)
 			.text('Home', buildActionData(actionIds.showHome))
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

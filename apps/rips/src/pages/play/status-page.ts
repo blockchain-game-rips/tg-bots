@@ -4,7 +4,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class StatusPage {
 	static render(
@@ -57,6 +56,6 @@ export class StatusPage {
 			{ home: actionIds.showHome, parent: actionIds.showPlay },
 		)
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

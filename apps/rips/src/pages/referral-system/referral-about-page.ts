@@ -4,15 +4,9 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
-
-const FEE_BASE = 10000
+import { formatPercent } from '../../utils/referral'
 
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
-
-function formatPercent(basisPoints: number): string {
-	return `${((basisPoints / FEE_BASE) * 100).toFixed(2)}%`
-}
 
 function tierTableLines(tierTable: TierTable): string[] {
 	return [
@@ -47,7 +41,7 @@ export class ReferralAboutPage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showReferral,
 				home: actionIds.showHome,

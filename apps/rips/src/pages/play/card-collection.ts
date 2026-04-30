@@ -3,7 +3,6 @@ import { GetCardCollectionResponseDtoOutput } from '../../../generated/api-clien
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 type CollectedCard = GetCardCollectionResponseDtoOutput['tiers'][number][number]
 
@@ -24,7 +23,7 @@ export class CardCollectionPage {
 		]
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showCardChooseStake,
 				home: actionIds.showHome,

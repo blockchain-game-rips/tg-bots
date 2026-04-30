@@ -7,7 +7,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class SwapInsufficientFundsPage {
 	static render(args: {
@@ -41,6 +40,6 @@ export class SwapInsufficientFundsPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

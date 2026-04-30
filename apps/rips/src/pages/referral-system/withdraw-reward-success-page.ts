@@ -4,7 +4,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class WithdrawRewardSuccessPage {
 	static render(response: WithdrawRewardResponseDtoOutput): PageContent {
@@ -21,7 +20,7 @@ export class WithdrawRewardSuccessPage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.showReferral,
 				home: actionIds.showHome,

@@ -3,7 +3,6 @@ import { RoundDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { displayStatus } from '../../utils/round-statuses'
 import { configName } from '../../utils/stake'
 
@@ -18,9 +17,7 @@ export class FinishedRoundsPage {
 		}
 
 		const message =
-			lines.length > 0
-				? messageFromLines(lines)
-				: 'No completed rounds yet'
+			lines.length > 0 ? lines.join('\n') : 'No completed rounds yet'
 
 		return {
 			message,

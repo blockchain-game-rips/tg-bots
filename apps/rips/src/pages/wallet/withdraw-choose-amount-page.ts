@@ -6,7 +6,6 @@ import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class WithdrawChooseAmountPage {
 	static render(balance: CurrencyAmountDto): PageContent {
@@ -43,6 +42,6 @@ export class WithdrawChooseAmountPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

@@ -7,18 +7,13 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
+import { formatPercent } from '../../utils/referral'
 
-const FEE_BASE = 10000
 const PERIOD_DAYS = 30
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 type State = GetReferrerResponseDtoOutput['states'][number]
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
-
-function formatPercent(basisPoints: number): string {
-	return `${((basisPoints / FEE_BASE) * 100).toFixed(2)}%`
-}
 
 function formatDate(date: Date): string {
 	return date.toLocaleDateString('en-GB', {
@@ -92,6 +87,6 @@ export class ReferralSystemPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

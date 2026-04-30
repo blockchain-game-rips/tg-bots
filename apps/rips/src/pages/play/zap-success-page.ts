@@ -8,7 +8,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class ZapSuccessPage {
@@ -41,7 +40,7 @@ export class ZapSuccessPage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

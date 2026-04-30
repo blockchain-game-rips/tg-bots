@@ -6,7 +6,6 @@ import {
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { messageFromLines } from '../../utils/message'
 import { configName } from '../../utils/stake'
 
 export class BuySuccessPage {
@@ -48,7 +47,7 @@ export class BuySuccessPage {
 		lines.push(`Transaction: <code>${purchase.transaction.id}</code>`)
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

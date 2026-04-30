@@ -4,7 +4,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 
 export class RevealAllPage {
 	static render(
@@ -37,7 +36,7 @@ export class RevealAllPage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.showHome,
 				parent: actionIds.showPlay,

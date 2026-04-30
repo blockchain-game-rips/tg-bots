@@ -4,7 +4,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { toShortDurationFormat } from '../../utils/duration'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { displayStatus } from '../../utils/round-statuses'
 import { configName, resolveConfig } from '../../utils/stake'
 
@@ -73,7 +72,7 @@ export class OngoingRoundsPage {
 		}
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.showHome,
 				parent: actionIds.showStatus,

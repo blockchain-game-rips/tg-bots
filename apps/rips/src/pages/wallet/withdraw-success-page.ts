@@ -7,7 +7,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { messageFromLines } from '../../utils/message'
 
 export class WithdrawSuccessPage {
 	static render(args: {
@@ -40,7 +39,7 @@ export class WithdrawSuccessPage {
 		lines.push(`Transaction: <code>${transaction.id}</code>`)
 
 		return {
-			message: messageFromLines(lines),
+			message: lines.join('\n'),
 			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
 		}
 	}

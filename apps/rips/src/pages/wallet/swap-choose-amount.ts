@@ -5,7 +5,6 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
-import { messageFromLines } from '../../utils/message'
 import { tokenLabel } from '../../utils/swap-utils'
 
 export const SWAP_MAX_PAYLOAD = 'max'
@@ -45,6 +44,6 @@ export class SwapChooseAmountPage {
 			home: actionIds.showHome,
 		})
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

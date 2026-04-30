@@ -8,7 +8,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { fundsBreakdown } from '../../utils/currency'
-import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export class BuyCheckoutPage {
@@ -91,6 +90,6 @@ export class BuyCheckoutPage {
 			)
 			.text('Home', actionIds.showHome)
 
-		return { message: messageFromLines(lines), keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

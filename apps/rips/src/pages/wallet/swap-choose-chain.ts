@@ -3,6 +3,7 @@ import { actionIds } from '../../actions'
 import { SUPPORTED_CHAINS } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { chainToName } from '../../utils/chain'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
@@ -15,7 +16,7 @@ export class SwapChooseChainPage {
 		SUPPORTED_CHAINS.forEach((chain, chainIndex) => {
 			keyboard
 				.text(
-					chain.name,
+					chainToName(chain),
 					buildActionData(
 						actionIds.showSwapChooseToken,
 						chainIndex.toString(),

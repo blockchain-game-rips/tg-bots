@@ -1,9 +1,11 @@
 import { InlineKeyboard } from 'grammy'
-import { AvailableStakeDto } from '../../../generated/api-client'
+import { AvailableStakeDto, CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { chainToName } from '../../utils/chain'
+import { toCurrencyId } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -12,30 +14,26 @@ export class ZapChooseTokenPage {
 	static render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
-		chainIndex: number
+		currencies: CurrencyDto[]
 	}): PageContent {
-		const { availableStake, ticketCount, chainIndex } = args
+		const { availableStake, ticketCount, currencies } = args
 		const config = resolveConfig(availableStake)
-		const chain = SUPPORTED_CHAINS[chainIndex]
-
-		const chainCurrencies = SUPPORTED_CURRENCIES.filter(
-			(c) =>
-				c.chainAddress.chain.namespace === chain.namespace &&
-				c.chainAddress.chain.reference === chain.reference,
-		)
+		const chain = currencies[0].chainAddress.chain
 
 		const lines = [
 			`${configName(config)} stake`,
 			`Ticket count: ${ticketCount}`,
-			`Chain: ${chain.name}`,
+			`Chain: ${chainToName(chain)}`,
 			'',
 			'Choose a token to pay with:',
 		]
 
 		const keyboard = new InlineKeyboard()
 
-		chainCurrencies.forEach((currency) => {
-			const currencyIndex = SUPPORTED_CURRENCIES.indexOf(currency)
+		currencies.forEach((currency) => {
+			const currencyIndex = SUPPORTED_CURRENCIES.findIndex(
+				(c) => toCurrencyId(c) === currency.id,
+			)
 
 			keyboard
 				.text(

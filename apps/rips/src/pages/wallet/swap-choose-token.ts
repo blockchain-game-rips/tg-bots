@@ -1,28 +1,26 @@
 import { InlineKeyboard } from 'grammy'
+import { CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { chainToName } from '../../utils/chain'
+import { toCurrencyId } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 
 export class SwapChooseTokenPage {
-	static render(args: { chainIndex: number }): PageContent {
-		const { chainIndex } = args
-		const chain = SUPPORTED_CHAINS[chainIndex]
+	static render(currencies: CurrencyDto[]): PageContent {
+		const chain = currencies[0].chainAddress.chain
 
-		const chainCurrencies = SUPPORTED_CURRENCIES.filter(
-			(c) =>
-				c.chainAddress.chain.namespace === chain.namespace &&
-				c.chainAddress.chain.reference === chain.reference,
-		)
-
-		const lines = [`Chain: ${chain.name}`, '', 'Choose a token:']
+		const lines = [`Chain: ${chainToName(chain)}`, '', 'Choose a token:']
 
 		const keyboard = new InlineKeyboard()
 
-		chainCurrencies.forEach((currency) => {
-			const currencyIndex = SUPPORTED_CURRENCIES.indexOf(currency)
+		currencies.forEach((currency) => {
+			const currencyIndex = SUPPORTED_CURRENCIES.findIndex(
+				(c) => toCurrencyId(c) === currency.id,
+			)
 
 			keyboard
 				.text(

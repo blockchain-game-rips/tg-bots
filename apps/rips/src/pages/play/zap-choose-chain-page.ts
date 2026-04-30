@@ -4,6 +4,7 @@ import { actionIds } from '../../actions'
 import { SUPPORTED_CHAINS } from '../../constants'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { chainToName } from '../../utils/chain'
 import { addNav } from '../../utils/keyboard'
 import { messageFromLines } from '../../utils/message'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -28,7 +29,7 @@ export class ZapChooseChainPage {
 		SUPPORTED_CHAINS.forEach((chain, chainIndex) => {
 			keyboard
 				.text(
-					chain.name,
+					chainToName(chain),
 					buildActionData(
 						actionIds.showZapChooseToken,
 						chainIndex.toString(),

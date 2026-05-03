@@ -21,10 +21,10 @@ import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
+import { SwapCheckoutPage } from '../../src/pages/wallet/swap-checkout'
 import { SwapChooseAmountPage } from '../../src/pages/wallet/swap-choose-amount'
 import { SwapChooseChainPage } from '../../src/pages/wallet/swap-choose-chain'
 import { SwapChooseTokenPage } from '../../src/pages/wallet/swap-choose-token'
-import { SwapConfirmPage } from '../../src/pages/wallet/swap-confirm'
 import { SwapInsufficientFundsPage } from '../../src/pages/wallet/swap-insufficient'
 import { SwapPage } from '../../src/pages/wallet/swap-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
@@ -354,7 +354,7 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Shows swap quote: amount in, amount out, swap fee, network fee. Confirm to proceed. Opened from swap-choose-amount.',
 		render: () =>
-			SwapConfirmPage.render({
+			SwapCheckoutPage.render({
 				amountIn: mockSwapAmountIn,
 				networkFee: mockSwapNetworkFee,
 				swapQuote: mockSwapQuote,

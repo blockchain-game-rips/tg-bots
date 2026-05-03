@@ -8,7 +8,7 @@ import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
-export class SwapConfirmPage {
+export class SwapCheckoutPage {
 	static render(args: {
 		amountIn: CurrencyAmountDto
 		networkFee: CurrencyAmountDto

@@ -1,13 +1,12 @@
-import { InlineKeyboard } from 'grammy'
 import { AvailableStakeDto, CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
-import { chainToName } from '../../utils/chain'
-import { findCurrencyIndex } from '../../utils/currency'
-import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
+import {
+	buildChooseTokenPage,
+	chainBreadcrumbSegment,
+} from '../choose-chain-token'
 
 export class ZapChooseTokenPage {
 	static render(args: {
@@ -17,37 +16,25 @@ export class ZapChooseTokenPage {
 	}): PageContent {
 		const { availableStake, ticketCount, currencies } = args
 		const config = resolveConfig(availableStake)
-		const chain = currencies[0].chainAddress.chain
 
-		const lines = [
-			buyTicketsBreadcrumb(configName(config), chainToName(chain)),
-			'',
-			`Ticket count: ${ticketCount}`,
-			'',
-			'Choose a token to pay with:',
-		]
-
-		const keyboard = new InlineKeyboard()
-
-		currencies.forEach((currency) => {
-			const currencyIndex = findCurrencyIndex(currency.id)
-
-			keyboard
-				.text(
-					currency.symbol,
-					buildActionData(
-						actionIds.showZapConfirm,
-						currencyIndex.toString(),
-					),
-				)
-				.row()
+		return buildChooseTokenPage({
+			lines: [
+				buyTicketsBreadcrumb(
+					configName(config),
+					chainBreadcrumbSegment(currencies),
+				),
+				'',
+				`Ticket count: ${ticketCount}`,
+				'',
+				'Choose a token to pay with:',
+			],
+			currencies,
+			tokenActionId: actionIds.showZapConfirm,
+			tokenPayload: (currencyIndex) => currencyIndex.toString(),
+			nav: {
+				parent: actionIds.showZapChooseChain,
+				home: actionIds.showHome,
+			},
 		})
-
-		addNav(keyboard, {
-			parent: actionIds.showZapChooseChain,
-			home: actionIds.showHome,
-		})
-
-		return { message: lines.join('\n'), keyboard }
 	}
 }

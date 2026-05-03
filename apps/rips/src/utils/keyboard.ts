@@ -19,7 +19,7 @@ export function composeMarkup(
 }
 
 export function addNav(keyboard: InlineKeyboard, ids: NavIds) {
-	keyboard.row().text('Back', buildActionData(ids.parent))
+	keyboard.row().text('Back', buildActionData(ids.parent, ids.parentPayload))
 
 	if (ids.home !== ids.parent) {
 		keyboard.text('Home', buildActionData(ids.home))

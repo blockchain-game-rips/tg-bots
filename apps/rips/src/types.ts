@@ -53,6 +53,7 @@ export type PageContent = {
 export type NavIds = {
 	home: ActionId
 	parent: ActionId
+	parentPayload?: string
 }
 
 export type Row = 'row'

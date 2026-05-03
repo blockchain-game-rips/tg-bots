@@ -326,8 +326,8 @@ export const pages: Record<string, PageEntry> = {
 			'Swap hub. Select token in and token out, then proceed to choose amount. Opened from Wallet.',
 		render: () =>
 			SwapPage.render({
-				in: mockSwapAmountIn,
-				out: mockSwapQuote.amountOut,
+				currencyInBalance: mockSwapAmountIn,
+				currencyOutBalance: mockSwapQuote.amountOut,
 			}),
 	},
 	'swap-choose-chain': {

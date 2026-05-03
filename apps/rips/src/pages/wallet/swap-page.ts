@@ -2,37 +2,42 @@ import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tokenLabel } from '../../utils/swap-utils'
 
 export class SwapPage {
 	static render(args: {
-		in?: CurrencyAmountDto
-		out?: CurrencyAmountDto
+		currencyInBalance?: CurrencyAmountDto
+		currencyOutBalance?: CurrencyAmountDto
+		amountIn?: CurrencyAmountDto
 	}): PageContent {
-		const tokenIn = args.in
-		const tokenOut = args.out
+		const { currencyInBalance, currencyOutBalance, amountIn } = args
+
+		const tokenIn = currencyInBalance ? tokenLabel(currencyInBalance) : '-'
+		const tokenOut = currencyOutBalance
+			? tokenLabel(currencyOutBalance)
+			: '-'
+		const amount = amountIn ? formatAmountWithUsd(amountIn) : '-'
 
 		const lines = [
-			`Token in: ${tokenIn ? tokenLabel(tokenIn) : '—'}`,
-			`Token out: ${tokenOut ? tokenLabel(tokenOut) : '—'}`,
+			'<b>🔄 Swap</b>',
+			'',
+			'Token in:',
+			tokenIn,
+			'',
+			'Token out:',
+			tokenOut,
+			'',
+			'Amount:',
+			amount,
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text(
-				tokenIn ? 'Change token in' : 'Choose token in',
-				actionIds.showSwapChooseChain,
-			)
+			.text('Select token in', actionIds.showSwapChooseChain)
 			.row()
-			.text(
-				tokenOut ? 'Change token out' : 'Choose token out',
-				actionIds.showSwapChooseChain,
-			)
+			.text('Select token out', actionIds.showSwapChooseChain)
 			.row()
-
-		if (tokenIn !== undefined && tokenOut !== undefined) {
-			keyboard.text('Choose amount', actionIds.showSwapChooseAmount).row()
-		}
 
 		addNav(keyboard, {
 			parent: actionIds.showWallet,

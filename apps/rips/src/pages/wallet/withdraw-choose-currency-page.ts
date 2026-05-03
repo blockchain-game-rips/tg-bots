@@ -16,11 +16,11 @@ export class WithdrawChooseCurrencyPage {
 				'Select a token:',
 			],
 			currencies,
-			tokenActionId: actionIds.showWithdraw,
+			tokenActionId: actionIds.openWithdraw,
 			tokenPayload: (currencyIndex) => currencyIndex.toString(),
 			nav: {
-				parent: actionIds.showWithdrawChooseChain,
-				home: actionIds.showHome,
+				parent: actionIds.openWithdrawChooseChain,
+				home: actionIds.openHome,
 			},
 		})
 	}

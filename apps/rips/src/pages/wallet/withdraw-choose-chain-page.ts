@@ -6,9 +6,9 @@ export class WithdrawChooseChainPage {
 	static render(): PageContent {
 		return buildChooseChainPage({
 			lines: ['<b>💸 Withdraw</b>', '', 'Select a chain:'],
-			chainActionId: actionIds.showWithdrawChooseToken,
+			chainActionId: actionIds.openWithdrawChooseToken,
 			chainPayload: (chainIndex) => chainIndex.toString(),
-			nav: { parent: actionIds.showWallet, home: actionIds.showHome },
+			nav: { parent: actionIds.openWallet, home: actionIds.openHome },
 		})
 	}
 }

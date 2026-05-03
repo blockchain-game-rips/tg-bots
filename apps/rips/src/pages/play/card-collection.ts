@@ -25,8 +25,8 @@ export class CardCollectionPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				parent: actionIds.showCardChooseStake,
-				home: actionIds.showHome,
+				parent: actionIds.openCardChooseStake,
+				home: actionIds.openHome,
 			}),
 		}
 	}

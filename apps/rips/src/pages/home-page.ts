@@ -15,15 +15,15 @@ export class HomePage {
 		return {
 			message: lines.join('\n'),
 			keyboard: keyboardFromLayout([
-				[{ label: 'Play', actionId: actionIds.showPlay }],
-				[{ label: 'Wallet', actionId: actionIds.showWallet }],
+				[{ label: 'Play', actionId: actionIds.openPlay }],
+				[{ label: 'Wallet', actionId: actionIds.openWallet }],
 				[
 					{
 						label: 'Referral System',
-						actionId: actionIds.showReferral,
+						actionId: actionIds.openReferral,
 					},
 				],
-				[{ label: 'About', actionId: actionIds.showAbout }],
+				[{ label: 'About', actionId: actionIds.openAbout }],
 			]),
 		}
 	}

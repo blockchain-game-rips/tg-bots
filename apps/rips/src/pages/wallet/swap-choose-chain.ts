@@ -10,9 +10,9 @@ export class SwapChooseChainPage {
 
 		return buildChooseChainPage({
 			lines: [swapBreadcrumb(), '', `Choose a chain for ${label}:`],
-			chainActionId: actionIds.showSwapChooseToken,
+			chainActionId: actionIds.openSwapChooseToken,
 			chainPayload: (chainIndex) => `${selecting}:${chainIndex}`,
-			nav: { parent: actionIds.showSwap, home: actionIds.showHome },
+			nav: { parent: actionIds.openSwap, home: actionIds.openHome },
 		})
 	}
 }

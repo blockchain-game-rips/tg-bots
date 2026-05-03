@@ -73,14 +73,14 @@ export class ZapConfirmPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.showZapConfirm).row()
+			keyboard.text('Update', actionIds.openZapConfirm).row()
 		} else {
 			keyboard.text('Confirm', actionIds.executeZap).row()
 		}
 
 		addNav(keyboard, {
-			parent: actionIds.showZapChooseToken,
-			home: actionIds.showHome,
+			parent: actionIds.openZapChooseToken,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

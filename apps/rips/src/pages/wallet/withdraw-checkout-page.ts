@@ -89,15 +89,15 @@ export class WithdrawCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.showWithdraw).row()
+			keyboard.text('Update', actionIds.openWithdraw).row()
 		} else {
-			keyboard.text('Confirm', actionIds.sendWithdrawTx).row()
+			keyboard.text('Confirm', actionIds.executeWithdraw).row()
 		}
 
 		keyboard
-			.text('Enter amount', actionIds.showWithdrawChooseAmount)
+			.text('Enter amount', actionIds.openWithdrawChooseAmount)
 			.row()
-			.text('Enter recipient', actionIds.askWithdrawRecipient)
+			.text('Enter recipient', actionIds.promptWithdrawRecipient)
 			.row()
 
 		keyboard
@@ -105,11 +105,11 @@ export class WithdrawCheckoutPage {
 			.text(
 				'Back',
 				buildActionData(
-					actionIds.showWithdrawChooseToken,
+					actionIds.openWithdrawChooseToken,
 					chainIndex.toString(),
 				),
 			)
-			.text('Home', buildActionData(actionIds.showHome))
+			.text('Home', buildActionData(actionIds.openHome))
 
 		return { message: lines.join('\n'), keyboard }
 	}

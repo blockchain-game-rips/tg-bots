@@ -2,7 +2,7 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
-import { showHome } from './action-handlers/show-home'
+import { openHome } from './action-handlers/open-home'
 import { handleButton } from './button-handler'
 import { handleMessage } from './message-handler'
 import { Context, PageContent, SessionData } from './types'
@@ -55,7 +55,7 @@ bot.command('start', async (ctx) => {
 	}
 
 	try {
-		const showHomeEffect = await showHome(ctx.session, undefined)
+		const showHomeEffect = await openHome(ctx.session, undefined)
 		pageContent = showHomeEffect.page
 	} catch (error) {
 		console.log(error)

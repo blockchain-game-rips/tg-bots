@@ -29,11 +29,11 @@ export class ZapChooseTokenPage {
 				'Choose a token to pay with:',
 			],
 			currencies,
-			tokenActionId: actionIds.showZapConfirm,
+			tokenActionId: actionIds.openZapConfirm,
 			tokenPayload: (currencyIndex) => currencyIndex.toString(),
 			nav: {
-				parent: actionIds.showZapChooseChain,
-				home: actionIds.showHome,
+				parent: actionIds.openZapChooseChain,
+				home: actionIds.openHome,
 			},
 		})
 	}

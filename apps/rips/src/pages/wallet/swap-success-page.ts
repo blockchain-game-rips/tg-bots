@@ -26,7 +26,7 @@ export class SwapSuccessPage {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text('Home', actionIds.showHome),
+			keyboard: new InlineKeyboard().text('Home', actionIds.openHome),
 		}
 	}
 }

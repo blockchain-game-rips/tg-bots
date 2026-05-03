@@ -5,13 +5,13 @@ import { addNav, keyboardFromLayout } from '../../utils/keyboard'
 export class PlayPage {
 	static render(): PageContent {
 		const buttons: KeyboardLayout = [
-			[{ label: 'Buy tickets', actionId: actionIds.showChooseStake }],
-			[{ label: 'Open Rips', actionId: actionIds.showOpenRips }],
-			[{ label: 'Status', actionId: actionIds.showStatus }],
+			[{ label: 'Buy tickets', actionId: actionIds.openChooseStake }],
+			[{ label: 'Open Rips', actionId: actionIds.openOpenRips }],
+			[{ label: 'Status', actionId: actionIds.openStatus }],
 			[
 				{
 					label: 'Card Collection',
-					actionId: actionIds.showCardChooseStake,
+					actionId: actionIds.openCardChooseStake,
 				},
 			],
 		]
@@ -20,8 +20,8 @@ export class PlayPage {
 			message:
 				'Buy tickets to enter the game, or check your tickets and round statuses in Status.',
 			keyboard: addNav(keyboardFromLayout(buttons), {
-				home: actionIds.showHome,
-				parent: actionIds.showHome,
+				home: actionIds.openHome,
+				parent: actionIds.openHome,
 			}),
 		}
 	}

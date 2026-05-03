@@ -25,8 +25,8 @@ export class AboutPage {
 		return {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
-				home: actionIds.showHome,
-				parent: actionIds.showHome,
+				home: actionIds.openHome,
+				parent: actionIds.openHome,
 			}),
 		}
 	}

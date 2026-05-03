@@ -28,18 +28,18 @@ export class RevealSinglePage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildActionData(actionIds.showRevealSingle),
+					buildActionData(actionIds.openRevealSingle),
 				)
 				.row()
-				.text('Reveal all', buildActionData(actionIds.showRevealAll))
+				.text('Reveal all', buildActionData(actionIds.openRevealAll))
 				.row()
 		}
 
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(keyboard, {
-				home: actionIds.showHome,
-				parent: actionIds.showPlay,
+				home: actionIds.openHome,
+				parent: actionIds.openPlay,
 			}),
 		}
 	}

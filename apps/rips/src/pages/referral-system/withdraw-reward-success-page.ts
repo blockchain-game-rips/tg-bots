@@ -22,8 +22,8 @@ export class WithdrawRewardSuccessPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				parent: actionIds.showReferral,
-				home: actionIds.showHome,
+				parent: actionIds.openReferral,
+				home: actionIds.openHome,
 			}),
 		}
 	}

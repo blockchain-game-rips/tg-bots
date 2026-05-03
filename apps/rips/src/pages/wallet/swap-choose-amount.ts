@@ -35,15 +35,15 @@ export class SwapChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Swap Max',
-				buildActionData(actionIds.showSwapAmountChosen, maxPayload),
+				buildActionData(actionIds.submitSwapAmount, maxPayload),
 			)
 			.row()
-			.text('Custom amount', actionIds.askSwapAmount)
+			.text('Custom amount', actionIds.promptSwapAmount)
 			.row()
 
 		addNav(keyboard, {
-			parent: actionIds.showSwap,
-			home: actionIds.showHome,
+			parent: actionIds.openSwap,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

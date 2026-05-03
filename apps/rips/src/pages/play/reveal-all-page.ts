@@ -38,8 +38,8 @@ export class RevealAllPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				home: actionIds.showHome,
-				parent: actionIds.showPlay,
+				home: actionIds.openHome,
+				parent: actionIds.openPlay,
 			}),
 		}
 	}

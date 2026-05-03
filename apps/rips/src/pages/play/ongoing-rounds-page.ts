@@ -74,8 +74,8 @@ export class OngoingRoundsPage {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				home: actionIds.showHome,
-				parent: actionIds.showStatus,
+				home: actionIds.openHome,
+				parent: actionIds.openStatus,
 			}),
 		}
 	}

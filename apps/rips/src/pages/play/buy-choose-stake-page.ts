@@ -17,7 +17,7 @@ export class BuyChooseStakePage {
 				.text(
 					configName(config),
 					buildActionData(
-						actionIds.showChooseTicketAmount,
+						actionIds.openChooseTicketAmount,
 						availableStake.stake.id.toString(),
 					),
 				)
@@ -29,8 +29,8 @@ export class BuyChooseStakePage {
 				'\n',
 			),
 			keyboard: addNav(keyboard, {
-				home: actionIds.showHome,
-				parent: actionIds.showPlay,
+				home: actionIds.openHome,
+				parent: actionIds.openPlay,
 			}),
 		}
 	}

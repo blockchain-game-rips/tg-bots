@@ -38,22 +38,22 @@ export class SwapPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Select token in',
-				buildActionData(actionIds.showSwapChooseChain, 'in'),
+				buildActionData(actionIds.openSwapChooseChain, 'in'),
 			)
 			.row()
 			.text(
 				'Select token out',
-				buildActionData(actionIds.showSwapChooseChain, 'out'),
+				buildActionData(actionIds.openSwapChooseChain, 'out'),
 			)
 			.row()
 
 		if (currencyInBalance !== undefined) {
-			keyboard.text('Choose amount', actionIds.showSwapChooseAmount).row()
+			keyboard.text('Choose amount', actionIds.openSwapChooseAmount).row()
 		}
 
 		addNav(keyboard, {
-			parent: actionIds.showWallet,
-			home: actionIds.showHome,
+			parent: actionIds.openWallet,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

@@ -28,18 +28,15 @@ export class WithdrawChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Withdraw Max',
-				buildActionData(
-					actionIds.respondWithdrawCustomAmount,
-					maxPayload,
-				),
+				buildActionData(actionIds.submitWithdrawAmount, maxPayload),
 			)
 			.row()
-			.text('Custom amount', actionIds.askWithdrawAmount)
+			.text('Custom amount', actionIds.promptWithdrawAmount)
 			.row()
 
 		addNav(keyboard, {
-			parent: actionIds.showWithdrawChooseToken,
-			home: actionIds.showHome,
+			parent: actionIds.openWithdrawChooseToken,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

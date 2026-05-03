@@ -75,14 +75,14 @@ export class SwapCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.showSwap).row()
+			keyboard.text('Update', actionIds.openSwap).row()
 		} else {
 			keyboard.text('Confirm', actionIds.executeSwap).row()
 		}
 
 		addNav(keyboard, {
-			parent: actionIds.showSwap,
-			home: actionIds.showHome,
+			parent: actionIds.openSwap,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

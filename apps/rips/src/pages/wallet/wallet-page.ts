@@ -16,16 +16,16 @@ export class WalletPage {
 
 		const keyboard = addNav(
 			keyboardFromLayout([
-				[{ label: 'Update', actionId: actionIds.showWallet }],
-				[{ label: 'Withdraw', actionId: actionIds.showWithdraw }],
+				[{ label: 'Update', actionId: actionIds.openWallet }],
+				[{ label: 'Withdraw', actionId: actionIds.openWithdraw }],
 				[
 					{
 						label: 'Swap',
-						actionId: actionIds.showSwapChooseChain,
+						actionId: actionIds.openSwapChooseChain,
 					},
 				],
 			]),
-			{ home: actionIds.showHome, parent: actionIds.showHome },
+			{ home: actionIds.openHome, parent: actionIds.openHome },
 		)
 
 		return { message, keyboard }

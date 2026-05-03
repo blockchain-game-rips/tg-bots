@@ -39,9 +39,9 @@ export class WithdrawPage {
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text('Enter amount', actionIds.showWithdrawChooseAmount)
+			.text('Enter amount', actionIds.openWithdrawChooseAmount)
 			.row()
-			.text('Enter recipient', actionIds.askWithdrawRecipient)
+			.text('Enter recipient', actionIds.promptWithdrawRecipient)
 			.row()
 
 		keyboard
@@ -49,11 +49,11 @@ export class WithdrawPage {
 			.text(
 				'Back',
 				buildActionData(
-					actionIds.showWithdrawChooseToken,
+					actionIds.openWithdrawChooseToken,
 					chainIndex.toString(),
 				),
 			)
-			.text('Home', buildActionData(actionIds.showHome))
+			.text('Home', buildActionData(actionIds.openHome))
 
 		return { message: lines.join('\n'), keyboard }
 	}

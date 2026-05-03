@@ -22,8 +22,8 @@ export class FinishedRoundsPage {
 		return {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
-				home: actionIds.showHome,
-				parent: actionIds.showStatus,
+				home: actionIds.openHome,
+				parent: actionIds.openStatus,
 			}),
 		}
 	}

@@ -77,14 +77,14 @@ export class ReferralSystemPage {
 		const keyboard = new InlineKeyboard()
 			.url('Copy referral link', referralLink)
 			.row()
-			.text('Withdraw rewards', actionIds.showReferralWithdrawReward)
+			.text('Withdraw rewards', actionIds.openReferralWithdrawReward)
 			.row()
-			.text('About', actionIds.showReferralAbout)
+			.text('About', actionIds.openReferralAbout)
 			.row()
 
 		addNav(keyboard, {
-			parent: actionIds.showHome,
-			home: actionIds.showHome,
+			parent: actionIds.openHome,
+			home: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

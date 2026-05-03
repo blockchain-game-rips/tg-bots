@@ -22,12 +22,12 @@ export class SwapChooseTokenPage {
 				`Choose ${label}:`,
 			],
 			currencies,
-			tokenActionId: actionIds.showSwapCurrencyChosen,
+			tokenActionId: actionIds.submitSwapCurrency,
 			tokenPayload: (currencyIndex) => `${selecting}:${currencyIndex}`,
 			nav: {
-				parent: actionIds.showSwapChooseChain,
+				parent: actionIds.openSwapChooseChain,
 				parentPayload: selecting,
-				home: actionIds.showHome,
+				home: actionIds.openHome,
 			},
 		})
 	}

@@ -46,14 +46,14 @@ export class StatusPage {
 			new InlineKeyboard()
 				.text(
 					'Ongoing rounds',
-					buildActionData(actionIds.showOngoingRounds),
+					buildActionData(actionIds.openOngoingRounds),
 				)
 				.row()
 				.text(
 					'Completed rounds',
-					buildActionData(actionIds.showCompletedRounds),
+					buildActionData(actionIds.openCompletedRounds),
 				),
-			{ home: actionIds.showHome, parent: actionIds.showPlay },
+			{ home: actionIds.openHome, parent: actionIds.openPlay },
 		)
 
 		return { message: lines.join('\n'), keyboard }

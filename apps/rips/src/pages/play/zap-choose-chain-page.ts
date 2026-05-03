@@ -21,11 +21,11 @@ export class ZapChooseChainPage {
 				'',
 				'Choose a chain to pay from:',
 			],
-			chainActionId: actionIds.showZapChooseToken,
+			chainActionId: actionIds.openZapChooseToken,
 			chainPayload: (chainIndex) => chainIndex.toString(),
 			nav: {
-				parent: actionIds.showChooseStake,
-				home: actionIds.showHome,
+				parent: actionIds.openChooseStake,
+				home: actionIds.openHome,
 			},
 		})
 	}

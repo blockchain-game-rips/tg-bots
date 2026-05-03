@@ -1,107 +1,107 @@
-import { buyTickets } from './action-handlers/play/buy-tickets'
+import { openAbout } from './action-handlers/open-about'
+import { openHome } from './action-handlers/open-home'
+import { executeBuyTickets } from './action-handlers/play/execute-buy-tickets'
 import { executeZap } from './action-handlers/play/execute-zap'
-import { requestCustomTicketCount } from './action-handlers/play/request-custom-ticket-count'
-import { showBuyCheckout } from './action-handlers/play/show-buy-checkout'
-import { showBuyChooseStake } from './action-handlers/play/show-buy-choose-stake'
-import { showBuyChooseTicketCount } from './action-handlers/play/show-buy-choose-ticket-count'
-import { showCardChooseStake } from './action-handlers/play/show-card-choose-stake'
-import { showCardCollection } from './action-handlers/play/show-card-collection'
-import { showCompletedRounds } from './action-handlers/play/show-completed-rounds'
-import { showOngoingRounds } from './action-handlers/play/show-ongoing-rounds'
-import { showOpenRips } from './action-handlers/play/show-open-rips'
-import { showPlay } from './action-handlers/play/show-play'
-import { showRevealAll } from './action-handlers/play/show-reveal-all'
-import { showRevealPrizes } from './action-handlers/play/show-reveal-prizes'
-import { showRevealSingle } from './action-handlers/play/show-reveal-single'
-import { showStatus } from './action-handlers/play/show-status'
-import { showZapChooseChain } from './action-handlers/play/show-zap-choose-chain'
-import { showZapChooseToken } from './action-handlers/play/show-zap-choose-token'
-import { showZapConfirm } from './action-handlers/play/show-zap-confirm'
-import { showReferral } from './action-handlers/referral-system/show-referral'
-import { showReferralAbout } from './action-handlers/referral-system/show-referral-about'
-import { showReferralWithdrawReward } from './action-handlers/referral-system/show-referral-withdraw-reward'
-import { showAbout } from './action-handlers/show-about'
-import { showHome } from './action-handlers/show-home'
-import { askSwapAmount } from './action-handlers/wallet/ask-swap-amount'
-import { askWithdrawCustomAmount } from './action-handlers/wallet/ask-withdraw-custom-amount'
-import { askWithdrawRecipient } from './action-handlers/wallet/ask-withdraw-recipient'
+import { openBuyCheckout } from './action-handlers/play/open-buy-checkout'
+import { openBuyChooseStake } from './action-handlers/play/open-buy-choose-stake'
+import { openBuyChooseTicketCount } from './action-handlers/play/open-buy-choose-ticket-count'
+import { openCardChooseStake } from './action-handlers/play/open-card-choose-stake'
+import { openCardCollection } from './action-handlers/play/open-card-collection'
+import { openCompletedRounds } from './action-handlers/play/open-completed-rounds'
+import { openOngoingRounds } from './action-handlers/play/open-ongoing-rounds'
+import { openOpenRips } from './action-handlers/play/open-open-rips'
+import { openPlay } from './action-handlers/play/open-play'
+import { openRevealAll } from './action-handlers/play/open-reveal-all'
+import { openRevealPrizes } from './action-handlers/play/open-reveal-prizes'
+import { openRevealSingle } from './action-handlers/play/open-reveal-single'
+import { openStatus } from './action-handlers/play/open-status'
+import { openZapChooseChain } from './action-handlers/play/open-zap-choose-chain'
+import { openZapChooseToken } from './action-handlers/play/open-zap-choose-token'
+import { openZapConfirm } from './action-handlers/play/open-zap-confirm'
+import { promptTicketCount } from './action-handlers/play/prompt-ticket-count'
+import { openReferral } from './action-handlers/referral-system/open-referral'
+import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
+import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
 import { executeSwap } from './action-handlers/wallet/execute-swap'
-import { respondWithdrawChosenAmount } from './action-handlers/wallet/respond-withdraw-chosen-amount'
-import { respondWithdrawChosenRecipient } from './action-handlers/wallet/respond-withdraw-chosen-recipient'
-import { sendWithdrawTx } from './action-handlers/wallet/send-withdraw-tx'
-import { showSwap } from './action-handlers/wallet/show-swap'
-import { showSwapAmountChosen } from './action-handlers/wallet/show-swap-amount-chosen'
-import { showSwapChooseAmount } from './action-handlers/wallet/show-swap-choose-amount'
-import { showSwapChooseChain } from './action-handlers/wallet/show-swap-choose-chain'
-import { showSwapChooseToken } from './action-handlers/wallet/show-swap-choose-token'
-import { showSwapCurrencyChosen } from './action-handlers/wallet/show-swap-currency-chosen'
-import { showWallet } from './action-handlers/wallet/show-wallet'
-import { showWithdraw } from './action-handlers/wallet/show-withdraw'
-import { showWithdrawChooseAmount } from './action-handlers/wallet/show-withdraw-choose-amount'
-import { showWithdrawChooseChain } from './action-handlers/wallet/show-withdraw-choose-chain'
-import { showWithdrawChooseCurrency } from './action-handlers/wallet/show-withdraw-choose-currency'
+import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
+import { openSwap } from './action-handlers/wallet/open-swap'
+import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
+import { openSwapChooseChain } from './action-handlers/wallet/open-swap-choose-chain'
+import { openSwapChooseToken } from './action-handlers/wallet/open-swap-choose-token'
+import { openWallet } from './action-handlers/wallet/open-wallet'
+import { openWithdraw } from './action-handlers/wallet/open-withdraw'
+import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
+import { openWithdrawChooseChain } from './action-handlers/wallet/open-withdraw-choose-chain'
+import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdraw-choose-currency'
+import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
+import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
+import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
+import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
+import { submitSwapCurrency } from './action-handlers/wallet/submit-swap-currency'
+import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
+import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 import { ActionHandler } from './types'
 
 export const actionRegistry = {
 	// Home
-	showHome,
+	openHome,
 
 	// About
-	showAbout,
+	openAbout,
 
 	// Play
-	showPlay,
-	showChooseStake: showBuyChooseStake,
-	showChooseTicketAmount: showBuyChooseTicketCount,
-	requestCustomTicketAmount: requestCustomTicketCount,
-	showBuyCheckout,
-	buyTickets,
+	openPlay,
+	openChooseStake: openBuyChooseStake,
+	openChooseTicketAmount: openBuyChooseTicketCount,
+	promptTicketCount,
+	openBuyCheckout,
+	executeBuyTickets,
 
 	// Open RIPs / rounds
-	showOpenRips,
-	showRevealPrizes,
-	showRevealSingle,
-	showRevealAll,
-	showStatus,
-	showOngoingRounds,
-	showCompletedRounds,
+	openOpenRips,
+	openRevealPrizes,
+	openRevealSingle,
+	openRevealAll,
+	openStatus,
+	openOngoingRounds,
+	openCompletedRounds,
 
 	// Card collection
-	showCardChooseStake,
-	showCardCollection,
+	openCardChooseStake,
+	openCardCollection,
 
 	// Wallet
-	showWallet,
+	openWallet,
 
 	// Withdraw
-	showWithdrawChooseChain,
-	showWithdrawChooseToken: showWithdrawChooseCurrency,
-	showWithdraw,
-	showWithdrawChooseAmount,
-	sendWithdrawTx,
-	askWithdrawRecipient,
-	respondWithdrawRecipient: respondWithdrawChosenRecipient,
-	respondWithdrawCustomAmount: respondWithdrawChosenAmount,
-	askWithdrawAmount: askWithdrawCustomAmount,
+	openWithdrawChooseChain,
+	openWithdrawChooseToken: openWithdrawChooseCurrency,
+	openWithdraw,
+	openWithdrawChooseAmount,
+	executeWithdraw,
+	promptWithdrawRecipient,
+	submitWithdrawRecipient,
+	submitWithdrawAmount,
+	promptWithdrawAmount,
 
 	// Referral
-	showReferral,
-	showReferralAbout,
-	showReferralWithdrawReward,
+	openReferral,
+	openReferralAbout,
+	openReferralWithdrawReward,
 
 	// Zap
-	showZapChooseChain,
-	showZapChooseToken,
-	showZapConfirm,
+	openZapChooseChain,
+	openZapChooseToken,
+	openZapConfirm,
 	executeZap,
 
 	// Swap
-	showSwap,
-	showSwapChooseChain,
-	showSwapChooseToken,
-	showSwapChooseAmount,
-	showSwapCurrencyChosen,
-	showSwapAmountChosen,
+	openSwap,
+	openSwapChooseChain,
+	openSwapChooseToken,
+	openSwapChooseAmount,
+	submitSwapCurrency,
+	submitSwapAmount,
 	executeSwap,
-	askSwapAmount,
+	promptSwapAmount,
 } satisfies Record<string, ActionHandler>

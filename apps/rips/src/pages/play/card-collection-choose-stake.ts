@@ -17,7 +17,7 @@ export class CardCollectionChooseStakePage {
 				.text(
 					configName(config),
 					buildActionData(
-						actionIds.showCardCollection,
+						actionIds.openCardCollection,
 						availableStake.stake.id.toString(),
 					),
 				)
@@ -27,8 +27,8 @@ export class CardCollectionChooseStakePage {
 		return {
 			message: 'Choose a stake to view your card collection:',
 			keyboard: addNav(keyboard, {
-				home: actionIds.showHome,
-				parent: actionIds.showPlay,
+				home: actionIds.openHome,
+				parent: actionIds.openPlay,
 			}),
 		}
 	}

@@ -3,29 +3,31 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
+import { swapBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tokenLabel } from '../../utils/swap-utils'
 
-export const SWAP_MAX_PAYLOAD = 'max'
-
 export class SwapChooseAmountPage {
 	static render(args: {
-		amountIn: CurrencyAmountDto
-		amountOut: CurrencyAmountDto
-		balance: CurrencyAmountDto
+		currencyInBalance: CurrencyAmountDto
+		currencyOutBalance?: CurrencyAmountDto
 	}): PageContent {
-		const { amountIn, amountOut, balance } = args
+		const { currencyInBalance, currencyOutBalance } = args
 
 		const maxPayload = formatUnits(
-			BigInt(balance.amount),
-			balance.currency.decimals,
+			BigInt(currencyInBalance.amount),
+			currencyInBalance.currency.decimals,
 		)
 
 		const lines = [
-			`Token in: ${tokenLabel(amountIn)}`,
-			`Token out: ${tokenLabel(amountOut)}`,
-			`Balance: ${formatAmountWithUsd(balance)}`,
+			swapBreadcrumb(),
+			'',
+			`Token in: ${tokenLabel(currencyInBalance)}`,
+			currencyOutBalance
+				? `Token out: ${tokenLabel(currencyOutBalance)}`
+				: 'Token out: -',
+			`Balance: ${formatAmountWithUsd(currencyInBalance)}`,
 			'',
 			'Choose amount to swap:',
 		]
@@ -33,14 +35,14 @@ export class SwapChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Swap Max',
-				buildActionData(actionIds.showSwapConfirm, maxPayload),
+				buildActionData(actionIds.showSwap, maxPayload),
 			)
 			.row()
-			.text('Custom amount', actionIds.respondWithdrawCustomAmount)
+			.text('Custom amount', actionIds.askSwapAmount)
 			.row()
 
 		addNav(keyboard, {
-			parent: actionIds.showSwapChooseChain,
+			parent: actionIds.showSwap,
 			home: actionIds.showHome,
 		})
 

@@ -2,6 +2,8 @@ import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
+import { swapBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tokenLabel } from '../../utils/swap-utils'
@@ -21,7 +23,7 @@ export class SwapPage {
 		const amount = amountIn ? formatAmountWithUsd(amountIn) : '-'
 
 		const lines = [
-			'<b>🔄 Swap</b>',
+			swapBreadcrumb(),
 			'',
 			'Token in:',
 			tokenIn,
@@ -29,15 +31,25 @@ export class SwapPage {
 			'Token out:',
 			tokenOut,
 			'',
-			'Amount:',
+			'Amount in:',
 			amount,
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text('Select token in', actionIds.showSwapChooseChain)
+			.text(
+				'Select token in',
+				buildActionData(actionIds.showSwapChooseChain, 'in'),
+			)
 			.row()
-			.text('Select token out', actionIds.showSwapChooseChain)
+			.text(
+				'Select token out',
+				buildActionData(actionIds.showSwapChooseChain, 'out'),
+			)
 			.row()
+
+		if (currencyInBalance !== undefined) {
+			keyboard.text('Choose amount', actionIds.showSwapChooseAmount).row()
+		}
 
 		addNav(keyboard, {
 			parent: actionIds.showWallet,

@@ -79,6 +79,17 @@ export function formatAmountWithUsd(currencyAmount: CurrencyAmountDto): string {
 	return `${displayAmount} ${symbol} (${displayUsdAmount})`
 }
 
+export function rescaleAmount(
+	amount: bigint,
+	fromDecimals: number,
+	toDecimals: number,
+): bigint {
+	if (fromDecimals === toDecimals) return amount
+	if (toDecimals > fromDecimals)
+		return amount * 10n ** BigInt(toDecimals - fromDecimals)
+	return amount / 10n ** BigInt(fromDecimals - toDecimals)
+}
+
 export function toCurrencyAmount(
 	amount: bigint,
 	currency: CurrencyDto,

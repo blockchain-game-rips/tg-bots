@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyDto } from '../../../generated/api-client'
-import { SwapSelecting } from '../../flows'
 import { actionIds } from '../../actions'
+import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
@@ -9,7 +9,10 @@ import { chainToName, findChainIndex } from '../../utils/chain'
 import { findCurrencyIndex } from '../../utils/currency'
 
 export class SwapChooseTokenPage {
-	static render(currencies: CurrencyDto[], selecting: SwapSelecting): PageContent {
+	static render(
+		currencies: CurrencyDto[],
+		selecting: SwapSelecting,
+	): PageContent {
 		const chain = currencies[0].chainAddress.chain
 		const chainIndex = findChainIndex(chain)
 		const label = selecting === 'in' ? 'token in' : 'token out'
@@ -28,7 +31,10 @@ export class SwapChooseTokenPage {
 			keyboard
 				.text(
 					currency.symbol,
-					buildActionData(actionIds.showSwap, currencyIndex.toString()),
+					buildActionData(
+						actionIds.showSwapCurrencyChosen,
+						`${selecting}:${currencyIndex}`,
+					),
 				)
 				.row()
 		})

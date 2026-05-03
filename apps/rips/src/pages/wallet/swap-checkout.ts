@@ -75,7 +75,7 @@ export class SwapCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.showSwapConfirm).row()
+			keyboard.text('Update', actionIds.showSwap).row()
 		} else {
 			keyboard.text('Confirm', actionIds.executeSwap).row()
 		}

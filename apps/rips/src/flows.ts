@@ -1,4 +1,4 @@
-import { CurrencyDto } from '../generated/api-client'
+import { CurrencyAmountDto, CurrencyDto } from '../generated/api-client'
 import { Chain } from './types'
 
 export type BuyTicketsFlow =
@@ -47,4 +47,17 @@ export type WithdrawFlow =
 			}
 	  }
 
-export type Flow = BuyTicketsFlow | WithdrawFlow | null
+export type SwapSelecting = 'in' | 'out'
+
+export type SwapFlow = {
+	flowType: 'swap'
+	step: 'idle'
+	data: {
+		currencyIn?: CurrencyDto
+		currencyOut?: CurrencyDto
+		amountIn?: bigint
+		quotedAmountOut?: CurrencyAmountDto
+	}
+}
+
+export type Flow = BuyTicketsFlow | WithdrawFlow | SwapFlow | null

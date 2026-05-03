@@ -1,4 +1,3 @@
-import { notImplemented } from './action-handlers/not-implemented'
 import { buyTickets } from './action-handlers/play/buy-tickets'
 import { executeZap } from './action-handlers/play/execute-zap'
 import { requestCustomTicketCount } from './action-handlers/play/request-custom-ticket-count'
@@ -23,11 +22,19 @@ import { showReferralAbout } from './action-handlers/referral-system/show-referr
 import { showReferralWithdrawReward } from './action-handlers/referral-system/show-referral-withdraw-reward'
 import { showAbout } from './action-handlers/show-about'
 import { showHome } from './action-handlers/show-home'
+import { askSwapAmount } from './action-handlers/wallet/ask-swap-amount'
 import { askWithdrawCustomAmount } from './action-handlers/wallet/ask-withdraw-custom-amount'
 import { askWithdrawRecipient } from './action-handlers/wallet/ask-withdraw-recipient'
+import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { respondWithdrawChosenAmount } from './action-handlers/wallet/respond-withdraw-chosen-amount'
 import { respondWithdrawChosenRecipient } from './action-handlers/wallet/respond-withdraw-chosen-recipient'
 import { sendWithdrawTx } from './action-handlers/wallet/send-withdraw-tx'
+import { showSwap } from './action-handlers/wallet/show-swap'
+import { showSwapAmountChosen } from './action-handlers/wallet/show-swap-amount-chosen'
+import { showSwapChooseAmount } from './action-handlers/wallet/show-swap-choose-amount'
+import { showSwapChooseChain } from './action-handlers/wallet/show-swap-choose-chain'
+import { showSwapChooseToken } from './action-handlers/wallet/show-swap-choose-token'
+import { showSwapCurrencyChosen } from './action-handlers/wallet/show-swap-currency-chosen'
 import { showWallet } from './action-handlers/wallet/show-wallet'
 import { showWithdraw } from './action-handlers/wallet/show-withdraw'
 import { showWithdrawChooseAmount } from './action-handlers/wallet/show-withdraw-choose-amount'
@@ -103,12 +110,15 @@ const actionDefs = {
 	showZapConfirm: { id: 'szcp', handler: showZapConfirm },
 	executeZap: { id: 'ez', handler: executeZap },
 
-	// Swap (in progress)
-	showSwapChooseChain: { id: 'sssc', handler: notImplemented },
-	showSwapChooseToken: { id: 'ssst', handler: notImplemented },
-	showSwapChooseAmount: { id: 'sssa', handler: notImplemented },
-	showSwapConfirm: { id: 'sscp', handler: notImplemented },
-	executeSwap: { id: 'es', handler: notImplemented },
+	// Swap
+	showSwap: { id: 'sswp', handler: showSwap },
+	showSwapChooseChain: { id: 'sssc', handler: showSwapChooseChain },
+	showSwapChooseToken: { id: 'ssst', handler: showSwapChooseToken },
+	showSwapChooseAmount: { id: 'sssa', handler: showSwapChooseAmount },
+	showSwapCurrencyChosen: { id: 'sscc', handler: showSwapCurrencyChosen },
+	showSwapAmountChosen: { id: 'ssac', handler: showSwapAmountChosen },
+	executeSwap: { id: 'es', handler: executeSwap },
+	askSwapAmount: { id: 'asa', handler: askSwapAmount },
 } as const satisfies Record<string, { id: string; handler: ActionHandler }>
 
 function validateUniqueIds<

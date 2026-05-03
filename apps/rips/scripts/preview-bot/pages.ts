@@ -332,21 +332,20 @@ export const pages: Record<string, PageEntry> = {
 	'swap-choose-chain': {
 		description:
 			'Choose a chain when selecting a token for the swap. Opened from swap.',
-		render: () => SwapChooseChainPage.render(),
+		render: () => SwapChooseChainPage.render('in'),
 	},
 	'swap-choose-token': {
 		description:
 			'Choose a token on the selected chain. Opened from swap-choose-chain.',
-		render: () => SwapChooseTokenPage.render(mockSwapCurrencies),
+		render: () => SwapChooseTokenPage.render(mockSwapCurrencies, 'in'),
 	},
 	'swap-choose-amount': {
 		description:
 			'Choose how much to swap — max or custom amount. Opened from swap after both tokens are selected.',
 		render: () =>
 			SwapChooseAmountPage.render({
-				amountIn: mockSwapAmountIn,
-				amountOut: mockSwapQuote.amountOut,
-				balance: mockBalance,
+				currencyInBalance: mockSwapAmountIn,
+				currencyOutBalance: mockSwapQuote.amountOut,
 			}),
 	},
 	'swap-confirm': {

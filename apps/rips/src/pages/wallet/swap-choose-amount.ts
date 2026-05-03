@@ -35,7 +35,7 @@ export class SwapChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Swap Max',
-				buildActionData(actionIds.showSwap, maxPayload),
+				buildActionData(actionIds.showSwapAmountChosen, maxPayload),
 			)
 			.row()
 			.text('Custom amount', actionIds.askSwapAmount)

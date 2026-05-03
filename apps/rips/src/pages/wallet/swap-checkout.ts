@@ -10,11 +10,17 @@ import { addNav } from '../../utils/keyboard'
 
 export class SwapCheckoutPage {
 	static render(args: {
+		currencyInBalance: CurrencyAmountDto
+		nativeInBalance: CurrencyAmountDto
 		amountIn: CurrencyAmountDto
-		networkFee: CurrencyAmountDto
+
+		currencyOutBalance: CurrencyAmountDto
+
 		swapQuote: QuoteSwapResponseDtoOutput
+
+		userEvmAddress: string
 	}): PageContent {
-		const { amountIn, networkFee, swapQuote } = args
+		const { amountIn, swapQuote } = args
 
 		const lines = [
 			`Token in: ${amountIn.currency.symbol}`,
@@ -24,7 +30,7 @@ export class SwapCheckoutPage {
 			`Receive: ${formatAmountWithUsd(swapQuote.amountOut)}`,
 			'',
 			`Swap fee: ${formatAmountWithUsd(swapQuote.fee)}`,
-			`Network fee: ${formatAmountWithUsd(networkFee)}`,
+			`Network fee: ${formatAmountWithUsd(swapQuote.blockchainFee)}`,
 			'',
 			'Confirm to proceed with swap',
 		]

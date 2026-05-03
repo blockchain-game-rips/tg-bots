@@ -25,7 +25,6 @@ import { SwapCheckoutPage } from '../../src/pages/wallet/swap-checkout'
 import { SwapChooseAmountPage } from '../../src/pages/wallet/swap-choose-amount'
 import { SwapChooseChainPage } from '../../src/pages/wallet/swap-choose-chain'
 import { SwapChooseTokenPage } from '../../src/pages/wallet/swap-choose-token'
-import { SwapInsufficientFundsPage } from '../../src/pages/wallet/swap-insufficient'
 import { SwapPage } from '../../src/pages/wallet/swap-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
@@ -355,18 +354,10 @@ export const pages: Record<string, PageEntry> = {
 			'Shows swap quote: amount in, amount out, swap fee, network fee. Confirm to proceed. Opened from swap-choose-amount.',
 		render: () =>
 			SwapCheckoutPage.render({
+				currencyInBalance: mockSwapAmountIn,
+				nativeInBalance: mockSwapNetworkFee,
 				amountIn: mockSwapAmountIn,
-				networkFee: mockSwapNetworkFee,
-				swapQuote: mockSwapQuote,
-			}),
-	},
-	'swap-insufficient-funds': {
-		description:
-			'Shown when token balance is too low for the swap. Shows required vs available. User can go back and choose a different amount.',
-		render: () =>
-			SwapInsufficientFundsPage.render({
-				amountIn: mockSwapAmountIn,
-				balance: mockBalance,
+				currencyOutBalance: mockSwapQuote.amountOut,
 				swapQuote: mockSwapQuote,
 				userEvmAddress: mockUserEvmAddress,
 			}),

@@ -35,7 +35,7 @@ export class WithdrawChooseCurrencyPage {
 		})
 
 		addNav(keyboard, {
-			parent: actionIds.showWithdraw,
+			parent: actionIds.showWithdrawChooseChain,
 			home: actionIds.showHome,
 		})
 

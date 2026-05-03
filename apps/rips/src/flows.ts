@@ -1,5 +1,4 @@
 import { CurrencyAmountDto, CurrencyDto } from '../generated/api-client'
-import { Chain } from './types'
 
 export type BuyTicketsFlow =
 	| {
@@ -14,11 +13,6 @@ export type BuyTicketsFlow =
 	  }
 	| {
 			flowType: 'buyTickets'
-			step: 'zap-chain-chosen'
-			data: { stakeId: number; ticketCount: number; chain: Chain }
-	  }
-	| {
-			flowType: 'buyTickets'
 			step: 'zap-currency-chosen'
 			data: {
 				stakeId: number
@@ -27,25 +21,15 @@ export type BuyTicketsFlow =
 			}
 	  }
 
-export type WithdrawFlow =
-	| {
-			flowType: 'withdraw'
-			step: 'chain-chosen'
-			data: {
-				chain: Chain
-			}
-	  }
-	| {
-			flowType: 'withdraw'
-			step: 'currency-chosen'
-			data: {
-				amount?: bigint
-				recipientAddress?: string
-
-				chain: Chain
-				currency: CurrencyDto
-			}
-	  }
+export type WithdrawFlow = {
+	flowType: 'withdraw'
+	step: 'currency-chosen'
+	data: {
+		amount?: bigint
+		recipientAddress?: string
+		currency: CurrencyDto
+	}
+}
 
 export type SwapSelecting = 'in' | 'out'
 

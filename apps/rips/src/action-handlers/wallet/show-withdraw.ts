@@ -2,16 +2,13 @@ import { walletsControllerGetBalances } from '../../../generated/api-client'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectEdit, EffectType, SessionData } from '../../types'
 import { toCurrencyId } from '../../utils/currency'
-import { assertFlow, setFlowStep } from '../../utils/session-utils'
+import { setFlow } from '../../utils/session-utils'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
 export async function showWithdraw(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<EffectEdit> {
-	assertFlow(session, 'withdraw', 'chain-chosen')
-	const sessionData = session.flow.data
-
 	const currencyChainAddress = parseCurrencyChainAddress(payload)
 
 	const { data: balancesData } = await walletsControllerGetBalances({
@@ -21,8 +18,7 @@ export async function showWithdraw(
 
 	const currencyBalance = balancesData.balances[0]
 
-	setFlowStep(session, 'currency-chosen', {
-		chain: sessionData.chain,
+	setFlow(session, 'withdraw', 'currency-chosen', {
 		currency: currencyBalance.currency,
 	})
 

@@ -3,11 +3,10 @@ import { SUPPORTED_CURRENCIES } from '../../constants'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { toCurrencyId } from '../../utils/currency'
-import { setFlow } from '../../utils/session-utils'
 import { parseChain } from '../../validation/chain-index'
 
 export async function showWithdrawChooseCurrency(
-	session: SessionData,
+	_session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {
 	const chain = parseChain(payload)
@@ -21,8 +20,6 @@ export async function showWithdrawChooseCurrency(
 	const { data } = await currencyControllerGetCurrencies({
 		query: { chainAddress: chainCurrencyIds },
 	})
-
-	setFlow(session, 'withdraw', 'chain-chosen', { chain })
 
 	return {
 		type: EffectType.EDIT,

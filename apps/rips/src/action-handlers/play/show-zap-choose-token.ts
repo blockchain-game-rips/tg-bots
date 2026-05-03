@@ -4,7 +4,7 @@ import { ZapChooseTokenPage } from '../../pages/play/zap-choose-token-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
-import { assertFlow, setFlowStep } from '../../utils/session-utils'
+import { assertFlow } from '../../utils/session-utils'
 import { parseChain } from '../../validation/chain-index'
 
 export async function showZapChooseToken(
@@ -29,8 +29,6 @@ export async function showZapChooseToken(
 			query: { chainAddress: chainCurrencyIds },
 		}),
 	])
-
-	setFlowStep(session, 'zap-chain-chosen', { stakeId, ticketCount, chain })
 
 	return {
 		type: EffectType.EDIT,

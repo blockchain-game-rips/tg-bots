@@ -15,7 +15,12 @@ export async function showZapConfirm(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {
-	assertFlow(session, 'buyTickets', 'zap-chain-chosen', 'zap-currency-chosen')
+	assertFlow(
+		session,
+		'buyTickets',
+		'ticket-count-chosen',
+		'zap-currency-chosen',
+	)
 
 	const { stakeId, ticketCount } = session.flow.data
 

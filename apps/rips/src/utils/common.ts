@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { logger } from '../logging/pino-logger'
 
 export const wait = (ms: number): Promise<void> =>
 	new Promise((resolve) => setTimeout(resolve, ms))
@@ -15,5 +16,5 @@ export function getEnvSafe(key: string): string {
 }
 
 export function fireAndForget<T>(promise: Promise<T>) {
-	promise.catch((error) => console.log(error))
+	promise.catch((error) => logger.error(error))
 }

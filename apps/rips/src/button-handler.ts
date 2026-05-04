@@ -1,6 +1,7 @@
 import { Filter, GrammyError, InlineKeyboard } from 'grammy'
 import { ActionId, actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
+import { logger } from './logging/pino-logger'
 import { Context, MessageToEdit } from './types'
 import { COMMAND_SEPARATOR } from './utils/action-data'
 import { fireAndForget } from './utils/common'
@@ -33,7 +34,7 @@ export async function handleButton(
 		)
 	} catch (error) {
 		if (error instanceof GrammyError) throw error
-		console.log(error)
+		logger.error(error)
 	} finally {
 		processingUsers.delete(userId)
 	}

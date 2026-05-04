@@ -99,10 +99,6 @@ export async function executeEffectOrDisplayError(
 			),
 		)
 
-		fireAndForget(
-			api
-				.deleteMessages(chatId, messagesToDelete)
-				.catch((e) => console.log(e)),
-		)
+		fireAndForget(api.deleteMessages(chatId, messagesToDelete))
 	}
 }

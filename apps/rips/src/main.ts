@@ -4,7 +4,10 @@ import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
 import { openHome } from './action-handlers/open-home'
 import { handleButton } from './button-handler'
+import { logger } from './logging/pino-logger'
 import { handleMessage } from './message-handler'
+import { startMetricsServer } from './metrics/server'
+import { createTelegramMetricsTransformer } from './metrics/telegram'
 import { Context, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
 import { getEnvSafe } from './utils/common'
@@ -18,9 +21,12 @@ client.interceptors.error.use((error, response) => {
 	return new ApiError(response.status, error)
 })
 
+startMetricsServer()
+
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 
 bot.api.config.use(autoRetry())
+bot.api.config.use(createTelegramMetricsTransformer())
 
 const IGNORE_OLD_THRESHOLD_SECONDS = 1
 const botStartTime = Math.floor(Date.now() / 1000)
@@ -58,7 +64,7 @@ bot.command('start', async (ctx) => {
 		const showHomeEffect = await openHome(ctx.session, undefined)
 		pageContent = showHomeEffect.page
 	} catch (error) {
-		console.log(error)
+		logger.error(error, 'Error in /start command')
 	}
 
 	await ctx.reply(pageContent.message, {

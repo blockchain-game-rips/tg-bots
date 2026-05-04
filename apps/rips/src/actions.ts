@@ -1,4 +1,5 @@
 import { actionRegistry } from './action-registry'
+import { botActionDuration } from './metrics/registry'
 import { ActionHandler } from './types'
 
 type ActionRegistry = typeof actionRegistry
@@ -23,8 +24,15 @@ function buildActions(
 ): Record<ActionId, ActionHandler> {
 	const result: Record<ActionId, ActionHandler> = {}
 
-	Object.entries(registry).forEach(([key, handler], index) => {
-		result[index.toString(36)] = handler
+	Object.entries(registry).forEach(([name, handler], index) => {
+		result[index.toString(36)] = async (session, payload) => {
+			const end = botActionDuration.startTimer({ action: name })
+			try {
+				return await handler(session, payload)
+			} finally {
+				end()
+			}
+		}
 	})
 
 	return result

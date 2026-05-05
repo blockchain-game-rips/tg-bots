@@ -1,8 +1,9 @@
-import { InlineKeyboard } from 'grammy'
 import { GetRipsStateResponseDtoOutput } from '../../generated/api-client'
 import { PageContent } from '../types'
+import { actionIds } from '../actions'
 import { formatUnits } from '../utils/currency'
 import { toShortDurationFormat } from '../utils/duration'
+import { keyboardFromLayout } from '../utils/keyboard'
 import { formatPercent } from '../utils/referral'
 
 type StakeEntry = GetRipsStateResponseDtoOutput['availableStakes'][number]
@@ -97,7 +98,9 @@ export class HomePage {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard(),
+			keyboard: keyboardFromLayout([
+				[{ label: 'Update', actionId: actionIds.openHome }],
+			]),
 		}
 	}
 }

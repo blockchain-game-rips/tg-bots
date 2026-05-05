@@ -1,6 +1,7 @@
 import {
 	AdminWalletResponseDtoOutput,
 	GetRipsStateResponseDtoOutput,
+	GetTierTablesResponseDtoOutput,
 } from '../../generated/api-client'
 import { actionIds } from '../actions'
 import { EIP155_NAMESPACE } from '../constants'
@@ -12,6 +13,26 @@ import { formatPercent } from '../utils/referral'
 
 type StakeEntry = GetRipsStateResponseDtoOutput['availableStakes'][number]
 type StakeConfig = NonNullable<StakeEntry['stake']['currentConfig']>
+type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
+
+function renderTierTable(table: TierTable): string[] {
+	const { currency, defaultFeePercent, tiers } = table
+
+	const lines: string[] = [
+		`<b>Referral System</b> (${currency.symbol})`,
+		`Default fee: ${formatPercent(defaultFeePercent)}`,
+		`Tiers:`,
+	]
+
+	for (const tier of tiers) {
+		const minVolume = formatUnits(BigInt(tier.minVolume), currency.decimals)
+		lines.push(
+			`  ≥${minVolume} ${currency.symbol}: ${formatPercent(tier.feePercent)}`,
+		)
+	}
+
+	return lines
+}
 
 function renderConfig(config: StakeConfig): string[] {
 	const {
@@ -83,6 +104,7 @@ export class HomePage {
 	static render(
 		state: GetRipsStateResponseDtoOutput,
 		adminWallet: AdminWalletResponseDtoOutput,
+		tierTablesRes: GetTierTablesResponseDtoOutput,
 	): PageContent {
 		const statusLine = state.isPaused
 			? '⏸ <b>PAUSED</b>'
@@ -107,6 +129,13 @@ export class HomePage {
 
 		if (state.availableStakes.length === 0) {
 			lines.push('No stakes available.')
+		}
+
+		const firstTierTable = tierTablesRes.tierTables[0]
+
+		if (firstTierTable) {
+			lines.push('')
+			lines.push(...renderTierTable(firstTierTable))
 		}
 
 		return {

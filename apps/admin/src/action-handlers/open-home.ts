@@ -1,5 +1,6 @@
 import {
 	adminControllerGetAdminWallet,
+	referralSystemControllerGetTierTables,
 	ripsControllerGetRipsState,
 } from '../../generated/api-client'
 import { HomePage } from '../pages/home-page'
@@ -9,10 +10,15 @@ export async function openHome(
 	_session: SessionData,
 	_payload: string | undefined,
 ): Promise<EffectEdit> {
-	const [{ data: state }, { data: adminWallet }] = await Promise.all([
-		ripsControllerGetRipsState(),
-		adminControllerGetAdminWallet(),
-	])
+	const [{ data: state }, { data: adminWallet }, { data: tierTablesRes }] =
+		await Promise.all([
+			ripsControllerGetRipsState(),
+			adminControllerGetAdminWallet(),
+			referralSystemControllerGetTierTables(),
+		])
 
-	return { type: EffectType.EDIT, page: HomePage.render(state, adminWallet) }
+	return {
+		type: EffectType.EDIT,
+		page: HomePage.render(state, adminWallet, tierTablesRes),
+	}
 }

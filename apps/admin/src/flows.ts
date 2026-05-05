@@ -10,4 +10,4 @@ export type BuyTicketsFlow =
 			data: { stakeId: number; ticketCount: number }
 	  }
 
-export type Flow = null
+export type Flow = BuyTicketsFlow | null

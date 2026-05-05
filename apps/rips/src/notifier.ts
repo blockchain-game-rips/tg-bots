@@ -21,13 +21,13 @@ type RoundDto = Parameters<typeof GlobalClaimedRoundPage.render>[0]
 type PageBuilder = (round: RoundDto) => PageContent
 
 const groupPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: GlobalClaimedRoundPage.render,
-	REFUNDED: GlobalRefundedRoundPage.render,
+	CLAIMED: (round) => GlobalClaimedRoundPage.render(round),
+	REFUNDED: (round) => GlobalRefundedRoundPage.render(round),
 }
 
 const userPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: UserClaimedRoundPage.render,
-	REFUNDED: UserRefundedRoundPage.render,
+	CLAIMED: (round) => UserClaimedRoundPage.render(round),
+	REFUNDED: (round) => UserRefundedRoundPage.render(round),
 }
 
 export class Notifier {

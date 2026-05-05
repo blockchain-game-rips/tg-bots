@@ -3,12 +3,13 @@ import { GetCardCollectionResponseDtoOutput } from '../../../generated/api-clien
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { addNav } from '../../utils/keyboard'
+import { tierName } from '../../utils/tiers'
 
 type CollectedCard = GetCardCollectionResponseDtoOutput['tiers'][number][number]
 
 function cardLine(card: CollectedCard): string {
 	const count = card.count > 0 ? ` ×${card.count}` : ''
-	return `<a href="${card.card.imageUrl}">${card.card.name}</a>${count}`
+	return `<a href="${card.card.imageUrl}">${card.card.name}</a> [${tierName(card.card.tier)}]${count}`
 }
 
 export class CardCollectionPage {

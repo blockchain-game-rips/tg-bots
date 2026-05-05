@@ -5,6 +5,7 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
+import { tierName } from '../../utils/tiers'
 
 export class RevealSinglePage {
 	static render(
@@ -20,7 +21,7 @@ export class RevealSinglePage {
 		const lines = [
 			'<b>Open Rips</b>',
 			'',
-			`🎁 <a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a>`,
+			`🎁 <a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> [${tierName(revealedPrize.card.tier)}]`,
 			`Ticket #${revealedPrize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
 			'',
 			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,

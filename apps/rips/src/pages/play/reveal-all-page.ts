@@ -4,6 +4,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
+import { tierName } from '../../utils/tiers'
 
 export class RevealAllPage {
 	static render(
@@ -34,7 +35,7 @@ export class RevealAllPage {
 			}
 
 			lines.push(
-				`<a href="${prize.card.imageUrl}">${prize.card.name}</a> — Ticket #${prize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+				`<a href="${prize.card.imageUrl}">${prize.card.name}</a> [${tierName(prize.card.tier)}] — Ticket #${prize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
 			)
 		}
 

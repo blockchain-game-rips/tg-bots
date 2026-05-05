@@ -229,7 +229,7 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 	referrer: '0x1234567890abcdef1234567890abcdef12345678',
 	states: [
 		{
-			currency: 'ETH',
+			currency: mockEth,
 			fee: 1000,
 			period: {
 				startTime: '2026-04-22T00:00:00.000Z',

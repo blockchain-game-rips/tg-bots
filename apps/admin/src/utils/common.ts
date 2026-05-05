@@ -16,7 +16,11 @@ export function getEnvSafe(key: string): string {
 }
 
 export function getAllowedUserIds(): Set<number> {
-	return new Set(getEnvSafe('ALLOWED_USER_IDS').split(',').map((id) => Number(id.trim())))
+	return new Set(
+		getEnvSafe('ALLOWED_USER_IDS')
+			.split(',')
+			.map((id) => Number(id.trim())),
+	)
 }
 
 export function fireAndForget<T>(promise: Promise<T>) {

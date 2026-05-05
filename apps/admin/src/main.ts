@@ -10,7 +10,7 @@ import { startMetricsServer } from './metrics/server'
 import { createTelegramMetricsTransformer } from './metrics/telegram'
 import { Context, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
-import { getEnvSafe } from './utils/common'
+import { getAllowedUserIds, getEnvSafe } from './utils/common'
 
 client.setConfig({
 	baseUrl: getEnvSafe('BACKEND_URL'),
@@ -30,6 +30,16 @@ bot.api.config.use(createTelegramMetricsTransformer())
 
 const IGNORE_OLD_THRESHOLD_SECONDS = 1
 const botStartTime = Math.floor(Date.now() / 1000)
+
+const allowedUserIds = getAllowedUserIds()
+
+bot.use((ctx, next) => {
+	const userId = ctx.from?.id
+
+	if (userId === undefined || !allowedUserIds.has(userId)) return
+
+	return next()
+})
 
 bot.use((ctx, next) => {
 	const date = ctx.message?.date ?? ctx.callbackQuery?.message?.date

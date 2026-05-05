@@ -8,6 +8,7 @@ import { logger } from './logging/pino-logger'
 import { handleMessage } from './message-handler'
 import { startMetricsServer } from './metrics/server'
 import { createTelegramMetricsTransformer } from './metrics/telegram'
+import { Notifier } from './notifier'
 import { Context, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
 import { getEnvSafe } from './utils/common'
@@ -80,3 +81,6 @@ bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
 run(bot)
+
+const notifier = new Notifier(bot)
+notifier.run()

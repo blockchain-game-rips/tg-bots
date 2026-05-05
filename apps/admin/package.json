@@ -1,0 +1,43 @@
+{
+    "name": "tg-bot",
+    "version": "1.0.0",
+    "main": "src/main.ts",
+    "license": "MIT",
+    "author": "Micro <0xmicro222@gmail.com>",
+    "scripts": {
+        "fmt": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+        "test": "jest",
+        "build": "tsc -p tsconfig.build.json",
+        "start": "node dist/main.js",
+        "dev": "ts-node-dev --respawn src/test/main.ts",
+        "preview-bot-dev": "ts-node-dev --respawn scripts/preview-bot/index.ts",
+        "preview-bot": "ts-node scripts/preview-bot/index.ts",
+        "openapi-ts": "openapi-ts"
+    },
+    "dependencies": {
+        "@grammyjs/auto-retry": "^2.0.2",
+        "@grammyjs/menu": "^1.3.1",
+        "@grammyjs/runner": "^2.0.3",
+        "dotenv": "^17.3.1",
+        "grammy": "^1.40.1",
+        "ky": "^2.0.2",
+        "pino": "^10.3.1",
+        "prom-client": "^15.1.3",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.26.0",
+        "@hey-api/openapi-ts": "0.96.1",
+        "@types/jest": "29.5.14",
+        "@types/node": "^25.3.1",
+        "eslint": "^9.0.0",
+        "eslint-plugin-unused-imports": "^4.4.1",
+        "jest": "30.0.2",
+        "prettier": "^3.8.1",
+        "prettier-plugin-organize-imports": "4.1.0",
+        "ts-jest": "29.4.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "8.32.0"
+    }
+}

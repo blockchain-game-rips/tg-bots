@@ -18,13 +18,12 @@ export class StatusPage {
 			),
 		)
 
-		const lines: string[] = []
+		const lines: string[] = ['<b>Status</b>', '']
 
 		if (userRounds.length === 0) {
-			lines.push('You have no tickets in ongoing rounds')
+			lines.push('You have no tickets in ongoing rounds.')
 		} else {
-			lines.push('Your tickets in ongoing rounds:')
-			lines.push('')
+			lines.push('🎟 <b>Your tickets in ongoing rounds</b>', '')
 
 			for (const round of userRounds) {
 				const userTickets = round.actions.purchases
@@ -38,7 +37,8 @@ export class StatusPage {
 						0,
 					)
 
-				lines.push(`Round #${round.id} — ${userTickets} ticket(s)`)
+				const ticketLabel = userTickets === 1 ? 'ticket' : 'tickets'
+				lines.push(`Round #${round.id} — ${userTickets} ${ticketLabel}`)
 			}
 		}
 

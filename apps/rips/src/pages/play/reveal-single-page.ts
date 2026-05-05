@@ -18,8 +18,12 @@ export class RevealSinglePage {
 		}
 
 		const lines = [
-			`<a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> — Ticket #${revealedPrize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
-			`Unrevealed tickets: ${unrevealedPrizes.length}`,
+			'<b>Open Rips</b>',
+			'',
+			`🎁 <a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a>`,
+			`Ticket #${revealedPrize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+			'',
+			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
 		]
 
 		const keyboard = new InlineKeyboard()

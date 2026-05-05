@@ -8,9 +8,9 @@ import { configName } from '../../utils/stake'
 
 function renderConfig(config: ConfigDto): string {
 	return [
-		`<b>${configName(config)} stake</b>`,
-		`Duration: ${toShortDurationFormat(config.durationSeconds)}`,
-		`Tickets per round: ${config.ticketCap}`,
+		`🎮 <b>${configName(config)}</b>`,
+		`⏱ Duration: ${toShortDurationFormat(config.durationSeconds)}`,
+		`🎟 Tickets per round: ${config.ticketCap}`,
 	].join('\n')
 }
 
@@ -18,12 +18,18 @@ export class AboutPage {
 	static render(configs: ConfigDto[]): PageContent {
 		const sections = configs.map((config) => renderConfig(config))
 
-		const message =
-			'*Detailed description of the game*\n\nStakes:\n\n' +
-			sections.join('\n\n')
+		const lines = [
+			'<b>About the Game</b>',
+			'',
+			'Buy tickets to enter a round. When a round fills up, prizes are distributed among participants.',
+			'',
+			'<b>Stakes</b>',
+			'',
+			sections.join('\n\n'),
+		]
 
 		return {
-			message,
+			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
 				parent: actionIds.openHome,

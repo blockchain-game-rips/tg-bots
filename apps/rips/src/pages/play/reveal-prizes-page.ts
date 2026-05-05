@@ -7,9 +7,15 @@ import { addNav } from '../../utils/keyboard'
 
 export class RevealPrizesPage {
 	static render(unrevealedPrizes: PrizeDto[], showBack = true): PageContent {
-		const lines: string[] = []
+		const lines = [
+			'<b>Open Rips</b>',
+			'',
+			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+		]
 
-		lines.push(`Unrevealed tickets: ${unrevealedPrizes.length}`)
+		if (unrevealedPrizes.length === 0) {
+			lines.push('', 'All tickets have been revealed.')
+		}
 
 		const keyboard = new InlineKeyboard()
 

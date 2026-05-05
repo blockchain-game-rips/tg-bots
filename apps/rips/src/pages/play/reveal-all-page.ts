@@ -11,11 +11,14 @@ export class RevealAllPage {
 		revealedPrizes: PrizeDto[],
 		unrevealedPrizes: PrizeDto[],
 	): PageContent {
-		const lines: string[] = []
-
-		lines.push(`Unrevealed tickets: ${unrevealedPrizes.length}`)
-		lines.push('')
-		lines.push('Your prizes:')
+		const lines = [
+			'<b>Open Rips</b>',
+			'',
+			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+			'',
+			'🎁 <b>Your prizes</b>',
+			'',
+		]
 
 		for (const prize of revealedPrizes) {
 			const round = rounds.find((r) => r.id === prize.roundId)

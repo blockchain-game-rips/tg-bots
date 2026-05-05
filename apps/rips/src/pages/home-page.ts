@@ -4,12 +4,12 @@ import { keyboardFromLayout } from '../utils/keyboard'
 
 export class HomePage {
 	static render(): PageContent {
-		const lines: string[] = [
-			'Welcome to Rips!',
+		const lines = [
+			'👋 <b>Welcome to Rips!</b>',
 			'',
 			'Get started in two steps:',
 			'· Deposit ETH on Base via the Wallet menu',
-			'· Play the game and earn rewards',
+			'· Buy tickets and earn rewards',
 		]
 
 		return {

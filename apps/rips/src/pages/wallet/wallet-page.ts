@@ -9,25 +9,24 @@ export class WalletPage {
 		balance: CurrencyAmountDto,
 		userEvmAddress: string,
 	): PageContent {
-		let message = ''
-		message += `Balance: ${formatAmountWithUsd(balance)}`
-		message += '\n\n'
-		message += `Deposit ETH on Base to this address: <code>${userEvmAddress}</code>`
+		const lines = [
+			'<b>Wallet</b>',
+			'',
+			`💰 Balance: ${formatAmountWithUsd(balance)}`,
+			'',
+			`Deposit address (Base):`,
+			`<code>${userEvmAddress}</code>`,
+		]
 
 		const keyboard = addNav(
 			keyboardFromLayout([
 				[{ label: 'Update', actionId: actionIds.openWallet }],
 				[{ label: 'Withdraw', actionId: actionIds.openWithdraw }],
-				[
-					{
-						label: 'Swap',
-						actionId: actionIds.openSwapChooseChain,
-					},
-				],
+				[{ label: 'Swap', actionId: actionIds.openSwapChooseChain }],
 			]),
 			{ home: actionIds.openHome, parent: actionIds.openHome },
 		)
 
-		return { message, keyboard }
+		return { message: lines.join('\n'), keyboard }
 	}
 }

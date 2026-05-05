@@ -21,6 +21,12 @@ export class WalletPage {
 		const keyboard = addNav(
 			keyboardFromLayout([
 				[{ label: 'Update', actionId: actionIds.openWallet }],
+				[
+					{
+						label: 'All Balances',
+						actionId: actionIds.openAllBalances,
+					},
+				],
 				[{ label: 'Withdraw', actionId: actionIds.openWithdraw }],
 				[{ label: 'Swap', actionId: actionIds.openSwapChooseChain }],
 			]),

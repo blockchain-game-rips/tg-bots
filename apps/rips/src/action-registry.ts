@@ -24,6 +24,7 @@ import { openReferralAbout } from './action-handlers/referral-system/open-referr
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
 import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
+import { openAllBalances } from './action-handlers/wallet/open-all-balances'
 import { openSwap } from './action-handlers/wallet/open-swap'
 import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
 import { openSwapChooseChain } from './action-handlers/wallet/open-swap-choose-chain'
@@ -72,6 +73,7 @@ export const actionRegistry = {
 
 	// Wallet
 	openWallet,
+	openAllBalances,
 
 	// Withdraw
 	openWithdrawChooseChain,

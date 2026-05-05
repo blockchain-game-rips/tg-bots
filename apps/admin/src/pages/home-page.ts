@@ -113,6 +113,16 @@ export class HomePage {
 			message: lines.join('\n'),
 			keyboard: keyboardFromLayout([
 				[{ label: 'Update', actionId: actionIds.openHome }],
+				[
+					{ label: 'Pause', actionId: actionIds.executePause },
+					{ label: 'Unpause', actionId: actionIds.executeUnpause },
+				],
+				[
+					{
+						label: 'Set Default Fee',
+						actionId: actionIds.openSetDefaultFee,
+					},
+				],
 			]),
 		}
 	}

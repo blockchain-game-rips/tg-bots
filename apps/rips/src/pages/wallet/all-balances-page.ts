@@ -6,11 +6,26 @@ import { addNav, keyboardFromLayout } from '../../utils/keyboard'
 
 export class AllBalancesPage {
 	static render(balances: CurrencyAmountDto[]): PageContent {
-		const balanceLines = balances.map(
-			(b) => `• ${b.currency.symbol}: ${formatAmountWithUsd(b)}`,
+		const byChain = balances.reduce<Record<string, CurrencyAmountDto[]>>(
+			(acc, b) => {
+				const chain = b.currency.chainAddress.chain.reference
+				;(acc[chain] ??= []).push(b)
+				return acc
+			},
+			{},
 		)
 
-		const lines = ['<b>All Balances</b>', '', ...balanceLines]
+		const chainSections = Object.entries(byChain).flatMap(
+			([chain, items]) => [
+				`<b>${chain}</b>`,
+				...items.map(
+					(b) => `• ${b.currency.symbol}: ${formatAmountWithUsd(b)}`,
+				),
+				'',
+			],
+		)
+
+		const lines = ['<b>All Balances</b>', '', ...chainSections]
 
 		const keyboard = addNav(keyboardFromLayout([]), {
 			home: actionIds.openHome,

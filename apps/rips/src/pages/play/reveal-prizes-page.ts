@@ -6,7 +6,7 @@ import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 
 export class RevealPrizesPage {
-	static render(unrevealedPrizes: PrizeDto[]): PageContent {
+	static render(unrevealedPrizes: PrizeDto[], showBack = true): PageContent {
 		const lines: string[] = []
 
 		lines.push(`Unrevealed tickets: ${unrevealedPrizes.length}`)
@@ -24,12 +24,18 @@ export class RevealPrizesPage {
 				.row()
 		}
 
-		return {
-			message: lines.join('\n'),
-			keyboard: addNav(keyboard, {
+		if (showBack) {
+			addNav(keyboard, {
 				home: actionIds.openHome,
 				parent: actionIds.openPlay,
-			}),
+			})
+		} else {
+			keyboard.row().text('Home', buildActionData(actionIds.openHome))
+		}
+
+		return {
+			message: lines.join('\n'),
+			keyboard,
 		}
 	}
 }

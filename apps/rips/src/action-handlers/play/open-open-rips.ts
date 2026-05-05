@@ -11,9 +11,10 @@ export async function openOpenRips(
 	})
 
 	const unrevealedPrizes = data.prizes.filter((p) => !p.revealed)
+	const showBack = _payload !== 'no-back'
 
 	return {
 		type: EffectType.EDIT,
-		page: RevealPrizesPage.render(unrevealedPrizes),
+		page: RevealPrizesPage.render(unrevealedPrizes, showBack),
 	}
 }

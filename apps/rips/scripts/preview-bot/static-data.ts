@@ -159,7 +159,7 @@ export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
 	],
 }
 
-const mockUsdcOnBase = {
+export const mockUsdcOnBase = {
 	id: 'eip155:8453:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 	priceUsd: 1,
 	chainAddress: {
@@ -556,6 +556,16 @@ export const mockAvailableStakes: AvailableStakeDto[] = [
 		stake: { id: 2, currentConfig: mockRoundConfig2 },
 		fillingRound: mockRound2,
 	},
+]
+
+export const mockAllBalances: CurrencyAmountDto[] = [
+	{ currency: mockEth, amount: '2000000000000000' }, // 0.002 ETH on Base
+	{
+		currency: mockUsdcOnBase,
+		amount: '15000000', // 15 USDC on Base
+	},
+	{ currency: mockEthArb, amount: '1000000000000000' }, // 0.001 ETH on Arbitrum
+	{ currency: mockUsdcArb, amount: '100000000' }, // 100 USDC on Arbitrum
 ]
 
 export const mockConfigs: ConfigDto[] = [

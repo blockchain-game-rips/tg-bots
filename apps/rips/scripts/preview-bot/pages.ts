@@ -21,6 +21,7 @@ import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
+import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
 import { SwapCheckoutPage } from '../../src/pages/wallet/swap-checkout'
 import { SwapChooseAmountPage } from '../../src/pages/wallet/swap-choose-amount'
 import { SwapChooseChainPage } from '../../src/pages/wallet/swap-choose-chain'
@@ -35,6 +36,7 @@ import { WithdrawPage } from '../../src/pages/wallet/withdraw-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
 import { PageContent } from '../../src/types'
 import {
+	mockAllBalances,
 	mockAvailableStakes,
 	mockBalance,
 	mockCardCollection,
@@ -365,6 +367,11 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Wallet hub. Shows the user's ETH balance and deposit address, with navigation to Withdraw and Swap. Opened from Home.",
 		render: () => WalletPage.render(mockBalance, mockUserEvmAddress),
+	},
+	'all-balances': {
+		description:
+			'Shows all token balances grouped by chain. Opened from Wallet.',
+		render: () => AllBalancesPage.render(mockAllBalances),
 	},
 	'referral-system': {
 		description:

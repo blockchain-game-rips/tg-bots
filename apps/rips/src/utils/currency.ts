@@ -123,6 +123,58 @@ function padLabel(label: string, width: number): string {
 	return label.padEnd(width)
 }
 
+export function insufficientBalanceLines(args: {
+	tokenAmount: CurrencyAmountDto
+	feeAmount: CurrencyAmountDto
+	insufficientAmounts: CurrencyAmountDto[]
+	userEvmAddress: string
+	feeLabel: string
+}): string[] {
+	const {
+		tokenAmount,
+		feeAmount,
+		insufficientAmounts,
+		userEvmAddress,
+		feeLabel,
+	} = args
+
+	const tokenInsufficient = insufficientAmounts.some(
+		(a) => a.currency.id === tokenAmount.currency.id,
+	)
+
+	if (tokenInsufficient) {
+		const tokenSymbol = tokenAmount.currency.symbol
+		return [
+			`⚠️ <b>Insufficient ${tokenSymbol}</b>`,
+			'',
+			'Enter a smaller amount',
+		]
+	}
+
+	const feeSymbol = feeAmount.currency.symbol
+	return [
+		`⚠️ <b>Insufficient ${feeSymbol} for ${feeLabel}</b>`,
+		'',
+		`Deposit ${feeSymbol} to:`,
+		`<code>${userEvmAddress}</code>`,
+		'',
+		'Then press Update',
+	]
+}
+
+export function insufficientFundsDepositLines(
+	userEvmAddress: string,
+): string[] {
+	return [
+		`⚠️ <b>Insufficient funds</b>`,
+		'',
+		'Deposit to:',
+		`<code>${userEvmAddress}</code>`,
+		'',
+		'Then press Update',
+	]
+}
+
 export function fundsBreakdown(
 	expenses: Expense[],
 	balances: CurrencyAmountDto[],

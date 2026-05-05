@@ -13,9 +13,9 @@ import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
 import { RevealPrizesPage } from '../../src/pages/play/reveal-prizes-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { StatusPage } from '../../src/pages/play/status-page'
+import { ZapCheckoutPage } from '../../src/pages/play/zap-checkout-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
-import { ZapConfirmPage } from '../../src/pages/play/zap-confirm-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
@@ -184,11 +184,11 @@ export const pages: Record<string, PageEntry> = {
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
 	},
-	'zap-confirm': {
+	'zap-checkout': {
 		description:
 			'Third step of the zap flow. Shows zap quote: amount to pay, token balance, and network fee. Confirm to proceed.',
 		render: () =>
-			ZapConfirmPage.render({
+			ZapCheckoutPage.render({
 				availableStake: mockAvailableStakes[0],
 				ticketCount: 3,
 				nativeBalance: mockBalance,

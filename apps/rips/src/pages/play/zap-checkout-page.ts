@@ -8,11 +8,14 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
-import { fundsBreakdown } from '../../utils/currency'
+import {
+	fundsBreakdown,
+	insufficientFundsDepositLines,
+} from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
 
-export class ZapConfirmPage {
+export class ZapCheckoutPage {
 	static render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
@@ -58,13 +61,7 @@ export class ZapConfirmPage {
 		]
 
 		if (insufficient) {
-			lines.push('')
-			lines.push(`⚠️ <b>Insufficient funds</b>`)
-			lines.push('')
-			lines.push('Deposit to:')
-			lines.push(`<code>${userEvmAddress}</code>`)
-			lines.push('')
-			lines.push('Then press Update')
+			lines.push('', ...insufficientFundsDepositLines(userEvmAddress))
 		} else {
 			lines.push('')
 			lines.push('Confirm to proceed with zap')

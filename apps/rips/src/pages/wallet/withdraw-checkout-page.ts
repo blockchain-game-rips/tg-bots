@@ -8,7 +8,11 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName, findChainIndex } from '../../utils/chain'
-import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
+import {
+	formatAmountWithUsd,
+	fundsBreakdown,
+	insufficientBalanceLines,
+} from '../../utils/currency'
 
 export class WithdrawCheckoutPage {
 	static render(args: {
@@ -59,28 +63,16 @@ export class WithdrawCheckoutPage {
 		]
 
 		if (insufficient) {
-			lines.push('')
-
-			const tokenInsufficient = insufficientAmounts.some(
-				(a) => a.currency.id === currencyAmount.currency.id,
+			lines.push(
+				'',
+				...insufficientBalanceLines({
+					tokenAmount: currencyAmount,
+					feeAmount: withdrawQuote.blockchainFee,
+					insufficientAmounts,
+					userEvmAddress,
+					feeLabel: 'blockchain fee',
+				}),
 			)
-
-			if (tokenInsufficient) {
-				const tokenSymbol = currencyAmount.currency.symbol
-				lines.push(`⚠️ <b>Insufficient ${tokenSymbol}</b>`)
-				lines.push('')
-				lines.push('Enter a smaller amount')
-			} else {
-				const feeSymbol = withdrawQuote.blockchainFee.currency.symbol
-				lines.push(
-					`⚠️ <b>Insufficient ${feeSymbol} for blockchain fee</b>`,
-				)
-				lines.push('')
-				lines.push(`Deposit ${feeSymbol} to:`)
-				lines.push(`<code>${userEvmAddress}</code>`)
-				lines.push('')
-				lines.push('Then press Update')
-			}
 		} else {
 			lines.push('')
 			lines.push('Confirm to proceed')

@@ -3,7 +3,7 @@ import {
 	usersControllerGetUser,
 	walletsControllerGetBalances,
 } from '../../../generated/api-client'
-import { ZapConfirmPage } from '../../pages/play/zap-confirm-page'
+import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
@@ -11,7 +11,7 @@ import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
-export async function openZapConfirm(
+export async function openZapCheckout(
 	session: SessionData,
 	payload: string | undefined,
 ): Promise<Effect> {
@@ -71,7 +71,7 @@ export async function openZapConfirm(
 
 	return {
 		type: EffectType.EDIT,
-		page: ZapConfirmPage.render({
+		page: ZapCheckoutPage.render({
 			availableStake,
 			ticketCount,
 			currencyInBalance,

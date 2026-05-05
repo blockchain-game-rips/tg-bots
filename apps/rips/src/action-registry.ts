@@ -17,7 +17,7 @@ import { openRevealSingle } from './action-handlers/play/open-reveal-single'
 import { openStatus } from './action-handlers/play/open-status'
 import { openZapChooseChain } from './action-handlers/play/open-zap-choose-chain'
 import { openZapChooseToken } from './action-handlers/play/open-zap-choose-token'
-import { openZapConfirm } from './action-handlers/play/open-zap-confirm'
+import { openZapCheckout } from './action-handlers/play/open-zap-confirm'
 import { promptTicketCount } from './action-handlers/play/prompt-ticket-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
@@ -94,7 +94,7 @@ export const actionRegistry = {
 	// Zap
 	openZapChooseChain,
 	openZapChooseToken,
-	openZapConfirm,
+	openZapConfirm: openZapCheckout,
 	executeZap,
 
 	// Swap

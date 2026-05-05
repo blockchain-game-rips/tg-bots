@@ -6,7 +6,11 @@ import {
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
-import { formatAmountWithUsd, fundsBreakdown } from '../../utils/currency'
+import {
+	formatAmountWithUsd,
+	fundsBreakdown,
+	insufficientBalanceLines,
+} from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
 export class SwapCheckoutPage {
@@ -47,29 +51,16 @@ export class SwapCheckoutPage {
 		]
 
 		if (insufficient) {
-			lines.push('')
-
-			const tokenInsufficient = insufficientAmounts.some(
-				(a) => a.currency.id === amountIn.currency.id,
+			lines.push(
+				'',
+				...insufficientBalanceLines({
+					tokenAmount: amountIn,
+					feeAmount: swapQuote.blockchainFee,
+					insufficientAmounts,
+					userEvmAddress,
+					feeLabel: 'network fee',
+				}),
 			)
-
-			//TODO: the same in withdraw checkout, move to the separate function
-			if (tokenInsufficient) {
-				const tokenSymbol = amountIn.currency.symbol
-				lines.push(`⚠️ <b>Insufficient ${tokenSymbol}</b>`)
-				lines.push('')
-				lines.push('Enter a smaller amount')
-			} else {
-				const feeSymbol = swapQuote.blockchainFee.currency.symbol
-				lines.push(
-					`⚠️ <b>Insufficient ${feeSymbol} for network fee</b>`,
-				)
-				lines.push('')
-				lines.push(`Deposit ${feeSymbol} to:`)
-				lines.push(`<code>${userEvmAddress}</code>`)
-				lines.push('')
-				lines.push('Then press Update')
-			}
 		}
 
 		const keyboard = new InlineKeyboard()

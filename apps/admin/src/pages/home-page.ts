@@ -152,6 +152,16 @@ export class HomePage {
 						actionId: actionIds.openSetDefaultFee,
 					},
 				],
+				[
+					{
+						label: 'Freeze Referrer',
+						actionId: actionIds.openFreezeReferrer,
+					},
+					{
+						label: 'Unfreeze Referrer',
+						actionId: actionIds.openUnfreezeReferrer,
+					},
+				],
 			]),
 		}
 	}

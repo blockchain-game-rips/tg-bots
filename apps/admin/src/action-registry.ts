@@ -6,6 +6,12 @@ import {
 	executePause,
 	executeUnpause,
 } from './action-handlers/execute-set-paused'
+import {
+	openFreezeReferrer,
+	openUnfreezeReferrer,
+	submitFreezeReferrer,
+	submitUnfreezeReferrer,
+} from './action-handlers/execute-set-referrer-frozen'
 import { openHome } from './action-handlers/open-home'
 import { ActionHandler } from './types'
 
@@ -15,4 +21,8 @@ export const actionRegistry = {
 	executeUnpause,
 	openSetDefaultFee,
 	submitSetDefaultFee,
+	openFreezeReferrer,
+	submitFreezeReferrer,
+	openUnfreezeReferrer,
+	submitUnfreezeReferrer,
 } satisfies Record<string, ActionHandler>

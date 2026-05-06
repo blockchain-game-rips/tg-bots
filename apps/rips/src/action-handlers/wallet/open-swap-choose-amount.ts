@@ -1,7 +1,7 @@
-import { walletsControllerGetBalances } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { SwapChooseAmountPage } from '../../pages/wallet/swap-choose-amount'
 import { EffectType } from '../../types'
+import { fetchBalances } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow } from '../../utils/session-utils'
@@ -19,19 +19,14 @@ export const openSwapChooseAmount: ActionDef<void> = noPayload(
 		if (currencyOut !== undefined)
 			currencyIds.push(toCurrencyId(currencyOut.chainAddress))
 
-		const { data: balancesData } = await walletsControllerGetBalances({
-			headers: { 'x-telegram-id': session.telegramId },
-			query: { chainAddress: currencyIds },
-		})
+		const balances = await fetchBalances(session.telegramId, currencyIds)
 
-		const currencyInBalance = balancesData.balances.find(
+		const currencyInBalance = balances.find(
 			(b) => b.currency.id === currencyIn.id,
 		)!
 
 		const currencyOutBalance = currencyOut
-			? balancesData.balances.find(
-					(b) => b.currency.id === currencyOut.id,
-				)
+			? balances.find((b) => b.currency.id === currencyOut.id)
 			: undefined
 
 		return {

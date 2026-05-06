@@ -1,4 +1,5 @@
 import {
+	currencyControllerGetCurrencies,
 	ripsControllerGetStakes,
 	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
@@ -7,14 +8,38 @@ import { createQuerySerializer } from '../../generated/api-client/client/utils.g
 import { NATIVE_ON_BASE } from '../constants'
 import { chainAddressToString } from './currency'
 
-export async function fetchNativeBalance(telegramId: string) {
+const chainAddressQuerySerializer = createQuerySerializer({
+	allowReserved: true,
+})
+
+export async function fetchBalances(
+	telegramId: string,
+	chainAddresses: string[],
+) {
 	const { data } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
-		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
-		querySerializer: createQuerySerializer({ allowReserved: true }),
+		query: { chainAddress: chainAddresses },
+		querySerializer: chainAddressQuerySerializer,
 	})
 
-	const balance = data.balances[0]
+	return data.balances
+}
+
+export async function fetchCurrencies(chainAddresses: string[]) {
+	const { data } = await currencyControllerGetCurrencies({
+		query: { chainAddress: chainAddresses },
+		querySerializer: chainAddressQuerySerializer,
+	})
+
+	return data.currencies
+}
+
+export async function fetchNativeBalance(telegramId: string) {
+	const balances = await fetchBalances(telegramId, [
+		chainAddressToString(NATIVE_ON_BASE),
+	])
+
+	const balance = balances[0]
 
 	if (balance === undefined) {
 		throw new Error('No balance found for native asset')

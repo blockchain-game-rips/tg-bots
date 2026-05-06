@@ -1,9 +1,7 @@
-import {
-	ChainAddressDto,
-	walletsControllerGetBalances,
-} from '../../../generated/api-client'
+import { ChainAddressDto } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
+import { fetchBalances } from '../../utils/api'
 import { rescaleAmount, toCurrencyId } from '../../utils/currency'
 import { assertFlow } from '../../utils/session-utils'
 import { resolveSwapPage, SwapState } from '../../utils/swap'
@@ -29,12 +27,11 @@ export const submitSwapCurrency: ActionDef<
 	async (session, { selecting, value: currencyChainAddress }) => {
 		assertFlow(session, 'swap', 'idle')
 
-		const { data: balancesData } = await walletsControllerGetBalances({
-			headers: { 'x-telegram-id': session.telegramId },
-			query: { chainAddress: [toCurrencyId(currencyChainAddress)] },
-		})
+		const balances = await fetchBalances(session.telegramId, [
+			toCurrencyId(currencyChainAddress),
+		])
 
-		const newCurrency = balancesData.balances[0].currency
+		const newCurrency = balances[0].currency
 
 		const { currencyIn, currencyOut, amountIn } = session.flow.data
 

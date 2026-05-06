@@ -1,8 +1,8 @@
-import { currencyControllerGetCurrencies } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { SwapChooseTokenPage } from '../../pages/wallet/swap-choose-token'
 import { Chain, EffectType } from '../../types'
+import { fetchCurrencies } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import {
 	encodeSelectingWithIndex,
@@ -29,13 +29,11 @@ export const openSwapChooseToken: ActionDef<SelectingWithValue<Chain>> =
 					c.chain.reference === chain.reference,
 			).map(toCurrencyId)
 
-			const { data } = await currencyControllerGetCurrencies({
-				query: { chainAddress: chainCurrencyIds },
-			})
+			const currencies = await fetchCurrencies(chainCurrencyIds)
 
 			return {
 				type: EffectType.EDIT,
-				page: SwapChooseTokenPage.render(data.currencies, selecting),
+				page: SwapChooseTokenPage.render(currencies, selecting),
 			}
 		},
 	)

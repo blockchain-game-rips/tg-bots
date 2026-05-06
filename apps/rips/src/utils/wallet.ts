@@ -3,13 +3,13 @@ import {
 	CurrencyDto,
 	UserDtoOutput,
 	usersControllerGetUser,
-	walletsControllerGetBalances,
 	walletsControllerQuoteWithdraw,
 } from '../../generated/api-client'
 import { EIP155_NAMESPACE } from '../constants'
 import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'
 import { Effect, EffectType } from '../types'
+import { fetchBalances } from './api'
 import { toCurrencyId } from './currency'
 
 export function evmAddressFromUser(user: UserDtoOutput) {
@@ -29,12 +29,11 @@ export async function resolveWithdrawPage(
 	recipientAddress: string | undefined,
 ): Promise<Effect> {
 	if (currencyAmount === undefined || recipientAddress === undefined) {
-		const { data: balancesData } = await walletsControllerGetBalances({
-			headers: { 'x-telegram-id': telegramId },
-			query: { chainAddress: [toCurrencyId(currency.chainAddress)] },
-		})
+		const balances = await fetchBalances(telegramId, [
+			toCurrencyId(currency.chainAddress),
+		])
 
-		const currencyBalance = balancesData.balances[0]
+		const currencyBalance = balances[0]
 
 		return {
 			type: EffectType.EDIT,
@@ -61,22 +60,17 @@ export async function resolveWithdrawPage(
 		usersControllerGetUser({ path: { telegramId } }),
 	])
 
-	const { data: balancesData } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': telegramId },
-		query: {
-			chainAddress: [
-				toCurrencyId(currency.chainAddress),
-				toCurrencyId(withdrawQuote.blockchainFee.currency.chainAddress),
-			],
-		},
-	})
+	const balances = await fetchBalances(telegramId, [
+		toCurrencyId(currency.chainAddress),
+		toCurrencyId(withdrawQuote.blockchainFee.currency.chainAddress),
+	])
 
-	const nativeBalance = balancesData.balances.find(
+	const nativeBalance = balances.find(
 		(balance) =>
 			balance.currency.id === withdrawQuote.blockchainFee.currency.id,
 	)!
 
-	const currencyBalance = balancesData.balances.find(
+	const currencyBalance = balances.find(
 		(balance) => balance.currency.id === currency.id,
 	)!
 

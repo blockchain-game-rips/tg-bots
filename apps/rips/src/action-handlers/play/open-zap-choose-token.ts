@@ -1,9 +1,8 @@
-import { currencyControllerGetCurrencies } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { ZapChooseTokenPage } from '../../pages/play/zap-choose-token-page'
 import { Chain, EffectType } from '../../types'
-import { fetchStake } from '../../utils/api'
+import { fetchCurrencies, fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { assertFlow } from '../../utils/session-utils'
 import { parseChain } from '../../validation/chain-index'
@@ -27,11 +26,9 @@ export const openZapChooseToken: ActionDef<Chain> = withPayload(
 				c.chain.reference === chain.reference,
 		).map(toCurrencyId)
 
-		const [availableStake, { data }] = await Promise.all([
+		const [availableStake, currencies] = await Promise.all([
 			fetchStake(stakeId),
-			currencyControllerGetCurrencies({
-				query: { chainAddress: chainCurrencyIds },
-			}),
+			fetchCurrencies(chainCurrencyIds),
 		])
 
 		return {
@@ -39,7 +36,7 @@ export const openZapChooseToken: ActionDef<Chain> = withPayload(
 			page: ZapChooseTokenPage.render({
 				availableStake,
 				ticketCount,
-				currencies: data.currencies,
+				currencies,
 			}),
 		}
 	},

@@ -1,9 +1,8 @@
-import { currencyControllerGetCurrencies } from '../../../generated/api-client'
-import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
 import { Chain, EffectType } from '../../types'
+import { fetchCurrencies } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { parseChain } from '../../validation/chain-index'
 
@@ -22,14 +21,11 @@ export const openWithdrawChooseCurrency: ActionDef<Chain> = withPayload(
 				c.chain.reference === chain.reference,
 		).map(toCurrencyId)
 
-		const { data } = await currencyControllerGetCurrencies({
-			query: { chainAddress: chainCurrencyIds },
-			querySerializer: createQuerySerializer({ allowReserved: true }),
-		})
+		const currencies = await fetchCurrencies(chainCurrencyIds)
 
 		return {
 			type: EffectType.EDIT,
-			page: WithdrawChooseCurrencyPage.render(data.currencies),
+			page: WithdrawChooseCurrencyPage.render(currencies),
 		}
 	},
 )

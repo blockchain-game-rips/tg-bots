@@ -2,12 +2,12 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 	usersControllerGetUser,
-	walletsControllerGetBalances,
 	walletsControllerQuoteSwap,
 } from '../../generated/api-client'
 import { SwapCheckoutPage } from '../pages/wallet/swap-checkout'
 import { SwapPage } from '../pages/wallet/swap-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { fetchBalances } from './api'
 import { toCurrencyAmount, toCurrencyId } from './currency'
 import { setFlow } from './session-utils'
 import { evmAddressFromUser } from './wallet'
@@ -36,24 +36,19 @@ async function fetchCheckout(
 		usersControllerGetUser({ path: { telegramId: session.telegramId } }),
 	])
 
-	const { data: balancesData } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': session.telegramId },
-		query: {
-			chainAddress: [
-				toCurrencyId(currencyIn.chainAddress),
-				toCurrencyId(swapQuote.blockchainFee.currency.chainAddress),
-				toCurrencyId(currencyOut.chainAddress),
-			],
-		},
-	})
+	const balances = await fetchBalances(session.telegramId, [
+		toCurrencyId(currencyIn.chainAddress),
+		toCurrencyId(swapQuote.blockchainFee.currency.chainAddress),
+		toCurrencyId(currencyOut.chainAddress),
+	])
 
-	const currencyInBalance = balancesData.balances.find(
+	const currencyInBalance = balances.find(
 		(b) => b.currency.id === currencyIn.id,
 	)!
-	const nativeInBalance = balancesData.balances.find(
+	const nativeInBalance = balances.find(
 		(b) => b.currency.id === swapQuote.blockchainFee.currency.id,
 	)!
-	const currencyOutBalance = balancesData.balances.find(
+	const currencyOutBalance = balances.find(
 		(b) => b.currency.id === currencyOut.id,
 	)!
 
@@ -80,17 +75,14 @@ async function fetchHub(
 		return { currencyInBalance: undefined, currencyOutBalance: undefined }
 	}
 
-	const { data: balancesData } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': session.telegramId },
-		query: { chainAddress: currencyIds },
-	})
+	const balances = await fetchBalances(session.telegramId, currencyIds)
 
 	const currencyInBalance = currencyIn
-		? balancesData.balances.find((b) => b.currency.id === currencyIn.id)
+		? balances.find((b) => b.currency.id === currencyIn.id)
 		: undefined
 
 	const currencyOutBalance = currencyOut
-		? balancesData.balances.find((b) => b.currency.id === currencyOut.id)
+		? balances.find((b) => b.currency.id === currencyOut.id)
 		: undefined
 
 	return { currencyInBalance, currencyOutBalance }

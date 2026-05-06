@@ -2,13 +2,12 @@ import {
 	ChainAddressDto,
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
-	walletsControllerGetBalances,
 } from '../../../generated/api-client'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
-import { fetchStake } from '../../utils/api'
+import { fetchBalances, fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
@@ -43,21 +42,16 @@ async function buildZapCheckout(
 			}),
 		])
 
-	const { data: balancesData } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': session.telegramId },
-		query: {
-			chainAddress: [
-				toCurrencyId(currencyChainAddress),
-				toCurrencyId(zapQuote.blockchainFee.currency.chainAddress),
-			],
-		},
-	})
+	const balances = await fetchBalances(session.telegramId, [
+		toCurrencyId(currencyChainAddress),
+		toCurrencyId(zapQuote.blockchainFee.currency.chainAddress),
+	])
 
-	const currencyInBalance = balancesData.balances.find(
+	const currencyInBalance = balances.find(
 		(b) => b.currency.chainAddress.address === currencyChainAddress.address,
 	)!
 
-	const nativeBalance = balancesData.balances.find(
+	const nativeBalance = balances.find(
 		(b) => b.currency.id === zapQuote.blockchainFee.currency.id,
 	)!
 

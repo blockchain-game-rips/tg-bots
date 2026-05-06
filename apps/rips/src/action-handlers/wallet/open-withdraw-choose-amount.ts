@@ -1,7 +1,7 @@
-import { walletsControllerGetBalances } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawChooseAmountPage } from '../../pages/wallet/withdraw-choose-amount-page'
 import { EffectType } from '../../types'
+import { fetchBalances } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { assertFlow } from '../../utils/session-utils'
 
@@ -11,12 +11,11 @@ export const openWithdrawChooseAmount: ActionDef<void> = noPayload(
 
 		const { currency } = session.flow.data
 
-		const { data: balancesData } = await walletsControllerGetBalances({
-			headers: { 'x-telegram-id': session.telegramId },
-			query: { chainAddress: [toCurrencyId(currency.chainAddress)] },
-		})
+		const balances = await fetchBalances(session.telegramId, [
+			toCurrencyId(currency.chainAddress),
+		])
 
-		const currencyBalance = balancesData.balances[0]
+		const currencyBalance = balances[0]
 
 		return {
 			type: EffectType.EDIT,

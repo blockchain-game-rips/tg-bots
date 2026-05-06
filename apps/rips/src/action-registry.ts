@@ -34,8 +34,10 @@ import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
 import { openSwap } from './action-handlers/wallet/open-swap'
 import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
-import { openSwapChooseChain } from './action-handlers/wallet/open-swap-choose-chain'
-import { openSwapChooseToken } from './action-handlers/wallet/open-swap-choose-token'
+import { openSwapChooseChainIn } from './action-handlers/wallet/open-swap-choose-chain-in'
+import { openSwapChooseChainOut } from './action-handlers/wallet/open-swap-choose-chain-out'
+import { openSwapChooseTokenIn } from './action-handlers/wallet/open-swap-choose-token-in'
+import { openSwapChooseTokenOut } from './action-handlers/wallet/open-swap-choose-token-out'
 import { openWallet } from './action-handlers/wallet/open-wallet'
 import { openWithdraw } from './action-handlers/wallet/open-withdraw'
 import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
@@ -46,7 +48,8 @@ import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-a
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
 import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
 import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
-import { submitSwapCurrency } from './action-handlers/wallet/submit-swap-currency'
+import { submitSwapCurrencyIn } from './action-handlers/wallet/submit-swap-currency-in'
+import { submitSwapCurrencyOut } from './action-handlers/wallet/submit-swap-currency-out'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 
@@ -110,10 +113,13 @@ export const actionRegistry = {
 
 	// Swap
 	openSwap,
-	openSwapChooseChain,
-	openSwapChooseToken,
+	openSwapChooseChainIn,
+	openSwapChooseChainOut,
+	openSwapChooseTokenIn,
+	openSwapChooseTokenOut,
 	openSwapChooseAmount,
-	submitSwapCurrency,
+	submitSwapCurrencyIn,
+	submitSwapCurrencyOut,
 	submitSwapAmount,
 	executeSwap,
 	promptSwapAmount,

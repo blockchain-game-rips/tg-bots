@@ -8,14 +8,15 @@ import { buildChooseChainPage } from '../choose-chain-token'
 export class SwapChooseChainPage {
 	static render(selecting: SwapSelecting): PageContent {
 		const label = selecting === 'in' ? 'token in' : 'token out'
+		const chainActionId =
+			selecting === 'in'
+				? actionIds.openSwapChooseTokenIn
+				: actionIds.openSwapChooseTokenOut
 
 		return buildChooseChainPage({
 			lines: [swapBreadcrumb(), '', `Choose a chain for ${label}:`],
-			chainActionId: actionIds.openSwapChooseToken,
-			chainPayload: (chainIndex) => ({
-				selecting,
-				value: SUPPORTED_CHAINS[chainIndex],
-			}),
+			chainActionId,
+			chainPayload: (chainIndex) => SUPPORTED_CHAINS[chainIndex],
 			nav: { parent: actionIds.openSwap, home: actionIds.openHome },
 		})
 	}

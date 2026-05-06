@@ -38,12 +38,12 @@ export class SwapPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Select token in',
-				buildActionData(actionIds.openSwapChooseChain, 'in'),
+				buildActionData(actionIds.openSwapChooseChainIn, undefined),
 			)
 			.row()
 			.text(
 				'Select token out',
-				buildActionData(actionIds.openSwapChooseChain, 'out'),
+				buildActionData(actionIds.openSwapChooseChainOut, undefined),
 			)
 			.row()
 

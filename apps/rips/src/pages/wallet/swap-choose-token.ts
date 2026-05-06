@@ -15,6 +15,14 @@ export class SwapChooseTokenPage {
 		selecting: SwapSelecting,
 	): PageContent {
 		const label = selecting === 'in' ? 'token in' : 'token out'
+		const tokenActionId =
+			selecting === 'in'
+				? actionIds.submitSwapCurrencyIn
+				: actionIds.submitSwapCurrencyOut
+		const parentActionId =
+			selecting === 'in'
+				? actionIds.openSwapChooseChainIn
+				: actionIds.openSwapChooseChainOut
 
 		return buildChooseTokenPage({
 			lines: [
@@ -23,14 +31,11 @@ export class SwapChooseTokenPage {
 				`Choose ${label}:`,
 			],
 			currencies,
-			tokenActionId: actionIds.submitSwapCurrency,
-			tokenPayload: (currencyIndex) => ({
-				selecting,
-				value: SUPPORTED_CURRENCIES[currencyIndex],
-			}),
+			tokenActionId,
+			tokenPayload: (currencyIndex) =>
+				SUPPORTED_CURRENCIES[currencyIndex],
 			nav: {
-				parent: actionIds.openSwapChooseChain,
-				parentPayload: selecting,
+				parent: parentActionId,
 				home: actionIds.openHome,
 			},
 		})

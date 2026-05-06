@@ -25,6 +25,11 @@ startMetricsServer()
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 
+bot.use((ctx, next) => {
+	if (ctx.chat?.type !== 'private') return
+	return next()
+})
+
 bot.api.config.use(autoRetry())
 bot.api.config.use(createTelegramMetricsTransformer())
 

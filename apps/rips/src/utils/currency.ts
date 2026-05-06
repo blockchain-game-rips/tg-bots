@@ -20,9 +20,15 @@ export type FundsBreakdownResult = {
 	insufficientAmounts: CurrencyAmountDto[]
 }
 
-function tokenDecimalsFromPrice(priceUsd: number): number {
+const MAX_TOFIXED_DIGITS = 6
+
+function toFixedDigitsFromPrice(priceUsd: number): number {
+	if (priceUsd <= 0) return MAX_TOFIXED_DIGITS
+
 	const minTokenAmount = USD_MIN_DISPLAY / priceUsd
-	return Math.ceil(-Math.log10(minTokenAmount))
+	const digits = Math.ceil(-Math.log10(minTokenAmount))
+
+	return Math.min(Math.max(digits, 0), MAX_TOFIXED_DIGITS)
 }
 
 function formatUsd(usd: number): string {
@@ -46,13 +52,13 @@ export function toCurrencyId(currencyChainAddress: ChainAddressDto) {
 function formatTokenAmount(amount: number, priceUsd: number): string {
 	if (amount === 0) return `0`
 
-	const decimals = tokenDecimalsFromPrice(priceUsd)
-	const minDisplayAmount = Math.pow(10, -decimals)
+	const digits = toFixedDigitsFromPrice(priceUsd)
+	const minDisplayAmount = Math.pow(10, -digits)
 
 	if (amount < minDisplayAmount)
-		return `<${parseFloat(minDisplayAmount.toFixed(decimals))}`
+		return `<${parseFloat(minDisplayAmount.toFixed(digits))}`
 
-	return `${parseFloat(amount.toFixed(decimals))}`
+	return `${parseFloat(amount.toFixed(digits))}`
 }
 
 export function currencyAmountDisplayParts(currencyAmount: CurrencyAmountDto): {

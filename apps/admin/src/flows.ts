@@ -28,9 +28,16 @@ export type SetDefaultFeeFlow = {
 	data: { bp: number }
 }
 
+export type SetTiersFlow = {
+	flowType: 'setTiers'
+	step: 'confirm'
+	data: { tiers: Array<{ minVolume: number; feePercent: number }> }
+}
+
 export type Flow =
 	| BuyTicketsFlow
 	| SetPausedFlow
 	| SetReferrerFrozenFlow
 	| SetDefaultFeeFlow
+	| SetTiersFlow
 	| null

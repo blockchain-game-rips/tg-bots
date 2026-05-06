@@ -15,6 +15,11 @@ import {
 	submitConfirmFreezeReferrer,
 	submitConfirmUnfreezeReferrer,
 } from './action-handlers/execute-set-referrer-frozen'
+import {
+	executeConfirmSetTiers,
+	openSetTiers,
+	submitConfirmSetTiers,
+} from './action-handlers/execute-set-tiers'
 import { openHome } from './action-handlers/open-home'
 import { openState } from './action-handlers/open-state'
 import { ActionHandler } from './types'
@@ -33,4 +38,7 @@ export const actionRegistry = {
 	openUnfreezeReferrer,
 	submitConfirmUnfreezeReferrer,
 	executeConfirmReferrerFrozen,
+	openSetTiers,
+	submitConfirmSetTiers,
+	executeConfirmSetTiers,
 } satisfies Record<string, ActionHandler>

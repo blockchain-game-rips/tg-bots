@@ -54,6 +54,12 @@ export class HomePage {
 						actionId: actionIds.openUnfreezeReferrer,
 					},
 				],
+				[
+					{
+						label: 'Set Tiers',
+						actionId: actionIds.openSetTiers,
+					},
+				],
 			]),
 		}
 	}

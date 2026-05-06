@@ -1,33 +1,62 @@
 import { adminControllerSetPaused } from '../../generated/api-client'
+import { SetPausedFlow } from '../flows'
+import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
 
-async function executeSetPaused(isPaused: boolean): Promise<Effect> {
-	const { data: tx } = await adminControllerSetPaused({ body: { isPaused } })
+function openConfirmPaused(
+	isPaused: boolean,
+): (session: SessionData, _payload: string | undefined) => Effect {
+	const description = isPaused
+		? 'This will <b>pause</b> the protocol.'
+		: 'This will <b>unpause</b> the protocol.'
 
-	const title = isPaused ? '⏸ Paused' : '▶ Unpaused'
+	return (session, _payload): Effect => {
+		session.flow = {
+			flowType: 'setPaused',
+			step: 'confirm',
+			data: { isPaused },
+		} satisfies SetPausedFlow
 
-	return { type: EffectType.EDIT, page: TransactionPage.render(title, tx) }
-}
-
-export function executePause(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.SEND_LOADING,
-		message: 'Pausing...',
-		next: () => executeSetPaused(true),
+		return {
+			type: EffectType.EDIT,
+			page: ConfirmationPage.render(description),
+		}
 	}
 }
 
-export function executeUnpause(
-	_session: SessionData,
+export const openConfirmPause = openConfirmPaused(true)
+export const openConfirmUnpause = openConfirmPaused(false)
+
+export function executeConfirmPaused(
+	session: SessionData,
 	_payload: string | undefined,
 ): Effect {
+	const flow = session.flow
+
+	if (flow?.flowType !== 'setPaused' || flow.step !== 'confirm') {
+		return {
+			type: EffectType.EDIT,
+			page: ConfirmationPage.render(
+				'No pending action. Please go back and try again.',
+			),
+		}
+	}
+
+	const { isPaused } = flow.data
+
 	return {
 		type: EffectType.SEND_LOADING,
-		message: 'Unpausing...',
-		next: () => executeSetPaused(false),
+		message: isPaused ? 'Pausing...' : 'Unpausing...',
+		next: async () => {
+			const { data: tx } = await adminControllerSetPaused({
+				body: { isPaused },
+			})
+			const title = isPaused ? '⏸ Paused' : '▶ Unpaused'
+			return {
+				type: EffectType.EDIT,
+				page: TransactionPage.render(title, tx),
+			}
+		},
 	}
 }

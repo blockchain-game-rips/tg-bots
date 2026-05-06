@@ -10,4 +10,10 @@ export type BuyTicketsFlow =
 			data: { stakeId: number; ticketCount: number }
 	  }
 
-export type Flow = BuyTicketsFlow | null
+export type SetPausedFlow = {
+	flowType: 'setPaused'
+	step: 'confirm'
+	data: { isPaused: boolean }
+}
+
+export type Flow = BuyTicketsFlow | SetPausedFlow | null

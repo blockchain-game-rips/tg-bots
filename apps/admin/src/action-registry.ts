@@ -3,8 +3,9 @@ import {
 	submitSetDefaultFee,
 } from './action-handlers/execute-set-default-fee'
 import {
-	executePause,
-	executeUnpause,
+	executeConfirmPaused,
+	openConfirmPause,
+	openConfirmUnpause,
 } from './action-handlers/execute-set-paused'
 import {
 	openFreezeReferrer,
@@ -17,8 +18,9 @@ import { ActionHandler } from './types'
 
 export const actionRegistry = {
 	openHome,
-	executePause,
-	executeUnpause,
+	openConfirmPause,
+	openConfirmUnpause,
+	executeConfirmPaused,
 	openSetDefaultFee,
 	submitSetDefaultFee,
 	openFreezeReferrer,

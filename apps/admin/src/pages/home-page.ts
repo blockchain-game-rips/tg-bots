@@ -143,8 +143,11 @@ export class HomePage {
 			keyboard: keyboardFromLayout([
 				[{ label: 'Update', actionId: actionIds.openHome }],
 				[
-					{ label: 'Pause', actionId: actionIds.executePause },
-					{ label: 'Unpause', actionId: actionIds.executeUnpause },
+					{ label: 'Pause', actionId: actionIds.openConfirmPause },
+					{
+						label: 'Unpause',
+						actionId: actionIds.openConfirmUnpause,
+					},
 				],
 				[
 					{

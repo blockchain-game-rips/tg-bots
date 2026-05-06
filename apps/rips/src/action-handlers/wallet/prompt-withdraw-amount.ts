@@ -1,14 +1,10 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { actionIds } from '../../actions'
 import { CustomWithdrawAmountPrompt } from '../../prompts/custom-withdraw-amount-prompt'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function promptWithdrawAmount(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.ASK,
-		prompt: CustomWithdrawAmountPrompt.render(),
-		onSubmit: actionIds.submitWithdrawAmount,
-	}
-}
+export const promptWithdrawAmount: ActionDef<void> = noPayload(() => ({
+	type: EffectType.ASK,
+	prompt: CustomWithdrawAmountPrompt.render(),
+	onSubmit: actionIds.submitWithdrawAmount,
+}))

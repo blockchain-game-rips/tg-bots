@@ -1,9 +1,8 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { PlayPage } from '../../pages/play/play-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function openPlay(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return { type: EffectType.EDIT, page: PlayPage.render() }
-}
+export const openPlay: ActionDef<void> = noPayload(() => ({
+	type: EffectType.EDIT,
+	page: PlayPage.render(),
+}))

@@ -1,14 +1,10 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { actionIds } from '../../actions'
 import { CustomSwapAmountPrompt } from '../../prompts/custom-swap-amount-prompt'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function promptSwapAmount(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.ASK,
-		prompt: CustomSwapAmountPrompt.render(),
-		onSubmit: actionIds.submitSwapAmount,
-	}
-}
+export const promptSwapAmount: ActionDef<void> = noPayload(() => ({
+	type: EffectType.ASK,
+	prompt: CustomSwapAmountPrompt.render(),
+	onSubmit: actionIds.submitSwapAmount,
+}))

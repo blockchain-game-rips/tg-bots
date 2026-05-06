@@ -18,7 +18,7 @@ export class CardCollectionChooseStakePage {
 					configName(config),
 					buildActionData(
 						actionIds.openCardCollection,
-						availableStake.stake.id.toString(),
+						availableStake.stake.id,
 					),
 				)
 				.row()

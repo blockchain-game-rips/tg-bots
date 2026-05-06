@@ -48,7 +48,12 @@ export class SwapPage {
 			.row()
 
 		if (currencyInBalance !== undefined) {
-			keyboard.text('Choose amount', actionIds.openSwapChooseAmount).row()
+			keyboard
+				.text(
+					'Choose amount',
+					buildActionData(actionIds.openSwapChooseAmount, undefined),
+				)
+				.row()
 		}
 
 		addNav(keyboard, {

@@ -1,13 +1,11 @@
 import { walletsControllerCreateWithdrawal } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { toCurrencyAmount } from '../../utils/currency'
 import { assertFlow, resetFlow } from '../../utils/session-utils'
 
-export async function executeWithdraw(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'withdraw', 'currency-chosen')
 
 	const { currency, amount, recipientAddress } = session.flow.data
@@ -43,4 +41,4 @@ export async function executeWithdraw(
 			recipientAddress,
 		}),
 	}
-}
+})

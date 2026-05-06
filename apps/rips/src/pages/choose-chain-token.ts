@@ -1,29 +1,30 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyDto } from '../../generated/api-client'
-import { ActionId } from '../actions'
 import { SUPPORTED_CHAINS } from '../constants'
-import { NavIds, PageContent } from '../types'
+import { ActionId, NavIds, PageContent } from '../types'
 import { buildActionData } from '../utils/action-data'
 import { chainToName } from '../utils/chain'
 import { findCurrencyIndex } from '../utils/currency'
 import { addNav } from '../utils/keyboard'
 
-type ChooseChainParams = {
+type ChooseChainParams<T> = {
 	lines: string[]
-	chainActionId: ActionId
-	chainPayload: (chainIndex: number) => string
+	chainActionId: ActionId<T>
+	chainPayload: (chainIndex: number) => T
 	nav: NavIds
 }
 
-type ChooseTokenParams = {
+type ChooseTokenParams<T> = {
 	lines: string[]
 	currencies: CurrencyDto[]
-	tokenActionId: ActionId
-	tokenPayload: (currencyIndex: number) => string
+	tokenActionId: ActionId<T>
+	tokenPayload: (currencyIndex: number) => T
 	nav: NavIds
 }
 
-export function buildChooseChainPage(params: ChooseChainParams): PageContent {
+export function buildChooseChainPage<T>(
+	params: ChooseChainParams<T>,
+): PageContent {
 	const { lines, chainActionId, chainPayload, nav } = params
 
 	const keyboard = new InlineKeyboard()
@@ -42,7 +43,9 @@ export function buildChooseChainPage(params: ChooseChainParams): PageContent {
 	return { message: lines.join('\n'), keyboard }
 }
 
-export function buildChooseTokenPage(params: ChooseTokenParams): PageContent {
+export function buildChooseTokenPage<T>(
+	params: ChooseTokenParams<T>,
+): PageContent {
 	const { lines, currencies, tokenActionId, tokenPayload, nav } = params
 
 	const keyboard = new InlineKeyboard()

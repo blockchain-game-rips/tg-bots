@@ -1,5 +1,6 @@
 import { CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
@@ -23,7 +24,10 @@ export class SwapChooseTokenPage {
 			],
 			currencies,
 			tokenActionId: actionIds.submitSwapCurrency,
-			tokenPayload: (currencyIndex) => `${selecting}:${currencyIndex}`,
+			tokenPayload: (currencyIndex) => ({
+				selecting,
+				value: SUPPORTED_CURRENCIES[currencyIndex],
+			}),
 			nav: {
 				parent: actionIds.openSwapChooseChain,
 				parentPayload: selecting,

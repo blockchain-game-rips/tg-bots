@@ -14,8 +14,8 @@ const chainIndexSchema = z
 			.max(SUPPORTED_CHAINS.length - 1, 'Chain index out of range'),
 	)
 
-export function parseChain(payload: string | undefined): Chain {
-	const index = parsePayload(payload, chainIndexSchema, 'Invalid chain index')
+export function parseChain(raw: string): Chain {
+	const index = parsePayload(raw, chainIndexSchema, 'Invalid chain index')
 
 	return SUPPORTED_CHAINS[index]
 }

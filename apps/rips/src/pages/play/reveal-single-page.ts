@@ -33,10 +33,13 @@ export class RevealSinglePage {
 			keyboard
 				.text(
 					'Reveal next',
-					buildActionData(actionIds.openRevealSingle),
+					buildActionData(actionIds.openRevealSingle, undefined),
 				)
 				.row()
-				.text('Reveal all', buildActionData(actionIds.openRevealAll))
+				.text(
+					'Reveal all',
+					buildActionData(actionIds.openRevealAll, undefined),
+				)
 				.row()
 		}
 

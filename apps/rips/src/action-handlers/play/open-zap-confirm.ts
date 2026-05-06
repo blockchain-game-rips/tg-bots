@@ -4,13 +4,15 @@ import {
 	usersControllerGetUser,
 	walletsControllerGetBalances,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload, withPayload } from '../../action-def'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
-import { parseCurrencyChainAddress } from '../../validation/currency-index'
+import { parseCurrencyIndex } from '../../validation/currency-index'
 
 async function buildZapCheckout(
 	session: SessionData,
@@ -78,20 +80,20 @@ async function buildZapCheckout(
 	}
 }
 
-export async function openZapCheckout(
-	session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	const currencyChainAddress = parseCurrencyChainAddress(payload)
+export const openZapCheckout: ActionDef<number> = withPayload(
+	(currencyIndex) => currencyIndex.toString(),
+	(raw) => parseCurrencyIndex(raw),
+	(session, currencyIndex) =>
+		buildZapCheckout(session, SUPPORTED_CURRENCIES[currencyIndex]),
+)
 
-	return buildZapCheckout(session, currencyChainAddress)
-}
+export const refreshZapCheckout: ActionDef<void> = noPayload(
+	async (session) => {
+		assertFlow(session, 'buyTickets', 'zap-currency-chosen')
 
-export async function refreshZapCheckout(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
-	assertFlow(session, 'buyTickets', 'zap-currency-chosen')
-
-	return buildZapCheckout(session, session.flow.data.currency.chainAddress)
-}
+		return buildZapCheckout(
+			session,
+			session.flow.data.currency.chainAddress,
+		)
+	},
+)

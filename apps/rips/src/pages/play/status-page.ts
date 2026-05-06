@@ -46,12 +46,12 @@ export class StatusPage {
 			new InlineKeyboard()
 				.text(
 					'Ongoing rounds',
-					buildActionData(actionIds.openOngoingRounds),
+					buildActionData(actionIds.openOngoingRounds, undefined),
 				)
 				.row()
 				.text(
 					'Completed rounds',
-					buildActionData(actionIds.openCompletedRounds),
+					buildActionData(actionIds.openCompletedRounds, undefined),
 				),
 			{ home: actionIds.openHome, parent: actionIds.openPlay },
 		)

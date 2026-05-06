@@ -2,7 +2,7 @@ import { ZodType } from 'zod'
 import { ErrorToRender } from '../utils/error-to-render'
 
 export function parsePayload<T>(
-	payload: string | undefined,
+	payload: string,
 	schema: ZodType<T>,
 	defaultErrorMsgToRender: string,
 ): T {

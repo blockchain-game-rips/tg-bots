@@ -8,14 +8,11 @@ const amountSchema = z
 	.string()
 	.regex(/^(-?)([0-9]*)\.?([0-9]*)$/, 'Invalid amount')
 
-/**
- * @payload formatted amount, eg 1.234
- */
 export function parseCurrencyAmount(
-	payload: string | undefined,
+	raw: string,
 	currency: CurrencyDto,
 ): CurrencyAmountDto {
-	const amountString = parsePayload(payload, amountSchema, 'Invalid amount')
+	const amountString = parsePayload(raw, amountSchema, 'Invalid amount')
 
 	let amount: string
 	try {

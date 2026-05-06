@@ -1,14 +1,10 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { actionIds } from '../../actions'
 import { CustomTicketAmountPrompt } from '../../prompts/custom-ticket-amount-prompt'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function promptTicketCount(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.ASK,
-		prompt: CustomTicketAmountPrompt.render(),
-		onSubmit: actionIds.openBuyCheckout,
-	}
-}
+export const promptTicketCount: ActionDef<void> = noPayload(() => ({
+	type: EffectType.ASK,
+	prompt: CustomTicketAmountPrompt.render(),
+	onSubmit: actionIds.openBuyCheckout,
+}))

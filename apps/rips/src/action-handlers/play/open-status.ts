@@ -2,14 +2,12 @@ import {
 	ripsControllerGetOngoingRounds,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { StatusPage } from '../../pages/play/status-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'
 
-export async function openStatus(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openStatus: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const [{ data: roundsData }, { data: user }] = await Promise.all([
@@ -21,4 +19,4 @@ export async function openStatus(
 		type: EffectType.EDIT,
 		page: StatusPage.render(roundsData.rounds, evmAddressFromUser(user)),
 	}
-}
+})

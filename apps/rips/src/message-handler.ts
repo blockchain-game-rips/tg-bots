@@ -1,7 +1,8 @@
 import { Bot, Filter } from 'grammy'
-import { ActionId, actions } from './actions'
+import { actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
-import { Context, MessageToEdit } from './types'
+import { logger } from './logging/pino-logger'
+import { ActionId, Context, MessageToEdit } from './types'
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,
@@ -15,12 +16,20 @@ export async function handleMessage(
 
 	ctx.session.lastAsk = null
 
+	const boundAction = actions[ask.onSubmit]
+
+	if (boundAction === undefined) {
+		logger.error({ actionId: ask.onSubmit }, 'Unknown action for onSubmit')
+		return
+	}
+
 	await executeEffectOrDisplayError(
 		bot.api,
 		ctx.chatId,
 		ask.pageToEdit,
 		ctx.session,
-		() => actions[ask.onSubmit](ctx.session, submit.message),
+		boundAction,
+		submit.message,
 		messagesToDelete,
 	)
 }
@@ -28,7 +37,7 @@ export async function handleMessage(
 function getAskAndSubmit(ctx: Filter<Context, 'message:text'>): {
 	ask: {
 		messageId: number
-		onSubmit: ActionId
+		onSubmit: ActionId<string>
 		pageToEdit: MessageToEdit
 	}
 	submit: {

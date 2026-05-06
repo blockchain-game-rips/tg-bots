@@ -1,45 +1,65 @@
-import { walletsControllerGetBalances } from '../../../generated/api-client'
-import { Effect, SessionData } from '../../types'
+import {
+	ChainAddressDto,
+	walletsControllerGetBalances,
+} from '../../../generated/api-client'
+import { ActionDef, withPayload } from '../../action-def'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { rescaleAmount, toCurrencyId } from '../../utils/currency'
 import { assertFlow } from '../../utils/session-utils'
 import { resolveSwapPage, SwapState } from '../../utils/swap'
-import { parseSelectingWithCurrency } from '../../validation/swap-selecting-with-index'
+import {
+	encodeSelectingWithIndex,
+	parseSelectingWithCurrency,
+	SelectingWithValue,
+} from '../../validation/swap-selecting-with-index'
 
-export async function submitSwapCurrency(
-	session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	assertFlow(session, 'swap', 'idle')
+export const submitSwapCurrency: ActionDef<
+	SelectingWithValue<ChainAddressDto>
+> = withPayload(
+	({ selecting, value }) =>
+		encodeSelectingWithIndex(
+			selecting,
+			SUPPORTED_CURRENCIES.findIndex(
+				(c) =>
+					c.address === value.address &&
+					c.chain.reference === value.chain.reference,
+			),
+		),
+	(raw) => parseSelectingWithCurrency(raw),
+	async (session, { selecting, value: currencyChainAddress }) => {
+		assertFlow(session, 'swap', 'idle')
 
-	const { selecting, value: currencyChainAddress } =
-		parseSelectingWithCurrency(payload)
+		const { data: balancesData } = await walletsControllerGetBalances({
+			headers: { 'x-telegram-id': session.telegramId },
+			query: { chainAddress: [toCurrencyId(currencyChainAddress)] },
+		})
 
-	const { data: balancesData } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': session.telegramId },
-		query: { chainAddress: [toCurrencyId(currencyChainAddress)] },
-	})
+		const newCurrency = balancesData.balances[0].currency
 
-	const newCurrency = balancesData.balances[0].currency
+		const { currencyIn, currencyOut, amountIn } = session.flow.data
 
-	const { currencyIn, currencyOut, amountIn } = session.flow.data
+		let state: SwapState
 
-	let state: SwapState
+		if (selecting === 'in') {
+			let newAmountIn = amountIn
 
-	if (selecting === 'in') {
-		let newAmountIn = amountIn
+			if (amountIn !== undefined && currencyIn !== undefined) {
+				newAmountIn = rescaleAmount(
+					amountIn,
+					currencyIn.decimals,
+					newCurrency.decimals,
+				)
+			}
 
-		if (amountIn !== undefined && currencyIn !== undefined) {
-			newAmountIn = rescaleAmount(
-				amountIn,
-				currencyIn.decimals,
-				newCurrency.decimals,
-			)
+			state = {
+				currencyIn: newCurrency,
+				currencyOut,
+				amountIn: newAmountIn,
+			}
+		} else {
+			state = { currencyIn, currencyOut: newCurrency, amountIn }
 		}
 
-		state = { currencyIn: newCurrency, currencyOut, amountIn: newAmountIn }
-	} else {
-		state = { currencyIn, currencyOut: newCurrency, amountIn }
-	}
-
-	return resolveSwapPage(session, state)
-}
+		return resolveSwapPage(session, state)
+	},
+)

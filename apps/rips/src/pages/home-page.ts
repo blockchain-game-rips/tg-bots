@@ -1,6 +1,7 @@
+import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
-import { keyboardFromLayout } from '../utils/keyboard'
+import { buildActionData } from '../utils/action-data'
 
 export class HomePage {
 	static render(): PageContent {
@@ -12,19 +13,18 @@ export class HomePage {
 			'· Buy tickets and earn rewards',
 		]
 
-		return {
-			message: lines.join('\n'),
-			keyboard: keyboardFromLayout([
-				[{ label: 'Play', actionId: actionIds.openPlay }],
-				[{ label: 'Wallet', actionId: actionIds.openWallet }],
-				[
-					{
-						label: 'Referral System',
-						actionId: actionIds.openReferral,
-					},
-				],
-				[{ label: 'About', actionId: actionIds.openAbout }],
-			]),
-		}
+		const keyboard = new InlineKeyboard()
+			.text('Play', buildActionData(actionIds.openPlay, undefined))
+			.row()
+			.text('Wallet', buildActionData(actionIds.openWallet, undefined))
+			.row()
+			.text(
+				'Referral System',
+				buildActionData(actionIds.openReferral, undefined),
+			)
+			.row()
+			.text('About', buildActionData(actionIds.openAbout, undefined))
+
+		return { message: lines.join('\n'), keyboard }
 	}
 }

@@ -9,7 +9,7 @@ import { handleMessage } from './message-handler'
 import { startMetricsServer } from './metrics/server'
 import { createTelegramMetricsTransformer } from './metrics/telegram'
 import { Notifier } from './notifier'
-import { Context, PageContent, SessionData } from './types'
+import { Context, EffectType, PageContent, SessionData } from './types'
 import { ApiError } from './utils/api-error'
 import { getEnvSafe } from './utils/common'
 
@@ -67,8 +67,10 @@ bot.command('start', async (ctx) => {
 	}
 
 	try {
-		const showHomeEffect = await openHome(ctx.session, undefined)
-		pageContent = showHomeEffect.page
+		const showHomeEffect = await openHome.handler(ctx.session, undefined)
+		if (showHomeEffect.type === EffectType.EDIT) {
+			pageContent = showHomeEffect.page
+		}
 	} catch (error) {
 		logger.error(error, 'Error in /start command')
 	}

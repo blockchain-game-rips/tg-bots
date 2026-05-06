@@ -7,6 +7,6 @@ const evmAddressSchema = z
 	.string()
 	.regex(EVM_ADDRESS_REGEX, 'Invalid address format')
 
-export function parseEvmAddress(payload: string | undefined): string {
-	return parsePayload(payload, evmAddressSchema, 'Invalid address format')
+export function parseEvmAddress(raw: string): string {
+	return parsePayload(raw, evmAddressSchema, 'Invalid address format')
 }

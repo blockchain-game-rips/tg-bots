@@ -1,21 +1,21 @@
 import { ripsControllerGetCardCollection } from '../../../generated/api-client'
+import { ActionDef, withPayload } from '../../action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { parseStakeId } from '../../validation/stake-id'
 
-export async function openCardCollection(
-	session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	const stakeId = parseStakeId(payload)
+export const openCardCollection: ActionDef<number> = withPayload(
+	(stakeId) => stakeId.toString(),
+	(raw) => parseStakeId(raw),
+	async (session, stakeId) => {
+		const { data } = await ripsControllerGetCardCollection({
+			headers: { 'x-telegram-id': session.telegramId },
+			query: { stakeId },
+		})
 
-	const { data } = await ripsControllerGetCardCollection({
-		headers: { 'x-telegram-id': session.telegramId },
-		query: { stakeId },
-	})
-
-	return {
-		type: EffectType.EDIT,
-		page: CardCollectionPage.render(data),
-	}
-}
+		return {
+			type: EffectType.EDIT,
+			page: CardCollectionPage.render(data),
+		}
+	},
+)

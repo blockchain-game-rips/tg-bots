@@ -11,11 +11,14 @@ export class BuyChooseTicketCountPage {
 		const config = resolveConfig(availableStake)
 
 		const keyboard = new InlineKeyboard()
-			.text('1 Ticket', buildActionData(actionIds.openBuyCheckout, '1'))
+			.text('1 Ticket', buildActionData(actionIds.openBuyCheckout, 1))
 			.row()
-			.text('3 Tickets', buildActionData(actionIds.openBuyCheckout, '3'))
+			.text('3 Tickets', buildActionData(actionIds.openBuyCheckout, 3))
 			.row()
-			.text('Custom Amount', actionIds.promptTicketCount)
+			.text(
+				'Custom Amount',
+				buildActionData(actionIds.promptTicketCount, undefined),
+			)
 
 		return {
 			message: [

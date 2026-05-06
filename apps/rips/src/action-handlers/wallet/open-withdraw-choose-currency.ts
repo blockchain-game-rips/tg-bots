@@ -1,28 +1,33 @@
 import { currencyControllerGetCurrencies } from '../../../generated/api-client'
-import { SUPPORTED_CURRENCIES } from '../../constants'
+import { ActionDef, withPayload } from '../../action-def'
+import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { Chain, EffectType } from '../../types'
 import { toCurrencyId } from '../../utils/currency'
 import { parseChain } from '../../validation/chain-index'
 
-export async function openWithdrawChooseCurrency(
-	_session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	const chain = parseChain(payload)
+export const openWithdrawChooseCurrency: ActionDef<Chain> = withPayload(
+	(chain) =>
+		SUPPORTED_CHAINS.findIndex(
+			(c) =>
+				c.namespace === chain.namespace &&
+				c.reference === chain.reference,
+		).toString(),
+	(raw) => parseChain(raw),
+	async (_session, chain) => {
+		const chainCurrencyIds = SUPPORTED_CURRENCIES.filter(
+			(c) =>
+				c.chain.namespace === chain.namespace &&
+				c.chain.reference === chain.reference,
+		).map(toCurrencyId)
 
-	const chainCurrencyIds = SUPPORTED_CURRENCIES.filter(
-		(c) =>
-			c.chain.namespace === chain.namespace &&
-			c.chain.reference === chain.reference,
-	).map(toCurrencyId)
+		const { data } = await currencyControllerGetCurrencies({
+			query: { chainAddress: chainCurrencyIds },
+		})
 
-	const { data } = await currencyControllerGetCurrencies({
-		query: { chainAddress: chainCurrencyIds },
-	})
-
-	return {
-		type: EffectType.EDIT,
-		page: WithdrawChooseCurrencyPage.render(data.currencies),
-	}
-}
+		return {
+			type: EffectType.EDIT,
+			page: WithdrawChooseCurrencyPage.render(data.currencies),
+		}
+	},
+)

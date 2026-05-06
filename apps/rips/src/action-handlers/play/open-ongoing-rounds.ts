@@ -2,13 +2,11 @@ import {
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { OngoingRoundsPage } from '../../pages/play/ongoing-rounds-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export async function openOngoingRounds(
-	_session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openOngoingRounds: ActionDef<void> = noPayload(async () => {
 	const [{ data: roundsData }, { data: stakesData }] = await Promise.all([
 		ripsControllerGetOngoingRounds(),
 		ripsControllerGetStakes(),
@@ -21,4 +19,4 @@ export async function openOngoingRounds(
 			stakesData.availableStakes,
 		),
 	}
-}
+})

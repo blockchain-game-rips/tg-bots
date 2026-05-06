@@ -2,19 +2,17 @@ import {
 	ripsControllerBuyTicketsPurchase,
 	ripsControllerGetOngoingRounds,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuySuccessPage } from '../../pages/play/buy-success-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { isApiErrorWithStatus } from '../../utils/action-handler-utils'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow, resetFlow } from '../../utils/session-utils'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
-export async function executeBuyTickets(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const executeBuyTickets: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'buyTickets', 'ticket-count-chosen')
 	const { stakeId, ticketCount } = session.flow.data
 
@@ -43,4 +41,4 @@ export async function executeBuyTickets(
 		type: EffectType.EDIT,
 		page: BuySuccessPage.render(purchase, round),
 	}
-}
+})

@@ -1,8 +1,9 @@
+import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { addNav, keyboardFromLayout } from '../../utils/keyboard'
+import { addNav } from '../../utils/keyboard'
 
 export class AllBalancesPage {
 	static render(balances: CurrencyAmountDto[]): PageContent {
@@ -27,7 +28,7 @@ export class AllBalancesPage {
 
 		const lines = ['<b>All Balances</b>', '', ...chainSections]
 
-		const keyboard = addNav(keyboardFromLayout([]), {
+		const keyboard = addNav(new InlineKeyboard(), {
 			home: actionIds.openHome,
 			parent: actionIds.openWallet,
 		})

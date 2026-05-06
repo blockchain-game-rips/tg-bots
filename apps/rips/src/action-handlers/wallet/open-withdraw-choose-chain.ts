@@ -1,12 +1,8 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawChooseChainPage } from '../../pages/wallet/withdraw-choose-chain-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function openWithdrawChooseChain(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.EDIT,
-		page: WithdrawChooseChainPage.render(),
-	}
-}
+export const openWithdrawChooseChain: ActionDef<void> = noPayload(() => ({
+	type: EffectType.EDIT,
+	page: WithdrawChooseChainPage.render(),
+}))

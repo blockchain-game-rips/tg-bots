@@ -1,7 +1,8 @@
 import { User } from '@grammyjs/types'
 import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
-import { ActionId } from './actions'
 import { Flow } from './flows'
+
+export type ActionId<P = void> = string & { readonly __payloadType: P }
 
 export type MessageToEdit = {
 	pageContent: PageContent
@@ -11,7 +12,7 @@ export type MessageToEdit = {
 export type SessionData<F extends Flow = Flow> = {
 	telegramId: string
 	lastAsk: {
-		onSubmit: ActionId
+		onSubmit: ActionId<any>
 		pageToEdit: MessageToEdit
 	} | null
 	flow: F
@@ -30,7 +31,7 @@ export type EffectEdit = { type: EffectType.EDIT; page: PageContent }
 export type EffectAsk = {
 	type: EffectType.ASK
 	prompt: PromptContent
-	onSubmit: ActionId
+	onSubmit: ActionId<any>
 }
 export type EffectLoading = {
 	type: EffectType.SEND_LOADING
@@ -40,31 +41,14 @@ export type EffectLoading = {
 
 export type Effect = EffectEdit | EffectAsk | EffectLoading
 
-export type ActionHandler = (
-	session: SessionData,
-	payload: string | undefined,
-) => Promise<Effect> | Effect
-
 export type PageContent = {
 	message: string
 	keyboard: InlineKeyboard
 }
 
-export type NavIds = {
-	home: ActionId
-	parent: ActionId
-	parentPayload?: string
-}
-
-export type Row = 'row'
-
-export type StaticButton = {
-	label: string
-	actionId: ActionId
-	payload?: string
-}
-
-export type KeyboardLayout = StaticButton[][]
+export type NavIds =
+	| { home: ActionId<void>; parent: ActionId<void> }
+	| { home: ActionId<void>; parent: ActionId<any>; parentPayload: any }
 
 export type PromptContent = {
 	message: string

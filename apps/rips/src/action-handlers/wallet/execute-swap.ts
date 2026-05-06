@@ -4,9 +4,10 @@ import {
 	ripsControllerGetZapResult,
 	walletsControllerSwap,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { SwapFailedPage } from '../../pages/wallet/swap-failed-page'
 import { SwapSuccessPage } from '../../pages/wallet/swap-success-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { toCurrencyAmount } from '../../utils/currency'
 import { ErrorToRender } from '../../utils/error-to-render'
 import { assertFlow, resetFlow } from '../../utils/session-utils'
@@ -27,17 +28,12 @@ async function pollSwapResult(zapId: string): Promise<SwapOutcome> {
 	while (Date.now() < deadline) {
 		const { data } = await ripsControllerGetZapResult({ query: { zapId } })
 
-		if (data.cancelled !== null) {
+		if (data.cancelled !== null)
 			throw new ErrorToRender('Swap was cancelled')
-		}
-
-		if (data.failed !== null) {
+		if (data.failed !== null)
 			return { status: 'failed', refund: data.failed.refund }
-		}
-
-		if (data.success !== null) {
+		if (data.success !== null)
 			return { status: 'success', result: data.success }
-		}
 
 		await new Promise((resolve) =>
 			setTimeout(resolve, SWAP_POLL_INTERVAL_MS),
@@ -47,10 +43,7 @@ async function pollSwapResult(zapId: string): Promise<SwapOutcome> {
 	throw new ErrorToRender('Swap timed out')
 }
 
-export async function executeSwap(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const executeSwap: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'swap', 'idle')
 
 	const { currencyIn, currencyOut, amountIn, quotedAmountOut } =
@@ -74,7 +67,6 @@ export async function executeSwap(
 	})
 
 	const outcome = await pollSwapResult(swapResponse.zapId)
-
 	const amountInDisplay = toCurrencyAmount(
 		BigInt(swapResponse.amountIn.amount),
 		currencyIn,
@@ -100,4 +92,4 @@ export async function executeSwap(
 			transactionId: swapResponse.srcTransaction.id,
 		}),
 	}
-}
+})

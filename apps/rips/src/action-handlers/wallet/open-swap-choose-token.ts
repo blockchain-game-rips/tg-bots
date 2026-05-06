@@ -1,28 +1,41 @@
 import { currencyControllerGetCurrencies } from '../../../generated/api-client'
-import { SUPPORTED_CURRENCIES } from '../../constants'
+import { ActionDef, withPayload } from '../../action-def'
+import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { SwapChooseTokenPage } from '../../pages/wallet/swap-choose-token'
-import { Effect, EffectType, SessionData } from '../../types'
+import { Chain, EffectType } from '../../types'
 import { toCurrencyId } from '../../utils/currency'
-import { parseSelectingWithChain } from '../../validation/swap-selecting-with-index'
+import {
+	encodeSelectingWithIndex,
+	parseSelectingWithChain,
+	SelectingWithValue,
+} from '../../validation/swap-selecting-with-index'
 
-export async function openSwapChooseToken(
-	_session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	const { selecting, value: chain } = parseSelectingWithChain(payload)
+export const openSwapChooseToken: ActionDef<SelectingWithValue<Chain>> =
+	withPayload(
+		({ selecting, value: chain }) =>
+			encodeSelectingWithIndex(
+				selecting,
+				SUPPORTED_CHAINS.findIndex(
+					(c) =>
+						c.namespace === chain.namespace &&
+						c.reference === chain.reference,
+				),
+			),
+		(raw) => parseSelectingWithChain(raw),
+		async (_session, { selecting, value: chain }) => {
+			const chainCurrencyIds = SUPPORTED_CURRENCIES.filter(
+				(c) =>
+					c.chain.namespace === chain.namespace &&
+					c.chain.reference === chain.reference,
+			).map(toCurrencyId)
 
-	const chainCurrencyIds = SUPPORTED_CURRENCIES.filter(
-		(c) =>
-			c.chain.namespace === chain.namespace &&
-			c.chain.reference === chain.reference,
-	).map(toCurrencyId)
+			const { data } = await currencyControllerGetCurrencies({
+				query: { chainAddress: chainCurrencyIds },
+			})
 
-	const { data } = await currencyControllerGetCurrencies({
-		query: { chainAddress: chainCurrencyIds },
-	})
-
-	return {
-		type: EffectType.EDIT,
-		page: SwapChooseTokenPage.render(data.currencies, selecting),
-	}
-}
+			return {
+				type: EffectType.EDIT,
+				page: SwapChooseTokenPage.render(data.currencies, selecting),
+			}
+		},
+	)

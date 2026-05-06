@@ -1,15 +1,13 @@
 import { referralSystemControllerGetTierTables } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { ReferralAboutPage } from '../../pages/referral-system/referral-about-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export async function openReferralAbout(
-	_session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openReferralAbout: ActionDef<void> = noPayload(async () => {
 	const { data: tierTables } = await referralSystemControllerGetTierTables()
 
 	return {
 		type: EffectType.EDIT,
 		page: ReferralAboutPage.render(tierTables),
 	}
-}
+})

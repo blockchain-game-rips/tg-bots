@@ -17,7 +17,7 @@ export class WithdrawChooseCurrencyPage {
 			],
 			currencies,
 			tokenActionId: actionIds.openWithdraw,
-			tokenPayload: (currencyIndex) => currencyIndex.toString(),
+			tokenPayload: (currencyIndex) => currencyIndex,
 			nav: {
 				parent: actionIds.openWithdrawChooseChain,
 				home: actionIds.openHome,

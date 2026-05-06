@@ -18,7 +18,7 @@ export class UserRefundedRoundPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Check Wallet',
-			buildActionData(actionIds.openWallet),
+			buildActionData(actionIds.openWallet, undefined),
 		)
 
 		return {

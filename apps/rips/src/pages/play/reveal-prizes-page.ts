@@ -23,9 +23,15 @@ function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
 
 	if (unrevealedPrizes.length > 0) {
 		keyboard
-			.text('Reveal next', buildActionData(actionIds.openRevealSingle))
+			.text(
+				'Reveal next',
+				buildActionData(actionIds.openRevealSingle, undefined),
+			)
 			.row()
-			.text('Reveal all', buildActionData(actionIds.openRevealAll))
+			.text(
+				'Reveal all',
+				buildActionData(actionIds.openRevealAll, undefined),
+			)
 			.row()
 	}
 
@@ -49,7 +55,9 @@ export class RevealPrizesNoBackPage {
 	static render(unrevealedPrizes: PrizeDto[]): PageContent {
 		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
 
-		keyboard.row().text('Home', buildActionData(actionIds.openHome))
+		keyboard
+			.row()
+			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
 	}

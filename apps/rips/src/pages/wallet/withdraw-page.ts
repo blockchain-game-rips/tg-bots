@@ -1,10 +1,10 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { PageContent } from '../../types'
+import { Chain, PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
-import { chainToName, findChainIndex } from '../../utils/chain'
+import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 
 export class WithdrawPage {
@@ -15,8 +15,6 @@ export class WithdrawPage {
 	): PageContent {
 		const { currency } = currencyBalance
 		const chain = currency.chainAddress.chain
-
-		const chainIndex = findChainIndex(chain)
 
 		const amount =
 			amountToWithdraw !== undefined
@@ -39,21 +37,24 @@ export class WithdrawPage {
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text('Enter amount', actionIds.openWithdrawChooseAmount)
+			.text(
+				'Enter amount',
+				buildActionData(actionIds.openWithdrawChooseAmount, undefined),
+			)
 			.row()
-			.text('Enter recipient', actionIds.promptWithdrawRecipient)
-			.row()
-
-		keyboard
+			.text(
+				'Enter recipient',
+				buildActionData(actionIds.promptWithdrawRecipient, undefined),
+			)
 			.row()
 			.text(
 				'Back',
 				buildActionData(
 					actionIds.openWithdrawChooseToken,
-					chainIndex.toString(),
+					chain as Chain,
 				),
 			)
-			.text('Home', buildActionData(actionIds.openHome))
+			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
 	}

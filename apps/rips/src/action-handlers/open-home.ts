@@ -2,16 +2,14 @@ import {
 	usersControllerCreateUser,
 	usersControllerGetUser,
 } from '../../generated/api-client'
+import { ActionDef, noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
-import { EffectEdit, EffectType, SessionData } from '../types'
+import { EffectType } from '../types'
 import { isApiErrorWithStatus } from '../utils/action-handler-utils'
 
 const NOT_FOUND_STATUS = 404
 
-export async function openHome(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<EffectEdit> {
+export const openHome: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	await usersControllerGetUser({ path: { telegramId } }).catch(
@@ -25,4 +23,4 @@ export async function openHome(
 	)
 
 	return { type: EffectType.EDIT, page: HomePage.render() }
-}
+})

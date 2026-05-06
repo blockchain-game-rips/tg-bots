@@ -1,11 +1,8 @@
-import { Effect, SessionData } from '../../types'
+import { ActionDef, noPayload } from '../../action-def'
 import { assertFlow, setFlow } from '../../utils/session-utils'
 import { resolveSwapPage } from '../../utils/swap'
 
-export async function openSwap(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openSwap: ActionDef<void> = noPayload(async (session) => {
 	if (session.flow?.flowType !== 'swap') {
 		setFlow(session, 'swap', 'idle', {})
 	}
@@ -13,4 +10,4 @@ export async function openSwap(
 	assertFlow(session, 'swap', 'idle')
 
 	return resolveSwapPage(session, session.flow.data)
-}
+})

@@ -3,13 +3,11 @@ import {
 	ripsControllerGetRounds,
 	ripsControllerRevealPrizes,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { RevealAllPage } from '../../pages/play/reveal-all-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export async function openRevealAll(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openRevealAll: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const { data: revealData } = await ripsControllerRevealPrizes({
@@ -36,4 +34,4 @@ export async function openRevealAll(
 			unrevealedPrizes,
 		),
 	}
-}
+})

@@ -4,9 +4,10 @@ import {
 	ripsControllerBuyTicketsZap,
 	ripsControllerGetZapResult,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { toCurrencyAmount } from '../../utils/currency'
 import { ErrorToRender } from '../../utils/error-to-render'
@@ -26,21 +27,14 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 	const deadline = Date.now() + ZAP_POLL_TIMEOUT_MS
 
 	while (Date.now() < deadline) {
-		const { data } = await ripsControllerGetZapResult({
-			query: { zapId },
-		})
+		const { data } = await ripsControllerGetZapResult({ query: { zapId } })
 
-		if (data.cancelled !== null) {
+		if (data.cancelled !== null)
 			throw new ErrorToRender('Zap was cancelled')
-		}
-
-		if (data.failed !== null) {
+		if (data.failed !== null)
 			return { status: 'failed', refund: data.failed.refund }
-		}
-
-		if (data.success !== null) {
+		if (data.success !== null)
 			return { status: 'success', result: data.success }
-		}
 
 		await new Promise((resolve) =>
 			setTimeout(resolve, ZAP_POLL_INTERVAL_MS),
@@ -50,10 +44,7 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 	throw new ErrorToRender('Zap timed out')
 }
 
-export async function executeZap(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const executeZap: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'buyTickets', 'zap-currency-chosen')
 
 	const { stakeId, ticketCount, currency } = session.flow.data
@@ -69,7 +60,6 @@ export async function executeZap(
 
 	const outcome = await pollZapResult(zapResponse.zapId)
 	const availableStake = await fetchStake(stakeId)
-
 	const amountIn = toCurrencyAmount(
 		BigInt(zapResponse.amountIn.amount),
 		currency,
@@ -98,4 +88,4 @@ export async function executeZap(
 			zapSuccessResult: outcome.result,
 		}),
 	}
-}
+})

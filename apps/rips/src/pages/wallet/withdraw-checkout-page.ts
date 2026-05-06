@@ -4,10 +4,11 @@ import {
 	QuoteWithdrawResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { PageContent } from '../../types'
+import { SUPPORTED_CURRENCIES } from '../../constants'
+import { Chain, PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
-import { chainToName, findChainIndex } from '../../utils/chain'
+import { chainToName } from '../../utils/chain'
 import {
 	formatAmountWithUsd,
 	fundsBreakdown,
@@ -34,8 +35,6 @@ export class WithdrawCheckoutPage {
 
 		const { currency } = currencyAmount
 		const chain = currency.chainAddress.chain
-
-		const chainIndex = findChainIndex(chain)
 
 		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
@@ -81,27 +80,45 @@ export class WithdrawCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.openWithdraw).row()
+			const currencyIndex = SUPPORTED_CURRENCIES.findIndex(
+				(c) =>
+					c.address === currency.chainAddress.address &&
+					c.chain.reference === chain.reference,
+			)
+			keyboard
+				.text(
+					'Update',
+					buildActionData(actionIds.openWithdraw, currencyIndex),
+				)
+				.row()
 		} else {
-			keyboard.text('Confirm', actionIds.executeWithdraw).row()
+			keyboard
+				.text(
+					'Confirm',
+					buildActionData(actionIds.executeWithdraw, undefined),
+				)
+				.row()
 		}
 
 		keyboard
-			.text('Enter amount', actionIds.openWithdrawChooseAmount)
+			.text(
+				'Enter amount',
+				buildActionData(actionIds.openWithdrawChooseAmount, undefined),
+			)
 			.row()
-			.text('Enter recipient', actionIds.promptWithdrawRecipient)
-			.row()
-
-		keyboard
+			.text(
+				'Enter recipient',
+				buildActionData(actionIds.promptWithdrawRecipient, undefined),
+			)
 			.row()
 			.text(
 				'Back',
 				buildActionData(
 					actionIds.openWithdrawChooseToken,
-					chainIndex.toString(),
+					chain as Chain,
 				),
 			)
-			.text('Home', buildActionData(actionIds.openHome))
+			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
 	}

@@ -18,7 +18,7 @@ export class BuyChooseStakePage {
 					configName(config),
 					buildActionData(
 						actionIds.openChooseTicketAmount,
-						availableStake.stake.id.toString(),
+						availableStake.stake.id,
 					),
 				)
 				.row()

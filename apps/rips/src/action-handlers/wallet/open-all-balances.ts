@@ -1,14 +1,12 @@
 import { walletsControllerGetBalances } from '../../../generated/api-client'
 import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
+import { ActionDef, noPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
 import { AllBalancesPage } from '../../pages/wallet/all-balances-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { chainAddressToString } from '../../utils/currency'
 
-export function openAllBalances(
-	session: SessionData,
-	_payload: string | undefined,
-): Effect {
+export const openAllBalances: ActionDef<void> = noPayload((session) => {
 	const { telegramId } = session
 
 	return {
@@ -30,4 +28,4 @@ export function openAllBalances(
 			}
 		},
 	}
-}
+})

@@ -17,14 +17,10 @@ const currencyIndexSchema = z
 			),
 	)
 
-export function parseCurrencyChainAddress(
-	payload: string | undefined,
-): ChainAddressDto {
-	const index = parsePayload(
-		payload,
-		currencyIndexSchema,
-		'Invalid currency index',
-	)
+export function parseCurrencyIndex(raw: string): number {
+	return parsePayload(raw, currencyIndexSchema, 'Invalid currency index')
+}
 
-	return SUPPORTED_CURRENCIES[index]
+export function parseCurrencyChainAddress(raw: string): ChainAddressDto {
+	return SUPPORTED_CURRENCIES[parseCurrencyIndex(raw)]
 }

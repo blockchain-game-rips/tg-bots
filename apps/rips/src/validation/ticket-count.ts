@@ -11,6 +11,6 @@ const ticketCountSchema = z
 			.positive('Ticket count should be positive'),
 	)
 
-export function parseTicketCount(payload: string | undefined): number {
-	return parsePayload(payload, ticketCountSchema, 'Invalid ticket count')
+export function parseTicketCount(raw: string): number {
+	return parsePayload(raw, ticketCountSchema, 'Invalid ticket count')
 }

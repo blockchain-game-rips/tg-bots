@@ -30,7 +30,7 @@ export class ZapChooseTokenPage {
 			],
 			currencies,
 			tokenActionId: actionIds.openZapConfirm,
-			tokenPayload: (currencyIndex) => currencyIndex.toString(),
+			tokenPayload: (currencyIndex) => currencyIndex,
 			nav: {
 				parent: actionIds.openZapChooseChain,
 				home: actionIds.openHome,

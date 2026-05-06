@@ -5,7 +5,8 @@ import {
 	QuoteZapResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { PageContent } from '../../types'
+import { Chain, PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import {
@@ -70,13 +71,24 @@ export class ZapCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.refreshZapConfirm).row()
+			keyboard
+				.text(
+					'Update',
+					buildActionData(actionIds.refreshZapConfirm, undefined),
+				)
+				.row()
 		} else {
-			keyboard.text('Confirm', actionIds.executeZap).row()
+			keyboard
+				.text(
+					'Confirm',
+					buildActionData(actionIds.executeZap, undefined),
+				)
+				.row()
 		}
 
 		addNav(keyboard, {
 			parent: actionIds.openZapChooseToken,
+			parentPayload: chain as Chain,
 			home: actionIds.openHome,
 		})
 

@@ -5,6 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { formatPercent } from '../../utils/referral'
@@ -82,9 +83,18 @@ export class ReferralSystemPage {
 		const keyboard = new InlineKeyboard()
 			.url('Copy referral link', referralLink)
 			.row()
-			.text('Withdraw rewards', actionIds.openReferralWithdrawReward)
+			.text(
+				'Withdraw rewards',
+				buildActionData(
+					actionIds.openReferralWithdrawReward,
+					undefined,
+				),
+			)
 			.row()
-			.text('About', actionIds.openReferralAbout)
+			.text(
+				'About',
+				buildActionData(actionIds.openReferralAbout, undefined),
+			)
 			.row()
 
 		addNav(keyboard, {

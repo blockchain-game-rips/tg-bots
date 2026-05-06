@@ -1,11 +1,9 @@
 import { ripsControllerGetStakes } from '../../generated/api-client'
+import { ActionDef, noPayload } from '../action-def'
 import { AboutPage } from '../pages/about/about-page'
-import { Effect, EffectType, SessionData } from '../types'
+import { EffectType } from '../types'
 
-export async function openAbout(
-	_session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openAbout: ActionDef<void> = noPayload(async () => {
 	const { data } = await ripsControllerGetStakes()
 
 	const configs = data.availableStakes
@@ -13,4 +11,4 @@ export async function openAbout(
 		.filter((c) => c !== null && c !== undefined)
 
 	return { type: EffectType.EDIT, page: AboutPage.render(configs) }
-}
+})

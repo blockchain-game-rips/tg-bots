@@ -1,8 +1,10 @@
+import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { addNav, keyboardFromLayout } from '../../utils/keyboard'
+import { addNav } from '../../utils/keyboard'
 
 export class WalletPage {
 	static render(
@@ -18,20 +20,26 @@ export class WalletPage {
 			`<code>${userEvmAddress}</code>`,
 		]
 
-		const keyboard = addNav(
-			keyboardFromLayout([
-				[{ label: 'Update', actionId: actionIds.openWallet }],
-				[
-					{
-						label: 'All Balances',
-						actionId: actionIds.openAllBalances,
-					},
-				],
-				[{ label: 'Withdraw', actionId: actionIds.openWithdraw }],
-				[{ label: 'Swap', actionId: actionIds.openSwapChooseChain }],
-			]),
-			{ home: actionIds.openHome, parent: actionIds.openHome },
-		)
+		const keyboard = new InlineKeyboard()
+			.text('Update', buildActionData(actionIds.openWallet, undefined))
+			.row()
+			.text(
+				'All Balances',
+				buildActionData(actionIds.openAllBalances, undefined),
+			)
+			.row()
+			.text(
+				'Withdraw',
+				buildActionData(actionIds.openWithdrawChooseChain, undefined),
+			)
+			.row()
+			.text('Swap', buildActionData(actionIds.openSwap, undefined))
+			.row()
+
+		addNav(keyboard, {
+			home: actionIds.openHome,
+			parent: actionIds.openHome,
+		})
 
 		return { message: lines.join('\n'), keyboard }
 	}

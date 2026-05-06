@@ -60,13 +60,13 @@ export class BuyCheckoutPage {
 			keyboard
 				.text(
 					'Update',
-					buildActionData(
-						actionIds.openBuyCheckout,
-						ticketCount.toString(),
-					),
+					buildActionData(actionIds.openBuyCheckout, ticketCount),
 				)
 				.row()
-				.text('Enter from another token', actionIds.openZapChooseChain)
+				.text(
+					'Enter from another token',
+					buildActionData(actionIds.openZapChooseChain, undefined),
+				)
 				.row()
 
 			lines.push('')
@@ -78,7 +78,12 @@ export class BuyCheckoutPage {
 		} else {
 			lines.push('')
 			lines.push('Confirm to proceed')
-			keyboard.text('Confirm', actionIds.executeBuyTickets).row()
+			keyboard
+				.text(
+					'Confirm',
+					buildActionData(actionIds.executeBuyTickets, undefined),
+				)
+				.row()
 		}
 
 		keyboard
@@ -86,10 +91,10 @@ export class BuyCheckoutPage {
 				'Back',
 				buildActionData(
 					actionIds.openChooseTicketAmount,
-					availableStake.stake.id.toString(),
+					availableStake.stake.id,
 				),
 			)
-			.text('Home', actionIds.openHome)
+			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
 	}

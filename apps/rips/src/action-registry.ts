@@ -1,3 +1,4 @@
+import { ActionDef } from './action-def'
 import { openAbout } from './action-handlers/open-about'
 import { openHome } from './action-handlers/open-home'
 import { executeBuyTickets } from './action-handlers/play/execute-buy-tickets'
@@ -47,7 +48,6 @@ import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
 import { submitSwapCurrency } from './action-handlers/wallet/submit-swap-currency'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
-import { ActionHandler } from './types'
 
 export const actionRegistry = {
 	// Home
@@ -114,4 +114,4 @@ export const actionRegistry = {
 	submitSwapAmount,
 	executeSwap,
 	promptSwapAmount,
-} satisfies Record<string, ActionHandler>
+} satisfies Record<string, ActionDef<any>>

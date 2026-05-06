@@ -1,8 +1,19 @@
-import { ActionId } from '../actions'
+import { ActionId } from '../types'
 
 export const COMMAND_SEPARATOR = ':'
 
-export function buildActionData(actionId: ActionId, payload?: string): string {
-	if (payload === undefined) return actionId
-	return `${actionId}${COMMAND_SEPARATOR}${payload}`
+const encoders = new Map<string, (v: unknown) => string>()
+
+export function registerEncoder(
+	id: string,
+	encode: (v: unknown) => string,
+): void {
+	encoders.set(id, encode)
+}
+
+export function buildActionData<T>(actionId: ActionId<T>, value: T): string {
+	if (value === undefined) return actionId as string
+
+	const encode = encoders.get(actionId as string)
+	return `${actionId as string}${COMMAND_SEPARATOR}${encode!(value)}`
 }

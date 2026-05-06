@@ -1,15 +1,13 @@
 import { ripsControllerGetStakes } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { CardCollectionChooseStakePage } from '../../pages/play/card-collection-choose-stake'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export async function openCardChooseStake(
-	_session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openCardChooseStake: ActionDef<void> = noPayload(async () => {
 	const { data } = await ripsControllerGetStakes()
 
 	return {
 		type: EffectType.EDIT,
 		page: CardCollectionChooseStakePage.render(data.availableStakes),
 	}
-}
+})

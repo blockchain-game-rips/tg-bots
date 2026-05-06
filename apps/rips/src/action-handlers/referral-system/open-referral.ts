@@ -2,16 +2,14 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
 } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { getEnvSafe } from '../../utils/common'
 
 const botUsername = getEnvSafe('BOT_USERNAME')
 
-export async function openReferral(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openReferral: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const referralLink = `https://t.me/${botUsername}?start=${telegramId}`
@@ -31,4 +29,4 @@ export async function openReferral(
 			referralLink,
 		}),
 	}
-}
+})

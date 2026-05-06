@@ -1,13 +1,11 @@
 import { usersControllerGetUser } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { WalletPage } from '../../pages/wallet/wallet-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { fetchNativeBalance } from '../../utils/api'
 import { evmAddressFromUser } from '../../utils/wallet'
 
-export async function openWallet(
-	session: SessionData,
-	_payload: string | undefined,
-): Promise<Effect> {
+export const openWallet: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const [balance, { data: user }] = await Promise.all([
@@ -19,4 +17,4 @@ export async function openWallet(
 		type: EffectType.EDIT,
 		page: WalletPage.render(balance, evmAddressFromUser(user)),
 	}
-}
+})

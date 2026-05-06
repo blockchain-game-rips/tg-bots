@@ -1,37 +1,60 @@
+import { ActionDef } from './action-def'
 import { actionRegistry } from './action-registry'
 import { botActionDuration } from './metrics/registry'
-import { ActionHandler } from './types'
+import { ActionId, Effect, SessionData } from './types'
+import { registerEncoder } from './utils/action-data'
 
 type ActionRegistry = typeof actionRegistry
 type ActionName = keyof ActionRegistry
 
-export type ActionId = string
+type PayloadOf<D> = D extends ActionDef<infer P> ? P : never
+
+export type { ActionId }
+
+export type BoundAction = {
+	decode: (raw: string) => unknown
+	handler: (
+		session: SessionData,
+		payload: unknown,
+	) => Promise<Effect> | Effect
+}
+
+function toActionId(index: number): string {
+	return index.toString(36)
+}
 
 function buildActionIds(
-	registry: Record<string, ActionHandler>,
-): Record<string, ActionId> {
-	const result: Record<string, ActionId> = {}
+	registry: Record<string, ActionDef<any>>,
+): Record<string, ActionId<any>> {
+	const result: Record<string, ActionId<any>> = {}
 
 	Object.keys(registry).forEach((key, index) => {
-		result[key] = index.toString(36)
+		result[key] = toActionId(index) as ActionId<any>
 	})
 
 	return result
 }
 
 function buildActions(
-	registry: Record<string, ActionHandler>,
-): Record<ActionId, ActionHandler> {
-	const result: Record<ActionId, ActionHandler> = {}
+	registry: Record<string, ActionDef<any>>,
+): Record<string, BoundAction> {
+	const result: Record<string, BoundAction> = {}
 
-	Object.entries(registry).forEach(([name, handler], index) => {
-		result[index.toString(36)] = async (session, payload) => {
-			const end = botActionDuration.startTimer({ action: name })
-			try {
-				return await handler(session, payload)
-			} finally {
-				end()
-			}
+	Object.entries(registry).forEach(([name, def], index) => {
+		const id = toActionId(index)
+
+		registerEncoder(id, def.encode as (v: unknown) => string)
+
+		result[id] = {
+			decode: def.decode,
+			handler: async (session, payload) => {
+				const end = botActionDuration.startTimer({ action: name })
+				try {
+					return await def.handler(session, payload)
+				} finally {
+					end()
+				}
+			},
 		}
 	})
 
@@ -39,7 +62,7 @@ function buildActions(
 }
 
 export const actionIds = buildActionIds(actionRegistry) as {
-	[K in ActionName]: ActionId
+	[K in ActionName]: ActionId<PayloadOf<(typeof actionRegistry)[K]>>
 }
 
 export const actions = buildActions(actionRegistry)

@@ -1,4 +1,5 @@
 import { actionIds } from '../../actions'
+import { SUPPORTED_CHAINS } from '../../constants'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
@@ -11,7 +12,10 @@ export class SwapChooseChainPage {
 		return buildChooseChainPage({
 			lines: [swapBreadcrumb(), '', `Choose a chain for ${label}:`],
 			chainActionId: actionIds.openSwapChooseToken,
-			chainPayload: (chainIndex) => `${selecting}:${chainIndex}`,
+			chainPayload: (chainIndex) => ({
+				selecting,
+				value: SUPPORTED_CHAINS[chainIndex],
+			}),
 			nav: { parent: actionIds.openSwap, home: actionIds.openHome },
 		})
 	}

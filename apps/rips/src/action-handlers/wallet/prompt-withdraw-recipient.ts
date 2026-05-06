@@ -1,14 +1,10 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { actionIds } from '../../actions'
 import { WithdrawAddressPrompt } from '../../prompts/withdraw-address-prompt'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 
-export function promptWithdrawRecipient(
-	_session: SessionData,
-	_payload: string | undefined,
-): Effect {
-	return {
-		type: EffectType.ASK,
-		prompt: WithdrawAddressPrompt.render(),
-		onSubmit: actionIds.submitWithdrawRecipient,
-	}
-}
+export const promptWithdrawRecipient: ActionDef<void> = noPayload(() => ({
+	type: EffectType.ASK,
+	prompt: WithdrawAddressPrompt.render(),
+	onSubmit: actionIds.submitWithdrawRecipient,
+}))

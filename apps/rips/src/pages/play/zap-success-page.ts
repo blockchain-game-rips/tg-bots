@@ -6,6 +6,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
@@ -46,7 +47,10 @@ export class ZapSuccessPage {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text('Home', actionIds.openHome),
+			keyboard: new InlineKeyboard().text(
+				'Home',
+				buildActionData(actionIds.openHome, undefined),
+			),
 		}
 	}
 }

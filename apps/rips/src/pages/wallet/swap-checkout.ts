@@ -5,6 +5,7 @@ import {
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buildActionData } from '../../utils/action-data'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
 import {
 	formatAmountWithUsd,
@@ -66,9 +67,16 @@ export class SwapCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.openSwap).row()
+			keyboard
+				.text('Update', buildActionData(actionIds.openSwap, undefined))
+				.row()
 		} else {
-			keyboard.text('Confirm', actionIds.executeSwap).row()
+			keyboard
+				.text(
+					'Confirm',
+					buildActionData(actionIds.executeSwap, undefined),
+				)
+				.row()
 		}
 
 		addNav(keyboard, {

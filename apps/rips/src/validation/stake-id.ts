@@ -6,6 +6,6 @@ const stakeIdSchema = z
 	.transform(Number)
 	.pipe(z.number().int().positive())
 
-export function parseStakeId(payload: string | undefined): number {
-	return parsePayload(payload, stakeIdSchema, 'No stake selected')
+export function parseStakeId(raw: string): number {
+	return parsePayload(raw, stakeIdSchema, 'No stake selected')
 }

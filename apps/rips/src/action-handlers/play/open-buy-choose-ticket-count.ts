@@ -1,21 +1,21 @@
+import { ActionDef, withPayload } from '../../action-def'
 import { BuyChooseTicketCountPage } from '../../pages/play/buy-choose-ticket-count-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType } from '../../types'
 import { fetchStake } from '../../utils/api'
 import { setFlow } from '../../utils/session-utils'
 import { parseStakeId } from '../../validation/stake-id'
 
-export async function openBuyChooseTicketCount(
-	session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	const stakeId = parseStakeId(payload)
+export const openBuyChooseTicketCount: ActionDef<number> = withPayload(
+	(stakeId) => stakeId.toString(),
+	(raw) => parseStakeId(raw),
+	async (session, stakeId) => {
+		const availableStake = await fetchStake(stakeId)
 
-	const availableStake = await fetchStake(stakeId)
+		setFlow(session, 'buyTickets', 'stake-chosen', { stakeId })
 
-	setFlow(session, 'buyTickets', 'stake-chosen', { stakeId })
-
-	return {
-		type: EffectType.EDIT,
-		page: BuyChooseTicketCountPage.render(availableStake),
-	}
-}
+		return {
+			type: EffectType.EDIT,
+			page: BuyChooseTicketCountPage.render(availableStake),
+		}
+	},
+)

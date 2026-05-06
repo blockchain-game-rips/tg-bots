@@ -1,4 +1,5 @@
 import { Api } from 'grammy'
+import { BoundAction } from './actions'
 import { Effect, EffectType, MessageToEdit, SessionData } from './types'
 import { fireAndForget } from './utils/common'
 import { composePageContentWithError } from './utils/error-to-render'
@@ -63,11 +64,16 @@ export async function executeEffectOrDisplayError(
 	chatId: number,
 	messageToEdit: MessageToEdit,
 	session: SessionData,
-	action: () => Promise<Effect> | Effect,
+	boundAction: BoundAction,
+	rawPayload: string | undefined,
 	messagesToDelete: number[] = [],
 ): Promise<void> {
 	try {
-		const effect = await action()
+		const payload =
+			rawPayload !== undefined
+				? boundAction.decode(rawPayload)
+				: undefined
+		const effect = await boundAction.handler(session, payload)
 		await executeEffect(effect, api, chatId, messageToEdit, session)
 	} catch (error) {
 		const errorPage = composePageContentWithError(

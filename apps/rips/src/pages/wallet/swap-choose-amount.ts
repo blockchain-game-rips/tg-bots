@@ -15,7 +15,7 @@ export class SwapChooseAmountPage {
 	}): PageContent {
 		const { currencyInBalance, currencyOutBalance } = args
 
-		const maxPayload = formatUnits(
+		const maxAmount = formatUnits(
 			BigInt(currencyInBalance.amount),
 			currencyInBalance.currency.decimals,
 		)
@@ -35,10 +35,13 @@ export class SwapChooseAmountPage {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Swap Max',
-				buildActionData(actionIds.submitSwapAmount, maxPayload),
+				buildActionData(actionIds.submitSwapAmount, maxAmount),
 			)
 			.row()
-			.text('Custom amount', actionIds.promptSwapAmount)
+			.text(
+				'Custom amount',
+				buildActionData(actionIds.promptSwapAmount, undefined),
+			)
 			.row()
 
 		addNav(keyboard, {

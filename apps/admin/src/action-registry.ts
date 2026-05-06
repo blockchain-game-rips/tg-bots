@@ -16,10 +16,12 @@ import {
 	submitConfirmUnfreezeReferrer,
 } from './action-handlers/execute-set-referrer-frozen'
 import { openHome } from './action-handlers/open-home'
+import { openState } from './action-handlers/open-state'
 import { ActionHandler } from './types'
 
 export const actionRegistry = {
 	openHome,
+	openState,
 	openConfirmPause,
 	openConfirmUnpause,
 	executeConfirmPaused,

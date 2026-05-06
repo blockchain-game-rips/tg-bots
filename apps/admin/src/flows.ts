@@ -34,10 +34,28 @@ export type SetTiersFlow = {
 	data: { tiers: Array<{ minVolume: number; feePercent: number }> }
 }
 
+export type UpdateStakeConfigFlow = {
+	flowType: 'updateStakeConfig'
+	step: 'confirm'
+	data: {
+		stakeId: number
+		ticketCap: number
+		feePercent: number
+		ticketPrice: number
+		durationSeconds: number
+		prizeDistribution: Array<{
+			prizeCount: number
+			minPrize: number
+			maxPrize: number
+		}>
+	}
+}
+
 export type Flow =
 	| BuyTicketsFlow
 	| SetPausedFlow
 	| SetReferrerFrozenFlow
 	| SetDefaultFeeFlow
 	| SetTiersFlow
+	| UpdateStakeConfigFlow
 	| null

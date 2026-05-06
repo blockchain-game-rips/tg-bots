@@ -20,6 +20,11 @@ import {
 	openSetTiers,
 	submitConfirmSetTiers,
 } from './action-handlers/execute-set-tiers'
+import {
+	executeConfirmUpdateStakeConfig,
+	openUpdateStakeConfig,
+	submitConfirmUpdateStakeConfig,
+} from './action-handlers/execute-update-stake-config'
 import { openHome } from './action-handlers/open-home'
 import { openState } from './action-handlers/open-state'
 import { ActionHandler } from './types'
@@ -41,4 +46,7 @@ export const actionRegistry = {
 	openSetTiers,
 	submitConfirmSetTiers,
 	executeConfirmSetTiers,
+	openUpdateStakeConfig,
+	submitConfirmUpdateStakeConfig,
+	executeConfirmUpdateStakeConfig,
 } satisfies Record<string, ActionHandler>

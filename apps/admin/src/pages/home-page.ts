@@ -60,6 +60,12 @@ export class HomePage {
 						actionId: actionIds.openSetTiers,
 					},
 				],
+				[
+					{
+						label: 'Update Stake Config',
+						actionId: actionIds.openUpdateStakeConfig,
+					},
+				],
 			]),
 		}
 	}

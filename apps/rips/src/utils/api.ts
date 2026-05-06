@@ -1,5 +1,7 @@
 import {
 	currencyControllerGetCurrencies,
+	ripsControllerGetRounds,
+	RipsControllerGetRoundsResponse,
 	ripsControllerGetStakes,
 	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
@@ -11,6 +13,17 @@ import { chainAddressToString } from './currency'
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
 })
+
+// Serializes arrays as repeated keys (ids[]=1&ids[]=2) so NestJS ParseArrayPipe
+// correctly identifies single-element arrays instead of treating them as strings.
+const bracketArrayQuerySerializer = (params: Record<string, unknown>) =>
+	Object.entries(params)
+		.flatMap(([key, value]) =>
+			Array.isArray(value)
+				? value.map((v) => `${key}[]=${encodeURIComponent(v)}`)
+				: [`${key}=${encodeURIComponent(String(value))}`],
+		)
+		.join('&')
 
 export async function fetchBalances(
 	telegramId: string,
@@ -46,6 +59,17 @@ export async function fetchNativeBalance(telegramId: string) {
 	}
 
 	return balance
+}
+
+export async function fetchRounds(
+	ids: number[],
+): Promise<RipsControllerGetRoundsResponse['rounds']> {
+	const { data } = await ripsControllerGetRounds({
+		query: { ids },
+		querySerializer: bracketArrayQuerySerializer,
+	})
+
+	return data.rounds
 }
 
 export async function fetchStake(

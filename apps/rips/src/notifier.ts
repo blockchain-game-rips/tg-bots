@@ -2,7 +2,6 @@ import { Bot } from 'grammy'
 import {
 	notificationsControllerGetNotifications,
 	notificationsControllerMarkNotified,
-	ripsControllerGetRounds,
 } from '../generated/api-client'
 import { logger } from './logging/pino-logger'
 import { GlobalClaimedRoundPage } from './pages/notifications/global-claimed-page'
@@ -10,6 +9,7 @@ import { GlobalRefundedRoundPage } from './pages/notifications/global-refunded-p
 import { UserClaimedRoundPage } from './pages/notifications/user-claimed-page'
 import { UserRefundedRoundPage } from './pages/notifications/user-refunded-page'
 import { Context, PageContent } from './types'
+import { fetchRounds } from './utils/api'
 import { getEnvSafe, wait } from './utils/common'
 
 const POLL_INTERVAL_MS = 5000
@@ -56,11 +56,9 @@ export class Notifier {
 			await notificationsControllerGetNotifications()
 
 		for (const notification of notificationsData.notifications) {
-			const { data: roundsData } = await ripsControllerGetRounds({
-				query: { ids: [Number(notification.roundId)] },
-			})
+			const rounds = await fetchRounds([Number(notification.roundId)])
 
-			const round = roundsData.rounds[0]
+			const round = rounds[0]
 
 			if (!round) {
 				logger.error(

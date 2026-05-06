@@ -33,7 +33,7 @@ function toFixedDigitsFromPrice(priceUsd: number): number {
 
 function formatUsd(usd: number): string {
 	if (usd === 0) return '$0'
-	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
+	if (usd < USD_MIN_DISPLAY) return `&lt;$${USD_MIN_DISPLAY.toFixed(2)}`
 	return `$${usd.toFixed(2)}`
 }
 
@@ -56,7 +56,7 @@ function formatTokenAmount(amount: number, priceUsd: number): string {
 	const minDisplayAmount = Math.pow(10, -digits)
 
 	if (amount < minDisplayAmount)
-		return `<${parseFloat(minDisplayAmount.toFixed(digits))}`
+		return `&lt;${parseFloat(minDisplayAmount.toFixed(digits))}`
 
 	return `${parseFloat(amount.toFixed(digits))}`
 }

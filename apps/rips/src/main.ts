@@ -2,7 +2,7 @@ import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
-import { openHome } from './action-handlers/open-home'
+import { actions } from './actions'
 import { handleButton } from './button-handler'
 import { logger } from './logging/pino-logger'
 import { handleMessage } from './message-handler'
@@ -67,7 +67,11 @@ bot.command('start', async (ctx) => {
 	}
 
 	try {
-		const showHomeEffect = await openHome.handler(ctx.session, undefined)
+		//TODO: there are circular dependencies in this project
+		const showHomeEffect = await actions['0'].handler(
+			ctx.session,
+			undefined,
+		)
 		if (showHomeEffect.type === EffectType.EDIT) {
 			pageContent = showHomeEffect.page
 		}

@@ -6,8 +6,13 @@ import { Chain } from '../types'
 
 const CHAIN_NAMES: Record<string, Record<string, string> | undefined> = {
 	[EIP155_NAMESPACE]: {
-		'8453': 'Base',
+		'1': 'Ethereum',
+		'56': 'BSC',
+		'137': 'Polygon',
 		'42161': 'Arbitrum',
+		'43114': 'Avalanche',
+		'10': 'Optimism',
+		'8453': 'Base',
 	},
 }
 
@@ -22,6 +27,7 @@ export function truncateAddress(address: string): string {
 	return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
+//TODO: ensure by type system that chain names has all chains
 export function chainToName(chain: Chain): string {
 	const chainName = CHAIN_NAMES[chain.namespace]?.[chain.reference]
 

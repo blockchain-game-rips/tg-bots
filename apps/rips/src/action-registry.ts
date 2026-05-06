@@ -51,6 +51,7 @@ import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdra
 
 export const actionRegistry = {
 	// Home
+	// SHOULD BE AT THE START DUE TO CIRCULAR DEPS
 	openHome,
 
 	// About

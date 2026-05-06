@@ -1,8 +1,12 @@
 import { Api } from 'grammy'
 import { BoundAction } from './actions'
+import { logger } from './logging/pino-logger'
 import { Effect, EffectType, MessageToEdit, SessionData } from './types'
 import { fireAndForget } from './utils/common'
-import { composePageContentWithError } from './utils/error-to-render'
+import {
+	composePageContentWithError,
+	ErrorToRender,
+} from './utils/error-to-render'
 
 async function executeEffect(
 	effect: Effect,
@@ -76,6 +80,10 @@ export async function executeEffectOrDisplayError(
 		const effect = await boundAction.handler(session, payload)
 		await executeEffect(effect, api, chatId, messageToEdit, session)
 	} catch (error) {
+		if (!(error instanceof ErrorToRender)) {
+			logger.error(error)
+		}
+
 		const errorPage = composePageContentWithError(
 			messageToEdit.pageContent,
 			error,

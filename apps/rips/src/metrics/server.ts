@@ -2,7 +2,7 @@ import { createServer } from 'node:http'
 import { logger } from '../logging/pino-logger'
 import { registry } from './registry'
 
-const METRICS_PORT = 9090
+const METRICS_PORT = 9091
 
 export function startMetricsServer(): void {
 	const server = createServer(async (req, res) => {

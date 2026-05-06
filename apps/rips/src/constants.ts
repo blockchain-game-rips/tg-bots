@@ -4,18 +4,18 @@ export const EIP155_NAMESPACE = 'eip155'
 
 const ETHEREUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '1' }
 const BNB_CHAIN = { namespace: EIP155_NAMESPACE, reference: '56' }
-const POLYGON_CHAIN = { namespace: EIP155_NAMESPACE, reference: '137' }
+// const POLYGON_CHAIN = { namespace: EIP155_NAMESPACE, reference: '137' }
 const ARBITRUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '42161' }
-const AVALANCHE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '43114' }
+// const AVALANCHE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '43114' }
 const OPTIMISM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '10' }
 const BASE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '8453' }
 
 export const SUPPORTED_CHAINS = [
 	ETHEREUM_CHAIN,
 	BNB_CHAIN,
-	POLYGON_CHAIN,
+	// POLYGON_CHAIN,
 	ARBITRUM_CHAIN,
-	AVALANCHE_CHAIN,
+	// AVALANCHE_CHAIN,
 	OPTIMISM_CHAIN,
 	BASE_CHAIN,
 ]
@@ -54,24 +54,24 @@ export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
 	{ address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', chain: BNB_CHAIN }, // USDC
 	{ address: '0x55d398326f99059fF775485246999027B3197955', chain: BNB_CHAIN }, // USDT
 
-	// Polygon
-	{ address: NATIVE_ADDRESS, chain: POLYGON_CHAIN },
-	{
-		address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
-		chain: POLYGON_CHAIN,
-	}, // WBTC
-	{
-		address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-		chain: POLYGON_CHAIN,
-	}, // WMATIC
-	{
-		address: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-		chain: POLYGON_CHAIN,
-	}, // USDC
-	{
-		address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
-		chain: POLYGON_CHAIN,
-	}, // USDT
+	// // Polygon
+	// { address: NATIVE_ADDRESS, chain: POLYGON_CHAIN },
+	// {
+	// 	address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+	// 	chain: POLYGON_CHAIN,
+	// }, // WBTC
+	// {
+	// 	address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+	// 	chain: POLYGON_CHAIN,
+	// }, // WMATIC
+	// {
+	// 	address: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+	// 	chain: POLYGON_CHAIN,
+	// }, // USDC
+	// {
+	// 	address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+	// 	chain: POLYGON_CHAIN,
+	// }, // USDT
 
 	// Arbitrum
 	{ address: NATIVE_ADDRESS, chain: ARBITRUM_CHAIN },
@@ -92,24 +92,24 @@ export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
 		chain: ARBITRUM_CHAIN,
 	}, // USDT
 
-	// Avalanche
-	{ address: NATIVE_ADDRESS, chain: AVALANCHE_CHAIN },
-	{
-		address: '0x50b7545627a5162F82A992c33b87aDc75187B218',
-		chain: AVALANCHE_CHAIN,
-	}, // WBTC
-	{
-		address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
-		chain: AVALANCHE_CHAIN,
-	}, // WAVAX
-	{
-		address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
-		chain: AVALANCHE_CHAIN,
-	}, // USDC
-	{
-		address: '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7',
-		chain: AVALANCHE_CHAIN,
-	}, // USDT
+	// // Avalanche
+	// { address: NATIVE_ADDRESS, chain: AVALANCHE_CHAIN },
+	// {
+	// 	address: '0x50b7545627a5162F82A992c33b87aDc75187B218',
+	// 	chain: AVALANCHE_CHAIN,
+	// }, // WBTC
+	// {
+	// 	address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+	// 	chain: AVALANCHE_CHAIN,
+	// }, // WAVAX
+	// {
+	// 	address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+	// 	chain: AVALANCHE_CHAIN,
+	// }, // USDC
+	// {
+	// 	address: '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7',
+	// 	chain: AVALANCHE_CHAIN,
+	// }, // USDT
 
 	// Optimism
 	{ address: NATIVE_ADDRESS, chain: OPTIMISM_CHAIN },

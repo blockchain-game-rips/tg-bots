@@ -9,12 +9,7 @@ async function executeEffect(
 	chatId: number,
 	messageToEdit: MessageToEdit,
 	session: SessionData,
-	messagesToDelete: number[] = [],
 ): Promise<void> {
-	if (messagesToDelete.length !== 0) {
-		fireAndForget(api.deleteMessages(chatId, messagesToDelete))
-	}
-
 	switch (effect.type) {
 		case EffectType.EDIT:
 			await api.editMessageText(
@@ -73,14 +68,7 @@ export async function executeEffectOrDisplayError(
 ): Promise<void> {
 	try {
 		const effect = await action()
-		await executeEffect(
-			effect,
-			api,
-			chatId,
-			messageToEdit,
-			session,
-			messagesToDelete,
-		)
+		await executeEffect(effect, api, chatId, messageToEdit, session)
 	} catch (error) {
 		const errorPage = composePageContentWithError(
 			messageToEdit.pageContent,
@@ -98,7 +86,9 @@ export async function executeEffectOrDisplayError(
 				},
 			),
 		)
-
-		fireAndForget(api.deleteMessages(chatId, messagesToDelete))
+	} finally {
+		if (messagesToDelete.length !== 0) {
+			fireAndForget(api.deleteMessages(chatId, messagesToDelete))
+		}
 	}
 }

@@ -69,7 +69,8 @@ export class Notifier {
 			}
 
 			const type = notification.type as NotificationType
-			const isGroupNotification = notification.userId === GROUP_USER_ID
+			const isGroupNotification =
+				notification.userTelegramId === GROUP_USER_ID
 			const pages = isGroupNotification ? groupPages : userPages
 			const buildPage = pages[type]
 
@@ -80,7 +81,7 @@ export class Notifier {
 
 			const chatId = isGroupNotification
 				? this.gameGroupId
-				: notification.userId
+				: notification.userTelegramId
 
 			try {
 				await this.sendNotification(chatId, buildPage(round))

@@ -24,8 +24,10 @@ export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
 		address: '0x0000000000000000000000000000000000000000',
 		chain: ARBITRUM_CHAIN,
 	},
+
 	{
 		address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 		chain: BASE_CHAIN,
 	},
+	NATIVE_ON_BASE,
 ]

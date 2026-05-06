@@ -1,5 +1,5 @@
 import { ActionDef, withPayload } from '../../action-def'
-import { assertFlow } from '../../utils/session-utils'
+import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { resolveWithdrawPage } from '../../utils/wallet'
 import { parseCurrencyAmount } from '../../validation/amount'
 
@@ -13,6 +13,12 @@ export const submitWithdrawAmount: ActionDef<string> = withPayload(
 		const currency = flowData.currency
 
 		const amountToWithdraw = parseCurrencyAmount(amountRaw, currency)
+
+		setFlowStep(session, 'currency-chosen', {
+			currency: flowData.currency,
+			amount: BigInt(amountToWithdraw.amount),
+			recipientAddress: flowData.recipientAddress,
+		})
 
 		return resolveWithdrawPage(
 			session.telegramId,

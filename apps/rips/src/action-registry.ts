@@ -9,7 +9,10 @@ import { openCardChooseStake } from './action-handlers/play/open-card-choose-sta
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCompletedRounds } from './action-handlers/play/open-completed-rounds'
 import { openOngoingRounds } from './action-handlers/play/open-ongoing-rounds'
-import { openOpenRips } from './action-handlers/play/open-open-rips'
+import {
+	openOpenRips,
+	openOpenRipsNoBack,
+} from './action-handlers/play/open-open-rips'
 import { openPlay } from './action-handlers/play/open-play'
 import { openRevealAll } from './action-handlers/play/open-reveal-all'
 import { openRevealPrizes } from './action-handlers/play/open-reveal-prizes'
@@ -17,7 +20,10 @@ import { openRevealSingle } from './action-handlers/play/open-reveal-single'
 import { openStatus } from './action-handlers/play/open-status'
 import { openZapChooseChain } from './action-handlers/play/open-zap-choose-chain'
 import { openZapChooseToken } from './action-handlers/play/open-zap-choose-token'
-import { openZapCheckout } from './action-handlers/play/open-zap-confirm'
+import {
+	openZapCheckout,
+	refreshZapCheckout,
+} from './action-handlers/play/open-zap-confirm'
 import { promptTicketCount } from './action-handlers/play/prompt-ticket-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
@@ -60,6 +66,7 @@ export const actionRegistry = {
 
 	// Open RIPs / rounds
 	openOpenRips,
+	openOpenRipsNoBack,
 	openRevealPrizes,
 	openRevealSingle,
 	openRevealAll,
@@ -95,6 +102,7 @@ export const actionRegistry = {
 	openZapChooseChain,
 	openZapChooseToken,
 	openZapConfirm: openZapCheckout,
+	refreshZapConfirm: refreshZapCheckout,
 	executeZap,
 
 	// Swap

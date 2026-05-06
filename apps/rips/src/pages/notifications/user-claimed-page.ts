@@ -17,7 +17,7 @@ export class UserClaimedRoundPage {
 
 		const keyboard = new InlineKeyboard().text(
 			'Open Rips 🎁',
-			buildActionData(actionIds.openOpenRips, 'no-back'),
+			buildActionData(actionIds.openOpenRipsNoBack),
 		)
 
 		return {

@@ -5,43 +5,52 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 
+function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
+	lines: string[]
+	keyboard: InlineKeyboard
+} {
+	const lines = [
+		'<b>Open Rips</b>',
+		'',
+		`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+	]
+
+	if (unrevealedPrizes.length === 0) {
+		lines.push('', 'All tickets have been revealed.')
+	}
+
+	const keyboard = new InlineKeyboard()
+
+	if (unrevealedPrizes.length > 0) {
+		keyboard
+			.text('Reveal next', buildActionData(actionIds.openRevealSingle))
+			.row()
+			.text('Reveal all', buildActionData(actionIds.openRevealAll))
+			.row()
+	}
+
+	return { lines, keyboard }
+}
+
 export class RevealPrizesPage {
-	static render(unrevealedPrizes: PrizeDto[], showBack = true): PageContent {
-		const lines = [
-			'<b>Open Rips</b>',
-			'',
-			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
-		]
+	static render(unrevealedPrizes: PrizeDto[]): PageContent {
+		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
 
-		if (unrevealedPrizes.length === 0) {
-			lines.push('', 'All tickets have been revealed.')
-		}
+		addNav(keyboard, {
+			home: actionIds.openHome,
+			parent: actionIds.openPlay,
+		})
 
-		const keyboard = new InlineKeyboard()
+		return { message: lines.join('\n'), keyboard }
+	}
+}
 
-		if (unrevealedPrizes.length > 0) {
-			keyboard
-				.text(
-					'Reveal next',
-					buildActionData(actionIds.openRevealSingle),
-				)
-				.row()
-				.text('Reveal all', buildActionData(actionIds.openRevealAll))
-				.row()
-		}
+export class RevealPrizesNoBackPage {
+	static render(unrevealedPrizes: PrizeDto[]): PageContent {
+		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
 
-		if (showBack) {
-			addNav(keyboard, {
-				home: actionIds.openHome,
-				parent: actionIds.openPlay,
-			})
-		} else {
-			keyboard.row().text('Home', buildActionData(actionIds.openHome))
-		}
+		keyboard.row().text('Home', buildActionData(actionIds.openHome))
 
-		return {
-			message: lines.join('\n'),
-			keyboard,
-		}
+		return { message: lines.join('\n'), keyboard }
 	}
 }

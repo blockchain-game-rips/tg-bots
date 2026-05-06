@@ -1,4 +1,5 @@
 import {
+	ChainAddressDto,
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
 	walletsControllerGetBalances,
@@ -11,9 +12,9 @@ import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
-export async function openZapCheckout(
+async function buildZapCheckout(
 	session: SessionData,
-	payload: string | undefined,
+	currencyChainAddress: ChainAddressDto,
 ): Promise<Effect> {
 	assertFlow(
 		session,
@@ -23,11 +24,6 @@ export async function openZapCheckout(
 	)
 
 	const { stakeId, ticketCount } = session.flow.data
-
-	const currencyChainAddress =
-		session.flow.step === 'zap-currency-chosen'
-			? session.flow.data.currency.chainAddress
-			: parseCurrencyChainAddress(payload)
 
 	const [availableStake, { data: zapQuote }, { data: user }] =
 		await Promise.all([
@@ -80,4 +76,22 @@ export async function openZapCheckout(
 			userEvmAddress: evmAddressFromUser(user),
 		}),
 	}
+}
+
+export async function openZapCheckout(
+	session: SessionData,
+	payload: string | undefined,
+): Promise<Effect> {
+	const currencyChainAddress = parseCurrencyChainAddress(payload)
+
+	return buildZapCheckout(session, currencyChainAddress)
+}
+
+export async function refreshZapCheckout(
+	session: SessionData,
+	_payload: string | undefined,
+): Promise<Effect> {
+	assertFlow(session, 'buyTickets', 'zap-currency-chosen')
+
+	return buildZapCheckout(session, session.flow.data.currency.chainAddress)
 }

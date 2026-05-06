@@ -70,7 +70,7 @@ export class ZapCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			keyboard.text('Update', actionIds.openZapConfirm).row()
+			keyboard.text('Update', actionIds.refreshZapConfirm).row()
 		} else {
 			keyboard.text('Confirm', actionIds.executeZap).row()
 		}

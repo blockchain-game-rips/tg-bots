@@ -8,7 +8,7 @@
         "fmt": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
         "test": "jest",
         "build": "tsc -p tsconfig.build.json",
-        "start": "node dist/main.js",
+        "start": "node dist/src/main.js",
         "dev": "ts-node-dev --respawn src/main.ts",
         "preview-bot-dev": "ts-node-dev --respawn scripts/preview-bot/index.ts",
         "preview-bot": "ts-node scripts/preview-bot/index.ts",

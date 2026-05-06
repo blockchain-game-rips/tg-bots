@@ -22,4 +22,15 @@ export type SetReferrerFrozenFlow = {
 	data: { address: string; frozen: boolean }
 }
 
-export type Flow = BuyTicketsFlow | SetPausedFlow | SetReferrerFrozenFlow | null
+export type SetDefaultFeeFlow = {
+	flowType: 'setDefaultFee'
+	step: 'confirm'
+	data: { bp: number }
+}
+
+export type Flow =
+	| BuyTicketsFlow
+	| SetPausedFlow
+	| SetReferrerFrozenFlow
+	| SetDefaultFeeFlow
+	| null

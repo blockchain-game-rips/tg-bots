@@ -44,6 +44,7 @@ import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdr
 import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
+import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
 import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
 import { submitSwapCurrency } from './action-handlers/wallet/submit-swap-currency'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
@@ -93,6 +94,7 @@ export const actionRegistry = {
 	submitWithdrawRecipient,
 	submitWithdrawAmount,
 	promptWithdrawAmount,
+	refreshWithdrawCheckout,
 
 	// Referral
 	openReferral,

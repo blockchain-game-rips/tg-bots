@@ -4,7 +4,6 @@ import {
 	QuoteWithdrawResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { Chain, PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
@@ -80,15 +79,13 @@ export class WithdrawCheckoutPage {
 		const keyboard = new InlineKeyboard()
 
 		if (insufficient) {
-			const currencyIndex = SUPPORTED_CURRENCIES.findIndex(
-				(c) =>
-					c.address === currency.chainAddress.address &&
-					c.chain.reference === chain.reference,
-			)
 			keyboard
 				.text(
 					'Update',
-					buildActionData(actionIds.openWithdraw, currencyIndex),
+					buildActionData(
+						actionIds.refreshWithdrawCheckout,
+						undefined,
+					),
 				)
 				.row()
 		} else {

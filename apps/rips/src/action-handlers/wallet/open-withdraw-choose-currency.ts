@@ -1,4 +1,5 @@
 import { currencyControllerGetCurrencies } from '../../../generated/api-client'
+import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../../constants'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
@@ -23,6 +24,7 @@ export const openWithdrawChooseCurrency: ActionDef<Chain> = withPayload(
 
 		const { data } = await currencyControllerGetCurrencies({
 			query: { chainAddress: chainCurrencyIds },
+			querySerializer: createQuerySerializer({ allowReserved: true }),
 		})
 
 		return {

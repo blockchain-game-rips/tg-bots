@@ -1,4 +1,5 @@
 import { walletsControllerGetBalances } from '../../../generated/api-client'
+import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
@@ -16,6 +17,7 @@ export const openWithdraw: ActionDef<number> = withPayload(
 		const { data: balancesData } = await walletsControllerGetBalances({
 			headers: { 'x-telegram-id': session.telegramId },
 			query: { chainAddress: [toCurrencyId(currencyChainAddress)] },
+			querySerializer: createQuerySerializer({ allowReserved: true }),
 		})
 
 		const currencyBalance = balancesData.balances[0]

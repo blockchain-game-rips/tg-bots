@@ -1,4 +1,4 @@
-import { Api } from 'grammy'
+import { Api, GrammyError } from 'grammy'
 import { BoundAction } from './actions'
 import { logger } from './logging/pino-logger'
 import { Effect, EffectType, MessageToEdit, SessionData } from './types'
@@ -7,6 +7,16 @@ import {
 	composePageContentWithError,
 	ErrorToRender,
 } from './utils/error-to-render'
+
+const MESSAGE_NOT_MODIFIED = 'message is not modified'
+
+function isMessageNotModifiedError(error: unknown): boolean {
+	return (
+		error instanceof GrammyError &&
+		error.error_code === 400 &&
+		error.description.includes(MESSAGE_NOT_MODIFIED)
+	)
+}
 
 async function executeEffect(
 	effect: Effect,
@@ -80,6 +90,8 @@ export async function executeEffectOrDisplayError(
 		const effect = await boundAction.handler(session, payload)
 		await executeEffect(effect, api, chatId, messageToEdit, session)
 	} catch (error) {
+		if (isMessageNotModifiedError(error)) return
+
 		if (!(error instanceof ErrorToRender)) {
 			logger.error(error)
 		}

@@ -16,4 +16,10 @@ export type SetPausedFlow = {
 	data: { isPaused: boolean }
 }
 
-export type Flow = BuyTicketsFlow | SetPausedFlow | null
+export type SetReferrerFrozenFlow = {
+	flowType: 'setReferrerFrozen'
+	step: 'confirm'
+	data: { address: string; frozen: boolean }
+}
+
+export type Flow = BuyTicketsFlow | SetPausedFlow | SetReferrerFrozenFlow | null

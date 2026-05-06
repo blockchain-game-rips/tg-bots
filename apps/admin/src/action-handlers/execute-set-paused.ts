@@ -1,8 +1,9 @@
 import { adminControllerSetPaused } from '../../generated/api-client'
-import { SetPausedFlow } from '../flows'
+import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { assertFlow, setFlow } from '../utils/session-utils'
 
 function openConfirmPaused(
 	isPaused: boolean,
@@ -12,15 +13,14 @@ function openConfirmPaused(
 		: 'This will <b>unpause</b> the protocol.'
 
 	return (session, _payload): Effect => {
-		session.flow = {
-			flowType: 'setPaused',
-			step: 'confirm',
-			data: { isPaused },
-		} satisfies SetPausedFlow
+		setFlow(session, 'setPaused', 'confirm', { isPaused })
 
 		return {
 			type: EffectType.EDIT,
-			page: ConfirmationPage.render(description),
+			page: ConfirmationPage.render(
+				description,
+				actionIds.executeConfirmPaused,
+			),
 		}
 	}
 }
@@ -32,18 +32,9 @@ export function executeConfirmPaused(
 	session: SessionData,
 	_payload: string | undefined,
 ): Effect {
-	const flow = session.flow
+	assertFlow(session, 'setPaused', 'confirm')
 
-	if (flow?.flowType !== 'setPaused' || flow.step !== 'confirm') {
-		return {
-			type: EffectType.EDIT,
-			page: ConfirmationPage.render(
-				'No pending action. Please go back and try again.',
-			),
-		}
-	}
-
-	const { isPaused } = flow.data
+	const { isPaused } = session.flow.data
 
 	return {
 		type: EffectType.SEND_LOADING,

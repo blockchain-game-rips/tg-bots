@@ -1,7 +1,9 @@
 import { adminControllerSetReferrerFrozen } from '../../generated/api-client'
 import { actionIds } from '../actions'
+import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { assertFlow, setFlow } from '../utils/session-utils'
 import { parseEvmAddress } from '../validation/evm-address'
 
 const ADDRESS_PROMPT_MESSAGE = 'Enter the referrer EVM address to update.'
@@ -17,42 +19,65 @@ function openSetReferrerFrozen(
 			placeholder: ADDRESS_PLACEHOLDER,
 		},
 		onSubmit: frozen
-			? actionIds.submitFreezeReferrer
-			: actionIds.submitUnfreezeReferrer,
+			? actionIds.submitConfirmFreezeReferrer
+			: actionIds.submitConfirmUnfreezeReferrer,
 	})
 }
 
-async function submitSetReferrerFrozen(
+function submitConfirmSetReferrerFrozen(
 	frozen: boolean,
-	payload: string | undefined,
-): Promise<Effect> {
-	const address = parseEvmAddress(payload)
+): (session: SessionData, payload: string | undefined) => Effect {
+	return (session, payload): Effect => {
+		const address = parseEvmAddress(payload)
 
-	const { data: tx } = await adminControllerSetReferrerFrozen({
-		path: { address },
-		body: { frozen },
-	})
+		setFlow(session, 'setReferrerFrozen', 'confirm', { address, frozen })
 
-	const title = frozen
-		? `Referrer ${address} frozen`
-		: `Referrer ${address} unfrozen`
+		const description = frozen
+			? `This will <b>freeze</b> referrer <code>${address}</code>.`
+			: `This will <b>unfreeze</b> referrer <code>${address}</code>.`
 
-	return { type: EffectType.EDIT, page: TransactionPage.render(title, tx) }
+		return {
+			type: EffectType.EDIT,
+			page: ConfirmationPage.render(
+				description,
+				actionIds.executeConfirmReferrerFrozen,
+			),
+		}
+	}
 }
 
 export const openFreezeReferrer = openSetReferrerFrozen(true)
 export const openUnfreezeReferrer = openSetReferrerFrozen(false)
 
-export function submitFreezeReferrer(
-	_session: SessionData,
-	payload: string | undefined,
-): Promise<Effect> {
-	return submitSetReferrerFrozen(true, payload)
-}
+export const submitConfirmFreezeReferrer = submitConfirmSetReferrerFrozen(true)
+export const submitConfirmUnfreezeReferrer =
+	submitConfirmSetReferrerFrozen(false)
 
-export function submitUnfreezeReferrer(
-	_session: SessionData,
-	payload: string | undefined,
+export async function executeConfirmReferrerFrozen(
+	session: SessionData,
+	_payload: string | undefined,
 ): Promise<Effect> {
-	return submitSetReferrerFrozen(false, payload)
+	assertFlow(session, 'setReferrerFrozen', 'confirm')
+
+	const { address, frozen } = session.flow.data
+
+	return {
+		type: EffectType.SEND_LOADING,
+		message: frozen ? 'Freezing referrer...' : 'Unfreezing referrer...',
+		next: async () => {
+			const { data: tx } = await adminControllerSetReferrerFrozen({
+				path: { address },
+				body: { frozen },
+			})
+
+			const title = frozen
+				? `Referrer ${address} frozen`
+				: `Referrer ${address} unfrozen`
+
+			return {
+				type: EffectType.EDIT,
+				page: TransactionPage.render(title, tx),
+			}
+		},
+	}
 }

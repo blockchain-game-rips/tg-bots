@@ -6,13 +6,14 @@ import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
 import { Effect, EffectType, SessionData } from '../../types'
 import { getEnvSafe } from '../../utils/common'
 
+const botUsername = getEnvSafe('BOT_USERNAME')
+
 export async function openReferral(
 	session: SessionData,
 	_payload: string | undefined,
 ): Promise<Effect> {
 	const { telegramId } = session
 
-	const botUsername = getEnvSafe('BOT_USERNAME')
 	const referralLink = `https://t.me/${botUsername}?start=${telegramId}`
 
 	const [{ data: referrerData }, { data: tierTables }] = await Promise.all([

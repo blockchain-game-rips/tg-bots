@@ -59,12 +59,17 @@ export class ReferralSystemPage {
 				? new Date(periodStart.getTime() + PERIOD_DAYS * MS_PER_DAY)
 				: null
 
+		const toStateCurrencyAmount = (amount: string) => ({
+			amount,
+			currency: state.currency,
+		})
+
 		const lines = [
-			`Available to withdraw: ${state.rewards.available} ${state.currency}`,
-			`Withdrawn: ${state.rewards.withdrawn} ${state.currency}`,
+			`Available to withdraw: ${formatAmountWithUsd(toStateCurrencyAmount(state.rewards.available))}`,
+			`Withdrawn: ${formatAmountWithUsd(toStateCurrencyAmount(state.rewards.withdrawn))}`,
 			'',
 			`Current fee share: ${formatPercent(state.fee)}`,
-			`Month volume: ${state.period.volume} ${state.currency}`,
+			`Month volume: ${formatAmountWithUsd(toStateCurrencyAmount(state.period.volume))}`,
 			...(periodEnd !== null
 				? ['', `Next period starts: ${formatDate(periodEnd)}`]
 				: []),

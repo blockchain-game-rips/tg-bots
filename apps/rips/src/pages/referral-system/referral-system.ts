@@ -81,7 +81,7 @@ export class ReferralSystemPage {
 		}
 
 		const keyboard = new InlineKeyboard()
-			.url('Copy referral link', referralLink)
+			.copyText('Copy referral link', referralLink)
 			.row()
 			.text(
 				'Withdraw rewards',

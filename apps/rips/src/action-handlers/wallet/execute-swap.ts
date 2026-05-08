@@ -43,6 +43,7 @@ async function pollSwapResult(zapId: string): Promise<SwapOutcome> {
 	throw new ErrorToRender('Swap timed out')
 }
 
+//TODO: return loading effect
 export const executeSwap: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'swap', 'idle')
 

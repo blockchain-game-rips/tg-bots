@@ -62,7 +62,7 @@ jobs:
             cd /opt/rips
 
             # Pull the latest image from GHCR
-            docker compose pull
+            docker compose pull tg-bot
 
             # Restart containers with the new image, remove orphan containers
             docker compose up -d --no-deps tg-bot

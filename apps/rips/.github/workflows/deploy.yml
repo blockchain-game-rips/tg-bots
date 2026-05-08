@@ -51,8 +51,10 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
+            set -e
+
             # Navigate to the folder where docker-compose.yml lives on the VPS
-            cd /rips
+            cd ~/rips
 
             # Pull the latest image from GHCR
             docker compose pull

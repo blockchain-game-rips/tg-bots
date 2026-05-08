@@ -25,14 +25,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Lowercase the repo path — Docker requires all-lowercase image names
+      - name: Set lowercase image name
+        run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       # Build the Docker image from the Dockerfile and push it to GHCR
-      # github.repository resolves to "org-name/tg-bot" automatically
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/${{ env.IMAGE_NAME }}:latest
 
   # Job 2: SSH into the VPS and restart the container with the new image
   deploy:

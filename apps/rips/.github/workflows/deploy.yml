@@ -54,7 +54,7 @@ jobs:
             set -e
 
             # Navigate to the folder where docker-compose.yml lives on the VPS
-            cd ~/rips
+            cd /opt/rips
 
             # Pull the latest image from GHCR
             docker compose pull

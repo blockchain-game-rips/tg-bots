@@ -87,7 +87,6 @@ export async function executeEffectOrDisplayError(
 			),
 		)
 
-		fireAndForget(api.deleteMessages(chatId, messagesToDelete))
 	} finally {
 		if (messagesToDelete.length !== 0) {
 			fireAndForget(api.deleteMessages(chatId, messagesToDelete))

@@ -16,6 +16,7 @@ export type SessionData<F extends Flow = Flow> = {
 		pageToEdit: MessageToEdit
 	} | null
 	flow: F
+	lastPage: PageContent | null
 }
 
 export type Context = GrammyContext &

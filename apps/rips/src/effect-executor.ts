@@ -36,6 +36,7 @@ async function executeEffect(
 					parse_mode: 'HTML',
 				},
 			)
+			session.lastPage = effect.page
 			break
 
 		case EffectType.ASK:
@@ -97,7 +98,7 @@ export async function executeEffectOrDisplayError(
 		}
 
 		const errorPage = composePageContentWithError(
-			messageToEdit.pageContent,
+			session.lastPage ?? messageToEdit.pageContent,
 			error,
 		)
 

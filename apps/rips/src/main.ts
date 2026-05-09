@@ -48,7 +48,7 @@ bot.use((ctx, next) => {
 })
 
 function initial(): SessionData {
-	return { telegramId: '', lastAsk: null, flow: null }
+	return { telegramId: '', lastAsk: null, flow: null, lastPage: null }
 }
 
 bot.use(session({ initial }))

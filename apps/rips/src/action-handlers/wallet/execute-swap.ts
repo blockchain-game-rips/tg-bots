@@ -1,7 +1,7 @@
 import {
 	CurrencyAmountDto,
-	GetZapResultResponseDtoOutput,
-	ripsControllerGetZapResult,
+	GetSwapResultResponseDtoOutput,
+	walletsControllerGetSwapResult,
 	walletsControllerSwap,
 } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
@@ -18,7 +18,7 @@ const SWAP_POLL_TIMEOUT_MS = 60000
 type SwapOutcome =
 	| {
 			status: 'success'
-			result: NonNullable<GetZapResultResponseDtoOutput['success']>
+			result: NonNullable<GetSwapResultResponseDtoOutput['success']>
 	  }
 	| { status: 'failed'; refund: CurrencyAmountDto }
 
@@ -26,7 +26,9 @@ async function pollSwapResult(zapId: string): Promise<SwapOutcome> {
 	const deadline = Date.now() + SWAP_POLL_TIMEOUT_MS
 
 	while (Date.now() < deadline) {
-		const { data } = await ripsControllerGetZapResult({ query: { zapId } })
+		const { data } = await walletsControllerGetSwapResult({
+			query: { zapId },
+		})
 
 		if (data.cancelled !== null)
 			throw new ErrorToRender('Swap was cancelled')

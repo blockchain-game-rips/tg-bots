@@ -12,6 +12,7 @@ import {
 	fundsBreakdown,
 	insufficientBalanceLines,
 } from '../../utils/currency'
+import { toShortDurationFormat } from '../../utils/duration'
 import { addNav } from '../../utils/keyboard'
 
 export class SwapCheckoutPage {
@@ -47,6 +48,7 @@ export class SwapCheckoutPage {
 			'',
 			`Pay: ${formatAmountWithUsd(amountIn)}`,
 			`Receive: ${formatAmountWithUsd(swapQuote.amountOut)}`,
+			`Estimated time: ${toShortDurationFormat(swapQuote.durationMs / 1000)}`,
 			'',
 			...breakdownLines,
 		]

@@ -13,6 +13,7 @@ import {
 	fundsBreakdown,
 	insufficientFundsDepositLines,
 } from '../../utils/currency'
+import { toShortDurationFormat } from '../../utils/duration'
 import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
 
@@ -57,6 +58,7 @@ export class ZapCheckoutPage {
 			),
 			'',
 			`Ticket count: ${ticketCount}`,
+			`Estimated time: ${toShortDurationFormat(zapQuote.durationMs / 1000)}`,
 			'',
 			...breakdownLines,
 		]

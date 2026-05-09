@@ -7,6 +7,7 @@ import { NATIVE_ON_BASE } from '../constants'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 import { parseUnits, toCurrencyId } from '../utils/currency'
 import { toShortDurationFormat } from '../utils/duration'
 import { assertFlow, setFlow } from '../utils/session-utils'
@@ -106,6 +107,7 @@ export function executeConfirmUpdateStakeConfig(
 				parseUnits(amount.toString(), decimals).toString()
 
 			const { data: tx } = await adminControllerUpdateStakeConfig({
+				headers: adminApiHeader,
 				path: { stakeId: stakeId.toString() },
 				body: {
 					config: {

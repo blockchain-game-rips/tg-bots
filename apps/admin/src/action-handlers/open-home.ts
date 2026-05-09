@@ -4,6 +4,7 @@ import {
 } from '../../generated/api-client'
 import { HomePage } from '../pages/home-page'
 import { EffectEdit, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 
 export async function openHome(
 	_session: SessionData,
@@ -11,7 +12,7 @@ export async function openHome(
 ): Promise<EffectEdit> {
 	const [{ data: state }, { data: adminWallet }] = await Promise.all([
 		ripsControllerGetRipsState(),
-		adminControllerGetAdminWallet(),
+		adminControllerGetAdminWallet({ headers: adminApiHeader }),
 	])
 
 	return {

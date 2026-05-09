@@ -5,6 +5,7 @@ import {
 } from '../../generated/api-client'
 import { StatePage } from '../pages/state-page'
 import { EffectEdit, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 
 export async function openState(
 	_session: SessionData,
@@ -13,7 +14,7 @@ export async function openState(
 	const [{ data: state }, { data: adminWallet }, { data: tierTablesRes }] =
 		await Promise.all([
 			ripsControllerGetRipsState(),
-			adminControllerGetAdminWallet(),
+			adminControllerGetAdminWallet({ headers: adminApiHeader }),
 			referralSystemControllerGetTierTables(),
 		])
 

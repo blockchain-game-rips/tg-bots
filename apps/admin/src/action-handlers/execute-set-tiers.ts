@@ -7,6 +7,7 @@ import { NATIVE_ON_BASE } from '../constants'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 import { parseUnits, toCurrencyId } from '../utils/currency'
 import { assertFlow, setFlow } from '../utils/session-utils'
 import { parseTierList } from '../validation/tier-list'
@@ -92,6 +93,7 @@ export function executeConfirmSetTiers(
 			}))
 
 			const { data: tx } = await adminControllerSetReferralTiers({
+				headers: adminApiHeader,
 				path: { currency: NATIVE_ON_BASE.address },
 				body: { tiers: rawTiers },
 			})

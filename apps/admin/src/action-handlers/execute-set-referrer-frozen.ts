@@ -3,6 +3,7 @@ import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 import { assertFlow, setFlow } from '../utils/session-utils'
 import { parseEvmAddress } from '../validation/evm-address'
 
@@ -66,6 +67,7 @@ export async function executeConfirmReferrerFrozen(
 		message: frozen ? 'Freezing referrer...' : 'Unfreezing referrer...',
 		next: async () => {
 			const { data: tx } = await adminControllerSetReferrerFrozen({
+				headers: adminApiHeader,
 				path: { address },
 				body: { frozen },
 			})

@@ -3,6 +3,7 @@ import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 import { assertFlow, setFlow } from '../utils/session-utils'
 import { parseFeeBp } from '../validation/fee-bp'
 
@@ -60,6 +61,7 @@ export function executeConfirmSetDefaultFee(
 		message: 'Setting default fee...',
 		next: async () => {
 			const { data: tx } = await adminControllerSetDefaultReferralFee({
+				headers: adminApiHeader,
 				body: { feePercent: bp },
 			})
 

@@ -3,6 +3,7 @@ import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { Effect, EffectType, SessionData } from '../types'
+import { adminApiHeader } from '../utils/api'
 import { assertFlow, setFlow } from '../utils/session-utils'
 
 function openConfirmPaused(
@@ -41,6 +42,7 @@ export function executeConfirmPaused(
 		message: isPaused ? 'Pausing...' : 'Unpausing...',
 		next: async () => {
 			const { data: tx } = await adminControllerSetPaused({
+				headers: adminApiHeader,
 				body: { isPaused },
 			})
 			const title = isPaused ? '⏸ Paused' : '▶ Unpaused'

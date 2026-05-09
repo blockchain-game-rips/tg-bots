@@ -28,7 +28,9 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 
 	while (Date.now() < deadline) {
 		try {
-			const { data } = await ripsControllerGetZapResult({ query: { zapId } })
+			const { data } = await ripsControllerGetZapResult({
+				query: { zapId },
+			})
 
 			if (data.cancelled !== null)
 				throw new ErrorToRender('Zap was cancelled')

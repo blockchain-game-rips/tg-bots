@@ -1,3 +1,5 @@
+export const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
+
 type Duration = {
 	days: number
 	hours: number

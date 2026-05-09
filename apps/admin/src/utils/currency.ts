@@ -20,14 +20,20 @@ export type FundsBreakdownResult = {
 	insufficientAmounts: CurrencyAmountDto[]
 }
 
-function tokenDecimalsFromPrice(priceUsd: number): number {
+const MAX_TOFIXED_DIGITS = 6
+
+function toFixedDigitsFromPrice(priceUsd: number): number {
+	if (priceUsd <= 0) return MAX_TOFIXED_DIGITS
+
 	const minTokenAmount = USD_MIN_DISPLAY / priceUsd
-	return Math.ceil(-Math.log10(minTokenAmount))
+	const digits = Math.ceil(-Math.log10(minTokenAmount))
+
+	return Math.min(Math.max(digits, 0), MAX_TOFIXED_DIGITS)
 }
 
 function formatUsd(usd: number): string {
 	if (usd === 0) return '$0'
-	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
+	if (usd < USD_MIN_DISPLAY) return `&lt;$${USD_MIN_DISPLAY.toFixed(2)}`
 	return `$${usd.toFixed(2)}`
 }
 
@@ -46,13 +52,13 @@ export function toCurrencyId(currencyChainAddress: ChainAddressDto) {
 function formatTokenAmount(amount: number, priceUsd: number): string {
 	if (amount === 0) return `0`
 
-	const decimals = tokenDecimalsFromPrice(priceUsd)
-	const minDisplayAmount = Math.pow(10, -decimals)
+	const digits = toFixedDigitsFromPrice(priceUsd)
+	const minDisplayAmount = Math.pow(10, -digits)
 
 	if (amount < minDisplayAmount)
-		return `<${parseFloat(minDisplayAmount.toFixed(decimals))}`
+		return `&lt;${parseFloat(minDisplayAmount.toFixed(digits))}`
 
-	return `${parseFloat(amount.toFixed(decimals))}`
+	return `${parseFloat(amount.toFixed(digits))}`
 }
 
 export function currencyAmountDisplayParts(currencyAmount: CurrencyAmountDto): {
@@ -121,6 +127,58 @@ function labelColumnWidth(labels: string[]): number {
 
 function padLabel(label: string, width: number): string {
 	return label.padEnd(width)
+}
+
+export function insufficientBalanceLines(args: {
+	tokenAmount: CurrencyAmountDto
+	feeAmount: CurrencyAmountDto
+	insufficientAmounts: CurrencyAmountDto[]
+	userEvmAddress: string
+	feeLabel: string
+}): string[] {
+	const {
+		tokenAmount,
+		feeAmount,
+		insufficientAmounts,
+		userEvmAddress,
+		feeLabel,
+	} = args
+
+	const tokenInsufficient = insufficientAmounts.some(
+		(a) => a.currency.id === tokenAmount.currency.id,
+	)
+
+	if (tokenInsufficient) {
+		const tokenSymbol = tokenAmount.currency.symbol
+		return [
+			`⚠️ <b>Insufficient ${tokenSymbol}</b>`,
+			'',
+			'Enter a smaller amount',
+		]
+	}
+
+	const feeSymbol = feeAmount.currency.symbol
+	return [
+		`⚠️ <b>Insufficient ${feeSymbol} for ${feeLabel}</b>`,
+		'',
+		`Deposit ${feeSymbol} to:`,
+		`<code>${userEvmAddress}</code>`,
+		'',
+		'Then press Update',
+	]
+}
+
+export function insufficientFundsDepositLines(
+	userEvmAddress: string,
+): string[] {
+	return [
+		`⚠️ <b>Insufficient funds</b>`,
+		'',
+		'Deposit to:',
+		`<code>${userEvmAddress}</code>`,
+		'',
+		'Then press Update',
+	]
 }
 
 export function fundsBreakdown(

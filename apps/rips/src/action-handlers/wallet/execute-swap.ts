@@ -45,8 +45,7 @@ async function pollSwapResult(zapId: string): Promise<SwapOutcome> {
 	throw new ErrorToRender('Swap timed out')
 }
 
-//TODO: return loading effect
-export const executeSwap: ActionDef<void> = noPayload(async (session) => {
+export const executeSwap: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'swap', 'idle')
 
 	const { currencyIn, currencyOut, amountIn, quotedAmountOut } =
@@ -60,39 +59,45 @@ export const executeSwap: ActionDef<void> = noPayload(async (session) => {
 		throw new ErrorToRender('Confirm swap details first')
 	}
 
-	const { data: swapResponse } = await walletsControllerSwap({
-		headers: { 'x-telegram-id': session.telegramId },
-		body: {
-			tokenInChainAddress: currencyIn.chainAddress,
-			tokenOutChainAddress: currencyOut.chainAddress,
-			amountIn: amountIn.toString(),
-		},
-	})
-
-	const outcome = await pollSwapResult(swapResponse.zapId)
-	const amountInDisplay = toCurrencyAmount(
-		BigInt(swapResponse.amountIn.amount),
-		currencyIn,
-	)
-
-	resetFlow(session)
-
-	if (outcome.status === 'failed') {
-		return {
-			type: EffectType.EDIT,
-			page: SwapFailedPage.render({
-				amountIn: amountInDisplay,
-				refund: outcome.refund,
-			}),
-		}
-	}
-
 	return {
-		type: EffectType.EDIT,
-		page: SwapSuccessPage.render({
-			amountIn: amountInDisplay,
-			amountOut: quotedAmountOut,
-			transactionId: swapResponse.srcTransaction.id,
-		}),
+		type: EffectType.SEND_LOADING,
+		message: 'Swapping...',
+		next: async () => {
+			const { data: swapResponse } = await walletsControllerSwap({
+				headers: { 'x-telegram-id': session.telegramId },
+				body: {
+					tokenInChainAddress: currencyIn.chainAddress,
+					tokenOutChainAddress: currencyOut.chainAddress,
+					amountIn: amountIn.toString(),
+				},
+			})
+
+			const outcome = await pollSwapResult(swapResponse.zapId)
+			const amountInDisplay = toCurrencyAmount(
+				BigInt(swapResponse.amountIn.amount),
+				currencyIn,
+			)
+
+			resetFlow(session)
+
+			if (outcome.status === 'failed') {
+				return {
+					type: EffectType.EDIT,
+					page: SwapFailedPage.render({
+						amountIn: amountInDisplay,
+						refund: outcome.refund,
+					}),
+				}
+			}
+
+			return {
+				type: EffectType.EDIT,
+				page: SwapSuccessPage.render({
+					amountIn: amountInDisplay,
+					amountOut: quotedAmountOut,
+					transactionId: swapResponse.srcTransaction.id,
+				}),
+			}
+		},
 	}
 })

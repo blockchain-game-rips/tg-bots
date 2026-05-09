@@ -44,48 +44,54 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 	throw new ErrorToRender('Zap timed out')
 }
 
-export const executeZap: ActionDef<void> = noPayload(async (session) => {
+export const executeZap: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'buyTickets', 'zap-currency-chosen')
 
 	const { stakeId, ticketCount, currency } = session.flow.data
 
-	const { data: zapResponse } = await ripsControllerBuyTicketsZap({
-		headers: { 'x-telegram-id': session.telegramId },
-		body: {
-			stakeId,
-			ticketCount,
-			paymentCurrencyChainAddress: currency.chainAddress,
-		},
-	})
-
-	const outcome = await pollZapResult(zapResponse.zapId)
-	const availableStake = await fetchStake(stakeId)
-	const amountIn = toCurrencyAmount(
-		BigInt(zapResponse.amountIn.amount),
-		currency,
-	)
-
-	resetFlow(session)
-
-	if (outcome.status === 'failed') {
-		return {
-			type: EffectType.EDIT,
-			page: ZapFailedPage.render({
-				availableStake,
-				ticketCount,
-				amountIn,
-				refund: outcome.refund,
-			}),
-		}
-	}
-
 	return {
-		type: EffectType.EDIT,
-		page: ZapSuccessPage.render({
-			availableStake,
-			ticketCount,
-			amountIn,
-			zapSuccessResult: outcome.result,
-		}),
+		type: EffectType.SEND_LOADING,
+		message: 'Buying tickets...',
+		next: async () => {
+			const { data: zapResponse } = await ripsControllerBuyTicketsZap({
+				headers: { 'x-telegram-id': session.telegramId },
+				body: {
+					stakeId,
+					ticketCount,
+					paymentCurrencyChainAddress: currency.chainAddress,
+				},
+			})
+
+			const outcome = await pollZapResult(zapResponse.zapId)
+			const availableStake = await fetchStake(stakeId)
+			const amountIn = toCurrencyAmount(
+				BigInt(zapResponse.amountIn.amount),
+				currency,
+			)
+
+			resetFlow(session)
+
+			if (outcome.status === 'failed') {
+				return {
+					type: EffectType.EDIT,
+					page: ZapFailedPage.render({
+						availableStake,
+						ticketCount,
+						amountIn,
+						refund: outcome.refund,
+					}),
+				}
+			}
+
+			return {
+				type: EffectType.EDIT,
+				page: ZapSuccessPage.render({
+					availableStake,
+					ticketCount,
+					amountIn,
+					zapSuccessResult: outcome.result,
+				}),
+			}
+		},
 	}
 })

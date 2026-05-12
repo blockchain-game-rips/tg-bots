@@ -12,7 +12,7 @@ export type MessageToEdit = {
 export type SessionData<F extends Flow = Flow> = {
 	telegramId: string
 	lastAsk: {
-		onSubmit: ActionId<any>
+		onSubmit: ActionId<unknown>
 		pageToEdit: MessageToEdit
 	} | null
 	flow: F
@@ -32,7 +32,7 @@ export type EffectEdit = { type: EffectType.EDIT; page: PageContent }
 export type EffectAsk = {
 	type: EffectType.ASK
 	prompt: PromptContent
-	onSubmit: ActionId<any>
+	onSubmit: ActionId<unknown>
 }
 export type EffectLoading = {
 	type: EffectType.SEND_LOADING
@@ -49,7 +49,11 @@ export type PageContent = {
 
 export type NavIds =
 	| { home: ActionId<void>; parent: ActionId<void> }
-	| { home: ActionId<void>; parent: ActionId<any>; parentPayload: any }
+	| {
+			home: ActionId<void>
+			parent: ActionId<unknown>
+			parentPayload: unknown
+	  }
 
 export type PromptContent = {
 	message: string

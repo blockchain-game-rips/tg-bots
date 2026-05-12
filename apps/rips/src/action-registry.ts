@@ -1,4 +1,4 @@
-import { ActionDef } from './action-def'
+import { AnyActionDef } from './action-def'
 import { openAbout } from './action-handlers/open-about'
 import { openHome } from './action-handlers/open-home'
 import { executeBuyTickets } from './action-handlers/play/execute-buy-tickets'
@@ -123,4 +123,4 @@ export const actionRegistry = {
 	submitSwapAmount,
 	executeSwap,
 	promptSwapAmount,
-} satisfies Record<string, ActionDef<any>>
+} satisfies Record<string, AnyActionDef>

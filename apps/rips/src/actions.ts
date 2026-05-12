@@ -1,4 +1,4 @@
-import { ActionDef } from './action-def'
+import { ActionDef, AnyActionDef } from './action-def'
 import { actionRegistry } from './action-registry'
 import { botActionDuration } from './metrics/registry'
 import { ActionId, Effect, SessionData } from './types'
@@ -24,19 +24,19 @@ function toActionId(index: number): string {
 }
 
 function buildActionIds(
-	registry: Record<string, ActionDef<any>>,
-): Record<string, ActionId<any>> {
-	const result: Record<string, ActionId<any>> = {}
+	registry: Record<string, AnyActionDef>,
+): Record<string, ActionId<unknown>> {
+	const result: Record<string, ActionId<unknown>> = {}
 
 	Object.keys(registry).forEach((key, index) => {
-		result[key] = toActionId(index) as ActionId<any>
+		result[key] = toActionId(index) as ActionId<unknown>
 	})
 
 	return result
 }
 
 function buildActions(
-	registry: Record<string, ActionDef<any>>,
+	registry: Record<string, AnyActionDef>,
 ): Record<string, BoundAction> {
 	const result: Record<string, BoundAction> = {}
 

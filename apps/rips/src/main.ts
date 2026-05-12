@@ -55,9 +55,9 @@ bot.use(session({ initial }))
 
 bot.use((ctx, next) => {
 	const from = ctx.from
-	if (from !== undefined) {
-		ctx.session.telegramId = String(from.id)
-	}
+
+	ctx.session.telegramId = String(from.id)
+
 	return next()
 })
 

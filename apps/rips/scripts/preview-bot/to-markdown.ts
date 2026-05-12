@@ -9,10 +9,6 @@ export function pagesToMarkdown(pages: Record<string, PageEntry>): string {
 		.join('\n\n')
 }
 
-function capitalize(str: string): string {
-	return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 function main() {
 	const mdContent = pagesToMarkdown(pages)
 	const generatedFolder = './scripts/preview-bot/generated'

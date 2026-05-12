@@ -28,10 +28,7 @@ export function assertFlow<
 > {
 	const { flow } = session
 
-	if (
-		flow?.flowType !== flowType ||
-		!(steps as string[]).includes(flow.step)
-	) {
+	if (flow?.flowType !== flowType || !steps.includes(flow.step)) {
 		throw new ErrorToRender('Invalid session state')
 	}
 }
@@ -44,15 +41,15 @@ export function setFlowStep<
 	step: S,
 	data: Extract<FlowByType<FT>, { step: S }>['data'],
 ) {
-	;(session as SessionData).flow = {
+	session.flow = {
 		flowType: session.flow.flowType,
 		step,
 		data,
-	} as ActiveFlow
+	}
 }
 
 export function resetFlow(session: SessionData<ActiveFlow>) {
-	;(session as SessionData).flow = null
+	session.flow = null
 }
 
 export function setFlow<
@@ -64,5 +61,5 @@ export function setFlow<
 	step: S,
 	data: Extract<FlowByType<FT>, { step: S }>['data'],
 ) {
-	session.flow = { flowType, step, data } as ActiveFlow
+	session.flow = { flowType, step, data }
 }

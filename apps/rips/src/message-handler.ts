@@ -16,9 +16,7 @@ export async function handleMessage(
 
 	ctx.session.lastAsk = null
 
-	const boundAction = (actions)[
-		ask.onSubmit
-	]
+	const boundAction = actions[ask.onSubmit]
 
 	if (boundAction === undefined) {
 		logger.error({ actionId: ask.onSubmit }, 'Unknown action for onSubmit')

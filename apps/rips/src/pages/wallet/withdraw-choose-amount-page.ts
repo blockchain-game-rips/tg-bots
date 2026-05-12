@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { Chain, PageContent } from '../../types'
+import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
@@ -36,7 +36,7 @@ export const WithdrawChooseAmountPage = {
 
 		addNav(keyboard, {
 			parent: actionIds.openWithdrawChooseToken,
-			parentPayload: chain as Chain,
+			parentPayload: chain,
 			home: actionIds.openHome,
 		})
 

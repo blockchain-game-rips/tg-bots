@@ -12,7 +12,8 @@ type ReferencesForNamespace<N extends SupportedNamespace> = Extract<
 >['reference']
 
 const CHAIN_NAMES: {
-	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string>
+	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string> &
+		Record<string, string | undefined>
 } = {
 	[EIP155_NAMESPACE]: {
 		'1': 'Ethereum',
@@ -34,15 +35,18 @@ export function truncateAddress(address: string): string {
 	return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function chainToName(chain: Chain): string {
-	const namespaceMap = CHAIN_NAMES[chain.namespace as SupportedNamespace] as
-		| Record<string, string>
-		| undefined
+function isSupportedNamespace(value: string): value is SupportedNamespace {
+	return value in CHAIN_NAMES
+}
 
-	const chainName =
-		namespaceMap?.[
-			chain.reference as ReferencesForNamespace<SupportedNamespace>
-		]
+export function chainToName(chain: Chain): string {
+	if (!isSupportedNamespace(chain.namespace)) {
+		throw new Error(
+			`Chain name not found for namespace ${chain.namespace} and reference ${chain.reference}`,
+		)
+	}
+
+	const chainName = CHAIN_NAMES[chain.namespace][chain.reference]
 
 	if (chainName === undefined) {
 		throw new Error(

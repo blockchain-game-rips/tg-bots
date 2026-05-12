@@ -1,5 +1,4 @@
 import {
-	CurrencyAmountDto,
 	CurrencyDto,
 	usersControllerGetUser,
 	walletsControllerQuoteSwap,
@@ -121,7 +120,7 @@ export async function resolveSwapPage(
 			currencyIn,
 			currencyOut,
 			amountIn,
-			quotedAmountOut: checkout.swapQuote.amountOut as CurrencyAmountDto,
+			quotedAmountOut: checkout.swapQuote.amountOut,
 		})
 
 		return {

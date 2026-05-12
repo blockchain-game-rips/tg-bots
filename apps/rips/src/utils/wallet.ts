@@ -13,9 +13,7 @@ import { fetchBalances } from './api'
 import { toCurrencyId } from './currency'
 
 export function evmAddressFromUser(user: UserDtoOutput) {
-	const userEvmAddress = (user.wallets as Record<string, string | undefined>)[
-		EIP155_NAMESPACE
-	]
+	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
 
 	if (userEvmAddress === undefined) {
 		throw new Error('User has no EVM wallet')

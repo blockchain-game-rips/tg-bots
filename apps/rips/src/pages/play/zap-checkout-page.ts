@@ -5,7 +5,7 @@ import {
 	QuoteZapResponseDtoOutput,
 } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { Chain, PageContent } from '../../types'
+import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
@@ -93,7 +93,7 @@ export const ZapCheckoutPage = {
 
 		addNav(keyboard, {
 			parent: actionIds.openZapChooseToken,
-			parentPayload: chain as Chain,
+			parentPayload: chain,
 			home: actionIds.openHome,
 		})
 

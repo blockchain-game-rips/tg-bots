@@ -1,7 +1,7 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { Chain, PageContent } from '../../types'
+import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
@@ -48,10 +48,7 @@ export const WithdrawPage = {
 			.row()
 			.text(
 				'Back',
-				buildActionData(
-					actionIds.openWithdrawChooseToken,
-					chain as Chain,
-				),
+				buildActionData(actionIds.openWithdrawChooseToken, chain),
 			)
 			.text('Home', buildActionData(actionIds.openHome, undefined))
 

@@ -2,6 +2,7 @@ import { Bot } from 'grammy'
 import {
 	notificationsControllerGetNotifications,
 	notificationsControllerMarkNotified,
+	RoundDto,
 } from '../generated/api-client'
 import { logger } from './logging/pino-logger'
 import { GlobalClaimedRoundPage } from './pages/notifications/global-claimed-page'
@@ -17,7 +18,13 @@ const BETWEEN_NOTIFICATIONS_DELAY_MS = 500
 const GROUP_USER_ID = '0'
 
 type NotificationType = 'CLAIMED' | 'REFUNDED'
-type RoundDto = Parameters<typeof GlobalClaimedRoundPage.render>[0]
+
+const NOTIFICATION_TYPES: NotificationType[] = ['CLAIMED', 'REFUNDED']
+
+function isNotificationType(value: string): value is NotificationType {
+	return (NOTIFICATION_TYPES as string[]).includes(value)
+}
+
 type PageBuilder = (round: RoundDto) => PageContent
 
 const groupPages: Record<NotificationType, PageBuilder> = {
@@ -68,18 +75,15 @@ export class Notifier {
 				continue
 			}
 
-			const type = notification.type as NotificationType
-			const isGroupNotification =
-				notification.userTelegramId === GROUP_USER_ID
-			const pages = isGroupNotification ? groupPages : userPages
-			const buildPage = (
-				pages as Record<NotificationType, PageBuilder | undefined>
-			)[type]
-
-			if (!buildPage) {
+			if (!isNotificationType(notification.type)) {
 				logger.error({ notification }, 'Unknown notification type')
 				continue
 			}
+
+			const isGroupNotification =
+				notification.userTelegramId === GROUP_USER_ID
+			const pages = isGroupNotification ? groupPages : userPages
+			const buildPage = pages[notification.type]
 
 			const chatId = isGroupNotification
 				? this.gameGroupId

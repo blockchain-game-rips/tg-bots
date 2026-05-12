@@ -29,7 +29,7 @@ function buildActionIds(
 	const result: Record<string, ActionId<unknown>> = {}
 
 	Object.keys(registry).forEach((key, index) => {
-		result[key] = toActionId(index) as ActionId<unknown>
+		result[key] = toActionId(index)
 	})
 
 	return result

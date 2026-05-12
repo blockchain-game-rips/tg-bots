@@ -14,7 +14,9 @@ export const openWithdraw: ActionDef<number> = withPayload(
 		const currencyChainAddress = SUPPORTED_CURRENCIES[currencyIndex]
 
 		if (currencyChainAddress === undefined)
-			throw new Error(`Currency index out of range: ${currencyIndex}`)
+			throw new Error(
+				`Currency index out of range: ${String(currencyIndex)}`,
+			)
 
 		const balances = await fetchBalances(session.telegramId, [
 			toCurrencyId(currencyChainAddress),

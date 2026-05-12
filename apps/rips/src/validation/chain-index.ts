@@ -19,7 +19,7 @@ export function parseChain(raw: string): Chain {
 	const chain = SUPPORTED_CHAINS[index]
 
 	if (chain === undefined)
-		throw new Error(`Chain index out of range: ${index}`)
+		throw new Error(`Chain index out of range: ${String(index)}`)
 
 	return chain
 }

@@ -84,7 +84,9 @@ export const openZapCheckout: ActionDef<number> = withPayload(
 		const currency = SUPPORTED_CURRENCIES[currencyIndex]
 
 		if (currency === undefined)
-			throw new Error(`Currency index out of range: ${currencyIndex}`)
+			throw new Error(
+				`Currency index out of range: ${String(currencyIndex)}`,
+			)
 
 		return buildZapCheckout(session, currency)
 	},

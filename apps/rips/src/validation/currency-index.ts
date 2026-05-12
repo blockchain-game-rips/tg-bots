@@ -26,7 +26,7 @@ export function parseCurrencyChainAddress(raw: string): ChainAddressDto {
 	const currency = SUPPORTED_CURRENCIES[index]
 
 	if (currency === undefined)
-		throw new Error(`Currency index out of range: ${index}`)
+		throw new Error(`Currency index out of range: ${String(index)}`)
 
 	return currency
 }

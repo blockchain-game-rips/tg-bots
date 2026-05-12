@@ -15,7 +15,7 @@ bot.command('pages', async (ctx) => {
 			const indent = ' '.repeat(name.length)
 
 			return [
-				`<code>${name} ${first}</code>`,
+				`<code>${name} ${first ?? ''}</code>`,
 				...rest.map((v: string) => `<code>${indent} ${v}</code>`),
 			].join('\n')
 		})

@@ -1,5 +1,5 @@
 import { Bot, Filter } from 'grammy'
-import { actions, BoundAction } from './actions'
+import { actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
 import { logger } from './logging/pino-logger'
 import { ActionId, Context, MessageToEdit } from './types'
@@ -16,7 +16,7 @@ export async function handleMessage(
 
 	ctx.session.lastAsk = null
 
-	const boundAction = (actions as Record<string, BoundAction | undefined>)[
+	const boundAction = (actions)[
 		ask.onSubmit
 	]
 

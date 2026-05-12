@@ -17,7 +17,7 @@ export const WithdrawChooseCurrencyPage = {
 			],
 			currencies,
 			tokenActionId: actionIds.openWithdraw,
-			tokenPayload: (currencyIndex) => currencyIndex,
+			tokenPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: actionIds.openWithdrawChooseChain,
 				home: actionIds.openHome,

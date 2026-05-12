@@ -1,6 +1,5 @@
 import { AvailableStakeDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CHAINS } from '../../constants'
 import { PageContent } from '../../types'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { configName, resolveConfig } from '../../utils/stake'
@@ -23,7 +22,7 @@ export const ZapChooseChainPage = {
 				'Choose a chain to pay from:',
 			],
 			chainActionId: actionIds.openZapChooseToken,
-			chainPayload: (chainIndex) => SUPPORTED_CHAINS[chainIndex],
+			chainPayload: (chain) => chain,
 			nav: {
 				parent: actionIds.openChooseStake,
 				home: actionIds.openHome,

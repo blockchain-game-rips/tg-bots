@@ -17,7 +17,7 @@ const currencyIndexSchema = z
 			),
 	)
 
-export function parseCurrencyIndex(raw: string): number {
+function parseCurrencyIndex(raw: string): number {
 	return parsePayload(raw, currencyIndexSchema, 'Invalid currency index')
 }
 

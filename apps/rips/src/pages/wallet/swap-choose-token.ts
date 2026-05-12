@@ -1,6 +1,5 @@
 import { CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
@@ -29,8 +28,7 @@ export const SwapChooseTokenPage = {
 			],
 			currencies,
 			tokenActionId,
-			tokenPayload: (currencyIndex) =>
-				SUPPORTED_CURRENCIES[currencyIndex],
+			tokenPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: parentActionId,
 				home: actionIds.openHome,

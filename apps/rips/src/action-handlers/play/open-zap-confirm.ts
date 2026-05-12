@@ -11,7 +11,7 @@ import { fetchBalances, fetchStake } from '../../utils/api'
 import { toCurrencyId } from '../../utils/currency'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
-import { parseCurrencyIndex } from '../../validation/currency-index'
+import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
 async function buildZapCheckout(
 	session: SessionData,
@@ -77,19 +77,16 @@ async function buildZapCheckout(
 	}
 }
 
-export const openZapCheckout: ActionDef<number> = withPayload(
-	(currencyIndex) => currencyIndex.toString(),
-	(raw) => parseCurrencyIndex(raw),
-	(session, currencyIndex) => {
-		const currency = SUPPORTED_CURRENCIES[currencyIndex]
-
-		if (currency === undefined)
-			throw new Error(
-				`Currency index out of range: ${String(currencyIndex)}`,
-			)
-
-		return buildZapCheckout(session, currency)
-	},
+export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
+	(currencyChainAddress) =>
+		SUPPORTED_CURRENCIES.findIndex(
+			(c) =>
+				c.address === currencyChainAddress.address &&
+				c.chain.reference === currencyChainAddress.chain.reference,
+		).toString(),
+	(raw) => parseCurrencyChainAddress(raw),
+	(session, currencyChainAddress) =>
+		buildZapCheckout(session, currencyChainAddress),
 )
 
 export const refreshZapCheckout: ActionDef<void> = noPayload(

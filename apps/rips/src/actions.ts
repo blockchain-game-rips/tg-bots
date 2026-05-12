@@ -19,8 +19,8 @@ export interface BoundAction {
 	) => Promise<Effect> | Effect
 }
 
-function toActionId(index: number): string {
-	return index.toString(36)
+function toActionId(index: number): ActionId {
+	return index.toString(36) as ActionId
 }
 
 function buildActionIds(

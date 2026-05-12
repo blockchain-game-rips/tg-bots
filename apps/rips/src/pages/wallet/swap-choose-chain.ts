@@ -5,8 +5,8 @@ import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
 import { buildChooseChainPage } from '../choose-chain-token'
 
-export class SwapChooseChainPage {
-	static render(selecting: SwapSelecting): PageContent {
+export const SwapChooseChainPage = {
+	render(selecting: SwapSelecting): PageContent {
 		const label = selecting === 'in' ? 'token in' : 'token out'
 		const chainActionId =
 			selecting === 'in'
@@ -19,5 +19,5 @@ export class SwapChooseChainPage {
 			chainPayload: (chainIndex) => SUPPORTED_CHAINS[chainIndex],
 			nav: { parent: actionIds.openSwap, home: actionIds.openHome },
 		})
-	}
+	},
 }

@@ -6,8 +6,8 @@ import { buildActionData } from '../../utils/action-data'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd } from '../../utils/currency'
 
-export class SwapFailedPage {
-	static render(args: {
+export const SwapFailedPage = {
+	render(args: {
 		amountIn: CurrencyAmountDto
 		refund: CurrencyAmountDto
 	}): PageContent {
@@ -29,5 +29,5 @@ export class SwapFailedPage {
 				buildActionData(actionIds.openHome, undefined),
 			),
 		}
-	}
+	},
 }

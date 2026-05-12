@@ -5,8 +5,8 @@ import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
-export class WithdrawRewardSuccessPage {
-	static render(response: WithdrawRewardResponseDtoOutput): PageContent {
+export const WithdrawRewardSuccessPage = {
+	render(response: WithdrawRewardResponseDtoOutput): PageContent {
 		const lines = [
 			'✅ Reward withdrawn successfully!',
 			'',
@@ -26,5 +26,5 @@ export class WithdrawRewardSuccessPage {
 				home: actionIds.openHome,
 			}),
 		}
-	}
+	},
 }

@@ -18,8 +18,8 @@ import {
 } from '../../utils/duration'
 import { addNav } from '../../utils/keyboard'
 
-export class SwapCheckoutPage {
-	static render(args: {
+export const SwapCheckoutPage = {
+	render(args: {
 		currencyInBalance: CurrencyAmountDto
 		nativeInBalance: CurrencyAmountDto
 		amountIn: CurrencyAmountDto
@@ -90,5 +90,5 @@ export class SwapCheckoutPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

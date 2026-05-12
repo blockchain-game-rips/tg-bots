@@ -3,8 +3,8 @@ import { actionIds } from '../actions'
 import { PageContent } from '../types'
 import { buildActionData } from '../utils/action-data'
 
-export class HomePage {
-	static render(): PageContent {
+export const HomePage = {
+	render(): PageContent {
 		const lines = [
 			'👋 <b>Welcome to Rips!</b>',
 			'',
@@ -26,5 +26,5 @@ export class HomePage {
 			.text('About', buildActionData(actionIds.openAbout, undefined))
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

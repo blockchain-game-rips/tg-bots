@@ -6,8 +6,8 @@ import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
 
-export class BuyChooseTicketCountPage {
-	static render(availableStake: AvailableStakeDto): PageContent {
+export const BuyChooseTicketCountPage = {
+	render(availableStake: AvailableStakeDto): PageContent {
 		const config = resolveConfig(availableStake)
 
 		const keyboard = new InlineKeyboard()
@@ -33,5 +33,5 @@ export class BuyChooseTicketCountPage {
 				parent: actionIds.openChooseStake,
 			}),
 		}
-	}
+	},
 }

@@ -5,8 +5,8 @@ import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
-export class AllBalancesPage {
-	static render(balances: CurrencyAmountDto[]): PageContent {
+export const AllBalancesPage = {
+	render(balances: CurrencyAmountDto[]): PageContent {
 		const byChain = balances.reduce<Record<string, CurrencyAmountDto[]>>(
 			(acc, b) => {
 				const chain = b.currency.chainAddress.chain.reference
@@ -34,5 +34,5 @@ export class AllBalancesPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

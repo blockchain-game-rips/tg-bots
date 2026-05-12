@@ -8,8 +8,8 @@ import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tokenLabel } from '../../utils/swap-utils'
 
-export class SwapChooseAmountPage {
-	static render(args: {
+export const SwapChooseAmountPage = {
+	render(args: {
 		currencyInBalance: CurrencyAmountDto
 		currencyOutBalance?: CurrencyAmountDto
 	}): PageContent {
@@ -50,5 +50,5 @@ export class SwapChooseAmountPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

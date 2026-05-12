@@ -54,8 +54,9 @@ function initial(): SessionData {
 bot.use(session({ initial }))
 
 bot.use((ctx, next) => {
-	if (ctx.from !== undefined) {
-		ctx.session.telegramId = String(ctx.from.id)
+	const from = ctx.from as typeof ctx.from | undefined
+	if (from !== undefined) {
+		ctx.session.telegramId = String(from.id)
 	}
 	return next()
 })

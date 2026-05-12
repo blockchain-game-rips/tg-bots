@@ -7,8 +7,8 @@ import {
 	chainBreadcrumbSegment,
 } from '../choose-chain-token'
 
-export class WithdrawChooseCurrencyPage {
-	static render(currencies: CurrencyDto[]): PageContent {
+export const WithdrawChooseCurrencyPage = {
+	render(currencies: CurrencyDto[]): PageContent {
 		return buildChooseTokenPage({
 			lines: [
 				withdrawBreadcrumb(chainBreadcrumbSegment(currencies)),
@@ -23,5 +23,5 @@ export class WithdrawChooseCurrencyPage {
 				home: actionIds.openHome,
 			},
 		})
-	}
+	},
 }

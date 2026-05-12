@@ -11,8 +11,8 @@ import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { fundsBreakdown } from '../../utils/currency'
 import { configName, resolveConfig } from '../../utils/stake'
 
-export class BuyCheckoutPage {
-	static render(args: {
+export const BuyCheckoutPage = {
+	render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
 		currencyInAmount: CurrencyAmountDto
@@ -47,7 +47,7 @@ export class BuyCheckoutPage {
 		const lines = [
 			buyTicketsBreadcrumb(configName(config)),
 			'',
-			`Ticket count: ${ticketCount}`,
+			`Ticket count: ${ticketCount.toString()}`,
 			'',
 			...breakdownLines,
 		]
@@ -97,5 +97,5 @@ export class BuyCheckoutPage {
 			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

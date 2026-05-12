@@ -3,12 +3,12 @@ import { RoundDto } from '../../../generated/api-client'
 import { PageContent } from '../../types'
 import { configName } from '../../utils/stake'
 
-export class GlobalClaimedRoundPage {
-	static render(round: RoundDto): PageContent {
+export const GlobalClaimedRoundPage = {
+	render(round: RoundDto): PageContent {
 		const stake = configName(round.config)
 
 		const lines = [
-			`🏆 <b>Round #${round.id} Finished!</b>`,
+			`🏆 <b>Round #${round.id.toString()} Finished!</b>`,
 			'',
 			`Stake: ${stake}`,
 		]
@@ -17,5 +17,5 @@ export class GlobalClaimedRoundPage {
 			message: lines.join('\n'),
 			keyboard: new InlineKeyboard(),
 		}
-	}
+	},
 }

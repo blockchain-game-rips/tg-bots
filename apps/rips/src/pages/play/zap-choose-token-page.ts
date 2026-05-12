@@ -8,8 +8,8 @@ import {
 	chainBreadcrumbSegment,
 } from '../choose-chain-token'
 
-export class ZapChooseTokenPage {
-	static render(args: {
+export const ZapChooseTokenPage = {
+	render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
 		currencies: CurrencyDto[]
@@ -24,7 +24,7 @@ export class ZapChooseTokenPage {
 					chainBreadcrumbSegment(currencies),
 				),
 				'',
-				`Ticket count: ${ticketCount}`,
+				`Ticket count: ${ticketCount.toString()}`,
 				'',
 				'Choose a token to pay with:',
 			],
@@ -36,5 +36,5 @@ export class ZapChooseTokenPage {
 				home: actionIds.openHome,
 			},
 		})
-	}
+	},
 }

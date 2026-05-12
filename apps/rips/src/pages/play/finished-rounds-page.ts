@@ -6,13 +6,13 @@ import { addNav } from '../../utils/keyboard'
 import { displayStatus } from '../../utils/round-statuses'
 import { configName } from '../../utils/stake'
 
-export class FinishedRoundsPage {
-	static render(completedRounds: RoundDto[]): PageContent {
+export const FinishedRoundsPage = {
+	render(completedRounds: RoundDto[]): PageContent {
 		const lines: string[] = []
 
 		for (const round of completedRounds) {
 			lines.push(
-				`${configName(round.config)} stake | Round #${round.id} — ${displayStatus(round.status)}`,
+				`${configName(round.config)} stake | Round #${round.id.toString()} — ${displayStatus(round.status)}`,
 			)
 		}
 
@@ -26,5 +26,5 @@ export class FinishedRoundsPage {
 				parent: actionIds.openStatus,
 			}),
 		}
-	}
+	},
 }

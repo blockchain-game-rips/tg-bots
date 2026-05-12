@@ -12,7 +12,7 @@ function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
 	const lines = [
 		'<b>Open Rips</b>',
 		'',
-		`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+		`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
 	]
 
 	if (unrevealedPrizes.length === 0) {
@@ -38,8 +38,8 @@ function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
 	return { lines, keyboard }
 }
 
-export class RevealPrizesPage {
-	static render(unrevealedPrizes: PrizeDto[]): PageContent {
+export const RevealPrizesPage = {
+	render(unrevealedPrizes: PrizeDto[]): PageContent {
 		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
 
 		addNav(keyboard, {
@@ -48,11 +48,11 @@ export class RevealPrizesPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }
 
-export class RevealPrizesNoBackPage {
-	static render(unrevealedPrizes: PrizeDto[]): PageContent {
+export const RevealPrizesNoBackPage = {
+	render(unrevealedPrizes: PrizeDto[]): PageContent {
 		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
 
 		keyboard
@@ -60,5 +60,5 @@ export class RevealPrizesNoBackPage {
 			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

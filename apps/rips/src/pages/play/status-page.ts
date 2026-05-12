@@ -5,11 +5,8 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 
-export class StatusPage {
-	static render(
-		ongoingRounds: RoundDto[],
-		userEvmAddress: string,
-	): PageContent {
+export const StatusPage = {
+	render(ongoingRounds: RoundDto[], userEvmAddress: string): PageContent {
 		const userRounds = ongoingRounds.filter((r) =>
 			r.actions.purchases.some(
 				(p) =>
@@ -38,7 +35,9 @@ export class StatusPage {
 					)
 
 				const ticketLabel = userTickets === 1 ? 'ticket' : 'tickets'
-				lines.push(`Round #${round.id} — ${userTickets} ${ticketLabel}`)
+				lines.push(
+					`Round #${round.id.toString()} — ${userTickets.toString()} ${ticketLabel}`,
+				)
 			}
 		}
 
@@ -57,5 +56,5 @@ export class StatusPage {
 		)
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

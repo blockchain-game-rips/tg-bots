@@ -32,13 +32,13 @@ function tierTableLines(tierTable: TierTable): string[] {
 				amount: tier.minVolume,
 				currency: tierTable.currency,
 			})
-			return `  Tier ${i + 1}: ≥${minVolume} → ${formatPercent(tier.feePercent)}`
+			return `  Tier ${(i + 1).toString()}: ≥${minVolume} → ${formatPercent(tier.feePercent)}`
 		}),
 	]
 }
 
-export class ReferralSystemPage {
-	static render(args: {
+export const ReferralSystemPage = {
+	render(args: {
 		referrerData: GetReferrerResponseDtoOutput
 		tierTables: GetTierTablesResponseDtoOutput
 		referralLink: string
@@ -103,5 +103,5 @@ export class ReferralSystemPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

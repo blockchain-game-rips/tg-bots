@@ -49,11 +49,14 @@ async function buildZapCheckout(
 
 	const currencyInBalance = balances.find(
 		(b) => b.currency.chainAddress.address === currencyChainAddress.address,
-	)!
+	)
+	if (currencyInBalance === undefined)
+		throw new Error('Currency in balance not found')
 
 	const nativeBalance = balances.find(
 		(b) => b.currency.id === zapQuote.blockchainFee.currency.id,
-	)!
+	)
+	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
 	setFlowStep(session, 'zap-currency-chosen', {
 		stakeId,

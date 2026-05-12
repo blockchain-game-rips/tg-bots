@@ -6,8 +6,8 @@ import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tierName } from '../../utils/tiers'
 
-export class RevealAllPage {
-	static render(
+export const RevealAllPage = {
+	render(
 		rounds: RoundDto[],
 		revealedPrizes: PrizeDto[],
 		unrevealedPrizes: PrizeDto[],
@@ -15,7 +15,7 @@ export class RevealAllPage {
 		const lines = [
 			'<b>Open Rips</b>',
 			'',
-			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+			`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
 			'',
 			'🎁 <b>Your prizes</b>',
 			'',
@@ -26,7 +26,7 @@ export class RevealAllPage {
 
 			if (!round)
 				throw new Error(
-					`round with id ${prize.roundId} is not found in rounds`,
+					`round with id ${prize.roundId.toString()} is not found in rounds`,
 				)
 
 			const prizeCurrencyAmount = {
@@ -35,7 +35,7 @@ export class RevealAllPage {
 			}
 
 			lines.push(
-				`<a href="${prize.card.imageUrl}">${prize.card.name}</a> [${tierName(prize.card.tier)}] — Ticket #${prize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+				`<a href="${prize.card.imageUrl}">${prize.card.name}</a> [${tierName(prize.card.tier)}] — Ticket #${prize.ticketNumber.toString()} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
 			)
 		}
 
@@ -46,5 +46,5 @@ export class RevealAllPage {
 				parent: actionIds.openPlay,
 			}),
 		}
-	}
+	},
 }

@@ -4,8 +4,8 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { addNav } from '../../utils/keyboard'
 
-export class PlayPage {
-	static render(): PageContent {
+export const PlayPage = {
+	render(): PageContent {
 		const lines = [
 			'<b>Play</b>',
 			'',
@@ -37,5 +37,5 @@ export class PlayPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

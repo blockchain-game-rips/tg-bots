@@ -10,12 +10,12 @@ function renderConfig(config: ConfigDto): string {
 	return [
 		`🎮 <b>${configName(config)}</b>`,
 		`⏱ Duration: ${toShortDurationFormat(config.durationSeconds)}`,
-		`🎟 Tickets per round: ${config.ticketCap}`,
+		`🎟 Tickets per round: ${config.ticketCap.toString()}`,
 	].join('\n')
 }
 
-export class AboutPage {
-	static render(configs: ConfigDto[]): PageContent {
+export const AboutPage = {
+	render(configs: ConfigDto[]): PageContent {
 		const sections = configs.map((config) => renderConfig(config))
 
 		const lines = [
@@ -35,5 +35,5 @@ export class AboutPage {
 				parent: actionIds.openHome,
 			}),
 		}
-	}
+	},
 }

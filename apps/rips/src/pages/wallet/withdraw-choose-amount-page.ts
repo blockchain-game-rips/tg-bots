@@ -7,8 +7,8 @@ import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
-export class WithdrawChooseAmountPage {
-	static render(balance: CurrencyAmountDto): PageContent {
+export const WithdrawChooseAmountPage = {
+	render(balance: CurrencyAmountDto): PageContent {
 		const { currency } = balance
 		const chain = currency.chainAddress.chain
 
@@ -41,5 +41,5 @@ export class WithdrawChooseAmountPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

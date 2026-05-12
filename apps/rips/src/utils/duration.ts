@@ -28,10 +28,10 @@ export function toShortDurationFormat(seconds: number) {
 	const duration = parseDuration(seconds)
 
 	return [
-		duration.days > 0 ? `${duration.days}d` : null,
-		duration.hours > 0 ? `${duration.hours}h` : null,
-		duration.minutes > 0 ? `${duration.minutes}m` : null,
-		duration.seconds > 0 ? `${duration.seconds}s` : null,
+		duration.days > 0 ? `${duration.days.toString()}d` : null,
+		duration.hours > 0 ? `${duration.hours.toString()}h` : null,
+		duration.minutes > 0 ? `${duration.minutes.toString()}m` : null,
+		duration.seconds > 0 ? `${duration.seconds.toString()}s` : null,
 	]
 		.filter(Boolean)
 		.join(' ')
@@ -41,10 +41,10 @@ export function toLongDurationFormat(seconds: number) {
 	const duration = parseDuration(seconds)
 
 	return [
-		duration.days > 0 ? `${duration.days}days` : null,
-		duration.hours > 0 ? `${duration.hours}hours` : null,
-		duration.minutes > 0 ? `${duration.minutes}minutes` : null,
-		duration.seconds > 0 ? `${duration.seconds}seconds` : null,
+		duration.days > 0 ? `${duration.days.toString()}days` : null,
+		duration.hours > 0 ? `${duration.hours.toString()}hours` : null,
+		duration.minutes > 0 ? `${duration.minutes.toString()}minutes` : null,
+		duration.seconds > 0 ? `${duration.seconds.toString()}seconds` : null,
 	]
 		.filter(Boolean)
 		.join(' ')

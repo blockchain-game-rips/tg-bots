@@ -5,12 +5,12 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { configName } from '../../utils/stake'
 
-export class UserRefundedRoundPage {
-	static render(round: RoundDto): PageContent {
+export const UserRefundedRoundPage = {
+	render(round: RoundDto): PageContent {
 		const stake = configName(round.config)
 
 		const lines = [
-			`↩️ <b>Round #${round.id} was refunded</b>`,
+			`↩️ <b>Round #${round.id.toString()} was refunded</b>`,
 			'',
 			`Stake: ${stake}`,
 			'Your funds have been returned to your balance.',
@@ -25,5 +25,5 @@ export class UserRefundedRoundPage {
 			message: lines.join('\n'),
 			keyboard,
 		}
-	}
+	},
 }

@@ -40,7 +40,7 @@ export class Notifier {
 	}
 
 	private async pollLoop() {
-		while (true) {
+		for (;;) {
 			try {
 				await this.fetchAndHandleNotifications()
 			} catch (err) {
@@ -58,7 +58,7 @@ export class Notifier {
 		for (const notification of notificationsData.notifications) {
 			const rounds = await fetchRounds([Number(notification.roundId)])
 
-			const round = rounds[0]
+			const round = (rounds as (RoundDto | undefined)[])[0]
 
 			if (!round) {
 				logger.error(
@@ -72,7 +72,9 @@ export class Notifier {
 			const isGroupNotification =
 				notification.userTelegramId === GROUP_USER_ID
 			const pages = isGroupNotification ? groupPages : userPages
-			const buildPage = pages[type]
+			const buildPage = (
+				pages as Record<NotificationType, PageBuilder | undefined>
+			)[type]
 
 			if (!buildPage) {
 				logger.error({ notification }, 'Unknown notification type')

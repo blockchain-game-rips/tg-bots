@@ -11,8 +11,8 @@ import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { configName, resolveConfig } from '../../utils/stake'
 
-export class ZapFailedPage {
-	static render(args: {
+export const ZapFailedPage = {
+	render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
 		amountIn: CurrencyAmountDto
@@ -33,7 +33,7 @@ export class ZapFailedPage {
 			'',
 			'❌ Zap failed',
 			'',
-			`Ticket count: ${ticketCount}`,
+			`Ticket count: ${ticketCount.toString()}`,
 			`Paid: ${formatAmountWithUsd(amountIn)}`,
 			`Refund: ${formatAmountWithUsd(refund)}`,
 		]
@@ -45,5 +45,5 @@ export class ZapFailedPage {
 				buildActionData(actionIds.openHome, undefined),
 			),
 		}
-	}
+	},
 }

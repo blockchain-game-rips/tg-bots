@@ -41,7 +41,7 @@ export async function fetchNativeBalance(telegramId: string) {
 		chainAddressToString(NATIVE_ON_BASE),
 	])
 
-	const balance = balances[0]
+	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]
 
 	if (balance === undefined) {
 		throw new Error('No balance found for native asset')
@@ -69,7 +69,7 @@ export async function fetchStake(
 	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
 
 	if (stake === undefined) {
-		throw new Error(`Stake with id ${stakeId} not found`)
+		throw new Error(`Stake with id ${stakeId.toString()} not found`)
 	}
 
 	return stake

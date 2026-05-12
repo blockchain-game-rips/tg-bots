@@ -14,8 +14,8 @@ import {
 	insufficientBalanceLines,
 } from '../../utils/currency'
 
-export class WithdrawCheckoutPage {
-	static render(args: {
+export const WithdrawCheckoutPage = {
+	render(args: {
 		currencyBalance: CurrencyAmountDto
 		nativeBalance: CurrencyAmountDto
 		currencyAmount: CurrencyAmountDto
@@ -118,5 +118,5 @@ export class WithdrawCheckoutPage {
 			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

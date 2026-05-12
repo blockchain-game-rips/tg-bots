@@ -16,7 +16,7 @@ export function getEnvSafe(key: string): string {
 }
 
 export function fireAndForget<T>(promise: Promise<T>) {
-	promise.catch((error) => {
+	promise.catch((error: unknown) => {
 		logger.error(error)
 	})
 }

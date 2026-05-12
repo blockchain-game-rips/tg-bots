@@ -16,7 +16,7 @@ export function noPayload(
 ): ActionDef<void> {
 	return {
 		encode: () => '',
-		decode: () => undefined as void,
+		decode: (): void => undefined,
 		handler: (session) => handler(session),
 	}
 }

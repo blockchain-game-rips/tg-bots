@@ -1,6 +1,6 @@
 import { Bot } from 'grammy'
 import { getEnvSafe } from '../../src/utils/common'
-import { pages, VariantError } from './pages'
+import { pages, VariantError, type PageEntry } from './pages'
 
 const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
@@ -34,7 +34,7 @@ bot.command('r', async (ctx) => {
 		return
 	}
 
-	const page = pages[pageName]
+	const page = (pages as Record<string, PageEntry | undefined>)[pageName]
 
 	if (!page) {
 		await ctx.reply(
@@ -77,7 +77,7 @@ bot.command('d', async (ctx) => {
 		return
 	}
 
-	const page = pages[pageName]
+	const page = (pages as Record<string, PageEntry | undefined>)[pageName]
 
 	if (!page) {
 		await ctx.reply(

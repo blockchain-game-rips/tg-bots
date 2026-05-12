@@ -9,11 +9,8 @@ import {
 	chainBreadcrumbSegment,
 } from '../choose-chain-token'
 
-export class SwapChooseTokenPage {
-	static render(
-		currencies: CurrencyDto[],
-		selecting: SwapSelecting,
-	): PageContent {
+export const SwapChooseTokenPage = {
+	render(currencies: CurrencyDto[], selecting: SwapSelecting): PageContent {
 		const label = selecting === 'in' ? 'token in' : 'token out'
 		const tokenActionId =
 			selecting === 'in'
@@ -39,5 +36,5 @@ export class SwapChooseTokenPage {
 				home: actionIds.openHome,
 			},
 		})
-	}
+	},
 }

@@ -5,5 +5,5 @@ export const TIER_NAMES: Record<number, string> = {
 }
 
 export function tierName(tier: number): string {
-	return TIER_NAMES[tier] ?? `Tier ${tier}`
+	return TIER_NAMES[tier] ?? `Tier ${tier.toString()}`
 }

@@ -17,6 +17,10 @@ export class ApiError extends Error {
 		public readonly status: number,
 		public readonly body: unknown,
 	) {
-		super(isApiErrorBody(body) ? body.message : `API error ${status}`)
+		super(
+			isApiErrorBody(body)
+				? body.message
+				: `API error ${status.toString()}`,
+		)
 	}
 }

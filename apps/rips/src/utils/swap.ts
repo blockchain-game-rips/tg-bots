@@ -44,13 +44,21 @@ async function fetchCheckout(
 
 	const currencyInBalance = balances.find(
 		(b) => b.currency.id === currencyIn.id,
-	)!
+	)
+	if (currencyInBalance === undefined)
+		throw new Error('Currency in balance not found')
+
 	const nativeInBalance = balances.find(
 		(b) => b.currency.id === swapQuote.blockchainFee.currency.id,
-	)!
+	)
+	if (nativeInBalance === undefined)
+		throw new Error('Native in balance not found')
+
 	const currencyOutBalance = balances.find(
 		(b) => b.currency.id === currencyOut.id,
-	)!
+	)
+	if (currencyOutBalance === undefined)
+		throw new Error('Currency out balance not found')
 
 	return {
 		swapQuote,
@@ -132,8 +140,10 @@ export async function resolveSwapPage(
 	)
 
 	const amountInDisplay =
-		currencyInBalance !== undefined && amountIn !== undefined
-			? toCurrencyAmount(amountIn, currencyIn!)
+		currencyInBalance !== undefined &&
+		amountIn !== undefined &&
+		currencyIn !== undefined
+			? toCurrencyAmount(amountIn, currencyIn)
 			: undefined
 
 	return {

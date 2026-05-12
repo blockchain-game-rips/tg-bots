@@ -6,8 +6,8 @@ import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { configName, resolveConfig } from '../../utils/stake'
 import { buildChooseChainPage } from '../choose-chain-token'
 
-export class ZapChooseChainPage {
-	static render(args: {
+export const ZapChooseChainPage = {
+	render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
 	}): PageContent {
@@ -18,7 +18,7 @@ export class ZapChooseChainPage {
 			lines: [
 				buyTicketsBreadcrumb(configName(config)),
 				'',
-				`Ticket count: ${ticketCount}`,
+				`Ticket count: ${ticketCount.toString()}`,
 				'',
 				'Choose a chain to pay from:',
 			],
@@ -29,5 +29,5 @@ export class ZapChooseChainPage {
 				home: actionIds.openHome,
 			},
 		})
-	}
+	},
 }

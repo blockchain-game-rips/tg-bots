@@ -7,8 +7,8 @@ import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 import { tierName } from '../../utils/tiers'
 
-export class RevealSinglePage {
-	static render(
+export const RevealSinglePage = {
+	render(
 		round: RoundDto,
 		revealedPrize: PrizeDto,
 		unrevealedPrizes: PrizeDto[],
@@ -22,9 +22,9 @@ export class RevealSinglePage {
 			'<b>Open Rips</b>',
 			'',
 			`🎁 <a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> [${tierName(revealedPrize.card.tier)}]`,
-			`Ticket #${revealedPrize.ticketNumber} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+			`Ticket #${revealedPrize.ticketNumber.toString()} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
 			'',
-			`🎟 Unrevealed tickets: ${unrevealedPrizes.length}`,
+			`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
 		]
 
 		const keyboard = new InlineKeyboard()
@@ -50,5 +50,5 @@ export class RevealSinglePage {
 				parent: actionIds.openPlay,
 			}),
 		}
-	}
+	},
 }

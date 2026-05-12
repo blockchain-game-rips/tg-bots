@@ -10,8 +10,8 @@ import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 
-export class WithdrawSuccessPage {
-	static render(args: {
+export const WithdrawSuccessPage = {
+	render(args: {
 		transaction: TransactionDto
 		currencyAmount: CurrencyAmountDto
 		blockchainFee?: CurrencyAmountDto
@@ -47,5 +47,5 @@ export class WithdrawSuccessPage {
 				buildActionData(actionIds.openHome, undefined),
 			),
 		}
-	}
+	},
 }

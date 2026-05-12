@@ -20,8 +20,8 @@ import {
 import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
 
-export class ZapCheckoutPage {
-	static render(args: {
+export const ZapCheckoutPage = {
+	render(args: {
 		availableStake: AvailableStakeDto
 		ticketCount: number
 		nativeBalance: CurrencyAmountDto
@@ -60,7 +60,7 @@ export class ZapCheckoutPage {
 				currency.symbol,
 			),
 			'',
-			`Ticket count: ${ticketCount}`,
+			`Ticket count: ${ticketCount.toString()}`,
 			`Estimated time: ${toShortDurationFormat(zapQuote.durationMs / 1000 + TRANSACTION_SEND_OVERHEAD_SECONDS)}`,
 			'',
 			...breakdownLines,
@@ -98,5 +98,5 @@ export class ZapCheckoutPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

@@ -16,13 +16,13 @@ function tierTableLines(tierTable: TierTable): string[] {
 				amount: tier.minVolume,
 				currency: tierTable.currency,
 			})
-			return `  Tier ${i + 1}: ≥${minVolume} → ${formatPercent(tier.feePercent)} of protocol fee`
+			return `  Tier ${(i + 1).toString()}: ≥${minVolume} → ${formatPercent(tier.feePercent)} of protocol fee`
 		}),
 	]
 }
 
-export class ReferralAboutPage {
-	static render(tierTables: GetTierTablesResponseDtoOutput): PageContent {
+export const ReferralAboutPage = {
+	render(tierTables: GetTierTablesResponseDtoOutput): PageContent {
 		const lines = [
 			'<b>How the referral system works</b>',
 			'',
@@ -47,5 +47,5 @@ export class ReferralAboutPage {
 				home: actionIds.openHome,
 			}),
 		}
-	}
+	},
 }

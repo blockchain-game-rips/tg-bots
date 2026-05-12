@@ -5,12 +5,12 @@ import { PageContent } from '../../types'
 import { buildActionData } from '../../utils/action-data'
 import { configName } from '../../utils/stake'
 
-export class UserClaimedRoundPage {
-	static render(round: RoundDto): PageContent {
+export const UserClaimedRoundPage = {
+	render(round: RoundDto): PageContent {
 		const stake = configName(round.config)
 
 		const lines = [
-			`🏆 <b>Round #${round.id} is over — open your prizes!</b>`,
+			`🏆 <b>Round #${round.id.toString()} is over — open your prizes!</b>`,
 			'',
 			`Stake: ${stake}`,
 		]
@@ -24,5 +24,5 @@ export class UserClaimedRoundPage {
 			message: lines.join('\n'),
 			keyboard,
 		}
-	}
+	},
 }

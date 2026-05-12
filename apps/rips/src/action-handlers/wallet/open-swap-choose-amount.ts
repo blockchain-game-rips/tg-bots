@@ -23,7 +23,9 @@ export const openSwapChooseAmount: ActionDef<void> = noPayload(
 
 		const currencyInBalance = balances.find(
 			(b) => b.currency.id === currencyIn.id,
-		)!
+		)
+		if (currencyInBalance === undefined)
+			throw new Error('Currency in balance not found')
 
 		const currencyOutBalance = currencyOut
 			? balances.find((b) => b.currency.id === currencyOut.id)

@@ -8,7 +8,7 @@ export const openAbout: ActionDef<void> = noPayload(async () => {
 
 	const configs = data.availableStakes
 		.map((s) => s.fillingRound?.config ?? s.stake.currentConfig)
-		.filter((c) => c !== null && c !== undefined)
+		.filter((c): c is NonNullable<typeof c> => c != null)
 
 	return { type: EffectType.EDIT, page: AboutPage.render(configs) }
 })

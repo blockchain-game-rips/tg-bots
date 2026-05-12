@@ -31,7 +31,7 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 
 	if (decimals === 0) {
 		if (Math.round(Number(`.${fraction}`)) === 1)
-			integer = `${BigInt(integer) + 1n}`
+			integer = (BigInt(integer) + 1n).toString()
 		fraction = ''
 	} else if (fraction.length > decimals) {
 		const [left, unit, right] = [
@@ -42,15 +42,15 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 
 		const rounded = Math.round(Number(`${unit}.${right}`))
 		if (rounded > 9)
-			fraction = `${BigInt(left) + BigInt(1)}0`.padStart(
+			fraction = `${(BigInt(left) + BigInt(1)).toString()}0`.padStart(
 				left.length + 1,
 				'0',
 			)
-		else fraction = `${left}${rounded}`
+		else fraction = `${left}${rounded.toString()}`
 
 		if (fraction.length > decimals) {
 			fraction = fraction.slice(1)
-			integer = `${BigInt(integer) + 1n}`
+			integer = (BigInt(integer) + 1n).toString()
 		}
 
 		fraction = fraction.slice(0, decimals)
@@ -58,5 +58,7 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 		fraction = fraction.padEnd(decimals, '0')
 	}
 
-	return BigInt(`${negative ? '-' : ''}${integer}${fraction}`)
+	return BigInt(
+		`${negative ? '-' : ''}${integer.toString()}${fraction.toString()}`,
+	)
 }

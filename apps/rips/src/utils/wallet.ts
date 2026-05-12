@@ -13,7 +13,9 @@ import { fetchBalances } from './api'
 import { toCurrencyId } from './currency'
 
 export function evmAddressFromUser(user: UserDtoOutput) {
-	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
+	const userEvmAddress = (user.wallets as Record<string, string | undefined>)[
+		EIP155_NAMESPACE
+	]
 
 	if (userEvmAddress === undefined) {
 		throw new Error('User has no EVM wallet')
@@ -68,11 +70,14 @@ export async function resolveWithdrawPage(
 	const nativeBalance = balances.find(
 		(balance) =>
 			balance.currency.id === withdrawQuote.blockchainFee.currency.id,
-	)!
+	)
+	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
 	const currencyBalance = balances.find(
 		(balance) => balance.currency.id === currency.id,
-	)!
+	)
+	if (currencyBalance === undefined)
+		throw new Error('Currency balance not found')
 
 	return {
 		type: EffectType.EDIT,

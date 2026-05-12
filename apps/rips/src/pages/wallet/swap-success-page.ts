@@ -6,8 +6,8 @@ import { buildActionData } from '../../utils/action-data'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd } from '../../utils/currency'
 
-export class SwapSuccessPage {
-	static render(args: {
+export const SwapSuccessPage = {
+	render(args: {
 		amountIn: CurrencyAmountDto
 		amountOut: CurrencyAmountDto
 		transactionId: string
@@ -32,5 +32,5 @@ export class SwapSuccessPage {
 				buildActionData(actionIds.openHome, undefined),
 			),
 		}
-	}
+	},
 }

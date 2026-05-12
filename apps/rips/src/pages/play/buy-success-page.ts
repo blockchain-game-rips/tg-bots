@@ -10,8 +10,8 @@ import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { configName } from '../../utils/stake'
 
-export class BuySuccessPage {
-	static render(
+export const BuySuccessPage = {
+	render(
 		purchase: BuyTicketsPurchaseResponseDtoOutput,
 		round?: RoundDto,
 	): PageContent {
@@ -22,8 +22,8 @@ export class BuySuccessPage {
 			'',
 			'✅ Purchase successful!',
 			'',
-			`Round: #${purchase.roundId}`,
-			`Tickets: ${purchase.ticketCount}`,
+			`Round: #${purchase.roundId.toString()}`,
+			`Tickets: ${purchase.ticketCount.toString()}`,
 		]
 
 		if (round !== undefined) {
@@ -54,5 +54,5 @@ export class BuySuccessPage {
 				buildActionData(actionIds.openHome, undefined),
 			),
 		}
-	}
+	},
 }

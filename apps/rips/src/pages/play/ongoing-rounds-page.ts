@@ -11,7 +11,7 @@ function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)
 
 	if (round.status !== 'FILLING') {
-		return `  Round #${round.id} — ${status}`
+		return `  Round #${round.id.toString()} — ${status}`
 	}
 
 	const soldTickets = round.actions.purchases.reduce(
@@ -28,14 +28,14 @@ function roundLine(round: RoundDto): string {
 	const remaining = Math.floor(remainingMs / 1000)
 
 	return (
-		`  Round #${round.id} — ${status}` +
-		` | ${remainingTickets} tickets left` +
+		`  Round #${round.id.toString()} — ${status}` +
+		` | ${remainingTickets.toString()} tickets left` +
 		` | ${toShortDurationFormat(remaining)} left`
 	)
 }
 
-export class OngoingRoundsPage {
-	static render(
+export const OngoingRoundsPage = {
+	render(
 		ongoingRounds: RoundDto[],
 		availableStakes: AvailableStakeDto[],
 	): PageContent {
@@ -51,8 +51,9 @@ export class OngoingRoundsPage {
 				(r) => r.stakeId === stakeId,
 			)
 
-			// stakeIds is set from availableStakes, thus stake is not undefined
-			const stake = availableStakes.find((s) => s.stake.id === stakeId)!
+			const stake = availableStakes.find((s) => s.stake.id === stakeId)
+			if (stake === undefined)
+				throw new Error(`Stake ${stakeId.toString()} not found`)
 
 			const config = resolveConfig(stake)
 
@@ -78,5 +79,5 @@ export class OngoingRoundsPage {
 				parent: actionIds.openStatus,
 			}),
 		}
-	}
+	},
 }

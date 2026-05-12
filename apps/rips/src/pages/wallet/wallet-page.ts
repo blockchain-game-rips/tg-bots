@@ -6,11 +6,8 @@ import { buildActionData } from '../../utils/action-data'
 import { formatAmountWithUsd } from '../../utils/currency'
 import { addNav } from '../../utils/keyboard'
 
-export class WalletPage {
-	static render(
-		balance: CurrencyAmountDto,
-		userEvmAddress: string,
-	): PageContent {
+export const WalletPage = {
+	render(balance: CurrencyAmountDto, userEvmAddress: string): PageContent {
 		const lines = [
 			'<b>Wallet</b>',
 			'',
@@ -42,5 +39,5 @@ export class WalletPage {
 		})
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

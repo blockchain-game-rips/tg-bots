@@ -35,7 +35,10 @@ export function truncateAddress(address: string): string {
 }
 
 export function chainToName(chain: Chain): string {
-	const namespaceMap = CHAIN_NAMES[chain.namespace as SupportedNamespace]
+	const namespaceMap = CHAIN_NAMES[chain.namespace as SupportedNamespace] as
+		| Record<string, string>
+		| undefined
+
 	const chainName =
 		namespaceMap?.[
 			chain.reference as ReferencesForNamespace<SupportedNamespace>

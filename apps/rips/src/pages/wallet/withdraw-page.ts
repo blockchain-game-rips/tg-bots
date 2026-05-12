@@ -7,8 +7,8 @@ import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import { formatAmountWithUsd } from '../../utils/currency'
 
-export class WithdrawPage {
-	static render(
+export const WithdrawPage = {
+	render(
 		currencyBalance: CurrencyAmountDto,
 		amountToWithdraw?: CurrencyAmountDto,
 		recipientAddress?: string,
@@ -21,8 +21,7 @@ export class WithdrawPage {
 				? formatAmountWithUsd(amountToWithdraw)
 				: '-'
 
-		const recipient =
-			recipientAddress !== undefined ? recipientAddress : '-'
+		const recipient = recipientAddress ?? '-'
 
 		const lines = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),
@@ -57,5 +56,5 @@ export class WithdrawPage {
 			.text('Home', buildActionData(actionIds.openHome, undefined))
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

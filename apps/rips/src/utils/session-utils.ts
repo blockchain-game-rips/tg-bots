@@ -9,57 +9,56 @@ type FlowByType<FT extends ActiveFlow['flowType']> = Extract<
 	{ flowType: FT }
 >
 
-type StepOf<FT extends ActiveFlow['flowType']> = FlowByType<FT>['step']
-
-type ValidateStep<
+type FlowByTypeAndStep<
 	FT extends ActiveFlow['flowType'],
 	S extends ActiveFlow['step'],
-> = S extends StepOf<FT> ? S : StepOf<FT>
+> = Extract<ActiveFlow, { flowType: FT; step: S }>
+
+type StepOf<FT extends ActiveFlow['flowType']> = FlowByType<FT>['step']
+
+type DataOf<
+	FT extends ActiveFlow['flowType'],
+	S extends ActiveFlow['step'],
+> = FlowByTypeAndStep<FT, S>['data']
 
 export function assertFlow<
 	FT extends ActiveFlow['flowType'],
-	S extends ActiveFlow['step'],
+	S extends StepOf<FT>,
 >(
 	session: SessionData,
 	flowType: FT,
-	...steps: ValidateStep<FT, S>[]
-): asserts session is SessionData<
-	Extract<ActiveFlow, { flowType: FT; step: S }>
-> {
+	...steps: S[]
+): asserts session is SessionData<FlowByTypeAndStep<FT, S>> {
 	const { flow } = session
 
-	if (flow?.flowType !== flowType || !steps.includes(flow.step)) {
+	const stepMatches =
+		flow !== null &&
+		flow.flowType === flowType &&
+		(steps as ActiveFlow['step'][]).includes(flow.step)
+
+	if (!stepMatches) {
 		throw new ErrorToRender('Invalid session state')
 	}
 }
 
 export function setFlowStep<
 	FT extends ActiveFlow['flowType'],
-	S extends FlowByType<FT>['step'],
->(
-	session: SessionData<FlowByType<FT>>,
-	step: S,
-	data: Extract<FlowByType<FT>, { step: S }>['data'],
-) {
+	S extends StepOf<FT>,
+>(session: SessionData<FlowByType<FT>>, step: S, data: DataOf<FT, S>) {
 	session.flow = {
 		flowType: session.flow.flowType,
 		step,
 		data,
-	}
+	} as FlowByType<FT>
 }
 
-export function resetFlow(session: SessionData<ActiveFlow>) {
+export function resetFlow(session: SessionData) {
 	session.flow = null
 }
 
 export function setFlow<
 	FT extends ActiveFlow['flowType'],
 	S extends StepOf<FT>,
->(
-	session: SessionData,
-	flowType: FT,
-	step: S,
-	data: Extract<FlowByType<FT>, { step: S }>['data'],
-) {
-	session.flow = { flowType, step, data }
+>(session: SessionData, flowType: FT, step: S, data: DataOf<FT, S>) {
+	session.flow = { flowType, step, data } as FlowByTypeAndStep<FT, S>
 }

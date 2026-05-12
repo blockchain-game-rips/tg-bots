@@ -5,17 +5,23 @@ import { registry } from './registry'
 const METRICS_PORT = 9091
 
 export function startMetricsServer(): void {
-	const server = createServer(async (req, res) => {
+	const server = createServer((req, res) => {
 		if (req.url !== '/metrics') {
 			res.writeHead(404).end()
 			return
 		}
 
-		const metrics = await registry.metrics()
-
-		res.writeHead(200, { 'Content-Type': registry.contentType }).end(
-			metrics,
-		)
+		registry
+			.metrics()
+			.then((metrics) => {
+				res.writeHead(200, {
+					'Content-Type': registry.contentType,
+				}).end(metrics)
+			})
+			.catch((err: unknown) => {
+				logger.error({ err }, 'Failed to collect metrics')
+				res.writeHead(500).end()
+			})
 	})
 
 	server.listen(METRICS_PORT, () => {

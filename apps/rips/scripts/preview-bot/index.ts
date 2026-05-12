@@ -4,12 +4,10 @@ import { pages, VariantError, type PageEntry } from './pages'
 
 const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
-const pageNames = Object.keys(pages)
-
 bot.command('pages', async (ctx) => {
-	const list = pageNames
-		.map((name) => {
-			const { variants } = pages[name]
+	const list = Object.entries(pages)
+		.map(([name, entry]) => {
+			const { variants } = entry
 
 			if (!variants?.length) return `<code>${name}</code>`
 
@@ -18,7 +16,7 @@ bot.command('pages', async (ctx) => {
 
 			return [
 				`<code>${name} ${first}</code>`,
-				...rest.map((v) => `<code>${indent} ${v}</code>`),
+				...rest.map((v: string) => `<code>${indent} ${v}</code>`),
 			].join('\n')
 		})
 		.join('\n')

@@ -102,6 +102,14 @@ export function resolveVariant(
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
 const mockSwapCurrencies = [mockSwapAmountIn.currency]
 
+const mockAvailableStake0 = mockAvailableStakes[0]
+const mockRevealedPrize0 = mockRevealedPrizes[0]
+
+if (mockAvailableStake0 === undefined)
+	throw new Error('mockAvailableStakes[0] is missing')
+if (mockRevealedPrize0 === undefined)
+	throw new Error('mockRevealedPrizes[0] is missing')
+
 export const pages: Record<string, PageEntry> = {
 	home: {
 		description:
@@ -131,7 +139,7 @@ export const pages: Record<string, PageEntry> = {
 	'buy-choose-ticket-count': {
 		description:
 			'Second step of buying tickets. Choose how many tickets to buy: preset options or custom amount. Opened from choose-stake.',
-		render: () => BuyChooseTicketCountPage.render(mockAvailableStakes[0]),
+		render: () => BuyChooseTicketCountPage.render(mockAvailableStake0),
 	},
 	'buy-checkout': {
 		description:
@@ -150,7 +158,7 @@ export const pages: Record<string, PageEntry> = {
 			})()
 
 			return BuyCheckoutPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 				currencyInAmount: mockTicketCost,
 				purchaseQuote: mockPurchaseQuote,
@@ -170,7 +178,7 @@ export const pages: Record<string, PageEntry> = {
 			'First step of the zap flow. Entered from buy-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
 		render: () =>
 			ZapChooseChainPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 			}),
 	},
@@ -179,7 +187,7 @@ export const pages: Record<string, PageEntry> = {
 			'Second step of the zap flow. Choose a token on the selected chain to pay with.',
 		render: () =>
 			ZapChooseTokenPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
@@ -189,7 +197,7 @@ export const pages: Record<string, PageEntry> = {
 			'Third step of the zap flow. Shows zap quote: amount to pay, token balance, and network fee. Confirm to proceed.',
 		render: () =>
 			ZapCheckoutPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 				nativeBalance: mockBalance,
 				currencyInBalance: mockZapCurrencyInBalance,
@@ -202,7 +210,7 @@ export const pages: Record<string, PageEntry> = {
 			'Shown when the zap transaction fails. Shows stake, ticket count, amount paid, and refund amount.',
 		render: () =>
 			ZapFailedPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				refund: mockZapCurrencyInBalance,
@@ -213,7 +221,7 @@ export const pages: Record<string, PageEntry> = {
 			'Final step of the zap flow. Confirms zap + ticket purchase succeeded — shows stake, round, ticket count, amount paid, and blockchain fee.',
 		render: () =>
 			ZapSuccessPage.render({
-				availableStake: mockAvailableStakes[0],
+				availableStake: mockAvailableStake0,
 				ticketCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				zapSuccessResult: mockZapSuccessResult,
@@ -249,7 +257,7 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			RevealSinglePage.render(
 				mockRound,
-				mockRevealedPrizes[0],
+				mockRevealedPrize0,
 				mockUnrevealedPrizes,
 			),
 	},

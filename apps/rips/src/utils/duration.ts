@@ -1,6 +1,6 @@
 export const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 
-type Duration = {
+interface Duration {
 	days: number
 	hours: number
 	minutes: number

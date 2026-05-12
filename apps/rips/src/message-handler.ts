@@ -37,7 +37,7 @@ export async function handleMessage(
 function getAskAndSubmit(ctx: Filter<Context, 'message:text'>): {
 	ask: {
 		messageId: number
-		onSubmit: ActionId<string>
+		onSubmit: ActionId<unknown>
 		pageToEdit: MessageToEdit
 	}
 	submit: {

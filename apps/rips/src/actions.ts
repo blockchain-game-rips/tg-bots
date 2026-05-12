@@ -11,7 +11,7 @@ type PayloadOf<D> = D extends ActionDef<infer P> ? P : never
 
 export type { ActionId }
 
-export type BoundAction = {
+export interface BoundAction {
 	decode: (raw: string) => unknown
 	handler: (
 		session: SessionData,

@@ -12,7 +12,7 @@ import { toCurrencyAmount, toCurrencyId } from './currency'
 import { setFlow } from './session-utils'
 import { evmAddressFromUser } from './wallet'
 
-export type SwapState = {
+export interface SwapState {
 	currencyIn?: CurrencyDto
 	currencyOut?: CurrencyDto
 	amountIn?: bigint

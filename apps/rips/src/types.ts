@@ -4,12 +4,12 @@ import { Flow } from './flows'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
 
-export type MessageToEdit = {
+export interface MessageToEdit {
 	pageContent: PageContent
 	messageId: number
 }
 
-export type SessionData<F extends Flow = Flow> = {
+export interface SessionData<F extends Flow = Flow> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
@@ -28,13 +28,16 @@ export enum EffectType {
 	SEND_LOADING,
 }
 
-export type EffectEdit = { type: EffectType.EDIT; page: PageContent }
-export type EffectAsk = {
+export interface EffectEdit {
+	type: EffectType.EDIT
+	page: PageContent
+}
+export interface EffectAsk {
 	type: EffectType.ASK
 	prompt: PromptContent
 	onSubmit: ActionId<unknown>
 }
-export type EffectLoading = {
+export interface EffectLoading {
 	type: EffectType.SEND_LOADING
 	message: string
 	next: () => Promise<Effect>
@@ -42,25 +45,25 @@ export type EffectLoading = {
 
 export type Effect = EffectEdit | EffectAsk | EffectLoading
 
-export type PageContent = {
+export interface PageContent {
 	message: string
 	keyboard: InlineKeyboard
 }
 
 export type NavIds =
-	| { home: ActionId<void>; parent: ActionId<void> }
+	| { home: ActionId; parent: ActionId }
 	| {
-			home: ActionId<void>
+			home: ActionId
 			parent: ActionId<unknown>
 			parentPayload: unknown
 	  }
 
-export type PromptContent = {
+export interface PromptContent {
 	message: string
 	placeholder: string
 }
 
-export type Chain = {
+export interface Chain {
 	namespace: string
 	reference: string
 }

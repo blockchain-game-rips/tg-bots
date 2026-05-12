@@ -1,6 +1,6 @@
 import { Effect, SessionData } from './types'
 
-export type ActionDef<P> = {
+export interface ActionDef<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
 	handler: (session: SessionData, payload: P) => Promise<Effect> | Effect

@@ -21,7 +21,7 @@ export type BuyTicketsFlow =
 			}
 	  }
 
-export type WithdrawFlow = {
+export interface WithdrawFlow {
 	flowType: 'withdraw'
 	step: 'currency-chosen'
 	data: {
@@ -33,7 +33,7 @@ export type WithdrawFlow = {
 
 export type SwapSelecting = 'in' | 'out'
 
-export type SwapFlow = {
+export interface SwapFlow {
 	flowType: 'swap'
 	step: 'idle'
 	data: {

@@ -6,8 +6,8 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
 	eslint.configs.recommended,
-	tseslint.configs.recommended,
-	tseslint.configs.recommendedTypeChecked,
+	tseslint.configs.strictTypeChecked,
+	tseslint.configs.stylisticTypeChecked,
 	{
 		languageOptions: {
 			parserOptions: {
@@ -15,6 +15,9 @@ export default tseslint.config(
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
+	},
+	{
+		ignores: ['generated/**'],
 	},
 	{
 		plugins: {
@@ -34,10 +37,6 @@ export default tseslint.config(
 					argsIgnorePattern: '^_',
 				},
 			],
-			'@typescript-eslint/no-unsafe-assignment': 'off',
-			'@typescript-eslint/no-unsafe-call': 'off',
-			'@typescript-eslint/no-unsafe-member-access': 'off',
-			'@typescript-eslint/no-unsafe-argument': 'off',
 		},
 	},
 )

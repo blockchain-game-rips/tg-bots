@@ -71,7 +71,7 @@ import {
 	mockZapSuccessResult,
 } from './static-data'
 
-export type PageEntry = {
+export interface PageEntry {
 	description: string
 	variants?: string[]
 	render: (variant?: string) => PageContent

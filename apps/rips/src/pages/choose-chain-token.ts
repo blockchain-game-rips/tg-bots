@@ -7,14 +7,14 @@ import { chainToName } from '../utils/chain'
 import { findCurrencyIndex } from '../utils/currency'
 import { addNav } from '../utils/keyboard'
 
-type ChooseChainParams<T> = {
+interface ChooseChainParams<T> {
 	lines: string[]
 	chainActionId: ActionId<T>
 	chainPayload: (chainIndex: number) => T
 	nav: NavIds
 }
 
-type ChooseTokenParams<T> = {
+interface ChooseTokenParams<T> {
 	lines: string[]
 	currencies: CurrencyDto[]
 	tokenActionId: ActionId<T>

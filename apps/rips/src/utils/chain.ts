@@ -4,13 +4,20 @@ import {
 } from '../constants'
 import { Chain } from '../types'
 
-const CHAIN_NAMES: Record<string, Record<string, string> | undefined> = {
+type SupportedChain = (typeof SUPPORTED_CHAINS_LIST)[number]
+type SupportedNamespace = SupportedChain['namespace']
+type ReferencesForNamespace<N extends SupportedNamespace> = Extract<
+	SupportedChain,
+	{ namespace: N }
+>['reference']
+
+const CHAIN_NAMES: {
+	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string>
+} = {
 	[EIP155_NAMESPACE]: {
 		'1': 'Ethereum',
 		'56': 'BSC',
-		'137': 'Polygon',
 		'42161': 'Arbitrum',
-		'43114': 'Avalanche',
 		'10': 'Optimism',
 		'8453': 'Base',
 	},
@@ -27,9 +34,12 @@ export function truncateAddress(address: string): string {
 	return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-//TODO: ensure by type system that chain names has all chains
 export function chainToName(chain: Chain): string {
-	const chainName = CHAIN_NAMES[chain.namespace]?.[chain.reference]
+	const namespaceMap = CHAIN_NAMES[chain.namespace as SupportedNamespace]
+	const chainName =
+		namespaceMap?.[
+			chain.reference as ReferencesForNamespace<SupportedNamespace>
+		]
 
 	if (chainName === undefined) {
 		throw new Error(

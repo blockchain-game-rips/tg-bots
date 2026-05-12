@@ -2,13 +2,13 @@ import { ChainAddressDto } from '../generated/api-client'
 
 export const EIP155_NAMESPACE = 'eip155'
 
-const ETHEREUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '1' }
-const BNB_CHAIN = { namespace: EIP155_NAMESPACE, reference: '56' }
-// const POLYGON_CHAIN = { namespace: EIP155_NAMESPACE, reference: '137' }
-const ARBITRUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '42161' }
-// const AVALANCHE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '43114' }
-const OPTIMISM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '10' }
-const BASE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '8453' }
+const ETHEREUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '1' } as const
+const BNB_CHAIN = { namespace: EIP155_NAMESPACE, reference: '56' } as const
+// const POLYGON_CHAIN = { namespace: EIP155_NAMESPACE, reference: '137' } as const
+const ARBITRUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '42161' } as const
+// const AVALANCHE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '43114' } as const
+const OPTIMISM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '10' } as const
+const BASE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '8453' } as const
 
 export const SUPPORTED_CHAINS = [
 	ETHEREUM_CHAIN,
@@ -18,7 +18,7 @@ export const SUPPORTED_CHAINS = [
 	// AVALANCHE_CHAIN,
 	OPTIMISM_CHAIN,
 	BASE_CHAIN,
-]
+] as const
 
 const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000'
 

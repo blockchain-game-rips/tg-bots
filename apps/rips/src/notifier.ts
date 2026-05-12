@@ -58,7 +58,7 @@ export class Notifier {
 		for (const notification of notificationsData.notifications) {
 			const rounds = await fetchRounds([Number(notification.roundId)])
 
-			const round = (rounds as (RoundDto | undefined)[])[0]
+			const round = rounds[0]
 
 			if (!round) {
 				logger.error(

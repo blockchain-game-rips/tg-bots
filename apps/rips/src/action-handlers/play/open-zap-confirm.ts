@@ -80,8 +80,14 @@ async function buildZapCheckout(
 export const openZapCheckout: ActionDef<number> = withPayload(
 	(currencyIndex) => currencyIndex.toString(),
 	(raw) => parseCurrencyIndex(raw),
-	(session, currencyIndex) =>
-		buildZapCheckout(session, SUPPORTED_CURRENCIES[currencyIndex]),
+	(session, currencyIndex) => {
+		const currency = SUPPORTED_CURRENCIES[currencyIndex]
+
+		if (currency === undefined)
+			throw new Error(`Currency index out of range: ${currencyIndex}`)
+
+		return buildZapCheckout(session, currency)
+	},
 )
 
 export const refreshZapCheckout: ActionDef<void> = noPayload(

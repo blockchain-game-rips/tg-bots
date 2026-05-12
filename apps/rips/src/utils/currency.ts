@@ -218,7 +218,11 @@ export function fundsBreakdown(
 		)
 	})
 
-	const firstChain = expenses[0].amount.currency.chainAddress.chain
+	const firstExpense = expenses[0]
+
+	if (firstExpense === undefined) throw new Error('No expenses provided')
+
+	const firstChain = firstExpense.amount.currency.chainAddress.chain
 	const chainName = chainToName(firstChain)
 	const chainPrefix = '⛓ '
 	const chainLabel = padLabel('Chain', labelWidth - chainPrefix.length)

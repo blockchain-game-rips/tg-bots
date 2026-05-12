@@ -22,5 +22,11 @@ export function parseCurrencyIndex(raw: string): number {
 }
 
 export function parseCurrencyChainAddress(raw: string): ChainAddressDto {
-	return SUPPORTED_CURRENCIES[parseCurrencyIndex(raw)]
+	const index = parseCurrencyIndex(raw)
+	const currency = SUPPORTED_CURRENCIES[index]
+
+	if (currency === undefined)
+		throw new Error(`Currency index out of range: ${index}`)
+
+	return currency
 }

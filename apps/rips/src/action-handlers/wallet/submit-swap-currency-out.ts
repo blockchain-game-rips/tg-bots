@@ -22,7 +22,11 @@ export const submitSwapCurrencyOut: ActionDef<ChainAddressDto> = withPayload(
 			toCurrencyId(currencyChainAddress),
 		])
 
-		const newCurrency = balances[0].currency
+		const balance = balances[0]
+
+		if (balance === undefined) throw new Error('Balance not found')
+
+		const newCurrency = balance.currency
 
 		const { currencyIn, amountIn } = session.flow.data
 

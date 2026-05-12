@@ -22,7 +22,9 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 	if (!/^(-?)([0-9]*)\.?([0-9]*)$/.test(value))
 		throw new Error(`Invalid decimal number: ${value}`)
 
-	let [integer, fraction = '0'] = value.split('.')
+	const parts = value.split('.')
+	let integer = parts[0] ?? ''
+	let fraction = parts[1] ?? '0'
 
 	const negative = integer.startsWith('-')
 	if (negative) integer = integer.slice(1)

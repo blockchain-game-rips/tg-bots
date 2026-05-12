@@ -67,5 +67,9 @@ export function buildChooseTokenPage<T>(
 }
 
 export function chainBreadcrumbSegment(currencies: CurrencyDto[]): string {
-	return chainToName(currencies[0].chainAddress.chain)
+	const first = currencies[0]
+
+	if (first === undefined) throw new Error('No currencies provided')
+
+	return chainToName(first.chainAddress.chain)
 }

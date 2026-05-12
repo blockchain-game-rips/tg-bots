@@ -13,11 +13,16 @@ export const openWithdraw: ActionDef<number> = withPayload(
 	async (session, currencyIndex) => {
 		const currencyChainAddress = SUPPORTED_CURRENCIES[currencyIndex]
 
+		if (currencyChainAddress === undefined)
+			throw new Error(`Currency index out of range: ${currencyIndex}`)
+
 		const balances = await fetchBalances(session.telegramId, [
 			toCurrencyId(currencyChainAddress),
 		])
 
 		const currencyBalance = balances[0]
+
+		if (currencyBalance === undefined) throw new Error('Balance not found')
 
 		setFlow(session, 'withdraw', 'currency-chosen', {
 			currency: currencyBalance.currency,

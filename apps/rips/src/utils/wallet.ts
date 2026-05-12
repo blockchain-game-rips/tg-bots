@@ -37,6 +37,8 @@ export async function resolveWithdrawPage(
 
 		const currencyBalance = balances[0]
 
+		if (currencyBalance === undefined) throw new Error('Balance not found')
+
 		return {
 			type: EffectType.EDIT,
 			page: WithdrawPage.render(

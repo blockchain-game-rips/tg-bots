@@ -1,5 +1,5 @@
 import { Filter, GrammyError, InlineKeyboard } from 'grammy'
-import { actions, BoundAction } from './actions'
+import { actions } from './actions'
 import { executeEffectOrDisplayError } from './effect-executor'
 import { logger } from './logging/pino-logger'
 import { Context, MessageToEdit } from './types'
@@ -25,9 +25,12 @@ export async function handleButton(
 			ctx.callbackQuery.data.split(COMMAND_SEPARATOR)
 		const { chatId, page } = getChatIdAndPage(ctx)
 
-		const boundAction = (
-			actions as Record<string, BoundAction | undefined>
-		)[actionId]
+		if (actionId === undefined) {
+			logger.error('Missing action ID in callback data')
+			return
+		}
+
+		const boundAction = actions[actionId]
 
 		if (boundAction === undefined) {
 			logger.error({ actionId }, 'Unknown action')

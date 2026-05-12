@@ -37,7 +37,7 @@ function buildActionIds(
 
 function buildActions(
 	registry: Record<string, AnyActionDef>,
-): Record<string, BoundAction> {
+): Record<string, BoundAction | undefined> {
 	const result: Record<string, BoundAction> = {}
 
 	Object.entries(registry).forEach(([name, def], index) => {

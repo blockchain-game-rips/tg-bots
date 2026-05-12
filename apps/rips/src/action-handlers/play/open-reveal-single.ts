@@ -29,6 +29,9 @@ export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 	const revealedPrize = revealData.prizes[0]
 	const round = roundsData.rounds[0]
 
+	if (round === undefined) throw new Error('Round not found')
+	if (revealedPrize === undefined) throw new Error('Revealed prize not found')
+
 	return {
 		type: EffectType.EDIT,
 		page: RevealSinglePage.render(round, revealedPrize, unrevealedPrizes),

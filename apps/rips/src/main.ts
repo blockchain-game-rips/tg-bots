@@ -69,10 +69,12 @@ bot.command('start', async (ctx) => {
 
 	try {
 		//TODO: there are circular dependencies in this project
-		const showHomeEffect = await actions['0'].handler(
-			ctx.session,
-			undefined,
-		)
+		const homeAction = actions['0']
+
+		if (homeAction === undefined)
+			throw new Error('Home action not registered')
+
+		const showHomeEffect = await homeAction.handler(ctx.session, undefined)
 		if (showHomeEffect.type === EffectType.EDIT) {
 			pageContent = showHomeEffect.page
 		}

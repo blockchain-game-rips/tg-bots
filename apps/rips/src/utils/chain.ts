@@ -1,8 +1,10 @@
 import {
 	EIP155_NAMESPACE,
 	SUPPORTED_CHAINS as SUPPORTED_CHAINS_LIST,
+	SUPPORTED_CURRENCIES,
 } from '../constants'
 import { Chain } from '../types'
+import { toCurrencyId } from './currency'
 
 type SupportedChain = (typeof SUPPORTED_CHAINS_LIST)[number]
 type SupportedNamespace = SupportedChain['namespace']
@@ -29,6 +31,14 @@ export function findChainIndex(chain: Chain): number {
 		(c) =>
 			c.namespace === chain.namespace && c.reference === chain.reference,
 	)
+}
+
+export function getCurrenciesForChain(chain: Chain): string[] {
+	return SUPPORTED_CURRENCIES.filter(
+		(c) =>
+			c.chain.namespace === chain.namespace &&
+			c.chain.reference === chain.reference,
+	).map(toCurrencyId)
 }
 
 export function truncateAddress(address: string): string {

@@ -4,11 +4,10 @@ import {
 	usersControllerGetUser,
 } from '../../../generated/api-client'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchStake } from '../../utils/api'
-import { toCurrencyId } from '../../utils/currency'
+import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
@@ -79,11 +78,7 @@ async function buildZapCheckout(
 
 export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
 	(currencyChainAddress) =>
-		SUPPORTED_CURRENCIES.findIndex(
-			(c) =>
-				c.address === currencyChainAddress.address &&
-				c.chain.reference === currencyChainAddress.chain.reference,
-		).toString(),
+		findCurrencyIndex(currencyChainAddress).toString(),
 	(raw) => parseCurrencyChainAddress(raw),
 	(session, currencyChainAddress) =>
 		buildZapCheckout(session, currencyChainAddress),

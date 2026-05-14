@@ -3,6 +3,7 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 } from '../../generated/api-client'
+import { SUPPORTED_CURRENCIES } from '../constants'
 import { chainToName } from './chain'
 import { formatUnits } from './units'
 export { formatUnits, parseUnits } from './units'
@@ -34,6 +35,14 @@ function formatUsd(usd: number): string {
 	if (usd === 0) return '$0'
 	if (usd < USD_MIN_DISPLAY) return `&lt;$${USD_MIN_DISPLAY.toFixed(2)}`
 	return `$${usd.toFixed(2)}`
+}
+
+export function findCurrencyIndex(value: ChainAddressDto): number {
+	return SUPPORTED_CURRENCIES.findIndex(
+		(c) =>
+			c.address === value.address &&
+			c.chain.reference === value.chain.reference,
+	)
 }
 
 export function toCurrencyId(currencyChainAddress: ChainAddressDto) {

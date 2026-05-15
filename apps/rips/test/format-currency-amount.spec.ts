@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '../generated/api-client'
-import { currencyAmountDisplayParts } from '../src/utils/currency'
+import { currencyAmountDisplayParts } from '../src/utils/format/currency'
 
 function makeCurrencyAmount(
 	amount: string,

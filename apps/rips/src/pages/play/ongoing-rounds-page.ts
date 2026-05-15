@@ -3,7 +3,7 @@ import { AvailableStakeDto, RoundDto } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { toShortDurationFormat } from '../../utils/duration'
+import { toShortDurationFormat } from '../../utils/format/duration'
 import { displayStatus } from '../../utils/round-statuses'
 import { configName, resolveConfig } from '../../utils/stake'
 

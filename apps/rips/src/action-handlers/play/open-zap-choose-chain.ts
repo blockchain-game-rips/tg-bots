@@ -2,7 +2,7 @@ import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { assertFlow } from '../../grammy-kit/session/session-utils'
 import { ZapChooseChainPage } from '../../pages/play/zap-choose-chain-page'
 import { EffectType } from '../../types'
-import { fetchStake } from '../../utils/api'
+import { fetchStake } from '../../utils/api/wrappers'
 
 export const openZapChooseChain: ActionDef<void> = noPayload(
 	async (session) => {

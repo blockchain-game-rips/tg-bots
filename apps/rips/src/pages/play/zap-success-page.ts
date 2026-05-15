@@ -7,9 +7,9 @@ import {
 import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
-import { formatAmountWithUsd } from '../../utils/currency'
+import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export const ZapSuccessPage = {

@@ -2,7 +2,7 @@ import { SUPPORTED_CURRENCIES } from '../../constants'
 import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { AllBalancesPage } from '../../pages/wallet/all-balances-page'
 import { EffectType } from '../../types'
-import { fetchBalances } from '../../utils/api'
+import { fetchBalances } from '../../utils/api/wrappers'
 import { chainAddressToString } from '../../utils/currency'
 
 export const openAllBalances: ActionDef<void> = noPayload((session) => {

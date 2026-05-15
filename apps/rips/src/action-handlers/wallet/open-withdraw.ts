@@ -3,7 +3,7 @@ import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
 import { setFlow } from '../../grammy-kit/session/session-utils'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'
-import { fetchSingleBalance } from '../../utils/api'
+import { fetchSingleBalance } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 

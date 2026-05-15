@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { CurrencyAmountDto, CurrencyDto } from '../../generated/api-client'
 import { ErrorToRender } from '../grammy-kit/effects/error-to-render'
-import { parseUnits } from '../utils/units'
+import { parseUnits } from '../utils/format/units'
 import { parsePayload } from './parse-payload'
 
 const amountSchema = z

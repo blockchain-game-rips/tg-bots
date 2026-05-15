@@ -2,7 +2,7 @@ import { usersControllerGetUser } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { EffectType } from '../../types'
-import { fetchNativeBalance } from '../../utils/api'
+import { fetchNativeBalance } from '../../utils/api/wrappers'
 import { evmAddressFromUser } from '../../utils/wallet'
 
 export const openWallet: ActionDef<void> = noPayload(async (session) => {

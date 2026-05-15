@@ -10,7 +10,7 @@ import { assertFlow, resetFlow } from '../../grammy-kit/session/session-utils'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'
-import { fetchStake } from '../../utils/api'
+import { fetchStake } from '../../utils/api/wrappers'
 import { toCurrencyAmount } from '../../utils/currency'
 
 const ZAP_POLL_INTERVAL_MS = 2000

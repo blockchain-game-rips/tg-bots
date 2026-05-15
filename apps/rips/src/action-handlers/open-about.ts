@@ -1,7 +1,7 @@
 import { ActionDef, noPayload } from '../grammy-kit/action/action-def'
 import { AboutPage } from '../pages/about/about-page'
 import { EffectType } from '../types'
-import { fetchStakes } from '../utils/api'
+import { fetchStakes } from '../utils/api/wrappers'
 
 export const openAbout: ActionDef<void> = noPayload(async () => {
 	const availableStakes = await fetchStakes()

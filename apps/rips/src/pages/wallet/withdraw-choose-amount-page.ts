@@ -5,7 +5,8 @@ import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { formatAmountWithUsd, formatUnits } from '../../utils/currency'
+import { formatUnits } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDto): PageContent {

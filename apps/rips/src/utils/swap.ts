@@ -7,7 +7,7 @@ import { setFlow } from '../grammy-kit/session/session-utils'
 import { SwapCheckoutPage } from '../pages/wallet/swap-checkout'
 import { SwapPage } from '../pages/wallet/swap-page'
 import { Effect, EffectType, SessionData } from '../types'
-import { fetchBalances } from './api'
+import { fetchBalances } from './api/wrappers'
 import { toCurrencyAmount, toCurrencyId } from './currency'
 import { evmAddressFromUser } from './wallet'
 

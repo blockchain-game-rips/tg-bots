@@ -5,7 +5,7 @@ import {
 import { ActionDef, noPayload } from '../grammy-kit/action/action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'
-import { isApiErrorWithStatus } from '../utils/action-handler-utils'
+import { isApiErrorWithStatus } from '../utils/api/error'
 
 const NOT_FOUND_STATUS = 404
 

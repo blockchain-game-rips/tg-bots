@@ -2,7 +2,7 @@ import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { assertFlow } from '../../grammy-kit/session/session-utils'
 import { WithdrawChooseAmountPage } from '../../pages/wallet/withdraw-choose-amount-page'
 import { EffectType } from '../../types'
-import { fetchSingleBalance } from '../../utils/api'
+import { fetchSingleBalance } from '../../utils/api/wrappers'
 import { toCurrencyId } from '../../utils/currency'
 
 export const openWithdrawChooseAmount: ActionDef<void> = noPayload(

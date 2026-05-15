@@ -4,7 +4,7 @@ import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WalletPage = {
 	render(balance: CurrencyAmountDto, userEvmAddress: string): PageContent {

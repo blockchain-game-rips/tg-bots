@@ -1,5 +1,5 @@
 import { AvailableStakeDto, ConfigDto } from '../../generated/api-client'
-import { formatUnits } from './units'
+import { formatUnits } from './format/units'
 
 export function resolveConfig(availableStake: AvailableStakeDto) {
 	if (availableStake.fillingRound) return availableStake.fillingRound.config

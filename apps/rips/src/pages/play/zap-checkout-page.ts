@@ -8,16 +8,16 @@ import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import {
 	fundsBreakdown,
 	insufficientFundsDepositLines,
-} from '../../utils/currency'
+} from '../../utils/display/balance'
+import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
 import {
 	toShortDurationFormat,
 	TRANSACTION_SEND_OVERHEAD_SECONDS,
-} from '../../utils/duration'
+} from '../../utils/format/duration'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export const ZapCheckoutPage = {

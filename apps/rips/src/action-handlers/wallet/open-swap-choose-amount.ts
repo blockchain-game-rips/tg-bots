@@ -3,7 +3,7 @@ import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
 import { assertFlow } from '../../grammy-kit/session/session-utils'
 import { SwapChooseAmountPage } from '../../pages/wallet/swap-choose-amount'
 import { EffectType } from '../../types'
-import { fetchBalances } from '../../utils/api'
+import { fetchBalances } from '../../utils/api/wrappers'
 import { toCurrencyId } from '../../utils/currency'
 
 export const openSwapChooseAmount: ActionDef<void> = noPayload(

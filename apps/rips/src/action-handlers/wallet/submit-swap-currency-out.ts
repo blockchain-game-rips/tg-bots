@@ -1,7 +1,7 @@
 import { ChainAddressDto } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
 import { assertFlow } from '../../grammy-kit/session/session-utils'
-import { fetchSingleBalance } from '../../utils/api'
+import { fetchSingleBalance } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { resolveSwapPage, SwapState } from '../../utils/swap'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'

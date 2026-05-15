@@ -10,7 +10,7 @@ import { startMetricsServer } from './grammy-kit/metrics/server'
 import { createTelegramMetricsTransformer } from './grammy-kit/metrics/telegram'
 import { Notifier } from './notifier'
 import { Context, EffectType, PageContent, SessionData } from './types'
-import { ApiError } from './utils/api-error'
+import { ApiError } from './utils/api/error'
 import { getEnvSafe } from './utils/common'
 
 client.setConfig({

@@ -5,7 +5,7 @@ import {
 import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'
-import { fetchUnrevealedPrizes } from '../../utils/api'
+import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'
 
 export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session

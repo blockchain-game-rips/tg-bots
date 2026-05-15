@@ -1,7 +1,7 @@
 import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
 import { SwapChooseTokenPage } from '../../pages/wallet/swap-choose-token'
 import { Chain, EffectType } from '../../types'
-import { fetchCurrencies } from '../../utils/api'
+import { fetchCurrencies } from '../../utils/api/wrappers'
 import { findChainIndex, getCurrenciesForChain } from '../../utils/chain'
 import { parseChain } from '../../validation/chain-index'
 

@@ -8,7 +8,7 @@ import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
 import { assertFlow, resetFlow } from '../../grammy-kit/session/session-utils'
 import { BuySuccessPage } from '../../pages/play/buy-success-page'
 import { EffectType } from '../../types'
-import { isApiErrorWithStatus } from '../../utils/action-handler-utils'
+import { isApiErrorWithStatus } from '../../utils/api/error'
 
 const TRANSACTION_REVERTED_STATUS = 502
 

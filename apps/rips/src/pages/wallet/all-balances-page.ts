@@ -3,7 +3,7 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/currency'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const AllBalancesPage = {
 	render(balances: CurrencyAmountDto[]): PageContent {

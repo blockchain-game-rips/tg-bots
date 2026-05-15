@@ -10,7 +10,7 @@ import { GlobalRefundedRoundPage } from './pages/notifications/global-refunded-p
 import { UserClaimedRoundPage } from './pages/notifications/user-claimed-page'
 import { UserRefundedRoundPage } from './pages/notifications/user-refunded-page'
 import { Context, PageContent } from './types'
-import { fetchRounds } from './utils/api'
+import { fetchRounds } from './utils/api/wrappers'
 import { getEnvSafe, wait } from './utils/common'
 
 const POLL_INTERVAL_MS = 5000

@@ -3,8 +3,8 @@ import { GetTierTablesResponseDtoOutput } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/currency'
-import { formatPercent } from '../../utils/referral'
+import { formatAmountWithUsd } from '../../utils/format/currency'
+import { formatPercent } from '../../utils/format/percent'
 
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 

@@ -4,9 +4,9 @@ import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/currency'
-import { tokenLabel } from '../../utils/swap-utils'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
+import { tokenLabel } from '../../utils/display/token'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const SwapPage = {
 	render(args: {

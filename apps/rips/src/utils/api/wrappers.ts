@@ -6,10 +6,10 @@ import {
 	ripsControllerGetStakes,
 	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
-} from '../../generated/api-client'
-import { createQuerySerializer } from '../../generated/api-client/client/utils.gen'
-import { NATIVE_ON_BASE } from '../constants'
-import { chainAddressToString } from './currency'
+} from '../../../generated/api-client'
+import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
+import { NATIVE_ON_BASE } from '../../constants'
+import { chainAddressToString } from '../currency'
 
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,

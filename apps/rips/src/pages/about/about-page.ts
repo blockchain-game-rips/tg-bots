@@ -3,7 +3,7 @@ import { ConfigDto } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { toShortDurationFormat } from '../../utils/duration'
+import { toShortDurationFormat } from '../../utils/format/duration'
 import { configName } from '../../utils/stake'
 
 function renderConfig(config: ConfigDto): string {

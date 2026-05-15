@@ -7,8 +7,8 @@ import {
 import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
-import { fundsBreakdown } from '../../utils/currency'
+import { fundsBreakdown } from '../../utils/display/balance'
+import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export const BuyCheckoutPage = {

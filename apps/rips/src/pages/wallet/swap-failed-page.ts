@@ -3,8 +3,8 @@ import { CurrencyAmountDto } from '../../../generated/api-client'
 import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/currency'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const SwapFailedPage = {
 	render(args: {

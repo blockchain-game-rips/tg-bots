@@ -7,8 +7,8 @@ import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/currency'
-import { formatPercent } from '../../utils/referral'
+import { formatAmountWithUsd } from '../../utils/format/currency'
+import { formatPercent } from '../../utils/format/percent'
 
 const PERIOD_DAYS = 30
 const MS_PER_DAY = 24 * 60 * 60 * 1000

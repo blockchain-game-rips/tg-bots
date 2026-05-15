@@ -2,7 +2,7 @@ import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
 import { assertFlow } from '../../grammy-kit/session/session-utils'
 import { ZapChooseTokenPage } from '../../pages/play/zap-choose-token-page'
 import { Chain, EffectType } from '../../types'
-import { fetchCurrencies, fetchStake } from '../../utils/api'
+import { fetchCurrencies, fetchStake } from '../../utils/api/wrappers'
 import { findChainIndex, getCurrenciesForChain } from '../../utils/chain'
 import { parseChain } from '../../validation/chain-index'
 

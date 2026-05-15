@@ -6,13 +6,13 @@ import {
 import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import {
-	formatAmountWithUsd,
 	fundsBreakdown,
 	insufficientBalanceLines,
-} from '../../utils/currency'
+} from '../../utils/display/balance'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawCheckoutPage = {
 	render(args: {

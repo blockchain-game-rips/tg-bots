@@ -1,7 +1,7 @@
 import { AvailableStakeDto } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
+import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
 import { configName, resolveConfig } from '../../utils/stake'
 import { buildChooseChainPage } from '../choose-chain-token'
 

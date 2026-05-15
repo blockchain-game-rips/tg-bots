@@ -4,7 +4,7 @@ import {
 	RevealPrizesPage,
 } from '../../pages/play/reveal-prizes-page'
 import { EffectType } from '../../types'
-import { fetchUnrevealedPrizes } from '../../utils/api'
+import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'
 
 export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
 	const unrevealedPrizes = await fetchUnrevealedPrizes(session.telegramId)

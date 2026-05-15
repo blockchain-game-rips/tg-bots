@@ -1,7 +1,7 @@
 import { CurrencyDto } from '../../../generated/api-client'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { withdrawBreadcrumb } from '../../utils/breadcrumb'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 import {
 	buildChooseTokenPage,
 	chainBreadcrumbSegment,

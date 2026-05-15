@@ -11,7 +11,7 @@ import {
 import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
-import { fetchBalances, fetchStake } from '../../utils/api'
+import { fetchBalances, fetchStake } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'

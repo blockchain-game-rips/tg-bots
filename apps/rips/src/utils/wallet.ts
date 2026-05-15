@@ -9,7 +9,7 @@ import { EIP155_NAMESPACE } from '../constants'
 import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'
 import { Effect, EffectType } from '../types'
-import { fetchBalances } from './api'
+import { fetchBalances } from './api/wrappers'
 import { toCurrencyId } from './currency'
 
 export function evmAddressFromUser(user: UserDtoOutput) {

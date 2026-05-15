@@ -7,16 +7,16 @@ import { buildActionData } from '../../grammy-kit/action/action-data'
 import { actionIds } from '../../grammy-kit/action/actions'
 import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/breadcrumb'
 import {
-	formatAmountWithUsd,
 	fundsBreakdown,
 	insufficientBalanceLines,
-} from '../../utils/currency'
+} from '../../utils/display/balance'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
+import { formatAmountWithUsd } from '../../utils/format/currency'
 import {
 	toShortDurationFormat,
 	TRANSACTION_SEND_OVERHEAD_SECONDS,
-} from '../../utils/duration'
+} from '../../utils/format/duration'
 
 export const SwapCheckoutPage = {
 	render(args: {

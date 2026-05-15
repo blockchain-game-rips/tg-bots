@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { buildActionData } from '../../grammy-kit/action/action-data'
+import { actionIds } from '../../grammy-kit/action/actions'
+import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
-import { addNav } from '../../utils/keyboard'
 
 export const PlayPage = {
 	render(): PageContent {

@@ -1,10 +1,10 @@
 import { Filter, GrammyError, InlineKeyboard } from 'grammy'
-import { actions } from './actions'
-import { executeEffectOrDisplayError } from './effect-executor'
-import { logger } from './logging/pino-logger'
-import { Context, MessageToEdit } from './types'
-import { COMMAND_SEPARATOR } from './utils/action-data'
-import { fireAndForget } from './utils/common'
+import { Context, MessageToEdit } from '../../types'
+import { fireAndForget } from '../../utils/common'
+import { COMMAND_SEPARATOR } from '../action/action-data'
+import { actions } from '../action/actions'
+import { executeEffectOrDisplayError } from '../effects/effect-executor'
+import { logger } from '../logging/pino-logger'
 
 const processingUsers = new Set<number>()
 

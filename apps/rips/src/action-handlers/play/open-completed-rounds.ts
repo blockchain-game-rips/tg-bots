@@ -1,5 +1,5 @@
 import { ripsControllerGetCompletedRounds } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { FinishedRoundsPage } from '../../pages/play/finished-rounds-page'
 import { EffectType } from '../../types'
 

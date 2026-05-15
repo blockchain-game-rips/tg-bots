@@ -1,5 +1,5 @@
 import { referralSystemControllerGetTierTables } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { ReferralAboutPage } from '../../pages/referral-system/referral-about-page'
 import { EffectType } from '../../types'
 

@@ -1,4 +1,4 @@
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { WithdrawChooseChainPage } from '../../pages/wallet/withdraw-choose-chain-page'
 import { EffectType } from '../../types'
 

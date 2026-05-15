@@ -1,5 +1,5 @@
-import { ActionDef, withPayload } from '../../action-def'
-import { assertFlow, setFlowStep } from '../../utils/session-utils'
+import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
+import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
 import { resolveWithdrawPage } from '../../utils/wallet'
 import { parseCurrencyAmount } from '../../validation/amount'
 

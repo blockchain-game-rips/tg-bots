@@ -1,4 +1,4 @@
-import { Effect, SessionData } from './types'
+import { Effect, SessionData } from '../../types'
 
 export interface ActionDef<P> {
 	encode: (value: P) => string

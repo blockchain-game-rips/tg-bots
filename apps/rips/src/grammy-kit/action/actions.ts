@@ -1,8 +1,8 @@
+import { actionRegistry } from '../../action-registry'
+import { ActionId, Effect, SessionData } from '../../types'
+import { botActionDuration } from '../metrics/registry'
+import { registerEncoder } from './action-data'
 import { ActionDef, AnyActionDef } from './action-def'
-import { actionRegistry } from './action-registry'
-import { botActionDuration } from './metrics/registry'
-import { ActionId, Effect, SessionData } from './types'
-import { registerEncoder } from './utils/action-data'
 
 type ActionRegistry = typeof actionRegistry
 type ActionName = keyof ActionRegistry

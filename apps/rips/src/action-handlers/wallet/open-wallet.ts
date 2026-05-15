@@ -1,5 +1,5 @@
 import { usersControllerGetUser } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance } from '../../utils/api'

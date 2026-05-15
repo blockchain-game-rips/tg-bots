@@ -1,6 +1,6 @@
-import { ActionDef, withPayload } from '../../action-def'
+import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
+import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
 import { toCurrencyAmount } from '../../utils/currency'
-import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { resolveWithdrawPage } from '../../utils/wallet'
 import { parseEvmAddress } from '../../validation/evm-address'
 

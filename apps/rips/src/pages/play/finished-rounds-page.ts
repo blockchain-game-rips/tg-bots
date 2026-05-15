@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../grammy-kit/action/actions'
+import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { addNav } from '../../utils/keyboard'
 import { displayStatus } from '../../utils/round-statuses'
 import { configName } from '../../utils/stake'
 

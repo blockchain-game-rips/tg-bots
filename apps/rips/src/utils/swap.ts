@@ -3,12 +3,12 @@ import {
 	usersControllerGetUser,
 	walletsControllerQuoteSwap,
 } from '../../generated/api-client'
+import { setFlow } from '../grammy-kit/session/session-utils'
 import { SwapCheckoutPage } from '../pages/wallet/swap-checkout'
 import { SwapPage } from '../pages/wallet/swap-page'
 import { Effect, EffectType, SessionData } from '../types'
 import { fetchBalances } from './api'
 import { toCurrencyAmount, toCurrencyId } from './currency'
-import { setFlow } from './session-utils'
 import { evmAddressFromUser } from './wallet'
 
 export interface SwapState {

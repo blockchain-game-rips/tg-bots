@@ -3,9 +3,10 @@ import {
 	CurrencyAmountDto,
 	QuoteSwapResponseDtoOutput,
 } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { buildActionData } from '../../grammy-kit/action/action-data'
+import { actionIds } from '../../grammy-kit/action/actions'
+import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
 import { swapBreadcrumb } from '../../utils/breadcrumb'
 import {
 	formatAmountWithUsd,
@@ -16,7 +17,6 @@ import {
 	toShortDurationFormat,
 	TRANSACTION_SEND_OVERHEAD_SECONDS,
 } from '../../utils/duration'
-import { addNav } from '../../utils/keyboard'
 
 export const SwapCheckoutPage = {
 	render(args: {

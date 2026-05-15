@@ -3,9 +3,9 @@ import {
 	CurrencyAmountDto,
 	QuoteWithdrawResponseDtoOutput,
 } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { buildActionData } from '../../grammy-kit/action/action-data'
+import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import {

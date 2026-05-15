@@ -3,12 +3,16 @@ import {
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload, withPayload } from '../../action-def'
+import {
+	ActionDef,
+	noPayload,
+	withPayload,
+} from '../../grammy-kit/action/action-def'
+import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchStake } from '../../utils/api'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
-import { assertFlow, setFlowStep } from '../../utils/session-utils'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 

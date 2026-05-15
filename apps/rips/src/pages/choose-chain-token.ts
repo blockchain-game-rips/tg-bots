@@ -1,10 +1,10 @@
 import { InlineKeyboard } from 'grammy'
 import { CurrencyDto } from '../../generated/api-client'
 import { SUPPORTED_CHAINS } from '../constants'
+import { buildActionData } from '../grammy-kit/action/action-data'
+import { addNav } from '../grammy-kit/keyboard/keyboard'
 import { ActionId, Chain, NavIds, PageContent } from '../types'
-import { buildActionData } from '../utils/action-data'
 import { chainToName } from '../utils/chain'
-import { addNav } from '../utils/keyboard'
 
 interface ChooseChainParams<T> {
 	lines: string[]

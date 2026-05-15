@@ -1,8 +1,8 @@
 import { Bot, Filter } from 'grammy'
-import { actions } from './actions'
-import { executeEffectOrDisplayError } from './effect-executor'
-import { logger } from './logging/pino-logger'
-import { ActionId, Context, MessageToEdit } from './types'
+import { ActionId, Context, MessageToEdit } from '../../types'
+import { actions } from '../action/actions'
+import { executeEffectOrDisplayError } from '../effects/effect-executor'
+import { logger } from '../logging/pino-logger'
 
 export async function handleMessage(
 	ctx: Filter<Context, 'message:text'>,

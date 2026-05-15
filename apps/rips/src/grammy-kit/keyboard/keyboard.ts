@@ -1,6 +1,6 @@
 import { InlineKeyboard } from 'grammy'
-import { NavIds } from '../types'
-import { buildActionData } from './action-data'
+import { NavIds } from '../../types'
+import { buildActionData } from '../action/action-data'
 
 export function addNav(keyboard: InlineKeyboard, ids: NavIds): InlineKeyboard {
 	if ('parentPayload' in ids) {

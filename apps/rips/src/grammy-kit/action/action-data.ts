@@ -1,4 +1,4 @@
-import { ActionId } from '../types'
+import { ActionId } from '../../types'
 
 export const COMMAND_SEPARATOR = ':'
 

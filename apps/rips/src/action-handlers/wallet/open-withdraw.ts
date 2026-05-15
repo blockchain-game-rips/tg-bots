@@ -1,10 +1,10 @@
 import { ChainAddressDto } from '../../../generated/api-client'
-import { ActionDef, withPayload } from '../../action-def'
+import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
+import { setFlow } from '../../grammy-kit/session/session-utils'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
-import { setFlow } from '../../utils/session-utils'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
 export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(

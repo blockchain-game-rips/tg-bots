@@ -4,9 +4,10 @@ import {
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
 } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { buildActionData } from '../../grammy-kit/action/action-data'
+import { actionIds } from '../../grammy-kit/action/actions'
+import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
 import { buyTicketsBreadcrumb } from '../../utils/breadcrumb'
 import { chainToName } from '../../utils/chain'
 import {
@@ -17,7 +18,6 @@ import {
 	toShortDurationFormat,
 	TRANSACTION_SEND_OVERHEAD_SECONDS,
 } from '../../utils/duration'
-import { addNav } from '../../utils/keyboard'
 import { configName, resolveConfig } from '../../utils/stake'
 
 export const ZapCheckoutPage = {

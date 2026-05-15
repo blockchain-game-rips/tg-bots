@@ -1,8 +1,8 @@
-import { ActionDef, withPayload } from '../../action-def'
+import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
+import { setFlow } from '../../grammy-kit/session/session-utils'
 import { BuyChooseTicketCountPage } from '../../pages/play/buy-choose-ticket-count-page'
 import { EffectType } from '../../types'
 import { fetchStake } from '../../utils/api'
-import { setFlow } from '../../utils/session-utils'
 import { parseStakeId } from '../../validation/stake-id'
 
 export const openBuyChooseTicketCount: ActionDef<number> = withPayload(

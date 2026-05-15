@@ -1,5 +1,5 @@
 import { CurrencyDto } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
 import { withdrawBreadcrumb } from '../../utils/breadcrumb'
 import {

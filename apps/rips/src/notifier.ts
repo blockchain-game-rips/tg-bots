@@ -4,7 +4,7 @@ import {
 	notificationsControllerMarkNotified,
 	RoundDto,
 } from '../generated/api-client'
-import { logger } from './logging/pino-logger'
+import { logger } from './grammy-kit/logging/pino-logger'
 import { GlobalClaimedRoundPage } from './pages/notifications/global-claimed-page'
 import { GlobalRefundedRoundPage } from './pages/notifications/global-refunded-page'
 import { UserClaimedRoundPage } from './pages/notifications/user-claimed-page'

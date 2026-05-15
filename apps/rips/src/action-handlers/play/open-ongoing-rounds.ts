@@ -2,7 +2,7 @@ import {
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { OngoingRoundsPage } from '../../pages/play/ongoing-rounds-page'
 import { EffectType } from '../../types'
 

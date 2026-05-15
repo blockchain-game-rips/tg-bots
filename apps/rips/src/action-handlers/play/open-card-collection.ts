@@ -1,5 +1,5 @@
 import { ripsControllerGetCardCollection } from '../../../generated/api-client'
-import { ActionDef, withPayload } from '../../action-def'
+import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'
 import { parseStakeId } from '../../validation/stake-id'

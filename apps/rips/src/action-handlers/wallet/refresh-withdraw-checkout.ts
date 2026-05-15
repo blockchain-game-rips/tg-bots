@@ -1,6 +1,6 @@
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
+import { assertFlow } from '../../grammy-kit/session/session-utils'
 import { toCurrencyAmount } from '../../utils/currency'
-import { assertFlow } from '../../utils/session-utils'
 import { resolveWithdrawPage } from '../../utils/wallet'
 
 export const refreshWithdrawCheckout: ActionDef<void> = noPayload(

@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { logger } from '../logging/pino-logger'
+import { logger } from '../grammy-kit/logging/pino-logger'
 
 export const wait = (ms: number): Promise<void> =>
 	new Promise((resolve) => setTimeout(resolve, ms))

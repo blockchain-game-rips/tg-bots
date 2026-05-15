@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { CurrencyAmountDto, CurrencyDto } from '../../generated/api-client'
-import { ErrorToRender } from '../utils/error-to-render'
+import { ErrorToRender } from '../grammy-kit/effects/error-to-render'
 import { parseUnits } from '../utils/units'
 import { parsePayload } from './parse-payload'
 

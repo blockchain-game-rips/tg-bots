@@ -1,9 +1,9 @@
 import { InlineKeyboard } from 'grammy'
 import { GetTierTablesResponseDtoOutput } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../grammy-kit/action/actions'
+import { addNav } from '../../grammy-kit/keyboard/keyboard'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/currency'
-import { addNav } from '../../utils/keyboard'
 import { formatPercent } from '../../utils/referral'
 
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]

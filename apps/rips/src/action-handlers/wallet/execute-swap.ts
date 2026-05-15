@@ -4,13 +4,13 @@ import {
 	walletsControllerGetSwapResult,
 	walletsControllerSwap,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
+import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
+import { assertFlow, resetFlow } from '../../grammy-kit/session/session-utils'
 import { SwapFailedPage } from '../../pages/wallet/swap-failed-page'
 import { SwapSuccessPage } from '../../pages/wallet/swap-success-page'
 import { EffectType } from '../../types'
 import { toCurrencyAmount } from '../../utils/currency'
-import { ErrorToRender } from '../../utils/error-to-render'
-import { assertFlow, resetFlow } from '../../utils/session-utils'
 
 const SWAP_POLL_INTERVAL_MS = 2000
 const SWAP_POLL_TIMEOUT_MS = 60000

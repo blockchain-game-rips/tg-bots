@@ -1,6 +1,7 @@
 import { User } from '@grammyjs/types'
 import { Context as GrammyContext, InlineKeyboard, SessionFlavor } from 'grammy'
 import { Flow } from './flows'
+import { FlowBase } from './grammy-kit/session/session-utils'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
 
@@ -9,7 +10,7 @@ export interface MessageToEdit {
 	messageId: number
 }
 
-export interface SessionData<F extends Flow = Flow> {
+export interface SessionData<F extends FlowBase | null = Flow> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>

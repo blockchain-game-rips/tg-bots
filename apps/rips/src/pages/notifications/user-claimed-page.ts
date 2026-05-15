@@ -1,8 +1,8 @@
 import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../generated/api-client'
-import { actionIds } from '../../actions'
+import { buildActionData } from '../../grammy-kit/action/action-data'
+import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
-import { buildActionData } from '../../utils/action-data'
 import { configName } from '../../utils/stake'
 
 export const UserClaimedRoundPage = {

@@ -1,12 +1,9 @@
 import { Api, GrammyError } from 'grammy'
-import { BoundAction } from './actions'
-import { logger } from './logging/pino-logger'
-import { Effect, EffectType, MessageToEdit, SessionData } from './types'
-import { fireAndForget } from './utils/common'
-import {
-	composePageContentWithError,
-	ErrorToRender,
-} from './utils/error-to-render'
+import { Effect, EffectType, MessageToEdit, SessionData } from '../../types'
+import { fireAndForget } from '../../utils/common'
+import { BoundAction } from '../action/actions'
+import { logger } from '../logging/pino-logger'
+import { composePageContentWithError, ErrorToRender } from './error-to-render'
 
 const MESSAGE_NOT_MODIFIED = 'message is not modified'
 

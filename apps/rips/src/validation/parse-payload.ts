@@ -1,5 +1,5 @@
 import { ZodType } from 'zod'
-import { ErrorToRender } from '../utils/error-to-render'
+import { ErrorToRender } from '../grammy-kit/effects/error-to-render'
 
 export function parsePayload<T>(
 	payload: string,

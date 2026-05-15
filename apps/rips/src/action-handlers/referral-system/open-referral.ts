@@ -2,7 +2,7 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
 import { EffectType } from '../../types'
 import { getEnvSafe } from '../../utils/common'

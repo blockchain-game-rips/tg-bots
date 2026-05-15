@@ -1,6 +1,6 @@
 import { ChainAddressDto } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
-import { fetchBalances } from '../../utils/api'
+import { fetchSingleBalance } from '../../utils/api'
 import {
 	findCurrencyIndex,
 	rescaleAmount,
@@ -16,13 +16,10 @@ export const submitSwapCurrencyIn: ActionDef<ChainAddressDto> = withPayload(
 	async (session, currencyChainAddress) => {
 		assertFlow(session, 'swap', 'idle')
 
-		const balances = await fetchBalances(session.telegramId, [
+		const balance = await fetchSingleBalance(
+			session.telegramId,
 			toCurrencyId(currencyChainAddress),
-		])
-
-		const balance = balances[0]
-
-		if (balance === undefined) throw new Error('Balance not found')
+		)
 
 		const newCurrency = balance.currency
 

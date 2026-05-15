@@ -1,5 +1,6 @@
 import {
 	currencyControllerGetCurrencies,
+	ripsControllerGetPrizes,
 	ripsControllerGetRounds,
 	RipsControllerGetRoundsResponse,
 	ripsControllerGetStakes,
@@ -59,6 +60,35 @@ export async function fetchRounds(
 	})
 
 	return data.rounds
+}
+
+export async function fetchStakes(): Promise<
+	RipsControllerGetStakesResponse['availableStakes']
+> {
+	const { data } = await ripsControllerGetStakes()
+
+	return data.availableStakes
+}
+
+export async function fetchUnrevealedPrizes(telegramId: string) {
+	const { data } = await ripsControllerGetPrizes({
+		headers: { 'x-telegram-id': telegramId },
+	})
+
+	return data.prizes.filter((p) => !p.revealed)
+}
+
+export async function fetchSingleBalance(
+	telegramId: string,
+	chainAddress: string,
+) {
+	const balances = await fetchBalances(telegramId, [chainAddress])
+
+	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]
+
+	if (balance === undefined) throw new Error('Balance not found')
+
+	return balance
 }
 
 export async function fetchStake(

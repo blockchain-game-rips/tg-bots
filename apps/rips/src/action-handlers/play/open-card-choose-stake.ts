@@ -1,13 +1,13 @@
-import { ripsControllerGetStakes } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { CardCollectionChooseStakePage } from '../../pages/play/card-collection-choose-stake'
 import { EffectType } from '../../types'
+import { fetchStakes } from '../../utils/api'
 
 export const openCardChooseStake: ActionDef<void> = noPayload(async () => {
-	const { data } = await ripsControllerGetStakes()
+	const availableStakes = await fetchStakes()
 
 	return {
 		type: EffectType.EDIT,
-		page: CardCollectionChooseStakePage.render(data.availableStakes),
+		page: CardCollectionChooseStakePage.render(availableStakes),
 	}
 })

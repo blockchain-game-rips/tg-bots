@@ -1,18 +1,10 @@
-import { ripsControllerGetPrizes } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import {
 	RevealPrizesNoBackPage,
 	RevealPrizesPage,
 } from '../../pages/play/reveal-prizes-page'
 import { EffectType } from '../../types'
-
-async function fetchUnrevealedPrizes(telegramId: string) {
-	const { data } = await ripsControllerGetPrizes({
-		headers: { 'x-telegram-id': telegramId },
-	})
-
-	return data.prizes.filter((p) => !p.revealed)
-}
+import { fetchUnrevealedPrizes } from '../../utils/api'
 
 export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
 	const unrevealedPrizes = await fetchUnrevealedPrizes(session.telegramId)

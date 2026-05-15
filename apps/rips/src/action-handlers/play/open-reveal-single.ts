@@ -1,11 +1,11 @@
 import {
-	ripsControllerGetPrizes,
 	ripsControllerGetRounds,
 	ripsControllerRevealPrizes,
 } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'
+import { fetchUnrevealedPrizes } from '../../utils/api'
 
 export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
@@ -15,16 +15,14 @@ export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 		body: { revealAll: false },
 	})
 
-	const { data: prizesData } = await ripsControllerGetPrizes({
-		headers: { 'x-telegram-id': telegramId },
-	})
-
-	const unrevealedPrizes = prizesData.prizes.filter((p) => !p.revealed)
-	const roundIds = [...new Set(revealData.prizes.map((p) => p.roundId))]
-
-	const { data: roundsData } = await ripsControllerGetRounds({
-		query: { ids: roundIds },
-	})
+	const [unrevealedPrizes, { data: roundsData }] = await Promise.all([
+		fetchUnrevealedPrizes(telegramId),
+		ripsControllerGetRounds({
+			query: {
+				ids: [...new Set(revealData.prizes.map((p) => p.roundId))],
+			},
+		}),
+	])
 
 	const revealedPrize = revealData.prizes[0]
 	const round = roundsData.rounds[0]

@@ -23,10 +23,6 @@ export function toCurrencyId(currencyChainAddress: ChainAddressDto) {
 	return `${namespace}:${reference}:${address}`
 }
 
-export function chainAddressToString(chainAddress: ChainAddressDto): string {
-	return `${chainAddress.chain.namespace}:${chainAddress.chain.reference}:${chainAddress.address}`
-}
-
 export function rescaleAmount(
 	amount: bigint,
 	fromDecimals: number,

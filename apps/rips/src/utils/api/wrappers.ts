@@ -9,7 +9,7 @@ import {
 } from '../../../generated/api-client'
 import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
 import { NATIVE_ON_BASE } from '../../constants'
-import { chainAddressToString } from '../currency'
+import { toCurrencyId } from '../currency'
 
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
@@ -39,7 +39,7 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 
 export async function fetchNativeBalance(telegramId: string) {
 	const balances = await fetchBalances(telegramId, [
-		chainAddressToString(NATIVE_ON_BASE),
+		toCurrencyId(NATIVE_ON_BASE),
 	])
 
 	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]

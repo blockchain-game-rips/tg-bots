@@ -1,4 +1,4 @@
-import { ChainAddressDto } from '../generated/api-client'
+import { ChainAddressDto } from '@rips/api-client'
 
 export const EIP155_NAMESPACE = 'eip155'
 

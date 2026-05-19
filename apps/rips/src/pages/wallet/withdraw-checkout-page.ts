@@ -1,9 +1,9 @@
-import { buildActionData } from '@rips/grammy-kit'
-import { InlineKeyboard } from 'grammy'
 import {
 	CurrencyAmountDto,
 	QuoteWithdrawResponseDtoOutput,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { buildActionData } from '@rips/grammy-kit'
+import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'

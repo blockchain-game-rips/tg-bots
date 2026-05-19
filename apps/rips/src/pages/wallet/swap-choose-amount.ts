@@ -1,6 +1,6 @@
+import { CurrencyAmountDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { CurrencyAmountDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatUnits } from '../../utils/currency'

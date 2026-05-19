@@ -1,9 +1,9 @@
-import { addNav, buildActionData } from '@rips/grammy-kit'
-import { InlineKeyboard } from 'grammy'
 import {
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { addNav, buildActionData } from '@rips/grammy-kit'
+import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { formatAmountWithUsd } from '../../utils/format/currency'

@@ -1,7 +1,7 @@
 import {
 	ripsControllerGetOngoingRounds,
 	ripsControllerGetStakes,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { OngoingRoundsPage } from '../../pages/play/ongoing-rounds-page'
 import { EffectType } from '../../types'

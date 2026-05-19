@@ -1,8 +1,8 @@
-import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import {
 	ripsControllerQuotePurchase,
 	usersControllerGetUser,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'

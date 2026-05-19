@@ -1,6 +1,6 @@
+import { AvailableStakeDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { AvailableStakeDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { configName, resolveConfig } from '../../utils/stake'

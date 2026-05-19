@@ -1,6 +1,6 @@
+import { CurrencyDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { CurrencyDto } from '../../generated/api-client'
 import { SUPPORTED_CHAINS } from '../constants'
 import { ActionId, Chain, NavIds, PageContent } from '../types'
 import { chainToName } from '../utils/chain'

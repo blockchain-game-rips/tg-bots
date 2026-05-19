@@ -1,10 +1,10 @@
-import { logger } from '@rips/grammy-kit'
-import { Bot } from 'grammy'
 import {
 	notificationsControllerGetNotifications,
 	notificationsControllerMarkNotified,
 	RoundDto,
-} from '../generated/api-client'
+} from '@rips/api-client'
+import { logger } from '@rips/grammy-kit'
+import { Bot } from 'grammy'
 import { GlobalClaimedRoundPage } from './pages/notifications/global-claimed-page'
 import { GlobalRefundedRoundPage } from './pages/notifications/global-refunded-page'
 import { UserClaimedRoundPage } from './pages/notifications/user-claimed-page'

@@ -1,8 +1,8 @@
-import { ActionDef } from '@rips/grammy-kit'
 import {
 	adminControllerGetAdminWallet,
 	ripsControllerGetRipsState,
-} from '../../generated/api-client'
+} from '@rips/api-client'
+import { ActionDef } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'

@@ -1,7 +1,7 @@
 import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
 import { EffectType } from '../../types'

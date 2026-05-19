@@ -1,4 +1,4 @@
-import { CurrencyDto } from '../../../generated/api-client'
+import { CurrencyDto } from '@rips/api-client'
 import { actionIds } from '../../actions'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'

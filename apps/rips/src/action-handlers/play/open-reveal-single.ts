@@ -1,7 +1,7 @@
 import {
 	ripsControllerGetRounds,
 	ripsControllerRevealPrizes,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'

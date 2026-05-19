@@ -1,5 +1,5 @@
+import { ChainAddressDto } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
-import { ChainAddressDto } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
 import {

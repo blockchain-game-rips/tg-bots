@@ -1,4 +1,4 @@
-import { referralSystemControllerGetTierTables } from '../../../generated/api-client'
+import { referralSystemControllerGetTierTables } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { ReferralAboutPage } from '../../pages/referral-system/referral-about-page'
 import { EffectType } from '../../types'

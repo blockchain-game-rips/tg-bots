@@ -1,5 +1,5 @@
+import { ChainAddressDto } from '@rips/api-client'
 import z from 'zod'
-import { ChainAddressDto } from '../../generated/api-client'
 import { SUPPORTED_CURRENCIES } from '../constants'
 import { parsePayload } from './parse-payload'
 

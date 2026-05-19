@@ -1,8 +1,8 @@
-import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
 import {
 	adminControllerSetReferralTiers,
 	currencyControllerGetCurrencies,
-} from '../../generated/api-client'
+} from '@rips/api-client'
+import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { NATIVE_ON_BASE } from '../constants'

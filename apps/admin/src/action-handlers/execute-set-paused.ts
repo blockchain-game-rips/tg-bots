@@ -1,5 +1,5 @@
+import { adminControllerSetPaused } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
-import { adminControllerSetPaused } from '../../generated/api-client'
 import { noPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'

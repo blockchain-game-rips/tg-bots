@@ -1,9 +1,9 @@
-import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import {
 	ChainAddressDto,
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { Flow } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'

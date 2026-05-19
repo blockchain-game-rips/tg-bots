@@ -1,4 +1,4 @@
-import { AvailableStakeDto } from '../../../generated/api-client'
+import { AvailableStakeDto } from '@rips/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'

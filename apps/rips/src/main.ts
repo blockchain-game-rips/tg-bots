@@ -1,7 +1,7 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
+import { ApiError, client } from '@rips/api-client'
 import {
-	ApiError,
 	createButtonHandler,
 	createMessageHandler,
 	createTelegramMetricsTransformer,
@@ -9,7 +9,6 @@ import {
 	startMetricsServer,
 } from '@rips/grammy-kit'
 import { Bot, InlineKeyboard, session } from 'grammy'
-import { client } from '../generated/api-client/client.gen'
 import { actions } from './actions'
 import { Flow } from './flows'
 import { Notifier } from './notifier'

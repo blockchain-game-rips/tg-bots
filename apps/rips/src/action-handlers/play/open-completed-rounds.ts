@@ -1,4 +1,4 @@
-import { ripsControllerGetCompletedRounds } from '../../../generated/api-client'
+import { ripsControllerGetCompletedRounds } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { FinishedRoundsPage } from '../../pages/play/finished-rounds-page'
 import { EffectType } from '../../types'

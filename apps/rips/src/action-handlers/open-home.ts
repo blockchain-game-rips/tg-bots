@@ -1,7 +1,7 @@
 import {
 	usersControllerCreateUser,
 	usersControllerGetUser,
-} from '../../generated/api-client'
+} from '@rips/api-client'
 import { ActionDef, noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'

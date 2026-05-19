@@ -1,0 +1,14 @@
+{
+	"name": "@rips/api-client",
+	"version": "1.0.0",
+	"private": true,
+	"main": "./src/index.ts",
+	"scripts": {
+		"generate": "openapi-ts",
+		"predev": "yarn generate"
+	},
+	"dependencies": {
+		"@hey-api/openapi-ts": "0.96.1",
+		"ky": "^2.0.2"
+	}
+}

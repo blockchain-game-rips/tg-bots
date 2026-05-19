@@ -1,4 +1,4 @@
-import { usersControllerGetUser } from '../../../generated/api-client'
+import { usersControllerGetUser } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { EffectType } from '../../types'

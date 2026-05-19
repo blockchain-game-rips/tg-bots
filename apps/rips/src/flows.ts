@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '../generated/api-client'
+import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 
 export type BuyTicketsFlow =
 	| {

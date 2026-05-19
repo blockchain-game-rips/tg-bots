@@ -2,7 +2,7 @@ import {
 	ChainAddressDto,
 	CurrencyAmountDto,
 	CurrencyDto,
-} from '../../generated/api-client'
+} from '@rips/api-client'
 import { SUPPORTED_CURRENCIES } from '../constants'
 
 export { formatUnits, parseUnits } from './format/units'

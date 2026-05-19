@@ -1,5 +1,5 @@
+import { ChainAddressDto } from '@rips/api-client'
 import { setFlow } from '@rips/grammy-kit'
-import { ChainAddressDto } from '../../../generated/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'

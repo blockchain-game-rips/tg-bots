@@ -1,5 +1,5 @@
+import { RoundDto } from '@rips/api-client'
 import { InlineKeyboard } from 'grammy'
-import { RoundDto } from '../../../generated/api-client'
 import { PageContent } from '../../types'
 import { configName } from '../../utils/stake'
 

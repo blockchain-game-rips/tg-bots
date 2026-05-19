@@ -1,9 +1,9 @@
-import { setFlow } from '@rips/grammy-kit'
 import {
 	CurrencyDto,
 	usersControllerGetUser,
 	walletsControllerQuoteSwap,
-} from '../../generated/api-client'
+} from '@rips/api-client'
+import { setFlow } from '@rips/grammy-kit'
 import { Flow } from '../flows'
 import { SwapCheckoutPage } from '../pages/wallet/swap-checkout'
 import { SwapPage } from '../pages/wallet/swap-page'

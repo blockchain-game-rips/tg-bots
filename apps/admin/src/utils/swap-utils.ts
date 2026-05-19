@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '../../generated/api-client'
+import { CurrencyAmountDto } from '@rips/api-client'
 import { chainToName } from './chain'
 
 export function tokenLabel(amount: CurrencyAmountDto): string {

@@ -4,7 +4,7 @@ import {
 	UserDtoOutput,
 	usersControllerGetUser,
 	walletsControllerQuoteWithdraw,
-} from '../../generated/api-client'
+} from '@rips/api-client'
 import { EIP155_NAMESPACE } from '../constants'
 import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'

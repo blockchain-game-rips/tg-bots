@@ -1,4 +1,4 @@
-import { ripsControllerGetCardCollection } from '../../../generated/api-client'
+import { ripsControllerGetCardCollection } from '@rips/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'

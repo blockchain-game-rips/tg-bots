@@ -1,9 +1,6 @@
+import { BuyTicketsPurchaseResponseDtoOutput, RoundDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import {
-	BuyTicketsPurchaseResponseDtoOutput,
-	RoundDto,
-} from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'

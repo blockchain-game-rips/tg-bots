@@ -1,10 +1,10 @@
-import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import {
 	CurrencyAmountDto,
 	GetSwapResultResponseDtoOutput,
 	walletsControllerGetSwapResult,
 	walletsControllerSwap,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { SwapFailedPage } from '../../pages/wallet/swap-failed-page'
 import { SwapSuccessPage } from '../../pages/wallet/swap-success-page'

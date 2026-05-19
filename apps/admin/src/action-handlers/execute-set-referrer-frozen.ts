@@ -1,5 +1,5 @@
+import { adminControllerSetReferrerFrozen } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
-import { adminControllerSetReferrerFrozen } from '../../generated/api-client'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'

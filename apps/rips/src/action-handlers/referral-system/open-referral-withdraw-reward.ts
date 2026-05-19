@@ -1,4 +1,4 @@
-import { referralSystemControllerWithdrawReward } from '../../../generated/api-client'
+import { referralSystemControllerWithdrawReward } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { WithdrawRewardSuccessPage } from '../../pages/referral-system/withdraw-reward-success-page'

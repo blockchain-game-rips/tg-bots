@@ -1,5 +1,5 @@
+import { walletsControllerCreateWithdrawal } from '@rips/api-client'
 import { assertFlow, resetFlow } from '@rips/grammy-kit'
-import { walletsControllerCreateWithdrawal } from '../../../generated/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'

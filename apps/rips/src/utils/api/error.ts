@@ -1,1 +1,1 @@
-export { ApiError, isApiErrorWithStatus } from '@rips/grammy-kit'
+export { ApiError, isApiErrorWithStatus } from '@rips/api-client'

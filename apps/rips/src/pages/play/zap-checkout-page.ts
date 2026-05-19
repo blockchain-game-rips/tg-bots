@@ -1,10 +1,10 @@
-import { addNav, buildActionData } from '@rips/grammy-kit'
-import { InlineKeyboard } from 'grammy'
 import {
 	AvailableStakeDto,
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { addNav, buildActionData } from '@rips/grammy-kit'
+import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'

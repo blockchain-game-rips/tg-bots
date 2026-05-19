@@ -1,3 +1,3 @@
-import { ApiError, isApiErrorWithStatus } from '@rips/grammy-kit'
+import { ApiError, isApiErrorWithStatus } from '@rips/api-client'
 
 export { ApiError, isApiErrorWithStatus }

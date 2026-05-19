@@ -1,7 +1,7 @@
 import {
 	AdminWalletResponseDtoOutput,
 	GetRipsStateResponseDtoOutput,
-} from '../../generated/api-client'
+} from '@rips/api-client'
 import { actionIds } from '../actions'
 import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'

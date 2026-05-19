@@ -1,4 +1,4 @@
-import { CurrencyDto } from '../../../generated/api-client'
+import { CurrencyDto } from '@rips/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'

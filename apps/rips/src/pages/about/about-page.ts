@@ -1,6 +1,6 @@
+import { ConfigDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { ConfigDto } from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { toShortDurationFormat } from '../../utils/format/duration'

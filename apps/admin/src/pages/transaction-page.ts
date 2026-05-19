@@ -1,5 +1,5 @@
+import { AdminTransactionResponseDtoOutput } from '@rips/api-client'
 import { InlineKeyboard } from 'grammy'
-import { AdminTransactionResponseDtoOutput } from '../../generated/api-client'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
 import { formatAmountWithUsd } from '../utils/currency'

@@ -1,4 +1,5 @@
 import {
+	createQuerySerializer,
 	currencyControllerGetCurrencies,
 	ripsControllerGetPrizes,
 	ripsControllerGetRounds,
@@ -6,8 +7,7 @@ import {
 	ripsControllerGetStakes,
 	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
-} from '../../../generated/api-client'
-import { createQuerySerializer } from '../../../generated/api-client/client/utils.gen'
+} from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
 import { toCurrencyId } from '../currency'
 

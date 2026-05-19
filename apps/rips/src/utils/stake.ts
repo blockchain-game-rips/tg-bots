@@ -1,4 +1,4 @@
-import { AvailableStakeDto, ConfigDto } from '../../generated/api-client'
+import { AvailableStakeDto, ConfigDto } from '@rips/api-client'
 import { formatUnits } from './format/units'
 
 export function resolveConfig(availableStake: AvailableStakeDto) {

@@ -1,9 +1,6 @@
+import { CurrencyAmountDto, TransactionDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import {
-	CurrencyAmountDto,
-	TransactionDto,
-} from '../../../generated/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'

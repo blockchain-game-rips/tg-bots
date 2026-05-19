@@ -6,8 +6,9 @@
 	"compilerOptions": {
 		"paths": {
 			"@rips/grammy-kit": ["../../packages/grammy-kit/src/index.ts"],
-			"@rips/grammy-kit/*": ["../../packages/grammy-kit/src/*"]
+			"@rips/grammy-kit/*": ["../../packages/grammy-kit/src/*"],
+			"@rips/api-client": ["../../packages/api-client/src/index.ts"],
+			"@rips/api-client/*": ["../../packages/api-client/src/*"]
 		}
 	},
-	"references": [{ "path": "../../packages/grammy-kit" }]
 }

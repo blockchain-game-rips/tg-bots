@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '../../../generated/api-client'
+import { CurrencyAmountDto } from '@rips/api-client'
 import { formatUnits } from './units'
 
 const USD_MIN_DISPLAY = 0.01

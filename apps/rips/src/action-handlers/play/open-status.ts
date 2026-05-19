@@ -1,7 +1,7 @@
 import {
 	ripsControllerGetOngoingRounds,
 	usersControllerGetUser,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { StatusPage } from '../../pages/play/status-page'
 import { EffectType } from '../../types'

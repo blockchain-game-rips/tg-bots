@@ -1,8 +1,8 @@
-import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import {
 	ripsControllerBuyTicketsPurchase,
 	ripsControllerGetOngoingRounds,
-} from '../../../generated/api-client'
+} from '@rips/api-client'
+import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuySuccessPage } from '../../pages/play/buy-success-page'

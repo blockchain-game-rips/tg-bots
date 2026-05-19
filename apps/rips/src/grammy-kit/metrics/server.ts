@@ -1,8 +1,9 @@
 import { createServer } from 'node:http'
+import { getEnvSafe } from '../../utils/common'
 import { logger } from '../logging/pino-logger'
 import { registry } from './registry'
 
-const METRICS_PORT = 9091
+const METRICS_PORT = getEnvSafe('METRICS_PORT')
 
 export function startMetricsServer(): void {
 	const server = createServer((req, res) => {

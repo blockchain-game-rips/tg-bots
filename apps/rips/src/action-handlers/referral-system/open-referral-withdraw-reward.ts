@@ -1,6 +1,6 @@
 import { referralSystemControllerWithdrawReward } from '../../../generated/api-client'
+import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { WithdrawRewardSuccessPage } from '../../pages/referral-system/withdraw-reward-success-page'
 import { EffectType } from '../../types'
 

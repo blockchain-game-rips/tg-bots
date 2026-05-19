@@ -1,6 +1,6 @@
+import { assertFlow, resetFlow } from '@rips/grammy-kit'
 import { walletsControllerCreateWithdrawal } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { assertFlow, resetFlow } from '../../grammy-kit/session/session-utils'
+import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'
 import { toCurrencyAmount } from '../../utils/currency'

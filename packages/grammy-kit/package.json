@@ -1,0 +1,17 @@
+{
+	"name": "@rips/grammy-kit",
+	"version": "1.0.0",
+	"private": true,
+	"main": "./dist/src/index.js",
+	"types": "./dist/src/index.d.ts",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"dotenv": "^17.3.1",
+		"grammy": "^1.40.1",
+		"pino": "^10.3.1",
+		"prom-client": "^15.1.3"
+	}
+}

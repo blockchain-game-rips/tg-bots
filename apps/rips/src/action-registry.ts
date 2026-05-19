@@ -1,3 +1,4 @@
+import { AnyActionDef } from '@rips/grammy-kit'
 import { openAbout } from './action-handlers/open-about'
 import { openHome } from './action-handlers/open-home'
 import { executeBuyTickets } from './action-handlers/play/execute-buy-tickets'
@@ -51,7 +52,6 @@ import { submitSwapCurrencyIn } from './action-handlers/wallet/submit-swap-curre
 import { submitSwapCurrencyOut } from './action-handlers/wallet/submit-swap-currency-out'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
-import { AnyActionDef } from './grammy-kit/action/action-def'
 
 export const actionRegistry = {
 	// Home

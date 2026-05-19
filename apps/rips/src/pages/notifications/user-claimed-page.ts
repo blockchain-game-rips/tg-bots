@@ -1,7 +1,7 @@
+import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { RoundDto } from '../../../generated/api-client'
-import { buildActionData } from '../../grammy-kit/action/action-data'
-import { actionIds } from '../../grammy-kit/action/actions'
+import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { configName } from '../../utils/stake'
 

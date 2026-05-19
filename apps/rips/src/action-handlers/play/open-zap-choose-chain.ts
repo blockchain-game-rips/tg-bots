@@ -1,5 +1,5 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { assertFlow } from '../../grammy-kit/session/session-utils'
+import { assertFlow } from '@rips/grammy-kit'
+import { ActionDef, noPayload } from '../../action-def'
 import { ZapChooseChainPage } from '../../pages/play/zap-choose-chain-page'
 import { EffectType } from '../../types'
 import { fetchStake } from '../../utils/api/wrappers'

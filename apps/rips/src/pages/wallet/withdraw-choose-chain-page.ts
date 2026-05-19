@@ -1,4 +1,4 @@
-import { actionIds } from '../../grammy-kit/action/actions'
+import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildChooseChainPage } from '../choose-chain-token'
 

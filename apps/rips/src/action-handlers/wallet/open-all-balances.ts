@@ -1,5 +1,5 @@
+import { ActionDef, noPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
 import { AllBalancesPage } from '../../pages/wallet/all-balances-page'
 import { EffectType } from '../../types'
 import { fetchBalances } from '../../utils/api/wrappers'

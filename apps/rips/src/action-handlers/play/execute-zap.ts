@@ -1,12 +1,11 @@
+import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import {
 	CurrencyAmountDto,
 	GetZapResultResponseDtoOutput,
 	ripsControllerBuyTicketsZap,
 	ripsControllerGetZapResult,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
-import { assertFlow, resetFlow } from '../../grammy-kit/session/session-utils'
+import { ActionDef, noPayload } from '../../action-def'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'

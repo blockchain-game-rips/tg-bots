@@ -1,0 +1,13 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"ts-node": {
+		"files": true
+	},
+	"compilerOptions": {
+		"paths": {
+			"@rips/grammy-kit": ["../../packages/grammy-kit/src/index.ts"],
+			"@rips/grammy-kit/*": ["../../packages/grammy-kit/src/*"]
+		}
+	},
+	"references": [{ "path": "../../packages/grammy-kit" }]
+}

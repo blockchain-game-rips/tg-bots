@@ -1,5 +1,5 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { actionIds } from '../../grammy-kit/action/actions'
+import { ActionDef, noPayload } from '../../action-def'
+import { actionIds } from '../../actions'
 import { WithdrawAddressPrompt } from '../../prompts/withdraw-address-prompt'
 import { EffectType } from '../../types'
 

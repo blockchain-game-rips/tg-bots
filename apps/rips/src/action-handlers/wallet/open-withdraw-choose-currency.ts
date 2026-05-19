@@ -1,4 +1,4 @@
-import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
+import { ActionDef, withPayload } from '../../action-def'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
 import { Chain, EffectType } from '../../types'
 import { fetchCurrencies } from '../../utils/api/wrappers'

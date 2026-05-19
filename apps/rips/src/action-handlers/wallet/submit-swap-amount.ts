@@ -1,6 +1,5 @@
-import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
-import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
-import { assertFlow } from '../../grammy-kit/session/session-utils'
+import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { ActionDef, withPayload } from '../../action-def'
 import { resolveSwapPage } from '../../utils/swap'
 import { parseCurrencyAmount } from '../../validation/amount'
 

@@ -1,6 +1,5 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { ErrorToRender } from '../../grammy-kit/effects/error-to-render'
-import { assertFlow } from '../../grammy-kit/session/session-utils'
+import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { ActionDef, noPayload } from '../../action-def'
 import { SwapChooseAmountPage } from '../../pages/wallet/swap-choose-amount'
 import { EffectType } from '../../types'
 import { fetchBalances } from '../../utils/api/wrappers'

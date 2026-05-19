@@ -2,7 +2,7 @@ import {
 	usersControllerCreateUser,
 	usersControllerGetUser,
 } from '../../generated/api-client'
-import { ActionDef, noPayload } from '../grammy-kit/action/action-def'
+import { ActionDef, noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'
 import { isApiErrorWithStatus } from '../utils/api/error'

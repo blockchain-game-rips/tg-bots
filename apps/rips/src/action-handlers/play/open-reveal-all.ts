@@ -2,7 +2,7 @@ import {
 	ripsControllerGetRounds,
 	ripsControllerRevealPrizes,
 } from '../../../generated/api-client'
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
+import { ActionDef, noPayload } from '../../action-def'
 import { RevealAllPage } from '../../pages/play/reveal-all-page'
 import { EffectType } from '../../types'
 import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'

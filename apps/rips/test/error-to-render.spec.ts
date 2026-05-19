@@ -1,8 +1,5 @@
+import { composePageContentWithError, ErrorToRender } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import {
-	composePageContentWithError,
-	ErrorToRender,
-} from '../src/grammy-kit/effects/error-to-render'
 
 const errorPrefix = '❌ Error:'
 

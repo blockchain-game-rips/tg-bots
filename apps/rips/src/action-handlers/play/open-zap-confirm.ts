@@ -1,14 +1,11 @@
+import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import {
 	ChainAddressDto,
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
-import {
-	ActionDef,
-	noPayload,
-	withPayload,
-} from '../../grammy-kit/action/action-def'
-import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
+import { ActionDef, noPayload, withPayload } from '../../action-def'
+import { Flow } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchStake } from '../../utils/api/wrappers'
@@ -17,7 +14,7 @@ import { evmAddressFromUser } from '../../utils/wallet'
 import { parseCurrencyChainAddress } from '../../validation/currency-index'
 
 async function buildZapCheckout(
-	session: SessionData,
+	session: SessionData<Flow>,
 	currencyChainAddress: ChainAddressDto,
 ): Promise<Effect> {
 	assertFlow(

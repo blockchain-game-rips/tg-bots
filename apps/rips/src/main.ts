@@ -1,16 +1,19 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
+import {
+	ApiError,
+	createButtonHandler,
+	createMessageHandler,
+	createTelegramMetricsTransformer,
+	logger,
+	startMetricsServer,
+} from '@rips/grammy-kit'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { client } from '../generated/api-client/client.gen'
-import { actions } from './grammy-kit/action/actions'
-import { handleButton } from './grammy-kit/handlers/button-handler'
-import { handleMessage } from './grammy-kit/handlers/message-handler'
-import { logger } from './grammy-kit/logging/pino-logger'
-import { startMetricsServer } from './grammy-kit/metrics/server'
-import { createTelegramMetricsTransformer } from './grammy-kit/metrics/telegram'
+import { actions } from './actions'
+import { Flow } from './flows'
 import { Notifier } from './notifier'
 import { Context, EffectType, PageContent, SessionData } from './types'
-import { ApiError } from './utils/api/error'
 import { getEnvSafe } from './utils/common'
 
 client.setConfig({
@@ -47,7 +50,7 @@ bot.use((ctx, next) => {
 	return next()
 })
 
-function initial(): SessionData {
+function initial(): SessionData<Flow> {
 	return { telegramId: '', lastAsk: null, flow: null, lastPage: null }
 }
 
@@ -61,6 +64,9 @@ bot.use((ctx, next) => {
 	return next()
 })
 
+const handleButton = createButtonHandler(actions)
+const handleMessage = createMessageHandler(actions)
+
 bot.command('start', async (ctx) => {
 	let pageContent: PageContent = {
 		keyboard: new InlineKeyboard(),
@@ -68,7 +74,6 @@ bot.command('start', async (ctx) => {
 	}
 
 	try {
-		//TODO: there are circular dependencies in this project
 		const homeAction = actions['0']
 
 		if (homeAction === undefined)

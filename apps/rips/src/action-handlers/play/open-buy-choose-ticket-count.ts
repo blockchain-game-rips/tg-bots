@@ -1,5 +1,5 @@
-import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
-import { setFlow } from '../../grammy-kit/session/session-utils'
+import { setFlow } from '@rips/grammy-kit'
+import { ActionDef, withPayload } from '../../action-def'
 import { BuyChooseTicketCountPage } from '../../pages/play/buy-choose-ticket-count-page'
 import { EffectType } from '../../types'
 import { fetchStake } from '../../utils/api/wrappers'

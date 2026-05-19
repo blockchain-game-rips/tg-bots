@@ -1,7 +1,7 @@
+import { addNav } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { GetCardCollectionResponseDtoOutput } from '../../../generated/api-client'
-import { actionIds } from '../../grammy-kit/action/actions'
-import { addNav } from '../../grammy-kit/keyboard/keyboard'
+import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { tierName } from '../../utils/tiers'
 

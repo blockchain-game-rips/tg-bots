@@ -1,6 +1,6 @@
+import { assertFlow } from '@rips/grammy-kit'
 import { ChainAddressDto } from '../../../generated/api-client'
-import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
-import { assertFlow } from '../../grammy-kit/session/session-utils'
+import { ActionDef, withPayload } from '../../action-def'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
 import {
 	findCurrencyIndex,

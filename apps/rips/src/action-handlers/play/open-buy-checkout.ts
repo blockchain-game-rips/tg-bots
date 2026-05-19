@@ -1,10 +1,10 @@
+import { assertFlow, setFlowStep } from '@rips/grammy-kit'
 import {
 	ripsControllerQuotePurchase,
 	usersControllerGetUser,
 } from '../../../generated/api-client'
+import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
-import { ActionDef, withPayload } from '../../grammy-kit/action/action-def'
-import { assertFlow, setFlowStep } from '../../grammy-kit/session/session-utils'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance, fetchStake } from '../../utils/api/wrappers'

@@ -1,4 +1,4 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
+import { ActionDef, noPayload } from '../../action-def'
 import { RevealPrizesPage } from '../../pages/play/reveal-prizes-page'
 import { EffectType } from '../../types'
 import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'

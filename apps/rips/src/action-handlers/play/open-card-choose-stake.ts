@@ -1,4 +1,4 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
+import { ActionDef, noPayload } from '../../action-def'
 import { CardCollectionChooseStakePage } from '../../pages/play/card-collection-choose-stake'
 import { EffectType } from '../../types'
 import { fetchStakes } from '../../utils/api/wrappers'

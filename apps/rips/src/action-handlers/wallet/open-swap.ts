@@ -1,5 +1,5 @@
-import { ActionDef, noPayload } from '../../grammy-kit/action/action-def'
-import { assertFlow, setFlow } from '../../grammy-kit/session/session-utils'
+import { assertFlow, setFlow } from '@rips/grammy-kit'
+import { ActionDef, noPayload } from '../../action-def'
 import { resolveSwapPage } from '../../utils/swap'
 
 export const openSwap: ActionDef<void> = noPayload(async (session) => {

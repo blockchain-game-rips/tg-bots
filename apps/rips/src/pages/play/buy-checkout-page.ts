@@ -1,11 +1,11 @@
+import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import {
 	AvailableStakeDto,
 	CurrencyAmountDto,
 	QuotePurchaseResponseDtoOutput,
 } from '../../../generated/api-client'
-import { buildActionData } from '../../grammy-kit/action/action-data'
-import { actionIds } from '../../grammy-kit/action/actions'
+import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { fundsBreakdown } from '../../utils/display/balance'
 import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'

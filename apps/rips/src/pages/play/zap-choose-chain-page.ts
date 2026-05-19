@@ -1,5 +1,5 @@
 import { AvailableStakeDto } from '../../../generated/api-client'
-import { actionIds } from '../../grammy-kit/action/actions'
+import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
 import { configName, resolveConfig } from '../../utils/stake'

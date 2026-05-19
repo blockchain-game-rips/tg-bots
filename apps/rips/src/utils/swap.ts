@@ -1,9 +1,10 @@
+import { setFlow } from '@rips/grammy-kit'
 import {
 	CurrencyDto,
 	usersControllerGetUser,
 	walletsControllerQuoteSwap,
 } from '../../generated/api-client'
-import { setFlow } from '../grammy-kit/session/session-utils'
+import { Flow } from '../flows'
 import { SwapCheckoutPage } from '../pages/wallet/swap-checkout'
 import { SwapPage } from '../pages/wallet/swap-page'
 import { Effect, EffectType, SessionData } from '../types'
@@ -18,7 +19,7 @@ export interface SwapState {
 }
 
 async function fetchCheckout(
-	session: SessionData,
+	session: SessionData<Flow>,
 	currencyIn: CurrencyDto,
 	currencyOut: CurrencyDto,
 	amountIn: bigint,
@@ -69,7 +70,7 @@ async function fetchCheckout(
 }
 
 async function fetchHub(
-	session: SessionData,
+	session: SessionData<Flow>,
 	currencyIn: CurrencyDto | undefined,
 	currencyOut: CurrencyDto | undefined,
 ) {
@@ -96,7 +97,7 @@ async function fetchHub(
 }
 
 export async function resolveSwapPage(
-	session: SessionData,
+	session: SessionData<Flow>,
 	state: SwapState,
 ): Promise<Effect> {
 	const { currencyIn, currencyOut, amountIn } = state

@@ -1,6 +1,6 @@
 import { CurrencyDto } from '../../../generated/api-client'
+import { actionIds } from '../../actions'
 import { SwapSelecting } from '../../flows'
-import { actionIds } from '../../grammy-kit/action/actions'
 import { PageContent } from '../../types'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import {

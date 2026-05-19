@@ -91,7 +91,7 @@ describe('composePageContentWithError', () => {
 				new Error('unexpected'),
 			)
 
-			expect(result.message).toContain(`${errorPrefix}`)
+			expect(result.message).toContain(errorPrefix)
 			expect(result.message).toContain('Internal server error')
 		})
 

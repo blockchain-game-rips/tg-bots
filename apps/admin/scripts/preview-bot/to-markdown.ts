@@ -17,4 +17,4 @@ function main() {
 	fs.writeFileSync(`${generatedFolder}/pages.md`, mdContent)
 }
 
-void main()
+main()

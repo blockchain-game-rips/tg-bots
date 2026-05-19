@@ -21,7 +21,7 @@ import { SessionData } from '@rips/grammy-kit'
 export type Context = GrammyContext &
 	SessionFlavor<SessionData<Flow>> & { from: User }
 
-export type NavIds = {
+export interface NavIds {
 	home: string
 	parent: string
 	parentPayload?: string
@@ -29,7 +29,7 @@ export type NavIds = {
 
 export type Row = 'row'
 
-export type StaticButton = {
+export interface StaticButton {
 	label: string
 	actionId: string
 	payload?: string

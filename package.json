@@ -10,7 +10,7 @@
 		"build:admin": "yarn workspace @rips/bot-admin build",
 		"test": "yarn workspaces foreach -A run test",
 		"fmt": "prettier --write \"apps/**/*.ts\" \"packages/**/*.ts\"",
-		"lint": "yarn workspaces foreach -A run lint"
+		"lint": "eslint \"apps/**/*.ts\" \"packages/**/*.ts\" --fix"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.26.0",

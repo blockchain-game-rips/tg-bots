@@ -1,4 +1,4 @@
-type Duration = {
+interface Duration {
 	days: number
 	hours: number
 	minutes: number

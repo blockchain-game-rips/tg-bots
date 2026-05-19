@@ -10,31 +10,31 @@ export type BuyTicketsFlow =
 			data: { stakeId: number; ticketCount: number }
 	  }
 
-export type SetPausedFlow = {
+export interface SetPausedFlow {
 	flowType: 'setPaused'
 	step: 'confirm'
 	data: { isPaused: boolean }
 }
 
-export type SetReferrerFrozenFlow = {
+export interface SetReferrerFrozenFlow {
 	flowType: 'setReferrerFrozen'
 	step: 'confirm'
 	data: { address: string; frozen: boolean }
 }
 
-export type SetDefaultFeeFlow = {
+export interface SetDefaultFeeFlow {
 	flowType: 'setDefaultFee'
 	step: 'confirm'
 	data: { bp: number }
 }
 
-export type SetTiersFlow = {
+export interface SetTiersFlow {
 	flowType: 'setTiers'
 	step: 'confirm'
-	data: { tiers: Array<{ minVolume: number; feePercent: number }> }
+	data: { tiers: { minVolume: number; feePercent: number }[] }
 }
 
-export type UpdateStakeConfigFlow = {
+export interface UpdateStakeConfigFlow {
 	flowType: 'updateStakeConfig'
 	step: 'confirm'
 	data: {
@@ -43,11 +43,11 @@ export type UpdateStakeConfigFlow = {
 		feePercent: number
 		ticketPrice: number
 		durationSeconds: number
-		prizeDistribution: Array<{
+		prizeDistribution: {
 			prizeCount: number
 			minPrize: number
 			maxPrize: number
-		}>
+		}[]
 	}
 }
 

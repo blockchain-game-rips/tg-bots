@@ -1,23 +1,23 @@
 import { User } from '@grammyjs/types'
-import { Bot, Filter, Context as GrammyContext, SessionFlavor } from 'grammy'
+import { Api, Filter, Context as GrammyContext, SessionFlavor } from 'grammy'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
+import { FlowBase } from '../session/session-utils'
 import { ActionId, MessageToEdit, SessionData } from '../types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BaseContext = GrammyContext &
-	SessionFlavor<SessionData<any>> & { from: User }
+	SessionFlavor<SessionData<FlowBase | null>> & { from: User }
 
 export function createMessageHandler(
 	actions: Record<string, BoundAction | undefined>,
 ): (
 	ctx: Filter<BaseContext, 'message:text'>,
-	bot: Bot<BaseContext>,
+	bot: { api: Api },
 ) => Promise<void> {
 	return async function handleMessage(
 		ctx: Filter<BaseContext, 'message:text'>,
-		bot: Bot<BaseContext>,
+		bot: { api: Api },
 	): Promise<void> {
 		const askAndSubmit = getAskAndSubmit(ctx)
 		if (askAndSubmit === null) return

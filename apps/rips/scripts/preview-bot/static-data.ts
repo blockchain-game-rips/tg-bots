@@ -14,7 +14,7 @@ import {
 	RoundDto,
 	TransactionDto,
 	WithdrawRewardResponseDtoOutput,
-} from '../../generated/api-client'
+} from '@rips/api-client'
 
 const mockChainAddress = {
 	address: '0x0000000000000000000000000000000000000000',

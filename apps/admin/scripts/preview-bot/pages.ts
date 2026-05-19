@@ -1,6 +1,6 @@
 import { PageContent } from '../../src/types'
 
-export type PageEntry = {
+export interface PageEntry {
 	description: string
 	variants?: string[]
 	render: (variant?: string) => PageContent

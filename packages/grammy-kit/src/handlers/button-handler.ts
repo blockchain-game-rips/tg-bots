@@ -10,12 +10,12 @@ import { COMMAND_SEPARATOR } from '../action/action-data'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
+import { FlowBase } from '../session/session-utils'
 import { MessageToEdit, SessionData } from '../types'
 import { fireAndForget } from '../utils/common'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BaseContext = GrammyContext &
-	SessionFlavor<SessionData<any>> & { from: User }
+	SessionFlavor<SessionData<FlowBase | null>> & { from: User }
 
 const processingUsers = new Set<number>()
 

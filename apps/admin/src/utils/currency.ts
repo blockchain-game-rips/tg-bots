@@ -10,12 +10,12 @@ export { formatUnits, parseUnits } from './units'
 
 const USD_MIN_DISPLAY = 0.01
 
-export type Expense = {
+export interface Expense {
 	label: string
 	amount: CurrencyAmountDto
 }
 
-export type FundsBreakdownResult = {
+export interface FundsBreakdownResult {
 	lines: string[]
 	insufficientAmounts: CurrencyAmountDto[]
 }

@@ -12,12 +12,11 @@ export default tseslint.config(
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
 			},
 		},
 	},
 	{
-		ignores: ['generated/**'],
+		ignores: ['**/generated/**', '**/dist/**', '**/openapi-ts.config.ts'],
 	},
 	{
 		plugins: {

@@ -14,3 +14,4 @@ logs
 configs/
 generated/
 CLAUDE.md
+.yarn/install-state.gz

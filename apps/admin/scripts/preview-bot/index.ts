@@ -1,5 +1,5 @@
+import { getEnvSafe } from '@rips/grammy-kit'
 import { Bot } from 'grammy'
-import { getEnvSafe } from '../../src/utils/common'
 import { pages, VariantError } from './pages'
 
 const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))

@@ -42,9 +42,9 @@ const botStartTime = Math.floor(Date.now() / 1000)
 const allowedUserIds = getAllowedUserIds()
 
 bot.use((ctx, next) => {
-	const userId = ctx.from?.id
+	const userId = ctx.from.id
 
-	if (userId === undefined || !allowedUserIds.has(userId)) return
+	if (!allowedUserIds.has(userId)) return
 
 	return next()
 })
@@ -66,9 +66,7 @@ function initial(): SessionData<Flow> {
 bot.use(session({ initial }))
 
 bot.use((ctx, next) => {
-	if (ctx.from !== undefined) {
-		ctx.session.telegramId = String(ctx.from.id)
-	}
+	ctx.session.telegramId = String(ctx.from.id)
 	return next()
 })
 

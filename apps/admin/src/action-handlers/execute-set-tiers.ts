@@ -43,13 +43,16 @@ export const submitConfirmSetTiers: ActionDef<string> = withPayload<string>(
 		setFlow(session, 'setTiers', 'confirm', { tiers })
 
 		const tierSummary = tiers
-			.map((t) => `  minVolume: ${t.minVolume}, fee: ${t.feePercent} bp`)
+			.map(
+				(t) =>
+					`  minVolume: ${String(t.minVolume)}, fee: ${String(t.feePercent)} bp`,
+			)
 			.join('\n')
 
 		return {
 			type: EffectType.EDIT,
 			page: ConfirmationPage.render(
-				`This will set <b>${tiers.length}</b> referral tier(s):\n${tierSummary}`,
+				`This will set <b>${String(tiers.length)}</b> referral tier(s):\n${tierSummary}`,
 				actionIds.executeConfirmSetTiers,
 			),
 		}
@@ -95,7 +98,7 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 			return {
 				type: EffectType.EDIT,
 				page: TransactionPage.render(
-					`Referral tiers updated (${tiers.length} tier(s))`,
+					`Referral tiers updated (${String(tiers.length)} tier(s))`,
 					tx,
 				),
 			}

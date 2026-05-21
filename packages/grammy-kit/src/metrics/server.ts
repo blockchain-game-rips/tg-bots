@@ -26,8 +26,6 @@ export function startMetricsServer(): void {
 	})
 
 	server.listen(METRICS_PORT, () => {
-		logger.info(
-			`Metrics server listening on port ${METRICS_PORT.toString()}`,
-		)
+		logger.info(`Metrics server listening on port ${METRICS_PORT}`)
 	})
 }

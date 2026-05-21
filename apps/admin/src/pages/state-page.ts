@@ -49,7 +49,7 @@ function renderConfig(config: StakeConfig): string[] {
 
 	const lines = [
 		`  Price: ${formatUnits(BigInt(amount), currency.decimals)} ${currency.symbol}`,
-		`  Cap: ${ticketCap} tickets`,
+		`  Cap: ${String(ticketCap)} tickets`,
 		`  Fee: ${formatPercent(feePercent)}`,
 		`  Duration: ${toShortDurationFormat(durationSeconds)}`,
 		`  Prizes:`,
@@ -66,7 +66,7 @@ function renderConfig(config: StakeConfig): string[] {
 
 function renderStake(entry: StakeEntry): string[] {
 	const { stake, fillingRound } = entry
-	const lines: string[] = [`<b>Stake #${stake.id}</b>`]
+	const lines: string[] = [`<b>Stake #${String(stake.id)}</b>`]
 
 	const roundConfig = fillingRound?.config ?? null
 	const nextConfig = stake.currentConfig
@@ -76,9 +76,9 @@ function renderStake(entry: StakeEntry): string[] {
 			(sum, p) => sum + Number(p.ticketCount),
 			0,
 		)
-		lines.push(`Round #${fillingRound.id} [${fillingRound.status}]`)
+		lines.push(`Round #${String(fillingRound.id)} [${fillingRound.status}]`)
 		lines.push(`Currency: ${fillingRound.currency.symbol}`)
-		lines.push(`Tickets sold: ${ticketsSold}`)
+		lines.push(`Tickets sold: ${String(ticketsSold)}`)
 		lines.push(`Active config:`)
 		lines.push(...renderConfig(roundConfig))
 	} else {
@@ -103,8 +103,8 @@ function renderStake(entry: StakeEntry): string[] {
 	return lines
 }
 
-export class StatePage {
-	static render(
+export const StatePage = {
+	render(
 		state: GetRipsStateResponseDtoOutput,
 		adminWallet: AdminWalletResponseDtoOutput,
 		tierTablesRes: GetTierTablesResponseDtoOutput,
@@ -114,14 +114,14 @@ export class StatePage {
 			: '▶ <b>RUNNING</b>'
 
 		const evmAddress =
-			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE]
+			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE] ?? ''
 		const balanceDisplay = formatAmountWithUsd(adminWallet.balance)
 
 		const lines: string[] = [
 			`<b>Rips State</b>  ${statusLine}`,
 			`Admin: <code>${evmAddress}</code>`,
 			`Balance: ${balanceDisplay}`,
-			`Stakes: ${state.availableStakes.length}`,
+			`Stakes: ${String(state.availableStakes.length)}`,
 			'',
 		]
 
@@ -148,5 +148,5 @@ export class StatePage {
 				[{ label: 'Home', actionId: actionIds.openHome }],
 			]),
 		}
-	}
+	},
 }

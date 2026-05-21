@@ -39,7 +39,7 @@ export const submitConfirmSetDefaultFee: ActionDef<string> =
 			return {
 				type: EffectType.EDIT,
 				page: ConfirmationPage.render(
-					`This will set the default referral fee to <b>${bp} bp</b>.`,
+					`This will set the default referral fee to <b>${String(bp)} bp</b>.`,
 					actionIds.executeConfirmSetDefaultFee,
 				),
 			}
@@ -66,7 +66,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 				return {
 					type: EffectType.EDIT,
 					page: TransactionPage.render(
-						`Default fee set to ${bp} bp`,
+						`Default fee set to ${String(bp)} bp`,
 						tx,
 					),
 				}

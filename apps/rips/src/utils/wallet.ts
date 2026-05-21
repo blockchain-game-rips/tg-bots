@@ -53,7 +53,7 @@ export async function resolveWithdrawPage(
 			body: {
 				amountIn: {
 					currencyChainAddress: currency.chainAddress,
-					amount: currencyAmount.amount.toString(),
+					amount: currencyAmount.amount,
 				},
 				currencyOutChainAddress: currency.chainAddress,
 				recipientAddress,

@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { currencyAmountDisplayParts } from '../src/utils/format/currency'
+import { currencyAmountDisplayParts } from '@rips/shared'
 
 function makeCurrencyAmount(
 	amount: string,

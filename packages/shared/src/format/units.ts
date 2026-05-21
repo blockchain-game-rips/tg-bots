@@ -60,7 +60,5 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 		fraction = fraction.padEnd(decimals, '0')
 	}
 
-	return BigInt(
-		`${negative ? '-' : ''}${integer.toString()}${fraction.toString()}`,
-	)
+	return BigInt(`${negative ? '-' : ''}${integer}${fraction}`)
 }

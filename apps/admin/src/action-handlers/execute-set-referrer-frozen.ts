@@ -59,7 +59,7 @@ export const submitConfirmUnfreezeReferrer =
 	submitConfirmSetReferrerFrozen(false)
 
 export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
-	async (session) => {
+	(session) => {
 		assertFlow(session, 'setReferrerFrozen', 'confirm')
 
 		const { address, frozen } = session.flow.data

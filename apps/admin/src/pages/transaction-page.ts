@@ -4,11 +4,8 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
 
-export class TransactionPage {
-	static render(
-		title: string,
-		tx: AdminTransactionResponseDtoOutput,
-	): PageContent {
+export const TransactionPage = {
+	render(title: string, tx: AdminTransactionResponseDtoOutput): PageContent {
 		const lines = [
 			`<b>${title}</b>`,
 			'',
@@ -22,5 +19,5 @@ export class TransactionPage {
 		const keyboard = new InlineKeyboard().text('Home', actionIds.openHome)
 
 		return { message: lines.join('\n'), keyboard }
-	}
+	},
 }

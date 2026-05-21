@@ -48,15 +48,15 @@ export const submitConfirmUpdateStakeConfig: ActionDef<string> =
 			const prizeSummary = config.prizeDistribution
 				.map(
 					(p) =>
-						`  x${p.prizeCount}: ${p.minPrize}–${p.maxPrize} ETH`,
+						`  x${String(p.prizeCount)}: ${String(p.minPrize)}–${String(p.maxPrize)} ETH`,
 				)
 				.join('\n')
 
 			const description = [
-				`Stake #${config.stakeId} config update:`,
-				`  Ticket cap: ${config.ticketCap}`,
-				`  Fee: ${config.feePercent} bp`,
-				`  Ticket price: ${config.ticketPrice} ETH`,
+				`Stake #${String(config.stakeId)} config update:`,
+				`  Ticket cap: ${String(config.ticketCap)}`,
+				`  Fee: ${String(config.feePercent)} bp`,
+				`  Ticket price: ${String(config.ticketPrice)} ETH`,
 				`  Duration: ${toShortDurationFormat(config.durationSeconds)}`,
 				`  Prizes:\n${prizeSummary}`,
 			].join('\n')
@@ -128,7 +128,7 @@ export const executeConfirmUpdateStakeConfig: ActionDef<void> = noPayload(
 				return {
 					type: EffectType.EDIT,
 					page: TransactionPage.render(
-						`Stake #${stakeId} config updated`,
+						`Stake #${String(stakeId)} config updated`,
 						tx,
 					),
 				}

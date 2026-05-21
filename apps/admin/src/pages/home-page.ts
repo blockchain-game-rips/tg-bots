@@ -8,8 +8,8 @@ import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'
 import { keyboardFromLayout } from '../utils/keyboard'
 
-export class HomePage {
-	static render(
+export const HomePage = {
+	render(
 		state: GetRipsStateResponseDtoOutput,
 		adminWallet: AdminWalletResponseDtoOutput,
 	): PageContent {
@@ -18,7 +18,7 @@ export class HomePage {
 			: '▶ <b>RUNNING</b>'
 
 		const evmAddress =
-			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE]
+			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE] ?? ''
 		const balanceDisplay = formatAmountWithUsd(adminWallet.balance)
 
 		const lines = [
@@ -68,5 +68,5 @@ export class HomePage {
 				],
 			]),
 		}
-	}
+	},
 }

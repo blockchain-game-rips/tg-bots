@@ -31,7 +31,7 @@ export async function fetchStake(
 	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
 
 	if (stake === undefined) {
-		throw new Error(`Stake with id ${stakeId} not found`)
+		throw new Error(`Stake with id ${String(stakeId)} not found`)
 	}
 
 	return stake

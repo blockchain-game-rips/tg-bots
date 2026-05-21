@@ -1,12 +1,15 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	formatAmountWithUsd,
+	formatUnits,
+	swapBreadcrumb,
+	tokenLabel,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatUnits } from '../../utils/currency'
-import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { tokenLabel } from '../../utils/display/token'
-import { formatAmountWithUsd } from '../../utils/format/currency'
+import { chainToName } from '../../utils/chain'
 
 export const SwapChooseAmountPage = {
 	render(args: {
@@ -23,9 +26,9 @@ export const SwapChooseAmountPage = {
 		const lines = [
 			swapBreadcrumb(),
 			'',
-			`Token in: ${tokenLabel(currencyInBalance)}`,
+			`Token in: ${tokenLabel(currencyInBalance, chainToName)}`,
 			currencyOutBalance
-				? `Token out: ${tokenLabel(currencyOutBalance)}`
+				? `Token out: ${tokenLabel(currencyOutBalance, chainToName)}`
 				: 'Token out: -',
 			`Balance: ${formatAmountWithUsd(currencyInBalance)}`,
 			'',

@@ -5,8 +5,6 @@ import {
 } from '@rips/api-client'
 import { SUPPORTED_CURRENCIES } from '../constants'
 
-export { formatUnits, parseUnits } from './format/units'
-
 export function findCurrencyIndex(value: ChainAddressDto): number {
 	return SUPPORTED_CURRENCIES.findIndex(
 		(c) =>

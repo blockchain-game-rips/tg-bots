@@ -1,9 +1,9 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WalletPage = {
 	render(balance: CurrencyAmountDto, userEvmAddress: string): PageContent {

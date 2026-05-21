@@ -1,8 +1,7 @@
 import { AvailableStakeDto, CurrencyDto } from '@rips/api-client'
+import { buyTicketsBreadcrumb, configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import { configName, resolveConfig } from '../../utils/stake'
 import {
 	buildChooseTokenPage,
 	chainBreadcrumbSegment,

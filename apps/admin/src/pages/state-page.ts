@@ -3,13 +3,16 @@ import {
 	GetRipsStateResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
+import {
+	formatAmountWithUsd,
+	formatPercent,
+	formatUnits,
+	toShortDurationFormat,
+} from '@rips/shared'
 import { actionIds } from '../actions'
 import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'
-import { formatAmountWithUsd, formatUnits } from '../utils/currency'
-import { toShortDurationFormat } from '../utils/duration'
 import { keyboardFromLayout } from '../utils/keyboard'
-import { formatPercent } from '../utils/referral'
 
 type StakeEntry = GetRipsStateResponseDtoOutput['availableStakes'][number]
 type StakeConfig = NonNullable<StakeEntry['stake']['currentConfig']>

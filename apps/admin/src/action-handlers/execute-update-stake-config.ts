@@ -3,6 +3,7 @@ import {
 	currencyControllerGetCurrencies,
 } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
+import { parseUnits, toCurrencyId, toShortDurationFormat } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { NATIVE_ON_BASE } from '../constants'
@@ -10,8 +11,6 @@ import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
-import { parseUnits, toCurrencyId } from '../utils/currency'
-import { toShortDurationFormat } from '../utils/duration'
 import { parseStakeConfig } from '../validation/stake-config'
 
 const CONFIG_PROMPT_MESSAGE = [

@@ -1,10 +1,9 @@
 import { RoundDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
+import { configName, displayStatus } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { displayStatus } from '../../utils/round-statuses'
-import { configName } from '../../utils/stake'
 
 export const FinishedRoundsPage = {
 	render(completedRounds: RoundDto[]): PageContent {

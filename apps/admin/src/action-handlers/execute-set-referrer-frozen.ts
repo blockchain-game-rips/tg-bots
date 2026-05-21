@@ -1,12 +1,12 @@
 import { adminControllerSetReferrerFrozen } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
+import { parseEvmAddress } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
-import { parseEvmAddress } from '../validation/evm-address'
 
 const ADDRESS_PROMPT_MESSAGE = 'Enter the referrer EVM address to update.'
 const ADDRESS_PLACEHOLDER = '0x...'

@@ -1,9 +1,9 @@
 import { RoundDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { configName } from '../../utils/stake'
 
 export const UserClaimedRoundPage = {
 	render(round: RoundDto): PageContent {

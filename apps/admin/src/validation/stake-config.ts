@@ -1,5 +1,5 @@
+import { parsePayload } from '@rips/shared'
 import { z } from 'zod'
-import { parsePayload } from './parse-payload'
 
 const prizeDistributionSchema = z.object({
 	prizeCount: z

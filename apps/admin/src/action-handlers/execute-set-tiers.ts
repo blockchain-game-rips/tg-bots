@@ -3,6 +3,7 @@ import {
 	currencyControllerGetCurrencies,
 } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
+import { parseUnits, toCurrencyId } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { NATIVE_ON_BASE } from '../constants'
@@ -10,7 +11,6 @@ import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
-import { parseUnits, toCurrencyId } from '../utils/currency'
 import { parseTierList } from '../validation/tier-list'
 
 const TIERS_PROMPT_MESSAGE = [

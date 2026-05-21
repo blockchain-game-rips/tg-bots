@@ -1,8 +1,8 @@
 import { CurrencyDto } from '@rips/api-client'
+import { swapBreadcrumb } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import {
 	buildChooseTokenPage,
 	chainBreadcrumbSegment,

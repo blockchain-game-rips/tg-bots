@@ -1,5 +1,5 @@
+import { parsePayload } from '@rips/shared'
 import { z } from 'zod'
-import { parsePayload } from './parse-payload'
 
 const tierSchema = z.object({
 	minVolume: z.number().min(0, 'minVolume must be ≥ 0'),

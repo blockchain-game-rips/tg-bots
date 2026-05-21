@@ -1,9 +1,9 @@
 import { WithdrawRewardResponseDtoOutput } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawRewardSuccessPage = {
 	render(response: WithdrawRewardResponseDtoOutput): PageContent {

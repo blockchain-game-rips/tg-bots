@@ -1,7 +1,7 @@
+import { swapBreadcrumb } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { SwapSelecting } from '../../flows'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseChainPage } from '../choose-chain-token'
 
 export const SwapChooseChainPage = {

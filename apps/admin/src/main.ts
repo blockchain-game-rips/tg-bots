@@ -8,11 +8,12 @@ import {
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
+import { getEnvSafe } from '@rips/shared'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { actionIds, actions } from './actions'
 import { Flow } from './flows'
 import { Context, PageContent, SessionData } from './types'
-import { getAllowedUserIds, getEnvSafe } from './utils/common'
+import { getAllowedUserIds } from './utils/common'
 
 client.setConfig({
 	baseUrl: getEnvSafe('BACKEND_URL'),

@@ -1,5 +1,3 @@
-export { fireAndForget, getEnvSafe, wait } from '@rips/grammy-kit'
-
 export function getAllowedUserIds(): Set<number> {
 	const value = process.env['ALLOWED_USER_IDS']
 

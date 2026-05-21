@@ -1,10 +1,9 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import { formatAmountWithUsd, swapBreadcrumb } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const SwapFailedPage = {
 	render(args: {

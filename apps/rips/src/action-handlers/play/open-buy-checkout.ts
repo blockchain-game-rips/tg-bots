@@ -3,14 +3,13 @@ import {
 	usersControllerGetUser,
 } from '@rips/api-client'
 import { assertFlow, setFlowStep } from '@rips/grammy-kit'
+import { parseTicketCount, resolveConfig } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance, fetchStake } from '../../utils/api/wrappers'
-import { resolveConfig } from '../../utils/stake'
 import { evmAddressFromUser } from '../../utils/wallet'
-import { parseTicketCount } from '../../validation/ticket-count'
 
 export const openBuyCheckout: ActionDef<number> = withPayload(
 	(ticketCount) => ticketCount.toString(),

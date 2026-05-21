@@ -1,8 +1,8 @@
 import { AdminTransactionResponseDtoOutput } from '@rips/api-client'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
-import { formatAmountWithUsd } from '../utils/currency'
 
 export class TransactionPage {
 	static render(

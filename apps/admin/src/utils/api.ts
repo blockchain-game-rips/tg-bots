@@ -4,14 +4,13 @@ import {
 	RipsControllerGetStakesResponse,
 	walletsControllerGetBalances,
 } from '@rips/api-client'
+import { getEnvSafe, toCurrencyId } from '@rips/shared'
 import { NATIVE_ON_BASE } from '../constants'
-import { getEnvSafe } from './common'
-import { chainAddressToString } from './currency'
 
 export async function fetchNativeBalance(telegramId: string) {
 	const { data } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
-		query: { chainAddress: [chainAddressToString(NATIVE_ON_BASE)] },
+		query: { chainAddress: [toCurrencyId(NATIVE_ON_BASE)] },
 		querySerializer: createQuerySerializer({ allowReserved: true }),
 	})
 

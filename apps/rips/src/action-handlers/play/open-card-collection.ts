@@ -1,8 +1,8 @@
 import { ripsControllerGetCardCollection } from '@rips/api-client'
+import { parseStakeId } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'
-import { parseStakeId } from '../../validation/stake-id'
 
 export const openCardCollection: ActionDef<number> = withPayload(
 	(stakeId) => stakeId.toString(),

@@ -4,20 +4,20 @@ import {
 	QuoteZapResponseDtoOutput,
 } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	buyTicketsBreadcrumb,
+	configName,
+	fundsBreakdown,
+	insufficientFundsDepositLines,
+	resolveConfig,
+	toShortDurationFormat,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import {
-	fundsBreakdown,
-	insufficientFundsDepositLines,
-} from '../../utils/display/balance'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import {
-	toShortDurationFormat,
-	TRANSACTION_SEND_OVERHEAD_SECONDS,
-} from '../../utils/format/duration'
-import { configName, resolveConfig } from '../../utils/stake'
+
+const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 
 export const ZapCheckoutPage = {
 	render(args: {
@@ -48,6 +48,7 @@ export const ZapCheckoutPage = {
 				{ label: 'Blockchain fee', amount: zapQuote.blockchainFee },
 			],
 			[currencyInBalance, nativeBalance],
+			chainToName,
 		)
 
 		const insufficient = insufficientAmounts.length > 0

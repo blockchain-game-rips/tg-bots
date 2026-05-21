@@ -1,7 +1,7 @@
 import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { parseCurrencyAmount } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { resolveSwapPage } from '../../utils/swap'
-import { parseCurrencyAmount } from '../../validation/amount'
 
 export const submitSwapAmount: ActionDef<string> = withPayload(
 	(amount) => amount,

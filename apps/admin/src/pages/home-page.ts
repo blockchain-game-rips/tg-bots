@@ -2,10 +2,10 @@ import {
 	AdminWalletResponseDtoOutput,
 	GetRipsStateResponseDtoOutput,
 } from '@rips/api-client'
+import { formatAmountWithUsd } from '@rips/shared'
 import { actionIds } from '../actions'
 import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'
-import { formatAmountWithUsd } from '../utils/currency'
 import { keyboardFromLayout } from '../utils/keyboard'
 
 export class HomePage {

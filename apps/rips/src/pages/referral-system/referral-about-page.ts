@@ -1,10 +1,9 @@
 import { GetTierTablesResponseDtoOutput } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
+import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/format/currency'
-import { formatPercent } from '../../utils/format/percent'
 
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 

@@ -3,11 +3,10 @@ import {
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { formatAmountWithUsd } from '../../utils/format/currency'
-import { formatPercent } from '../../utils/format/percent'
 
 const PERIOD_DAYS = 30
 const MS_PER_DAY = 24 * 60 * 60 * 1000

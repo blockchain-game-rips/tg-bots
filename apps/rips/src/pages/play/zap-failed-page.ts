@@ -1,12 +1,15 @@
 import { AvailableStakeDto, CurrencyAmountDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import {
+	buyTicketsBreadcrumb,
+	configName,
+	formatAmountWithUsd,
+	resolveConfig,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
-import { configName, resolveConfig } from '../../utils/stake'
 
 export const ZapFailedPage = {
 	render(args: {

@@ -1,7 +1,7 @@
 import { RoundDto } from '@rips/api-client'
+import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { configName } from '../../utils/stake'
 
 export const GlobalClaimedRoundPage = {
 	render(round: RoundDto): PageContent {

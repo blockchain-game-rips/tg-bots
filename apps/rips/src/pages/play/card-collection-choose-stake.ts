@@ -1,9 +1,9 @@
 import { AvailableStakeDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import { configName, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { configName, resolveConfig } from '../../utils/stake'
 
 export const CardCollectionChooseStakePage = {
 	render(availableStakes: AvailableStakeDto[]): PageContent {

@@ -1,8 +1,7 @@
 import { AvailableStakeDto } from '@rips/api-client'
+import { buyTicketsBreadcrumb, configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import { configName, resolveConfig } from '../../utils/stake'
 import { buildChooseChainPage } from '../choose-chain-token'
 
 export const ZapChooseChainPage = {

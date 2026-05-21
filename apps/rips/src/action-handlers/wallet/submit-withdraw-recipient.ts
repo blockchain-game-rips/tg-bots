@@ -1,8 +1,8 @@
 import { assertFlow, setFlowStep } from '@rips/grammy-kit'
+import { parseEvmAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { toCurrencyAmount } from '../../utils/currency'
 import { resolveWithdrawPage } from '../../utils/wallet'
-import { parseEvmAddress } from '../../validation/evm-address'
 
 export const submitWithdrawRecipient: ActionDef<string> = withPayload(
 	(address) => address,

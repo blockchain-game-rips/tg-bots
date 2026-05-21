@@ -1,18 +1,18 @@
 import { CurrencyAmountDto, QuoteSwapResponseDtoOutput } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	formatAmountWithUsd,
+	fundsBreakdown,
+	insufficientBalanceLines,
+	swapBreadcrumb,
+	toShortDurationFormat,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import {
-	fundsBreakdown,
-	insufficientBalanceLines,
-} from '../../utils/display/balance'
-import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
-import {
-	toShortDurationFormat,
-	TRANSACTION_SEND_OVERHEAD_SECONDS,
-} from '../../utils/format/duration'
+import { chainToName } from '../../utils/chain'
+
+const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 
 export const SwapCheckoutPage = {
 	render(args: {
@@ -38,6 +38,7 @@ export const SwapCheckoutPage = {
 				{ label: 'Network fee', amount: swapQuote.blockchainFee },
 			],
 			[currencyInBalance, nativeInBalance],
+			chainToName,
 		)
 
 		const insufficient = insufficientAmounts.length > 0

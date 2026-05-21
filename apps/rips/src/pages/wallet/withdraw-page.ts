@@ -1,11 +1,10 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import { formatAmountWithUsd, withdrawBreadcrumb } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawPage = {
 	render(

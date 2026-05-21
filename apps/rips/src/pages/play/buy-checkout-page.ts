@@ -4,12 +4,16 @@ import {
 	QuotePurchaseResponseDtoOutput,
 } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import {
+	buyTicketsBreadcrumb,
+	configName,
+	fundsBreakdown,
+	resolveConfig,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { fundsBreakdown } from '../../utils/display/balance'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import { configName, resolveConfig } from '../../utils/stake'
+import { chainToName } from '../../utils/chain'
 
 export const BuyCheckoutPage = {
 	render(args: {
@@ -42,6 +46,7 @@ export const BuyCheckoutPage = {
 				},
 			],
 			[nativeBalance, currencyInBalance],
+			chainToName,
 		)
 
 		const lines = [

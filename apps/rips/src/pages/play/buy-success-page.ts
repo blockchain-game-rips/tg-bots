@@ -1,11 +1,13 @@
 import { BuyTicketsPurchaseResponseDtoOutput, RoundDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import {
+	buyTicketsBreadcrumb,
+	configName,
+	formatAmountWithUsd,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buyTicketsBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
-import { configName } from '../../utils/stake'
 
 export const BuySuccessPage = {
 	render(

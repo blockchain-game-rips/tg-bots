@@ -1,11 +1,14 @@
 import { AvailableStakeDto, RoundDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
+import {
+	configName,
+	displayStatus,
+	resolveConfig,
+	toShortDurationFormat,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { toShortDurationFormat } from '../../utils/format/duration'
-import { displayStatus } from '../../utils/round-statuses'
-import { configName, resolveConfig } from '../../utils/stake'
 
 function roundLine(round: RoundDto): string {
 	const status = displayStatus(round.status)

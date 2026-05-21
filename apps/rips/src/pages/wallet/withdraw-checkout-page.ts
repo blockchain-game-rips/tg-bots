@@ -3,16 +3,16 @@ import {
 	QuoteWithdrawResponseDtoOutput,
 } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
+import {
+	formatAmountWithUsd,
+	fundsBreakdown,
+	insufficientBalanceLines,
+	withdrawBreadcrumb,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import {
-	fundsBreakdown,
-	insufficientBalanceLines,
-} from '../../utils/display/balance'
-import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawCheckoutPage = {
 	render(args: {
@@ -44,6 +44,7 @@ export const WithdrawCheckoutPage = {
 				},
 			],
 			[currencyBalance, nativeBalance],
+			chainToName,
 		)
 
 		const insufficient = insufficientAmounts.length > 0

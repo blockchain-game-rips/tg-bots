@@ -1,11 +1,10 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
+import { formatAmountWithUsd, formatUnits } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { formatUnits } from '../../utils/currency'
-import { formatAmountWithUsd } from '../../utils/format/currency'
 
 export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDto): PageContent {

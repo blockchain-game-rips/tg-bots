@@ -1,7 +1,7 @@
 import { assertFlow, setFlowStep } from '@rips/grammy-kit'
+import { parseCurrencyAmount } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { resolveWithdrawPage } from '../../utils/wallet'
-import { parseCurrencyAmount } from '../../validation/amount'
 
 export const submitWithdrawAmount: ActionDef<string> = withPayload(
 	(amount) => amount,

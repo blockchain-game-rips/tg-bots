@@ -1,10 +1,9 @@
 import { ConfigDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
+import { configName, toShortDurationFormat } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { toShortDurationFormat } from '../../utils/format/duration'
-import { configName } from '../../utils/stake'
 
 function renderConfig(config: ConfigDto): string {
 	return [

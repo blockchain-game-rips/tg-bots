@@ -14,4 +14,12 @@ logs
 configs/
 generated/
 CLAUDE.md
-.yarn/install-state.gz
+
+# Yarn Berry (node-modules linker)
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

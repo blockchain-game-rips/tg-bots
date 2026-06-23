@@ -14,8 +14,8 @@ import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'
 import { keyboardFromLayout } from '../utils/keyboard'
 
-type StakeEntry = GetRipsStateResponseDtoOutput['availableStakes'][number]
-type StakeConfig = NonNullable<StakeEntry['stake']['currentConfig']>
+type PresetEntry = GetRipsStateResponseDtoOutput['availablePresets'][number]
+type PresetConfig = NonNullable<PresetEntry['preset']['currentConfig']>
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 
 function renderTierTable(table: TierTable): string[] {
@@ -37,63 +37,63 @@ function renderTierTable(table: TierTable): string[] {
 	return lines
 }
 
-function renderConfig(config: StakeConfig): string[] {
+function renderConfig(config: PresetConfig): string[] {
 	const {
-		ticketPrice,
-		ticketCap,
+		entryPrice,
+		entryCap,
 		feePercent,
 		durationSeconds,
-		prizeDistribution,
+		payoutDistribution,
 	} = config
-	const { currency, amount } = ticketPrice
+	const { currency, amount } = entryPrice
 
 	const lines = [
 		`  Price: ${formatUnits(BigInt(amount), currency.decimals)} ${currency.symbol}`,
-		`  Cap: ${String(ticketCap)} tickets`,
+		`  Cap: ${String(entryCap)} entries`,
 		`  Fee: ${formatPercent(feePercent)}`,
 		`  Duration: ${toShortDurationFormat(durationSeconds)}`,
-		`  Prizes:`,
+		`  Payouts:`,
 	]
 
-	for (const tier of prizeDistribution) {
-		const min = formatUnits(BigInt(tier.minPrize), currency.decimals)
-		const max = formatUnits(BigInt(tier.maxPrize), currency.decimals)
-		lines.push(`    x${tier.prizeCount}: ${min}–${max} ${currency.symbol}`)
+	for (const tier of payoutDistribution) {
+		const min = formatUnits(BigInt(tier.minPayout), currency.decimals)
+		const max = formatUnits(BigInt(tier.maxPayout), currency.decimals)
+		lines.push(`    x${tier.payoutCount}: ${min}–${max} ${currency.symbol}`)
 	}
 
 	return lines
 }
 
-function renderStake(entry: StakeEntry): string[] {
-	const { stake, fillingRound } = entry
-	const lines: string[] = [`<b>Stake #${String(stake.id)}</b>`]
+function renderPreset(entry: PresetEntry): string[] {
+	const { preset, fillingRip } = entry
+	const lines: string[] = [`<b>Preset #${String(preset.id)}</b>`]
 
-	const roundConfig = fillingRound?.config ?? null
-	const nextConfig = stake.currentConfig
+	const ripConfig = fillingRip?.config ?? null
+	const nextConfig = preset.currentConfig
 
-	if (fillingRound && roundConfig) {
-		const ticketsSold = fillingRound.actions.purchases.reduce(
-			(sum, p) => sum + Number(p.ticketCount),
+	if (fillingRip && ripConfig) {
+		const entriesSold = fillingRip.actions.purchases.reduce(
+			(sum, p) => sum + Number(p.entryCount),
 			0,
 		)
-		lines.push(`Round #${String(fillingRound.id)} [${fillingRound.status}]`)
-		lines.push(`Currency: ${fillingRound.currency.symbol}`)
-		lines.push(`Tickets sold: ${String(ticketsSold)}`)
+		lines.push(`Rip #${String(fillingRip.id)} [${fillingRip.status}]`)
+		lines.push(`Currency: ${fillingRip.currency.symbol}`)
+		lines.push(`Entries sold: ${String(entriesSold)}`)
 		lines.push(`Active config:`)
-		lines.push(...renderConfig(roundConfig))
+		lines.push(...renderConfig(ripConfig))
 	} else {
-		lines.push(`No active round`)
+		lines.push(`No active rip`)
 	}
 
 	if (nextConfig) {
-		const configsMatch = roundConfig
-			? JSON.stringify(roundConfig) === JSON.stringify(nextConfig)
+		const configsMatch = ripConfig
+			? JSON.stringify(ripConfig) === JSON.stringify(nextConfig)
 			: false
 
 		if (configsMatch) {
 			lines.push(`Next config: same as active`)
 		} else {
-			lines.push(`Next config (applies after round):`)
+			lines.push(`Next config (applies after rip):`)
 			lines.push(...renderConfig(nextConfig))
 		}
 	} else {
@@ -121,17 +121,17 @@ export const StatePage = {
 			`<b>Rips State</b>  ${statusLine}`,
 			`Admin: <code>${evmAddress}</code>`,
 			`Balance: ${balanceDisplay}`,
-			`Stakes: ${String(state.availableStakes.length)}`,
+			`Presets: ${String(state.availablePresets.length)}`,
 			'',
 		]
 
-		for (const entry of state.availableStakes) {
-			lines.push(...renderStake(entry))
+		for (const entry of state.availablePresets) {
+			lines.push(...renderPreset(entry))
 			lines.push('')
 		}
 
-		if (state.availableStakes.length === 0) {
-			lines.push('No stakes available.')
+		if (state.availablePresets.length === 0) {
+			lines.push('No presets available.')
 		}
 
 		const firstTierTable = tierTablesRes.tierTables[0]

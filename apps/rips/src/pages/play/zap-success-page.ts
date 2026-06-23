@@ -1,11 +1,11 @@
 import {
-	AvailableStakeDto,
+	AvailablePresetDto,
 	CurrencyAmountDto,
 	GetZapResultResponseDtoOutput,
 } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import {
-	buyTicketsBreadcrumb,
+	buyEntriesBreadcrumb,
 	configName,
 	formatAmountWithUsd,
 	resolveConfig,
@@ -17,19 +17,19 @@ import { chainToName } from '../../utils/chain'
 
 export const ZapSuccessPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 		amountIn: CurrencyAmountDto
 		zapSuccessResult: NonNullable<GetZapResultResponseDtoOutput['success']>
 	}): PageContent {
-		const { availableStake, ticketCount, amountIn, zapSuccessResult } = args
+		const { availablePreset, entryCount, amountIn, zapSuccessResult } = args
 
-		const config = resolveConfig(availableStake)
+		const config = resolveConfig(availablePreset)
 		const { currency } = amountIn
 		const chain = currency.chainAddress.chain
 
 		const lines = [
-			buyTicketsBreadcrumb(
+			buyEntriesBreadcrumb(
 				configName(config),
 				chainToName(chain),
 				currency.symbol,
@@ -37,8 +37,8 @@ export const ZapSuccessPage = {
 			'',
 			'✅ Zap successful!',
 			'',
-			`Round: #${zapSuccessResult.roundId.toString()}`,
-			`Ticket count: ${ticketCount.toString()}`,
+			`Rip: #${zapSuccessResult.ripId.toString()}`,
+			`Entry count: ${entryCount.toString()}`,
 			`Paid: ${formatAmountWithUsd(amountIn)}`,
 		]
 

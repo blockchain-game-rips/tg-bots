@@ -1,4 +1,4 @@
-import { PrizeDto, RoundDto } from '@rips/api-client'
+import { PayoutDto, RipDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,27 +8,27 @@ import { tierName } from '../../utils/tiers'
 
 export const RevealSinglePage = {
 	render(
-		round: RoundDto,
-		revealedPrize: PrizeDto,
-		unrevealedPrizes: PrizeDto[],
+		rip: RipDto,
+		revealedPayout: PayoutDto,
+		unrevealedPayouts: PayoutDto[],
 	): PageContent {
-		const prizeCurrencyAmount = {
-			amount: revealedPrize.prizeAmount,
-			currency: round.currency,
+		const payoutCurrencyAmount = {
+			amount: revealedPayout.payoutAmount,
+			currency: rip.currency,
 		}
 
 		const lines = [
 			'<b>Open Rips</b>',
 			'',
-			`🎁 <a href="${revealedPrize.card.imageUrl}">${revealedPrize.card.name}</a> [${tierName(revealedPrize.card.tier)}]`,
-			`Ticket #${revealedPrize.ticketNumber.toString()} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+			`🎁 <a href="${revealedPayout.card.imageUrl}">${revealedPayout.card.name}</a> [${tierName(revealedPayout.card.tier)}]`,
+			`Entry #${revealedPayout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
 			'',
-			`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
+			`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
 		]
 
 		const keyboard = new InlineKeyboard()
 
-		if (unrevealedPrizes.length > 0) {
+		if (unrevealedPayouts.length > 0) {
 			keyboard
 				.text(
 					'Reveal next',

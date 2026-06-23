@@ -10,7 +10,7 @@ import { SUPPORTED_CURRENCIES } from '../../constants'
 import { Flow } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { Effect, EffectType, SessionData } from '../../types'
-import { fetchBalances, fetchStake } from '../../utils/api/wrappers'
+import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
 
@@ -20,21 +20,21 @@ async function buildZapCheckout(
 ): Promise<Effect> {
 	assertFlow(
 		session,
-		'buyTickets',
-		'ticket-count-chosen',
+		'buyEntries',
+		'entry-count-chosen',
 		'zap-currency-chosen',
 	)
 
-	const { stakeId, ticketCount } = session.flow.data
+	const { presetId, entryCount } = session.flow.data
 
-	const [availableStake, { data: zapQuote }, { data: user }] =
+	const [availablePreset, { data: zapQuote }, { data: user }] =
 		await Promise.all([
-			fetchStake(stakeId),
+			fetchPreset(presetId),
 			ripsControllerQuoteZap({
 				headers: { 'x-telegram-id': session.telegramId },
 				body: {
-					stakeId,
-					ticketCount,
+					presetId,
+					entryCount,
 					paymentCurrencyChainAddress: currencyChainAddress,
 				},
 			}),
@@ -60,16 +60,16 @@ async function buildZapCheckout(
 	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
 	setFlowStep(session, 'zap-currency-chosen', {
-		stakeId,
-		ticketCount,
+		presetId,
+		entryCount,
 		currency: currencyInBalance.currency,
 	})
 
 	return {
 		type: EffectType.EDIT,
 		page: ZapCheckoutPage.render({
-			availableStake,
-			ticketCount,
+			availablePreset,
+			entryCount,
 			currencyInBalance,
 			nativeBalance,
 			zapQuote,
@@ -88,7 +88,7 @@ export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
 
 export const refreshZapCheckout: ActionDef<void> = noPayload(
 	async (session) => {
-		assertFlow(session, 'buyTickets', 'zap-currency-chosen')
+		assertFlow(session, 'buyEntries', 'zap-currency-chosen')
 
 		return buildZapCheckout(
 			session,

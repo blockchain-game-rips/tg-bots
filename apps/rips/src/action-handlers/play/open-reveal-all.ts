@@ -1,25 +1,25 @@
 import {
-	ripsControllerGetRounds,
-	ripsControllerRevealPrizes,
+	ripsControllerGetRips,
+	ripsControllerRevealPayouts,
 } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealAllPage } from '../../pages/play/reveal-all-page'
 import { EffectType } from '../../types'
-import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'
+import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'
 
 export const openRevealAll: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const { data: revealData } = await ripsControllerRevealPrizes({
+	const { data: revealData } = await ripsControllerRevealPayouts({
 		headers: { 'x-telegram-id': telegramId },
 		body: { revealAll: true },
 	})
 
-	const [unrevealedPrizes, { data: roundsData }] = await Promise.all([
-		fetchUnrevealedPrizes(telegramId),
-		ripsControllerGetRounds({
+	const [unrevealedPayouts, { data: ripsData }] = await Promise.all([
+		fetchUnrevealedPayouts(telegramId),
+		ripsControllerGetRips({
 			query: {
-				ids: [...new Set(revealData.prizes.map((p) => p.roundId))],
+				ids: [...new Set(revealData.payouts.map((p) => p.ripId))],
 			},
 		}),
 	])
@@ -27,9 +27,9 @@ export const openRevealAll: ActionDef<void> = noPayload(async (session) => {
 	return {
 		type: EffectType.EDIT,
 		page: RevealAllPage.render(
-			roundsData.rounds,
-			revealData.prizes,
-			unrevealedPrizes,
+			ripsData.rips,
+			revealData.payouts,
+			unrevealedPayouts,
 		),
 	}
 })

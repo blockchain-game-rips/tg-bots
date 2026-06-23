@@ -1,26 +1,26 @@
-import { PrizeDto } from '@rips/api-client'
+import { PayoutDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
+function buildRevealPayoutsContent(unrevealedPayouts: PayoutDto[]): {
 	lines: string[]
 	keyboard: InlineKeyboard
 } {
 	const lines = [
 		'<b>Open Rips</b>',
 		'',
-		`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
+		`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
 	]
 
-	if (unrevealedPrizes.length === 0) {
-		lines.push('', 'All tickets have been revealed.')
+	if (unrevealedPayouts.length === 0) {
+		lines.push('', 'All entries have been revealed.')
 	}
 
 	const keyboard = new InlineKeyboard()
 
-	if (unrevealedPrizes.length > 0) {
+	if (unrevealedPayouts.length > 0) {
 		keyboard
 			.text(
 				'Reveal next',
@@ -37,9 +37,9 @@ function buildRevealPrizesContent(unrevealedPrizes: PrizeDto[]): {
 	return { lines, keyboard }
 }
 
-export const RevealPrizesPage = {
-	render(unrevealedPrizes: PrizeDto[]): PageContent {
-		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
+export const RevealPayoutsPage = {
+	render(unrevealedPayouts: PayoutDto[]): PageContent {
+		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
 		addNav(keyboard, {
 			home: actionIds.openHome,
@@ -50,9 +50,9 @@ export const RevealPrizesPage = {
 	},
 }
 
-export const RevealPrizesNoBackPage = {
-	render(unrevealedPrizes: PrizeDto[]): PageContent {
-		const { lines, keyboard } = buildRevealPrizesContent(unrevealedPrizes)
+export const RevealPayoutsNoBackPage = {
+	render(unrevealedPayouts: PayoutDto[]): PageContent {
+		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
 		keyboard
 			.row()

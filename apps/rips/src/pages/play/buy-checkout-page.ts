@@ -1,11 +1,11 @@
 import {
-	AvailableStakeDto,
+	AvailablePresetDto,
 	CurrencyAmountDto,
 	QuotePurchaseResponseDtoOutput,
 } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import {
-	buyTicketsBreadcrumb,
+	buyEntriesBreadcrumb,
 	configName,
 	fundsBreakdown,
 	resolveConfig,
@@ -17,8 +17,8 @@ import { chainToName } from '../../utils/chain'
 
 export const BuyCheckoutPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 		currencyInAmount: CurrencyAmountDto
 		purchaseQuote: QuotePurchaseResponseDtoOutput
 		nativeBalance: CurrencyAmountDto
@@ -26,8 +26,8 @@ export const BuyCheckoutPage = {
 		userEvmAddress: string
 	}): PageContent {
 		const {
-			availableStake,
-			ticketCount,
+			availablePreset,
+			entryCount,
 			currencyInAmount,
 			purchaseQuote,
 			nativeBalance,
@@ -35,11 +35,11 @@ export const BuyCheckoutPage = {
 			userEvmAddress,
 		} = args
 
-		const config = resolveConfig(availableStake)
+		const config = resolveConfig(availablePreset)
 
 		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
-				{ label: 'Ticket cost', amount: currencyInAmount },
+				{ label: 'Entry cost', amount: currencyInAmount },
 				{
 					label: 'Blockchain fee',
 					amount: purchaseQuote.blockchainFee,
@@ -50,9 +50,9 @@ export const BuyCheckoutPage = {
 		)
 
 		const lines = [
-			buyTicketsBreadcrumb(configName(config)),
+			buyEntriesBreadcrumb(configName(config)),
 			'',
-			`Ticket count: ${ticketCount.toString()}`,
+			`Entry count: ${entryCount.toString()}`,
 			'',
 			...breakdownLines,
 		]
@@ -65,7 +65,7 @@ export const BuyCheckoutPage = {
 			keyboard
 				.text(
 					'Update',
-					buildActionData(actionIds.openBuyCheckout, ticketCount),
+					buildActionData(actionIds.openBuyCheckout, entryCount),
 				)
 				.row()
 				.text(
@@ -86,7 +86,7 @@ export const BuyCheckoutPage = {
 			keyboard
 				.text(
 					'Confirm',
-					buildActionData(actionIds.executeBuyTickets, undefined),
+					buildActionData(actionIds.executeBuyEntries, undefined),
 				)
 				.row()
 		}
@@ -95,8 +95,8 @@ export const BuyCheckoutPage = {
 			.text(
 				'Back',
 				buildActionData(
-					actionIds.openChooseTicketAmount,
-					availableStake.stake.id,
+					actionIds.openChooseEntryAmount,
+					availablePreset.preset.id,
 				),
 			)
 			.text('Home', buildActionData(actionIds.openHome, undefined))

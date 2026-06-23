@@ -50,7 +50,7 @@ export function toCurrencyAmount(
 // Two variants are provided because callers differ in what they have available:
 // findCurrencyIndexById uses a derived string key (more robust across serialization
 // boundaries), while findCurrencyIndexByAddress compares fields directly (useful
-// when a ChainAddressDto is at hand and no toCurrencyId round-trip is needed).
+// when a ChainAddressDto is at hand and no toCurrencyId rip-trip is needed).
 export function findCurrencyIndexById(
 	currencies: ChainAddressDto[],
 	currencyId: string,

@@ -9,7 +9,7 @@ function renderConfig(config: ConfigDto): string {
 	return [
 		`🎮 <b>${configName(config)}</b>`,
 		`⏱ Duration: ${toShortDurationFormat(config.durationSeconds)}`,
-		`🎟 Tickets per round: ${config.ticketCap.toString()}`,
+		`🎟 Entries per rip: ${config.entryCap.toString()}`,
 	].join('\n')
 }
 
@@ -20,9 +20,9 @@ export const AboutPage = {
 		const lines = [
 			'<b>About the Game</b>',
 			'',
-			'Buy tickets to enter a round. When a round fills up, prizes are distributed among participants.',
+			'Buy entries to enter a rip. When a rip fills up, payouts are distributed among participants.',
 			'',
-			'<b>Stakes</b>',
+			'<b>Presets</b>',
 			'',
 			sections.join('\n\n'),
 		]

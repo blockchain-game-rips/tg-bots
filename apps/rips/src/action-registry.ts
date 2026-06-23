@@ -1,22 +1,22 @@
 import { AnyActionDef } from '@rips/grammy-kit'
 import { openAbout } from './action-handlers/open-about'
 import { openHome } from './action-handlers/open-home'
-import { executeBuyTickets } from './action-handlers/play/execute-buy-tickets'
+import { executeBuyEntries } from './action-handlers/play/execute-buy-entries'
 import { executeZap } from './action-handlers/play/execute-zap'
 import { openBuyCheckout } from './action-handlers/play/open-buy-checkout'
-import { openBuyChooseStake } from './action-handlers/play/open-buy-choose-stake'
-import { openBuyChooseTicketCount } from './action-handlers/play/open-buy-choose-ticket-count'
-import { openCardChooseStake } from './action-handlers/play/open-card-choose-stake'
+import { openBuyChooseEntryCount } from './action-handlers/play/open-buy-choose-entry-count'
+import { openBuyChoosePreset } from './action-handlers/play/open-buy-choose-preset'
+import { openCardChoosePreset } from './action-handlers/play/open-card-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
-import { openCompletedRounds } from './action-handlers/play/open-completed-rounds'
-import { openOngoingRounds } from './action-handlers/play/open-ongoing-rounds'
+import { openCompletedRips } from './action-handlers/play/open-completed-rips'
+import { openOngoingRips } from './action-handlers/play/open-ongoing-rips'
 import {
 	openOpenRips,
 	openOpenRipsNoBack,
 } from './action-handlers/play/open-open-rips'
 import { openPlay } from './action-handlers/play/open-play'
 import { openRevealAll } from './action-handlers/play/open-reveal-all'
-import { openRevealPrizes } from './action-handlers/play/open-reveal-prizes'
+import { openRevealPayouts } from './action-handlers/play/open-reveal-payouts'
 import { openRevealSingle } from './action-handlers/play/open-reveal-single'
 import { openStatus } from './action-handlers/play/open-status'
 import { openZapChooseChain } from './action-handlers/play/open-zap-choose-chain'
@@ -25,7 +25,7 @@ import {
 	openZapCheckout,
 	refreshZapCheckout,
 } from './action-handlers/play/open-zap-confirm'
-import { promptTicketCount } from './action-handlers/play/prompt-ticket-count'
+import { promptEntryCount } from './action-handlers/play/prompt-entry-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
@@ -63,24 +63,24 @@ export const actionRegistry = {
 
 	// Play
 	openPlay,
-	openChooseStake: openBuyChooseStake,
-	openChooseTicketAmount: openBuyChooseTicketCount,
-	promptTicketCount,
+	openChoosePreset: openBuyChoosePreset,
+	openChooseEntryAmount: openBuyChooseEntryCount,
+	promptEntryCount,
 	openBuyCheckout,
-	executeBuyTickets,
+	executeBuyEntries,
 
-	// Open RIPs / rounds
+	// Open RIPs / rips
 	openOpenRips,
 	openOpenRipsNoBack,
-	openRevealPrizes,
+	openRevealPayouts,
 	openRevealSingle,
 	openRevealAll,
 	openStatus,
-	openOngoingRounds,
-	openCompletedRounds,
+	openOngoingRips,
+	openCompletedRips,
 
 	// Card collection
-	openCardChooseStake,
+	openCardChoosePreset,
 	openCardCollection,
 
 	// Wallet

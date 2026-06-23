@@ -3,57 +3,56 @@ import {
 	usersControllerGetUser,
 } from '@rips/api-client'
 import { assertFlow, setFlowStep } from '@rips/grammy-kit'
-import { parseTicketCount, resolveConfig } from '@rips/shared'
+import { parseEntryCount, resolveConfig } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { EffectType } from '../../types'
-import { fetchNativeBalance, fetchStake } from '../../utils/api/wrappers'
+import { fetchNativeBalance, fetchPreset } from '../../utils/api/wrappers'
 import { evmAddressFromUser } from '../../utils/wallet'
 
 export const openBuyCheckout: ActionDef<number> = withPayload(
-	(ticketCount) => ticketCount.toString(),
-	(raw) => parseTicketCount(raw),
-	async (session, ticketCount) => {
-		assertFlow(session, 'buyTickets', 'stake-chosen', 'ticket-count-chosen')
-		const { stakeId } = session.flow.data
+	(entryCount) => entryCount.toString(),
+	(raw) => parseEntryCount(raw),
+	async (session, entryCount) => {
+		assertFlow(session, 'buyEntries', 'preset-chosen', 'entry-count-chosen')
+		const { presetId } = session.flow.data
 
 		const [
 			{ data: user },
-			availableStake,
+			availablePreset,
 			nativeBalance,
 			{ data: purchaseQuote },
 		] = await Promise.all([
 			usersControllerGetUser({
 				path: { telegramId: session.telegramId },
 			}),
-			fetchStake(stakeId),
+			fetchPreset(presetId),
 			fetchNativeBalance(session.telegramId),
 			ripsControllerQuotePurchase({
 				body: {
 					paymentCurrencyChainAddress: NATIVE_ON_BASE,
-					stakeId,
-					ticketCount,
+					presetId,
+					entryCount,
 				},
 			}),
 		])
 
-		const config = resolveConfig(availableStake)
-		const totalCost =
-			BigInt(config.ticketPrice.amount) * BigInt(ticketCount)
+		const config = resolveConfig(availablePreset)
+		const totalCost = BigInt(config.entryPrice.amount) * BigInt(entryCount)
 
 		const currencyInAmount = {
 			amount: totalCost.toString(),
 			currency: nativeBalance.currency,
 		}
 
-		setFlowStep(session, 'ticket-count-chosen', { stakeId, ticketCount })
+		setFlowStep(session, 'entry-count-chosen', { presetId, entryCount })
 
 		return {
 			type: EffectType.EDIT,
 			page: BuyCheckoutPage.render({
-				availableStake,
-				ticketCount,
+				availablePreset,
+				entryCount,
 				currencyInAmount,
 				purchaseQuote,
 				nativeBalance,

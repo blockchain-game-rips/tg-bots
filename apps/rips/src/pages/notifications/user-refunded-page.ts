@@ -1,18 +1,18 @@
-import { RoundDto } from '@rips/api-client'
+import { RipDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-export const UserRefundedRoundPage = {
-	render(round: RoundDto): PageContent {
-		const stake = configName(round.config)
+export const UserRefundedRipPage = {
+	render(rip: RipDto): PageContent {
+		const preset = configName(rip.config)
 
 		const lines = [
-			`↩️ <b>Round #${round.id.toString()} was refunded</b>`,
+			`↩️ <b>Rip #${rip.id.toString()} was refunded</b>`,
 			'',
-			`Stake: ${stake}`,
+			`Preset: ${preset}`,
 			'Your funds have been returned to your balance.',
 		]
 

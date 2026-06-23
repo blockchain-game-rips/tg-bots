@@ -14,6 +14,7 @@ logs
 configs/
 generated/
 CLAUDE.md
+.tmp/
 
 # Yarn Berry (node-modules linker)
 .pnp.*

@@ -1,13 +1,13 @@
 import { ActionDef, noPayload } from '../action-def'
 import { AboutPage } from '../pages/about/about-page'
 import { EffectType } from '../types'
-import { fetchStakes } from '../utils/api/wrappers'
+import { fetchPresets } from '../utils/api/wrappers'
 
 export const openAbout: ActionDef<void> = noPayload(async () => {
-	const availableStakes = await fetchStakes()
+	const availablePresets = await fetchPresets()
 
-	const configs = availableStakes
-		.map((s) => s.fillingRound?.config ?? s.stake.currentConfig)
+	const configs = availablePresets
+		.map((s) => s.fillingRip?.config ?? s.preset.currentConfig)
 		.filter((config) => config !== null)
 
 	return { type: EffectType.EDIT, page: AboutPage.render(configs) }

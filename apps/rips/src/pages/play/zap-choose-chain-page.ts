@@ -1,29 +1,29 @@
-import { AvailableStakeDto } from '@rips/api-client'
-import { buyTicketsBreadcrumb, configName, resolveConfig } from '@rips/shared'
+import { AvailablePresetDto } from '@rips/api-client'
+import { buyEntriesBreadcrumb, configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { buildChooseChainPage } from '../choose-chain-token'
 
 export const ZapChooseChainPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 	}): PageContent {
-		const { availableStake, ticketCount } = args
-		const config = resolveConfig(availableStake)
+		const { availablePreset, entryCount } = args
+		const config = resolveConfig(availablePreset)
 
 		return buildChooseChainPage({
 			lines: [
-				buyTicketsBreadcrumb(configName(config)),
+				buyEntriesBreadcrumb(configName(config)),
 				'',
-				`Ticket count: ${ticketCount.toString()}`,
+				`Entry count: ${entryCount.toString()}`,
 				'',
 				'Choose a chain to pay from:',
 			],
 			chainActionId: actionIds.openZapChooseToken,
 			chainPayload: (chain) => chain,
 			nav: {
-				parent: actionIds.openChooseStake,
+				parent: actionIds.openChoosePreset,
 				home: actionIds.openHome,
 			},
 		})

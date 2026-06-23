@@ -1,7 +1,7 @@
 import {
 	createQuerySerializer,
-	ripsControllerGetStakes,
-	RipsControllerGetStakesResponse,
+	ripsControllerGetPresets,
+	RipsControllerGetPresetsResponse,
 	walletsControllerGetBalances,
 } from '@rips/api-client'
 import { getEnvSafe, toCurrencyId } from '@rips/shared'
@@ -23,18 +23,18 @@ export async function fetchNativeBalance(telegramId: string) {
 	return balance
 }
 
-export async function fetchStake(
-	stakeId: number,
-): Promise<RipsControllerGetStakesResponse['availableStakes'][number]> {
-	const { data } = await ripsControllerGetStakes()
+export async function fetchPreset(
+	presetId: number,
+): Promise<RipsControllerGetPresetsResponse['availablePresets'][number]> {
+	const { data } = await ripsControllerGetPresets()
 
-	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
+	const preset = data.availablePresets.find((s) => s.preset.id === presetId)
 
-	if (stake === undefined) {
-		throw new Error(`Stake with id ${String(stakeId)} not found`)
+	if (preset === undefined) {
+		throw new Error(`Preset with id ${String(presetId)} not found`)
 	}
 
-	return stake
+	return preset
 }
 
 const adminApiKey = getEnvSafe('ADMIN_API_KEY')

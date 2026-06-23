@@ -1,27 +1,29 @@
 import { ActionDef, noPayload } from '../../action-def'
 import {
-	RevealPrizesNoBackPage,
-	RevealPrizesPage,
-} from '../../pages/play/reveal-prizes-page'
+	RevealPayoutsNoBackPage,
+	RevealPayoutsPage,
+} from '../../pages/play/reveal-payouts-page'
 import { EffectType } from '../../types'
-import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'
+import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'
 
 export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
-	const unrevealedPrizes = await fetchUnrevealedPrizes(session.telegramId)
+	const unrevealedPayouts = await fetchUnrevealedPayouts(session.telegramId)
 
 	return {
 		type: EffectType.EDIT,
-		page: RevealPrizesPage.render(unrevealedPrizes),
+		page: RevealPayoutsPage.render(unrevealedPayouts),
 	}
 })
 
 export const openOpenRipsNoBack: ActionDef<void> = noPayload(
 	async (session) => {
-		const unrevealedPrizes = await fetchUnrevealedPrizes(session.telegramId)
+		const unrevealedPayouts = await fetchUnrevealedPayouts(
+			session.telegramId,
+		)
 
 		return {
 			type: EffectType.EDIT,
-			page: RevealPrizesNoBackPage.render(unrevealedPrizes),
+			page: RevealPayoutsNoBackPage.render(unrevealedPayouts),
 		}
 	},
 )

@@ -1,11 +1,11 @@
 import {
 	createQuerySerializer,
 	currencyControllerGetCurrencies,
-	ripsControllerGetPrizes,
-	ripsControllerGetRounds,
-	RipsControllerGetRoundsResponse,
-	ripsControllerGetStakes,
-	RipsControllerGetStakesResponse,
+	ripsControllerGetPayouts,
+	ripsControllerGetPresets,
+	RipsControllerGetPresetsResponse,
+	ripsControllerGetRips,
+	RipsControllerGetRipsResponse,
 	walletsControllerGetBalances,
 } from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
@@ -51,31 +51,31 @@ export async function fetchNativeBalance(telegramId: string) {
 	return balance
 }
 
-export async function fetchRounds(
+export async function fetchRips(
 	ids: number[],
-): Promise<RipsControllerGetRoundsResponse['rounds']> {
-	const { data } = await ripsControllerGetRounds({
+): Promise<RipsControllerGetRipsResponse['rips']> {
+	const { data } = await ripsControllerGetRips({
 		query: { ids },
 		querySerializer: chainAddressQuerySerializer,
 	})
 
-	return data.rounds
+	return data.rips
 }
 
-export async function fetchStakes(): Promise<
-	RipsControllerGetStakesResponse['availableStakes']
+export async function fetchPresets(): Promise<
+	RipsControllerGetPresetsResponse['availablePresets']
 > {
-	const { data } = await ripsControllerGetStakes()
+	const { data } = await ripsControllerGetPresets()
 
-	return data.availableStakes
+	return data.availablePresets
 }
 
-export async function fetchUnrevealedPrizes(telegramId: string) {
-	const { data } = await ripsControllerGetPrizes({
+export async function fetchUnrevealedPayouts(telegramId: string) {
+	const { data } = await ripsControllerGetPayouts({
 		headers: { 'x-telegram-id': telegramId },
 	})
 
-	return data.prizes.filter((p) => !p.revealed)
+	return data.payouts.filter((p) => !p.revealed)
 }
 
 export async function fetchSingleBalance(
@@ -91,16 +91,16 @@ export async function fetchSingleBalance(
 	return balance
 }
 
-export async function fetchStake(
-	stakeId: number,
-): Promise<RipsControllerGetStakesResponse['availableStakes'][number]> {
-	const { data } = await ripsControllerGetStakes()
+export async function fetchPreset(
+	presetId: number,
+): Promise<RipsControllerGetPresetsResponse['availablePresets'][number]> {
+	const { data } = await ripsControllerGetPresets()
 
-	const stake = data.availableStakes.find((s) => s.stake.id === stakeId)
+	const preset = data.availablePresets.find((s) => s.preset.id === presetId)
 
-	if (stake === undefined) {
-		throw new Error(`Stake with id ${stakeId.toString()} not found`)
+	if (preset === undefined) {
+		throw new Error(`Preset with id ${presetId.toString()} not found`)
 	}
 
-	return stake
+	return preset
 }

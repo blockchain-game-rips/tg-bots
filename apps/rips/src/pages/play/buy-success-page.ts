@@ -1,7 +1,7 @@
-import { BuyTicketsPurchaseResponseDtoOutput, RoundDto } from '@rips/api-client'
+import { BuyEntriesPurchaseResponseDtoOutput, RipDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import {
-	buyTicketsBreadcrumb,
+	buyEntriesBreadcrumb,
 	configName,
 	formatAmountWithUsd,
 } from '@rips/shared'
@@ -11,29 +11,29 @@ import { PageContent } from '../../types'
 
 export const BuySuccessPage = {
 	render(
-		purchase: BuyTicketsPurchaseResponseDtoOutput,
-		round?: RoundDto,
+		purchase: BuyEntriesPurchaseResponseDtoOutput,
+		rip?: RipDto,
 	): PageContent {
 		const lines = [
-			buyTicketsBreadcrumb(
-				round !== undefined ? configName(round.config) : undefined,
+			buyEntriesBreadcrumb(
+				rip !== undefined ? configName(rip.config) : undefined,
 			),
 			'',
 			'✅ Purchase successful!',
 			'',
-			`Round: #${purchase.roundId.toString()}`,
-			`Tickets: ${purchase.ticketCount.toString()}`,
+			`Rip: #${purchase.ripId.toString()}`,
+			`Entries: ${purchase.entryCount.toString()}`,
 		]
 
-		if (round !== undefined) {
-			const ticketCost =
-				BigInt(purchase.ticketCount) *
-				BigInt(round.config.ticketPrice.amount)
+		if (rip !== undefined) {
+			const entryCost =
+				BigInt(purchase.entryCount) *
+				BigInt(rip.config.entryPrice.amount)
 
-			const currency = round.config.ticketPrice.currency
+			const currency = rip.config.entryPrice.currency
 
 			lines.push(
-				`Tickets cost: ${formatAmountWithUsd({ amount: ticketCost.toString(), currency })}`,
+				`Entries cost: ${formatAmountWithUsd({ amount: entryCost.toString(), currency })}`,
 			)
 		}
 

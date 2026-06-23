@@ -1,5 +1,5 @@
-import { AvailableStakeDto, CurrencyDto } from '@rips/api-client'
-import { buyTicketsBreadcrumb, configName, resolveConfig } from '@rips/shared'
+import { AvailablePresetDto, CurrencyDto } from '@rips/api-client'
+import { buyEntriesBreadcrumb, configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import {
@@ -9,21 +9,21 @@ import {
 
 export const ZapChooseTokenPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 		currencies: CurrencyDto[]
 	}): PageContent {
-		const { availableStake, ticketCount, currencies } = args
-		const config = resolveConfig(availableStake)
+		const { availablePreset, entryCount, currencies } = args
+		const config = resolveConfig(availablePreset)
 
 		return buildChooseTokenPage({
 			lines: [
-				buyTicketsBreadcrumb(
+				buyEntriesBreadcrumb(
 					configName(config),
 					chainBreadcrumbSegment(currencies),
 				),
 				'',
-				`Ticket count: ${ticketCount.toString()}`,
+				`Entry count: ${entryCount.toString()}`,
 				'',
 				'Choose a token to pay with:',
 			],

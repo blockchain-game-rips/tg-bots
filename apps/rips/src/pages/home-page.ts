@@ -10,7 +10,7 @@ export const HomePage = {
 			'',
 			'Get started in two steps:',
 			'· Deposit ETH on Base via the Wallet menu',
-			'· Buy tickets and earn rewards',
+			'· Buy entries and earn rewards',
 		]
 
 		const keyboard = new InlineKeyboard()

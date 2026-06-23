@@ -1,11 +1,11 @@
 import {
-	AvailableStakeDto,
+	AvailablePresetDto,
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
 } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import {
-	buyTicketsBreadcrumb,
+	buyEntriesBreadcrumb,
 	configName,
 	fundsBreakdown,
 	insufficientFundsDepositLines,
@@ -21,29 +21,29 @@ const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 
 export const ZapCheckoutPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 		nativeBalance: CurrencyAmountDto
 		currencyInBalance: CurrencyAmountDto
 		zapQuote: QuoteZapResponseDtoOutput
 		userEvmAddress: string
 	}): PageContent {
 		const {
-			availableStake,
-			ticketCount,
+			availablePreset,
+			entryCount,
 			nativeBalance,
 			currencyInBalance,
 			zapQuote,
 			userEvmAddress,
 		} = args
 
-		const config = resolveConfig(availableStake)
+		const config = resolveConfig(availablePreset)
 		const { currency } = zapQuote.amountIn
 		const chain = currency.chainAddress.chain
 
 		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
 			[
-				{ label: 'Ticket cost', amount: zapQuote.amountIn },
+				{ label: 'Entry cost', amount: zapQuote.amountIn },
 				{ label: 'Zap fee', amount: zapQuote.fee },
 				{ label: 'Blockchain fee', amount: zapQuote.blockchainFee },
 			],
@@ -54,13 +54,13 @@ export const ZapCheckoutPage = {
 		const insufficient = insufficientAmounts.length > 0
 
 		const lines = [
-			buyTicketsBreadcrumb(
+			buyEntriesBreadcrumb(
 				configName(config),
 				chainToName(chain),
 				currency.symbol,
 			),
 			'',
-			`Ticket count: ${ticketCount.toString()}`,
+			`Entry count: ${entryCount.toString()}`,
 			`Estimated time: ${toShortDurationFormat(zapQuote.durationMs / 1000 + TRANSACTION_SEND_OVERHEAD_SECONDS)}`,
 			'',
 			...breakdownLines,

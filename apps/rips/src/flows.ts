@@ -1,22 +1,22 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 
-export type BuyTicketsFlow =
+export type BuyEntriesFlow =
 	| {
-			flowType: 'buyTickets'
-			step: 'stake-chosen'
-			data: { stakeId: number }
+			flowType: 'buyEntries'
+			step: 'preset-chosen'
+			data: { presetId: number }
 	  }
 	| {
-			flowType: 'buyTickets'
-			step: 'ticket-count-chosen'
-			data: { stakeId: number; ticketCount: number }
+			flowType: 'buyEntries'
+			step: 'entry-count-chosen'
+			data: { presetId: number; entryCount: number }
 	  }
 	| {
-			flowType: 'buyTickets'
+			flowType: 'buyEntries'
 			step: 'zap-currency-chosen'
 			data: {
-				stakeId: number
-				ticketCount: number
+				presetId: number
+				entryCount: number
 				currency: CurrencyDto
 			}
 	  }
@@ -44,4 +44,4 @@ export interface SwapFlow {
 	}
 }
 
-export type Flow = BuyTicketsFlow | WithdrawFlow | SwapFlow | null
+export type Flow = BuyEntriesFlow | WithdrawFlow | SwapFlow | null

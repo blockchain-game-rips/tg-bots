@@ -1,7 +1,7 @@
-import { AvailableStakeDto, CurrencyAmountDto } from '@rips/api-client'
+import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import {
-	buyTicketsBreadcrumb,
+	buyEntriesBreadcrumb,
 	configName,
 	formatAmountWithUsd,
 	resolveConfig,
@@ -13,19 +13,19 @@ import { chainToName } from '../../utils/chain'
 
 export const ZapFailedPage = {
 	render(args: {
-		availableStake: AvailableStakeDto
-		ticketCount: number
+		availablePreset: AvailablePresetDto
+		entryCount: number
 		amountIn: CurrencyAmountDto
 		refund: CurrencyAmountDto
 	}): PageContent {
-		const { availableStake, ticketCount, amountIn, refund } = args
+		const { availablePreset, entryCount, amountIn, refund } = args
 
-		const config = resolveConfig(availableStake)
+		const config = resolveConfig(availablePreset)
 		const { currency } = amountIn
 		const chain = currency.chainAddress.chain
 
 		const lines = [
-			buyTicketsBreadcrumb(
+			buyEntriesBreadcrumb(
 				configName(config),
 				chainToName(chain),
 				currency.symbol,
@@ -33,7 +33,7 @@ export const ZapFailedPage = {
 			'',
 			'❌ Zap failed',
 			'',
-			`Ticket count: ${ticketCount.toString()}`,
+			`Entry count: ${entryCount.toString()}`,
 			`Paid: ${formatAmountWithUsd(amountIn)}`,
 			`Refund: ${formatAmountWithUsd(refund)}`,
 		]

@@ -1,16 +1,16 @@
 import {
 	notificationsControllerGetNotifications,
 	notificationsControllerMarkNotified,
-	RoundDto,
+	RipDto,
 } from '@rips/api-client'
 import { logger } from '@rips/grammy-kit'
 import { Bot } from 'grammy'
-import { GlobalClaimedRoundPage } from './pages/notifications/global-claimed-page'
-import { GlobalRefundedRoundPage } from './pages/notifications/global-refunded-page'
-import { UserClaimedRoundPage } from './pages/notifications/user-claimed-page'
-import { UserRefundedRoundPage } from './pages/notifications/user-refunded-page'
+import { GlobalClaimedRipPage } from './pages/notifications/global-claimed-page'
+import { GlobalRefundedRipPage } from './pages/notifications/global-refunded-page'
+import { UserClaimedRipPage } from './pages/notifications/user-claimed-page'
+import { UserRefundedRipPage } from './pages/notifications/user-refunded-page'
 import { Context, PageContent } from './types'
-import { fetchRounds } from './utils/api/wrappers'
+import { fetchRips } from './utils/api/wrappers'
 import { getEnvSafe, wait } from './utils/common'
 
 const POLL_INTERVAL_MS = 5000
@@ -25,16 +25,16 @@ function isNotificationType(value: string): value is NotificationType {
 	return (NOTIFICATION_TYPES as string[]).includes(value)
 }
 
-type PageBuilder = (round: RoundDto) => PageContent
+type PageBuilder = (rip: RipDto) => PageContent
 
 const groupPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: (round) => GlobalClaimedRoundPage.render(round),
-	REFUNDED: (round) => GlobalRefundedRoundPage.render(round),
+	CLAIMED: (rip) => GlobalClaimedRipPage.render(rip),
+	REFUNDED: (rip) => GlobalRefundedRipPage.render(rip),
 }
 
 const userPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: (round) => UserClaimedRoundPage.render(round),
-	REFUNDED: (round) => UserRefundedRoundPage.render(round),
+	CLAIMED: (rip) => UserClaimedRipPage.render(rip),
+	REFUNDED: (rip) => UserRefundedRipPage.render(rip),
 }
 
 export class Notifier {
@@ -63,15 +63,12 @@ export class Notifier {
 			await notificationsControllerGetNotifications()
 
 		for (const notification of notificationsData.notifications) {
-			const rounds = await fetchRounds([Number(notification.roundId)])
+			const rips = await fetchRips([Number(notification.ripId)])
 
-			const round = rounds[0]
+			const rip = rips[0]
 
-			if (!round) {
-				logger.error(
-					{ notification },
-					'Round not found for notification',
-				)
+			if (!rip) {
+				logger.error({ notification }, 'Rip not found for notification')
 				continue
 			}
 
@@ -90,7 +87,7 @@ export class Notifier {
 				: notification.userTelegramId
 
 			try {
-				await this.sendNotification(chatId, buildPage(round))
+				await this.sendNotification(chatId, buildPage(rip))
 				await notificationsControllerMarkNotified({
 					path: { notificationId: notification.id },
 				})

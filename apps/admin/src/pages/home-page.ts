@@ -62,8 +62,8 @@ export const HomePage = {
 				],
 				[
 					{
-						label: 'Update Stake Config',
-						actionId: actionIds.openUpdateStakeConfig,
+						label: 'Update Preset Config',
+						actionId: actionIds.openUpdatePresetConfig,
 					},
 				],
 			]),

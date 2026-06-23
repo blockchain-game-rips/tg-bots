@@ -1,4 +1,4 @@
-import { PrizeDto, RoundDto } from '@rips/api-client'
+import { PayoutDto, RipDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,34 +8,34 @@ import { tierName } from '../../utils/tiers'
 
 export const RevealAllPage = {
 	render(
-		rounds: RoundDto[],
-		revealedPrizes: PrizeDto[],
-		unrevealedPrizes: PrizeDto[],
+		rips: RipDto[],
+		revealedPayouts: PayoutDto[],
+		unrevealedPayouts: PayoutDto[],
 	): PageContent {
 		const lines = [
 			'<b>Open Rips</b>',
 			'',
-			`🎟 Unrevealed tickets: ${unrevealedPrizes.length.toString()}`,
+			`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
 			'',
-			'🎁 <b>Your prizes</b>',
+			'🎁 <b>Your payouts</b>',
 			'',
 		]
 
-		for (const prize of revealedPrizes) {
-			const round = rounds.find((r) => r.id === prize.roundId)
+		for (const payout of revealedPayouts) {
+			const rip = rips.find((r) => r.id === payout.ripId)
 
-			if (!round)
+			if (!rip)
 				throw new Error(
-					`round with id ${prize.roundId.toString()} is not found in rounds`,
+					`rip with id ${payout.ripId.toString()} is not found in rips`,
 				)
 
-			const prizeCurrencyAmount = {
-				amount: prize.prizeAmount,
-				currency: round.currency,
+			const payoutCurrencyAmount = {
+				amount: payout.payoutAmount,
+				currency: rip.currency,
 			}
 
 			lines.push(
-				`<a href="${prize.card.imageUrl}">${prize.card.name}</a> [${tierName(prize.card.tier)}] — Ticket #${prize.ticketNumber.toString()} — ${formatAmountWithUsd(prizeCurrencyAmount)}`,
+				`<a href="${payout.card.imageUrl}">${payout.card.name}</a> [${tierName(payout.card.tier)}] — Entry #${payout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
 			)
 		}
 

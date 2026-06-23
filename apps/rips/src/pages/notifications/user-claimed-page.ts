@@ -1,18 +1,18 @@
-import { RoundDto } from '@rips/api-client'
+import { RipDto } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-export const UserClaimedRoundPage = {
-	render(round: RoundDto): PageContent {
-		const stake = configName(round.config)
+export const UserClaimedRipPage = {
+	render(rip: RipDto): PageContent {
+		const preset = configName(rip.config)
 
 		const lines = [
-			`🏆 <b>Round #${round.id.toString()} is over — open your prizes!</b>`,
+			`🏆 <b>Rip #${rip.id.toString()} is over — open your payouts!</b>`,
 			'',
-			`Stake: ${stake}`,
+			`Preset: ${preset}`,
 		]
 
 		const keyboard = new InlineKeyboard().text(

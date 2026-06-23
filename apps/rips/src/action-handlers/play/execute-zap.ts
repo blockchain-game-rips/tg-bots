@@ -1,7 +1,7 @@
 import {
 	CurrencyAmountDto,
 	GetZapResultResponseDtoOutput,
-	ripsControllerBuyTicketsZap,
+	ripsControllerBuyEntriesZap,
 	ripsControllerGetZapResult,
 } from '@rips/api-client'
 import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
@@ -9,7 +9,7 @@ import { ActionDef, noPayload } from '../../action-def'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'
-import { fetchStake } from '../../utils/api/wrappers'
+import { fetchPreset } from '../../utils/api/wrappers'
 import { toCurrencyAmount } from '../../utils/currency'
 
 const ZAP_POLL_INTERVAL_MS = 2000
@@ -50,25 +50,25 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 }
 
 export const executeZap: ActionDef<void> = noPayload((session) => {
-	assertFlow(session, 'buyTickets', 'zap-currency-chosen')
+	assertFlow(session, 'buyEntries', 'zap-currency-chosen')
 
-	const { stakeId, ticketCount, currency } = session.flow.data
+	const { presetId, entryCount, currency } = session.flow.data
 
 	return {
 		type: EffectType.SEND_LOADING,
-		message: 'Buying tickets...',
+		message: 'Buying entries...',
 		next: async () => {
-			const { data: zapResponse } = await ripsControllerBuyTicketsZap({
+			const { data: zapResponse } = await ripsControllerBuyEntriesZap({
 				headers: { 'x-telegram-id': session.telegramId },
 				body: {
-					stakeId,
-					ticketCount,
+					presetId,
+					entryCount,
 					paymentCurrencyChainAddress: currency.chainAddress,
 				},
 			})
 
 			const outcome = await pollZapResult(zapResponse.zapId)
-			const availableStake = await fetchStake(stakeId)
+			const availablePreset = await fetchPreset(presetId)
 			const amountIn = toCurrencyAmount(
 				BigInt(zapResponse.amountIn.amount),
 				currency,
@@ -80,8 +80,8 @@ export const executeZap: ActionDef<void> = noPayload((session) => {
 				return {
 					type: EffectType.EDIT,
 					page: ZapFailedPage.render({
-						availableStake,
-						ticketCount,
+						availablePreset,
+						entryCount,
 						amountIn,
 						refund: outcome.refund,
 					}),
@@ -91,8 +91,8 @@ export const executeZap: ActionDef<void> = noPayload((session) => {
 			return {
 				type: EffectType.EDIT,
 				page: ZapSuccessPage.render({
-					availableStake,
-					ticketCount,
+					availablePreset,
+					entryCount,
 					amountIn,
 					zapSuccessResult: outcome.result,
 				}),

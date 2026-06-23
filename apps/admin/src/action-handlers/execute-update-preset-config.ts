@@ -1,5 +1,5 @@
 import {
-	adminControllerUpdateStakeConfig,
+	adminControllerUpdatePresetConfig,
 	currencyControllerGetCurrencies,
 } from '@rips/api-client'
 import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
@@ -11,82 +11,82 @@ import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
-import { parseStakeConfig } from '../validation/stake-config'
+import { parsePresetConfig } from '../validation/preset-config'
 
 const CONFIG_PROMPT_MESSAGE = [
-	'Enter the stake config as JSON.',
+	'Enter the preset config as JSON.',
 	'',
 	'Example:',
-	'<code>{"stakeId":1,"ticketCap":16,"feePercent":500,"ticketPrice":0.01,"durationSeconds":86400,"prizeDistribution":[{"prizeCount":1,"minPrize":0.1,"maxPrize":1.0}]}</code>',
+	'<code>{"presetId":1,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}</code>',
 	'',
-	'<b>ticketCap</b>: must be a power of 2 (e.g. 8, 16, 32)',
+	'<b>entryCap</b>: must be a power of 2 (e.g. 8, 16, 32)',
 	'<b>feePercent</b>: in basis points (e.g. 500 = 5%)',
-	'<b>ticketPrice</b>, <b>minPrize</b>, <b>maxPrize</b>: human-readable ETH amounts',
+	'<b>entryPrice</b>, <b>minPayout</b>, <b>maxPayout</b>: human-readable ETH amounts',
 ].join('\n')
 
 const CONFIG_PLACEHOLDER =
-	'{"stakeId":0,"ticketCap":16,"feePercent":500,"ticketPrice":0.01,"durationSeconds":86400,"prizeDistribution":[{"prizeCount":1,"minPrize":0.1,"maxPrize":1.0}]}'
+	'{"presetId":0,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}'
 
-export const openUpdateStakeConfig: ActionDef<void> = noPayload(() => ({
+export const openUpdatePresetConfig: ActionDef<void> = noPayload(() => ({
 	type: EffectType.ASK,
 	prompt: {
 		message: CONFIG_PROMPT_MESSAGE,
 		placeholder: CONFIG_PLACEHOLDER,
 	},
-	onSubmit: actionIds.submitConfirmUpdateStakeConfig,
+	onSubmit: actionIds.submitConfirmUpdatePresetConfig,
 }))
 
-export const submitConfirmUpdateStakeConfig: ActionDef<string> =
+export const submitConfirmUpdatePresetConfig: ActionDef<string> =
 	withPayload<string>(
 		(v) => v,
 		(v) => v,
 		(session, payload) => {
-			const config = parseStakeConfig(payload)
+			const config = parsePresetConfig(payload)
 
-			setFlow(session, 'updateStakeConfig', 'confirm', config)
+			setFlow(session, 'updatePresetConfig', 'confirm', config)
 
-			const prizeSummary = config.prizeDistribution
+			const payoutSummary = config.payoutDistribution
 				.map(
 					(p) =>
-						`  x${String(p.prizeCount)}: ${String(p.minPrize)}–${String(p.maxPrize)} ETH`,
+						`  x${String(p.payoutCount)}: ${String(p.minPayout)}–${String(p.maxPayout)} ETH`,
 				)
 				.join('\n')
 
 			const description = [
-				`Stake #${String(config.stakeId)} config update:`,
-				`  Ticket cap: ${String(config.ticketCap)}`,
+				`Preset #${String(config.presetId)} config update:`,
+				`  Entry cap: ${String(config.entryCap)}`,
 				`  Fee: ${String(config.feePercent)} bp`,
-				`  Ticket price: ${String(config.ticketPrice)} ETH`,
+				`  Entry price: ${String(config.entryPrice)} ETH`,
 				`  Duration: ${toShortDurationFormat(config.durationSeconds)}`,
-				`  Prizes:\n${prizeSummary}`,
+				`  Payouts:\n${payoutSummary}`,
 			].join('\n')
 
 			return {
 				type: EffectType.EDIT,
 				page: ConfirmationPage.render(
 					description,
-					actionIds.executeConfirmUpdateStakeConfig,
+					actionIds.executeConfirmUpdatePresetConfig,
 				),
 			}
 		},
 	)
 
-export const executeConfirmUpdateStakeConfig: ActionDef<void> = noPayload(
+export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 	(session) => {
-		assertFlow(session, 'updateStakeConfig', 'confirm')
+		assertFlow(session, 'updatePresetConfig', 'confirm')
 
 		const {
-			stakeId,
-			ticketCap,
+			presetId,
+			entryCap,
 			feePercent,
-			ticketPrice,
+			entryPrice,
 			durationSeconds,
-			prizeDistribution,
+			payoutDistribution,
 		} = session.flow.data
 
 		return {
 			type: EffectType.SEND_LOADING,
-			message: 'Updating stake config...',
+			message: 'Updating preset config...',
 			next: async () => {
 				const { data: currenciesRes } =
 					await currencyControllerGetCurrencies({
@@ -104,22 +104,22 @@ export const executeConfirmUpdateStakeConfig: ActionDef<void> = noPayload(
 				const toBigintAsString = (amount: number) =>
 					parseUnits(amount.toString(), decimals).toString()
 
-				const { data: tx } = await adminControllerUpdateStakeConfig({
+				const { data: tx } = await adminControllerUpdatePresetConfig({
 					headers: adminApiHeader,
-					path: { stakeId: stakeId.toString() },
+					path: { presetId: presetId.toString() },
 					body: {
 						config: {
-							ticketCap,
+							entryCap,
 							feePercent,
-							ticketPrice: {
+							entryPrice: {
 								currencyChainAddress: NATIVE_ON_BASE,
-								amount: toBigintAsString(ticketPrice),
+								amount: toBigintAsString(entryPrice),
 							},
 							durationSeconds,
-							prizeDistribution: prizeDistribution.map((p) => ({
-								prizeCount: p.prizeCount.toString(),
-								minPrize: toBigintAsString(p.minPrize),
-								maxPrize: toBigintAsString(p.maxPrize),
+							payoutDistribution: payoutDistribution.map((p) => ({
+								payoutCount: p.payoutCount.toString(),
+								minPayout: toBigintAsString(p.minPayout),
+								maxPayout: toBigintAsString(p.maxPayout),
 							})),
 						},
 					},
@@ -128,7 +128,7 @@ export const executeConfirmUpdateStakeConfig: ActionDef<void> = noPayload(
 				return {
 					type: EffectType.EDIT,
 					page: TransactionPage.render(
-						`Stake #${String(stakeId)} config updated`,
+						`Preset #${String(presetId)} config updated`,
 						tx,
 					),
 				}

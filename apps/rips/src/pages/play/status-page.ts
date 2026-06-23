@@ -1,12 +1,12 @@
-import { RoundDto } from '@rips/api-client'
+import { RipDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 export const StatusPage = {
-	render(ongoingRounds: RoundDto[], userEvmAddress: string): PageContent {
-		const userRounds = ongoingRounds.filter((r) =>
+	render(ongoingRips: RipDto[], userEvmAddress: string): PageContent {
+		const userRips = ongoingRips.filter((r) =>
 			r.actions.purchases.some(
 				(p) =>
 					p.userAddress.toLowerCase() ===
@@ -16,26 +16,26 @@ export const StatusPage = {
 
 		const lines: string[] = ['<b>Status</b>', '']
 
-		if (userRounds.length === 0) {
-			lines.push('You have no tickets in ongoing rounds.')
+		if (userRips.length === 0) {
+			lines.push('You have no entries in ongoing rips.')
 		} else {
-			lines.push('🎟 <b>Your tickets in ongoing rounds</b>', '')
+			lines.push('🎟 <b>Your entries in ongoing rips</b>', '')
 
-			for (const round of userRounds) {
-				const userTickets = round.actions.purchases
+			for (const rip of userRips) {
+				const userEntries = rip.actions.purchases
 					.filter(
 						(p) =>
 							p.userAddress.toLowerCase() ===
 							userEvmAddress.toLowerCase(),
 					)
 					.reduce(
-						(sum, purchase) => sum + Number(purchase.ticketCount),
+						(sum, purchase) => sum + Number(purchase.entryCount),
 						0,
 					)
 
-				const ticketLabel = userTickets === 1 ? 'ticket' : 'tickets'
+				const entryLabel = userEntries === 1 ? 'entry' : 'entries'
 				lines.push(
-					`Round #${round.id.toString()} — ${userTickets.toString()} ${ticketLabel}`,
+					`Rip #${rip.id.toString()} — ${userEntries.toString()} ${entryLabel}`,
 				)
 			}
 		}
@@ -43,13 +43,13 @@ export const StatusPage = {
 		const keyboard = addNav(
 			new InlineKeyboard()
 				.text(
-					'Ongoing rounds',
-					buildActionData(actionIds.openOngoingRounds, undefined),
+					'Ongoing rips',
+					buildActionData(actionIds.openOngoingRips, undefined),
 				)
 				.row()
 				.text(
-					'Completed rounds',
-					buildActionData(actionIds.openCompletedRounds, undefined),
+					'Completed rips',
+					buildActionData(actionIds.openCompletedRips, undefined),
 				),
 			{ home: actionIds.openHome, parent: actionIds.openPlay },
 		)

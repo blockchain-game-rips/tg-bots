@@ -1,16 +1,16 @@
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { BuyCheckoutPage } from '../../src/pages/play/buy-checkout-page'
-import { BuyChooseStakePage } from '../../src/pages/play/buy-choose-stake-page'
-import { BuyChooseTicketCountPage } from '../../src/pages/play/buy-choose-ticket-count-page'
+import { BuyChooseEntryCountPage } from '../../src/pages/play/buy-choose-entry-count-page'
+import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
 import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
-import { CardCollectionChooseStakePage } from '../../src/pages/play/card-collection-choose-stake'
-import { FinishedRoundsPage } from '../../src/pages/play/finished-rounds-page'
-import { OngoingRoundsPage } from '../../src/pages/play/ongoing-rounds-page'
+import { CardCollectionChoosePresetPage } from '../../src/pages/play/card-collection-choose-preset'
+import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
+import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
 import { PlayPage } from '../../src/pages/play/play-page'
 import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
-import { RevealPrizesPage } from '../../src/pages/play/reveal-prizes-page'
+import { RevealPayoutsPage } from '../../src/pages/play/reveal-payouts-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { StatusPage } from '../../src/pages/play/status-page'
 import { ZapCheckoutPage } from '../../src/pages/play/zap-checkout-page'
@@ -37,28 +37,28 @@ import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-pag
 import { PageContent } from '../../src/types'
 import {
 	mockAllBalances,
-	mockAvailableStakes,
+	mockAvailablePresets,
 	mockBalance,
 	mockCardCollection,
 	mockConfigs,
+	mockEntryCost,
 	mockEthArbBalance,
 	mockEthArbBalanceInsufficient,
 	mockEthArbNetworkFee,
-	mockFinishedRounds,
+	mockFinishedRips,
 	mockPurchase,
 	mockPurchaseQuote,
 	mockReceiverAddress,
 	mockReferrerData,
-	mockRevealedPrizes,
-	mockRound,
-	mockRound2,
+	mockRevealedPayouts,
+	mockRip,
+	mockRip2,
 	mockSufficientBalance,
 	mockSwapAmountIn,
 	mockSwapNetworkFee,
 	mockSwapQuote,
-	mockTicketCost,
 	mockTierTables,
-	mockUnrevealedPrizes,
+	mockUnrevealedPayouts,
 	mockUsdcArbBalance,
 	mockUsdcArbWithdrawAmount,
 	mockUsdcArbWithdrawAmountInsufficient,
@@ -102,13 +102,13 @@ export function resolveVariant(
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
 const mockSwapCurrencies = [mockSwapAmountIn.currency]
 
-const mockAvailableStake0 = mockAvailableStakes[0]
-const mockRevealedPrize0 = mockRevealedPrizes[0]
+const mockAvailablePreset0 = mockAvailablePresets[0]
+const mockRevealedPayout0 = mockRevealedPayouts[0]
 
-if (mockAvailableStake0 === undefined)
-	throw new Error('mockAvailableStakes[0] is missing')
-if (mockRevealedPrize0 === undefined)
-	throw new Error('mockRevealedPrizes[0] is missing')
+if (mockAvailablePreset0 === undefined)
+	throw new Error('mockAvailablePresets[0] is missing')
+if (mockRevealedPayout0 === undefined)
+	throw new Error('mockRevealedPayouts[0] is missing')
 
 export const pages: Record<string, PageEntry> = {
 	home: {
@@ -118,32 +118,33 @@ export const pages: Record<string, PageEntry> = {
 	},
 	play: {
 		description:
-			'The Play hub. Shows the main game actions: buy tickets, open (reveal) rips, check round status, and access the card collection.',
+			'The Play hub. Shows the main game actions: buy entries, open (reveal) rips, check rip status, and access the card collection.',
 		render: () => PlayPage.render(),
 	},
-	'card-collection-choose-stake': {
+	'card-collection-choose-preset': {
 		description:
-			'Entry to the card collection, opened from Play. Choose a stake tier to view the card collection for.',
-		render: () => CardCollectionChooseStakePage.render(mockAvailableStakes),
+			'Entry to the card collection, opened from Play. Choose a preset tier to view the card collection for.',
+		render: () =>
+			CardCollectionChoosePresetPage.render(mockAvailablePresets),
 	},
 	'card-collection': {
 		description:
-			'Shows the full card collection for the selected stake tier — each card with name (linked to image) and how many the user owns.',
+			'Shows the full card collection for the selected preset tier — each card with name (linked to image) and how many the user owns.',
 		render: () => CardCollectionPage.render(mockCardCollection),
 	},
-	'buy-choose-stake': {
+	'buy-choose-preset': {
 		description:
-			'First step of buying tickets. Shows available stake tiers to pick from. Opened from Play.',
-		render: () => BuyChooseStakePage.render(mockAvailableStakes),
+			'First step of buying entries. Shows available preset tiers to pick from. Opened from Play.',
+		render: () => BuyChoosePresetPage.render(mockAvailablePresets),
 	},
-	'buy-choose-ticket-count': {
+	'buy-choose-entry-count': {
 		description:
-			'Second step of buying tickets. Choose how many tickets to buy: preset options or custom amount. Opened from choose-stake.',
-		render: () => BuyChooseTicketCountPage.render(mockAvailableStake0),
+			'Second step of buying entries. Choose how many entries to buy: preset options or custom amount. Opened from choose-preset.',
+		render: () => BuyChooseEntryCountPage.render(mockAvailablePreset0),
 	},
 	'buy-checkout': {
 		description:
-			'Third step of buying tickets. Shows costs and balance breakdown. Confirm button if funds are sufficient, zap option if not.',
+			'Third step of buying entries. Shows costs and balance breakdown. Confirm button if funds are sufficient, zap option if not.',
 		variants: ['insufficient', 'sufficient'],
 		render(variant) {
 			const balance = (() => {
@@ -158,9 +159,9 @@ export const pages: Record<string, PageEntry> = {
 			})()
 
 			return BuyCheckoutPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
-				currencyInAmount: mockTicketCost,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
+				currencyInAmount: mockEntryCost,
 				purchaseQuote: mockPurchaseQuote,
 				nativeBalance: balance,
 				currencyInBalance: balance,
@@ -170,16 +171,16 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'buy-success': {
 		description:
-			'Final step of the buy flow. Confirms a successful ticket purchase — shows round number, ticket count, total cost, and blockchain fee. Opened after buy-confirm.',
-		render: () => BuySuccessPage.render(mockPurchase, mockRound),
+			'Final step of the buy flow. Confirms a successful entry purchase — shows rip number, entry count, total cost, and blockchain fee. Opened after buy-confirm.',
+		render: () => BuySuccessPage.render(mockPurchase, mockRip),
 	},
 	'zap-choose-chain': {
 		description:
 			'First step of the zap flow. Entered from buy-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
 		render: () =>
 			ZapChooseChainPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
 			}),
 	},
 	'zap-choose-token': {
@@ -187,8 +188,8 @@ export const pages: Record<string, PageEntry> = {
 			'Second step of the zap flow. Choose a token on the selected chain to pay with.',
 		render: () =>
 			ZapChooseTokenPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
 	},
@@ -197,8 +198,8 @@ export const pages: Record<string, PageEntry> = {
 			'Third step of the zap flow. Shows zap quote: amount to pay, token balance, and network fee. Confirm to proceed.',
 		render: () =>
 			ZapCheckoutPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
 				nativeBalance: mockBalance,
 				currencyInBalance: mockZapCurrencyInBalance,
 				zapQuote: mockZapQuote,
@@ -207,68 +208,65 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'zap-failed': {
 		description:
-			'Shown when the zap transaction fails. Shows stake, ticket count, amount paid, and refund amount.',
+			'Shown when the zap transaction fails. Shows preset, entry count, amount paid, and refund amount.',
 		render: () =>
 			ZapFailedPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				refund: mockZapCurrencyInBalance,
 			}),
 	},
 	'zap-success': {
 		description:
-			'Final step of the zap flow. Confirms zap + ticket purchase succeeded — shows stake, round, ticket count, amount paid, and blockchain fee.',
+			'Final step of the zap flow. Confirms zap + entry purchase succeeded — shows preset, rip, entry count, amount paid, and blockchain fee.',
 		render: () =>
 			ZapSuccessPage.render({
-				availableStake: mockAvailableStake0,
-				ticketCount: 3,
+				availablePreset: mockAvailablePreset0,
+				entryCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				zapSuccessResult: mockZapSuccessResult,
 			}),
 	},
 	status: {
 		description:
-			"Overview of the user's activity — shows their tickets in ongoing rounds, with navigation to Ongoing Rounds and Completed Rounds lists.",
-		render: () => StatusPage.render([mockRound], mockUserEvmAddress),
+			"Overview of the user's activity — shows their entries in ongoing rips, with navigation to Ongoing Rips and Completed Rips lists.",
+		render: () => StatusPage.render([mockRip], mockUserEvmAddress),
 	},
-	'ongoing-rounds': {
+	'ongoing-rips': {
 		description:
-			'List of all active rounds grouped by stake tier, showing tickets remaining and time left per round. Back leads to Status.',
+			'List of all active rips grouped by preset tier, showing entries remaining and time left per rip. Back leads to Status.',
 		render: () =>
-			OngoingRoundsPage.render(
-				[mockRound, mockRound2],
-				mockAvailableStakes,
-			),
+			OngoingRipsPage.render([mockRip, mockRip2], mockAvailablePresets),
 	},
-	'finished-rounds': {
+	'finished-rips': {
 		description:
-			'Global list of all completed rounds, showing stake tier, round number, and status. Back leads to Status.',
-		render: () => FinishedRoundsPage.render(mockFinishedRounds),
+			'Global list of all completed rips, showing preset tier, rip number, and status. Back leads to Status.',
+		render: () => FinishedRipsPage.render(mockFinishedRips),
 	},
-	'reveal-prizes': {
+	'reveal-payouts': {
 		description:
-			'Entry point for revealing tickets ("Open Rips" in the Play menu). Shows unrevealed ticket count with "Reveal next" and "Reveal all" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
-		render: () => RevealPrizesPage.render(mockUnrevealedPrizes),
+			'Entry point for revealing entries ("Open Rips" in the Play menu). Shows unrevealed entry count with "Reveal next" and "Reveal all" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
+		render: () => RevealPayoutsPage.render(mockUnrevealedPayouts),
 	},
 	'reveal-single': {
 		description:
-			'Shows the result of revealing one ticket. Also shows remaining unrevealed count with options to continue. Only opened from reveal-prizes. Part of the reveal flow — back leads to Play.',
+			'Shows the result of revealing one entry. Also shows remaining unrevealed count with options to continue. Only opened from reveal-payouts. Part of the reveal flow — back leads to Play.',
 		render: () =>
 			RevealSinglePage.render(
-				mockRound,
-				mockRevealedPrize0,
-				mockUnrevealedPrizes,
+				mockRip,
+				mockRevealedPayout0,
+				mockUnrevealedPayouts,
 			),
 	},
 	'reveal-all': {
 		description:
-			'Shows all revealed prizes as a list. Also shows remaining unrevealed count. Can be opened from reveal-prizes or reveal-single. Part of the reveal flow — back leads to Play.',
+			'Shows all revealed payouts as a list. Also shows remaining unrevealed count. Can be opened from reveal-payouts or reveal-single. Part of the reveal flow — back leads to Play.',
 		render: () =>
 			RevealAllPage.render(
-				[mockRound],
-				mockRevealedPrizes,
-				mockUnrevealedPrizes,
+				[mockRip],
+				mockRevealedPayouts,
+				mockUnrevealedPayouts,
 			),
 	},
 	'withdraw-choose-chain': {
@@ -404,7 +402,7 @@ export const pages: Record<string, PageEntry> = {
 	},
 	about: {
 		description:
-			'Explains how the game works and lists all available stake tiers. Each tier shows the ticket price (with USD equivalent), round duration, and ticket cap.',
+			'Explains how the game works and lists all available preset tiers. Each tier shows the entry price (with USD equivalent), rip duration, and entry cap.',
 		render: () => AboutPage.render(mockConfigs),
 	},
 }

@@ -8,13 +8,13 @@ export const PlayPage = {
 		const lines = [
 			'<b>Play</b>',
 			'',
-			'Buy tickets to enter a round, open your prize Rips, or check your round status.',
+			'Buy entries to enter a rip, open your payout Rips, or check your rip status.',
 		]
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'Buy Tickets',
-				buildActionData(actionIds.openChooseStake, undefined),
+				'Buy Entries',
+				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
 			.text(
@@ -26,7 +26,7 @@ export const PlayPage = {
 			.row()
 			.text(
 				'Card Collection',
-				buildActionData(actionIds.openCardChooseStake, undefined),
+				buildActionData(actionIds.openCardChoosePreset, undefined),
 			)
 			.row()
 

@@ -1,37 +1,38 @@
 import {
-	ripsControllerGetRounds,
-	ripsControllerRevealPrizes,
+	ripsControllerGetRips,
+	ripsControllerRevealPayouts,
 } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'
-import { fetchUnrevealedPrizes } from '../../utils/api/wrappers'
+import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'
 
 export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const { data: revealData } = await ripsControllerRevealPrizes({
+	const { data: revealData } = await ripsControllerRevealPayouts({
 		headers: { 'x-telegram-id': telegramId },
 		body: { revealAll: false },
 	})
 
-	const [unrevealedPrizes, { data: roundsData }] = await Promise.all([
-		fetchUnrevealedPrizes(telegramId),
-		ripsControllerGetRounds({
+	const [unrevealedPayouts, { data: ripsData }] = await Promise.all([
+		fetchUnrevealedPayouts(telegramId),
+		ripsControllerGetRips({
 			query: {
-				ids: [...new Set(revealData.prizes.map((p) => p.roundId))],
+				ids: [...new Set(revealData.payouts.map((p) => p.ripId))],
 			},
 		}),
 	])
 
-	const revealedPrize = revealData.prizes[0]
-	const round = roundsData.rounds[0]
+	const revealedPayout = revealData.payouts[0]
+	const rip = ripsData.rips[0]
 
-	if (round === undefined) throw new Error('Round not found')
-	if (revealedPrize === undefined) throw new Error('Revealed prize not found')
+	if (rip === undefined) throw new Error('Rip not found')
+	if (revealedPayout === undefined)
+		throw new Error('Revealed payout not found')
 
 	return {
 		type: EffectType.EDIT,
-		page: RevealSinglePage.render(round, revealedPrize, unrevealedPrizes),
+		page: RevealSinglePage.render(rip, revealedPayout, unrevealedPayouts),
 	}
 })

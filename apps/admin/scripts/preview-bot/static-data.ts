@@ -1,17 +1,17 @@
 import {
-	AvailableStakeDto,
-	BuyTicketsPurchaseResponseDtoOutput,
+	AvailablePresetDto,
+	BuyEntriesPurchaseResponseDtoOutput,
 	ConfigDto,
 	CurrencyAmountDto,
 	GetCardCollectionResponseDtoOutput,
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
-	PrizeDto,
+	PayoutDto,
 	QuotePurchaseResponseDtoOutput,
 	QuoteSwapResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
-	RoundDto,
+	RipDto,
 	TransactionDto,
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
@@ -21,7 +21,7 @@ const mockChainAddress = {
 	chain: { reference: '8453', namespace: 'eip155' },
 }
 
-const mockEth: ConfigDto['ticketPrice']['currency'] = {
+const mockEth: ConfigDto['entryPrice']['currency'] = {
 	id: 'eip155:8453:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockChainAddress,
@@ -40,7 +40,7 @@ const mockArbNativeChainAddress = {
 	chain: { reference: '42161', namespace: 'eip155' },
 }
 
-export const mockUsdcArb: ConfigDto['ticketPrice']['currency'] = {
+export const mockUsdcArb: ConfigDto['entryPrice']['currency'] = {
 	id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 	priceUsd: 1,
 	chainAddress: mockArbChainAddress,
@@ -49,7 +49,7 @@ export const mockUsdcArb: ConfigDto['ticketPrice']['currency'] = {
 	decimals: 6,
 }
 
-export const mockEthArb: ConfigDto['ticketPrice']['currency'] = {
+export const mockEthArb: ConfigDto['entryPrice']['currency'] = {
 	id: 'eip155:42161:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockArbNativeChainAddress,
@@ -251,13 +251,13 @@ export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
 	amount: { currency: mockEth, amount: '12000000000000000' },
 }
 
-export const mockPurchase: BuyTicketsPurchaseResponseDtoOutput = {
+export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	transaction: {
 		id: '0xabc123',
 		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
 	},
-	roundId: 1,
-	ticketCount: 3,
+	ripId: 1,
+	entryCount: 3,
 }
 
 const mockUsdc = {
@@ -294,16 +294,16 @@ export const mockZapSuccessResult: NonNullable<
 		id: '0xdef456',
 		cost: { currency: mockEth, amount: '210000000000000' },
 	},
-	ticketCount: 3,
-	roundId: 1,
+	entryCount: 3,
+	ripId: 1,
 }
 
 export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {
 	blockchainFee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
 }
 
-// 3 tickets × 0.005 ETH = 0.015 ETH
-export const mockTicketCost: CurrencyAmountDto = {
+// 3 entries × 0.005 ETH = 0.015 ETH
+export const mockEntryCost: CurrencyAmountDto = {
 	currency: mockEth,
 	amount: '15000000000000000',
 }
@@ -320,30 +320,30 @@ export const mockSufficientBalance: CurrencyAmountDto = {
 
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
 
-export const mockRound: RoundDto = {
+export const mockRip: RipDto = {
 	id: 1,
-	stakeId: 1,
+	presetId: 1,
 	currency: mockEth,
 	config: {
-		ticketCap: 8,
+		entryCap: 8,
 		feePercent: 5,
-		ticketPrice: { currency: mockEth, amount: '5000000000000000' },
+		entryPrice: { currency: mockEth, amount: '5000000000000000' },
 		durationSeconds: 3600,
-		prizeDistribution: [
+		payoutDistribution: [
 			{
-				prizeCount: '5',
-				minPrize: '800000000000000',
-				maxPrize: '1200000000000000',
+				payoutCount: '5',
+				minPayout: '800000000000000',
+				maxPayout: '1200000000000000',
 			},
 			{
-				prizeCount: '2',
-				minPrize: '7000000000000000',
-				maxPrize: '8000000000000000',
+				payoutCount: '2',
+				minPayout: '7000000000000000',
+				maxPayout: '8000000000000000',
 			},
 			{
-				prizeCount: '1',
-				minPrize: '18000000000000000',
-				maxPrize: '18000000000000000',
+				payoutCount: '1',
+				minPayout: '18000000000000000',
+				maxPayout: '18000000000000000',
 			},
 		],
 	},
@@ -351,8 +351,8 @@ export const mockRound: RoundDto = {
 		purchases: [
 			{
 				userAddress: '0x1234567890abcdef1234567890abcdef12345678',
-				ticketCount: '4',
-				startTicketIndex: '0',
+				entryCount: '4',
+				startEntryIndex: '0',
 			},
 		],
 		claims: [],
@@ -362,11 +362,11 @@ export const mockRound: RoundDto = {
 	startTime: '2026-04-24T10:00:00.000Z',
 }
 
-export const mockRevealedPrizes: PrizeDto[] = [
+export const mockRevealedPayouts: PayoutDto[] = [
 	{
-		roundId: 1,
-		ticketNumber: 3,
-		prizeAmount: '1000000000000000',
+		ripId: 1,
+		entryNumber: 3,
+		payoutAmount: '1000000000000000',
 		revealed: true,
 		card: {
 			id: 1,
@@ -377,9 +377,9 @@ export const mockRevealedPrizes: PrizeDto[] = [
 		},
 	},
 	{
-		roundId: 1,
-		ticketNumber: 7,
-		prizeAmount: '7500000000000000',
+		ripId: 1,
+		entryNumber: 7,
+		payoutAmount: '7500000000000000',
 		revealed: true,
 		card: {
 			id: 2,
@@ -391,11 +391,11 @@ export const mockRevealedPrizes: PrizeDto[] = [
 	},
 ]
 
-export const mockUnrevealedPrizes: PrizeDto[] = [
+export const mockUnrevealedPayouts: PayoutDto[] = [
 	{
-		roundId: 1,
-		ticketNumber: 1,
-		prizeAmount: '0',
+		ripId: 1,
+		entryNumber: 1,
+		payoutAmount: '0',
 		revealed: false,
 		card: {
 			id: 3,
@@ -406,9 +406,9 @@ export const mockUnrevealedPrizes: PrizeDto[] = [
 		},
 	},
 	{
-		roundId: 1,
-		ticketNumber: 5,
-		prizeAmount: '0',
+		ripId: 1,
+		entryNumber: 5,
+		payoutAmount: '0',
 		revealed: false,
 		card: {
 			id: 4,
@@ -420,71 +420,71 @@ export const mockUnrevealedPrizes: PrizeDto[] = [
 	},
 ]
 
-const mockRoundConfig = {
-	ticketCap: 8,
+const mockRipConfig = {
+	entryCap: 8,
 	feePercent: 5,
-	ticketPrice: { currency: mockEth, amount: '5000000000000000' },
+	entryPrice: { currency: mockEth, amount: '5000000000000000' },
 	durationSeconds: 3600,
-	prizeDistribution: [
+	payoutDistribution: [
 		{
-			prizeCount: '5',
-			minPrize: '800000000000000',
-			maxPrize: '1200000000000000',
+			payoutCount: '5',
+			minPayout: '800000000000000',
+			maxPayout: '1200000000000000',
 		},
 		{
-			prizeCount: '2',
-			minPrize: '7000000000000000',
-			maxPrize: '8000000000000000',
+			payoutCount: '2',
+			minPayout: '7000000000000000',
+			maxPayout: '8000000000000000',
 		},
 		{
-			prizeCount: '1',
-			minPrize: '18000000000000000',
-			maxPrize: '18000000000000000',
+			payoutCount: '1',
+			minPayout: '18000000000000000',
+			maxPayout: '18000000000000000',
 		},
 	],
 }
 
-const mockRoundConfig2 = {
-	ticketCap: 20,
+const mockRipConfig2 = {
+	entryCap: 20,
 	feePercent: 5,
-	ticketPrice: { currency: mockEth, amount: '50000000000000000' },
+	entryPrice: { currency: mockEth, amount: '50000000000000000' },
 	durationSeconds: 86400,
-	prizeDistribution: [
+	payoutDistribution: [
 		{
-			prizeCount: '10',
-			minPrize: '10000000000000000',
-			maxPrize: '50000000000000000',
+			payoutCount: '10',
+			minPayout: '10000000000000000',
+			maxPayout: '50000000000000000',
 		},
 		{
-			prizeCount: '5',
-			minPrize: '100000000000000000',
-			maxPrize: '200000000000000000',
+			payoutCount: '5',
+			minPayout: '100000000000000000',
+			maxPayout: '200000000000000000',
 		},
 		{
-			prizeCount: '2',
-			minPrize: '300000000000000000',
-			maxPrize: '400000000000000000',
+			payoutCount: '2',
+			minPayout: '300000000000000000',
+			maxPayout: '400000000000000000',
 		},
 		{
-			prizeCount: '1',
-			minPrize: '500000000000000000',
-			maxPrize: '500000000000000000',
+			payoutCount: '1',
+			minPayout: '500000000000000000',
+			maxPayout: '500000000000000000',
 		},
 	],
 }
 
-export const mockFinishedRounds: RoundDto[] = [
+export const mockFinishedRips: RipDto[] = [
 	{
 		id: 2,
-		stakeId: 1,
+		presetId: 1,
 		currency: mockEth,
-		config: mockRoundConfig,
+		config: mockRipConfig,
 		actions: {
 			purchases: [
 				{
 					userAddress: mockUserEvmAddress,
-					ticketCount: '8',
-					startTicketIndex: '0',
+					entryCount: '8',
+					startEntryIndex: '0',
 				},
 			],
 			claims: [
@@ -500,15 +500,15 @@ export const mockFinishedRounds: RoundDto[] = [
 	},
 	{
 		id: 3,
-		stakeId: 1,
+		presetId: 1,
 		currency: mockEth,
-		config: mockRoundConfig,
+		config: mockRipConfig,
 		actions: {
 			purchases: [
 				{
 					userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
-					ticketCount: '8',
-					startTicketIndex: '0',
+					entryCount: '8',
+					startEntryIndex: '0',
 				},
 			],
 			claims: [],
@@ -519,22 +519,22 @@ export const mockFinishedRounds: RoundDto[] = [
 	},
 ]
 
-export const mockRound2: RoundDto = {
+export const mockRip2: RipDto = {
 	id: 4,
-	stakeId: 2,
+	presetId: 2,
 	currency: mockEth,
-	config: mockRoundConfig2,
+	config: mockRipConfig2,
 	actions: {
 		purchases: [
 			{
 				userAddress: mockUserEvmAddress,
-				ticketCount: '5',
-				startTicketIndex: '0',
+				entryCount: '5',
+				startEntryIndex: '0',
 			},
 			{
 				userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
-				ticketCount: '8',
-				startTicketIndex: '5',
+				entryCount: '8',
+				startEntryIndex: '5',
 			},
 		],
 		claims: [],
@@ -544,69 +544,69 @@ export const mockRound2: RoundDto = {
 	startTime: '2026-04-24T09:00:00.000Z',
 }
 
-export const mockAvailableStakes: AvailableStakeDto[] = [
+export const mockAvailablePresets: AvailablePresetDto[] = [
 	{
-		stake: { id: 1, currentConfig: mockRoundConfig },
-		fillingRound: {
-			...mockRound,
+		preset: { id: 1, currentConfig: mockRipConfig },
+		fillingRip: {
+			...mockRip,
 			id: 1,
 		},
 	},
 	{
-		stake: { id: 2, currentConfig: mockRoundConfig2 },
-		fillingRound: mockRound2,
+		preset: { id: 2, currentConfig: mockRipConfig2 },
+		fillingRip: mockRip2,
 	},
 ]
 
 export const mockConfigs: ConfigDto[] = [
 	{
-		ticketCap: 8,
+		entryCap: 8,
 		feePercent: 5,
 		durationSeconds: 3600,
-		ticketPrice: { currency: mockEth, amount: '5000000000000000' }, // 0.005 ETH
-		prizeDistribution: [
+		entryPrice: { currency: mockEth, amount: '5000000000000000' }, // 0.005 ETH
+		payoutDistribution: [
 			{
-				prizeCount: '5',
-				minPrize: '800000000000000',
-				maxPrize: '1200000000000000',
+				payoutCount: '5',
+				minPayout: '800000000000000',
+				maxPayout: '1200000000000000',
 			}, // 0.0008–0.0012 ETH
 			{
-				prizeCount: '2',
-				minPrize: '7000000000000000',
-				maxPrize: '8000000000000000',
+				payoutCount: '2',
+				minPayout: '7000000000000000',
+				maxPayout: '8000000000000000',
 			}, // 0.007–0.008 ETH
 			{
-				prizeCount: '1',
-				minPrize: '18000000000000000',
-				maxPrize: '18000000000000000',
+				payoutCount: '1',
+				minPayout: '18000000000000000',
+				maxPayout: '18000000000000000',
 			}, // 0.018 ETH
 		],
 	},
 	{
-		ticketCap: 20,
+		entryCap: 20,
 		feePercent: 5,
 		durationSeconds: 86400,
-		ticketPrice: { currency: mockEth, amount: '50000000000000000' }, // 0.05 ETH
-		prizeDistribution: [
+		entryPrice: { currency: mockEth, amount: '50000000000000000' }, // 0.05 ETH
+		payoutDistribution: [
 			{
-				prizeCount: '10',
-				minPrize: '10000000000000000',
-				maxPrize: '50000000000000000',
+				payoutCount: '10',
+				minPayout: '10000000000000000',
+				maxPayout: '50000000000000000',
 			}, // 0.01–0.05 ETH
 			{
-				prizeCount: '5',
-				minPrize: '100000000000000000',
-				maxPrize: '200000000000000000',
+				payoutCount: '5',
+				minPayout: '100000000000000000',
+				maxPayout: '200000000000000000',
 			}, // 0.1–0.2 ETH
 			{
-				prizeCount: '2',
-				minPrize: '300000000000000000',
-				maxPrize: '400000000000000000',
+				payoutCount: '2',
+				minPayout: '300000000000000000',
+				maxPayout: '400000000000000000',
 			}, // 0.3–0.4 ETH
 			{
-				prizeCount: '1',
-				minPrize: '500000000000000000',
-				maxPrize: '500000000000000000',
+				payoutCount: '1',
+				minPayout: '500000000000000000',
+				maxPayout: '500000000000000000',
 			}, // 0.5 ETH
 		],
 	},

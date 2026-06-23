@@ -16,8 +16,8 @@ export function swapBreadcrumb(...segments: (string | undefined)[]): string {
 	return breadcrumb('🔄 Swap', ...segments)
 }
 
-export function buyTicketsBreadcrumb(
+export function buyEntriesBreadcrumb(
 	...segments: (string | undefined)[]
 ): string {
-	return breadcrumb('🎮 Buy Tickets', ...segments)
+	return breadcrumb('🎮 Buy Entries', ...segments)
 }

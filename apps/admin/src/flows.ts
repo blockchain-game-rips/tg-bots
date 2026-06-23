@@ -1,13 +1,13 @@
-export type BuyTicketsFlow =
+export type BuyEntriesFlow =
 	| {
 			flowType: 'example'
 			step: 'step1'
-			data: { stakeId: number }
+			data: { presetId: number }
 	  }
 	| {
 			flowType: 'example'
 			step: 'step2'
-			data: { stakeId: number; ticketCount: number }
+			data: { presetId: number; entryCount: number }
 	  }
 
 export interface SetPausedFlow {
@@ -34,28 +34,28 @@ export interface SetTiersFlow {
 	data: { tiers: { minVolume: number; feePercent: number }[] }
 }
 
-export interface UpdateStakeConfigFlow {
-	flowType: 'updateStakeConfig'
+export interface UpdatePresetConfigFlow {
+	flowType: 'updatePresetConfig'
 	step: 'confirm'
 	data: {
-		stakeId: number
-		ticketCap: number
+		presetId: number
+		entryCap: number
 		feePercent: number
-		ticketPrice: number
+		entryPrice: number
 		durationSeconds: number
-		prizeDistribution: {
-			prizeCount: number
-			minPrize: number
-			maxPrize: number
+		payoutDistribution: {
+			payoutCount: number
+			minPayout: number
+			maxPayout: number
 		}[]
 	}
 }
 
 export type Flow =
-	| BuyTicketsFlow
+	| BuyEntriesFlow
 	| SetPausedFlow
 	| SetReferrerFrozenFlow
 	| SetDefaultFeeFlow
 	| SetTiersFlow
-	| UpdateStakeConfigFlow
+	| UpdatePresetConfigFlow
 	| null

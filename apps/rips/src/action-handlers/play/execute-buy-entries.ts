@@ -1,6 +1,6 @@
 import {
-	ripsControllerBuyTicketsPurchase,
-	ripsControllerGetOngoingRounds,
+	ripsControllerBuyEntriesPurchase,
+	ripsControllerGetOngoingRips,
 } from '@rips/api-client'
 import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
@@ -11,15 +11,15 @@ import { isApiErrorWithStatus } from '../../utils/api/error'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
-export const executeBuyTickets: ActionDef<void> = noPayload(async (session) => {
-	assertFlow(session, 'buyTickets', 'ticket-count-chosen')
-	const { stakeId, ticketCount } = session.flow.data
+export const executeBuyEntries: ActionDef<void> = noPayload(async (session) => {
+	assertFlow(session, 'buyEntries', 'entry-count-chosen')
+	const { presetId, entryCount } = session.flow.data
 
-	const { data: purchase } = await ripsControllerBuyTicketsPurchase({
+	const { data: purchase } = await ripsControllerBuyEntriesPurchase({
 		headers: { 'x-telegram-id': session.telegramId },
 		body: {
-			stakeId,
-			ticketCount,
+			presetId,
+			entryCount,
 			paymentCurrencyChainAddress: NATIVE_ON_BASE,
 		},
 	}).catch((error: unknown) => {
@@ -30,14 +30,14 @@ export const executeBuyTickets: ActionDef<void> = noPayload(async (session) => {
 		throw error
 	})
 
-	const { data: roundsData } = await ripsControllerGetOngoingRounds()
+	const { data: ripsData } = await ripsControllerGetOngoingRips()
 
-	const round = roundsData.rounds.find((r) => r.id === purchase.roundId)
+	const rip = ripsData.rips.find((r) => r.id === purchase.ripId)
 
 	resetFlow(session)
 
 	return {
 		type: EffectType.EDIT,
-		page: BuySuccessPage.render(purchase, round),
+		page: BuySuccessPage.render(purchase, rip),
 	}
 })

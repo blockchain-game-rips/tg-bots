@@ -6,7 +6,6 @@ import { executeZap } from './action-handlers/play/execute-zap'
 import { openBuyCheckout } from './action-handlers/play/open-buy-checkout'
 import { openBuyChooseEntryCount } from './action-handlers/play/open-buy-choose-entry-count'
 import { openBuyChoosePreset } from './action-handlers/play/open-buy-choose-preset'
-import { openCardChoosePreset } from './action-handlers/play/open-card-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCompletedRips } from './action-handlers/play/open-completed-rips'
 import { openOngoingRips } from './action-handlers/play/open-ongoing-rips'
@@ -80,7 +79,6 @@ export const actionRegistry = {
 	openCompletedRips,
 
 	// Card collection
-	openCardChoosePreset,
 	openCardCollection,
 
 	// Wallet

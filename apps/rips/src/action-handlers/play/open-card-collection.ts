@@ -1,16 +1,12 @@
 import { ripsControllerGetCardCollection } from '@rips/api-client'
-import { parsePresetId } from '@rips/shared'
-import { ActionDef, withPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'
 
-export const openCardCollection: ActionDef<number> = withPayload(
-	(presetId) => presetId.toString(),
-	(raw) => parsePresetId(raw),
-	async (session, presetId) => {
+export const openCardCollection: ActionDef<void> = noPayload(
+	async (session) => {
 		const { data } = await ripsControllerGetCardCollection({
 			headers: { 'x-telegram-id': session.telegramId },
-			query: { presetId },
 		})
 
 		return {

@@ -5,7 +5,6 @@ import { BuyChooseEntryCountPage } from '../../src/pages/play/buy-choose-entry-c
 import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
 import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
-import { CardCollectionChoosePresetPage } from '../../src/pages/play/card-collection-choose-preset'
 import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
 import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
 import { PlayPage } from '../../src/pages/play/play-page'
@@ -121,15 +120,9 @@ export const pages: Record<string, PageEntry> = {
 			'The Play hub. Shows the main game actions: buy entries, open (reveal) rips, check rip status, and access the card collection.',
 		render: () => PlayPage.render(),
 	},
-	'card-collection-choose-preset': {
-		description:
-			'Entry to the card collection, opened from Play. Choose a preset tier to view the card collection for.',
-		render: () =>
-			CardCollectionChoosePresetPage.render(mockAvailablePresets),
-	},
 	'card-collection': {
 		description:
-			'Shows the full card collection for the selected preset tier — each card with name (linked to image) and how many the user owns.',
+			'Shows the full card collection — each card with name (linked to image) and how many the user owns.',
 		render: () => CardCollectionPage.render(mockCardCollection),
 	},
 	'buy-choose-preset': {

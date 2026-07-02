@@ -1,5 +1,5 @@
 const DECIMAL_NUMBER_PATTERN = /^(-?)([0-9]*)\.?([0-9]*)$/
-const RIPING_THRESHOLD = 9
+const ROUNDING_THRESHOLD = 9
 
 export function formatUnits(amount: bigint, decimals: number): string {
 	let display = amount.toString()
@@ -33,7 +33,7 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 	fraction = fraction.replace(/(0+)$/, '')
 
 	if (decimals === 0) {
-		if (Math.rip(Number(`.${fraction}`)) === 1)
+		if (Math.round(Number(`.${fraction}`)) === 1)
 			integer = (BigInt(integer) + 1n).toString()
 		fraction = ''
 	} else if (fraction.length > decimals) {
@@ -41,14 +41,14 @@ export function parseUnits(amount: string | bigint, decimals: number): bigint {
 		const unit = fraction.slice(decimals - 1, decimals)
 		const right = fraction.slice(decimals)
 
-		const riped = Math.rip(Number(`${unit}.${right}`))
+		const rounded = Math.round(Number(`${unit}.${right}`))
 
-		if (riped > RIPING_THRESHOLD)
+		if (rounded > ROUNDING_THRESHOLD)
 			fraction = `${(BigInt(left) + BigInt(1)).toString()}0`.padStart(
 				left.length + 1,
 				'0',
 			)
-		else fraction = `${left}${riped.toString()}`
+		else fraction = `${left}${rounded.toString()}`
 
 		if (fraction.length > decimals) {
 			fraction = fraction.slice(1)

@@ -2,14 +2,21 @@ import {
 	adminControllerUpdatePresetConfig,
 	currencyControllerGetCurrencies,
 } from '@rips/api-client'
-import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
+import {
+	ActionDef,
+	assertFlow,
+	toFlow,
+	toHold,
+	toReset,
+} from '@rips/grammy-kit'
 import { parseUnits, toCurrencyId, toShortDurationFormat } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { NATIVE_ON_BASE } from '../constants'
+import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
-import { EffectType } from '../types'
+import { Effect, EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parsePresetConfig } from '../validation/preset-config'
 
@@ -28,22 +35,29 @@ const CONFIG_PLACEHOLDER =
 	'{"presetId":0,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}'
 
 export const openUpdatePresetConfig: ActionDef<void> = noPayload(() => ({
-	type: EffectType.ASK,
-	prompt: {
-		message: CONFIG_PROMPT_MESSAGE,
-		placeholder: CONFIG_PLACEHOLDER,
+	flow: toReset(),
+	effect: {
+		type: EffectType.ASK,
+		prompt: {
+			message: CONFIG_PROMPT_MESSAGE,
+			placeholder: CONFIG_PLACEHOLDER,
+		},
+		onSubmit: actionIds.submitConfirmUpdatePresetConfig,
 	},
-	onSubmit: actionIds.submitConfirmUpdatePresetConfig,
 }))
 
 export const submitConfirmUpdatePresetConfig: ActionDef<string> =
 	withPayload<string>(
 		(v) => v,
 		(v) => v,
-		(session, payload) => {
+		(_session, payload) => {
 			const config = parsePresetConfig(payload)
 
-			setFlow(session, 'updatePresetConfig', 'confirm', config)
+			const flow = toFlow<Flow, 'updatePresetConfig', 'confirm'>(
+				'updatePresetConfig',
+				'confirm',
+				config,
+			)
 
 			const payoutSummary = config.payoutDistribution
 				.map(
@@ -62,11 +76,14 @@ export const submitConfirmUpdatePresetConfig: ActionDef<string> =
 			].join('\n')
 
 			return {
-				type: EffectType.EDIT,
-				page: ConfirmationPage.render(
-					description,
-					actionIds.executeConfirmUpdatePresetConfig,
-				),
+				flow,
+				effect: {
+					type: EffectType.EDIT,
+					page: ConfirmationPage.render(
+						description,
+						actionIds.executeConfirmUpdatePresetConfig,
+					),
+				},
 			}
 		},
 	)
@@ -84,7 +101,7 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 			payoutDistribution,
 		} = session.flow.data
 
-		return {
+		const effect: Effect = {
 			type: EffectType.SEND_LOADING,
 			message: 'Updating preset config...',
 			next: async () => {
@@ -126,13 +143,18 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 				})
 
 				return {
-					type: EffectType.EDIT,
-					page: TransactionPage.render(
-						`Preset #${String(presetId)} config updated`,
-						tx,
-					),
+					flow: toReset(),
+					effect: {
+						type: EffectType.EDIT,
+						page: TransactionPage.render(
+							`Preset #${String(presetId)} config updated`,
+							tx,
+						),
+					},
 				}
 			},
 		}
+
+		return { flow: toHold(), effect }
 	},
 )

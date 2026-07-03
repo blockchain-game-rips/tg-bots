@@ -1,7 +1,14 @@
 import { adminControllerSetDefaultReferralFee } from '@rips/api-client'
-import { ActionDef, assertFlow, setFlow } from '@rips/grammy-kit'
+import {
+	ActionDef,
+	assertFlow,
+	toFlow,
+	toHold,
+	toReset,
+} from '@rips/grammy-kit'
 import { noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
+import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
@@ -19,29 +26,39 @@ const FEE_PROMPT_MESSAGE = [
 const FEE_PLACEHOLDER = 'e.g. 1000 for 10%'
 
 export const openSetDefaultFee: ActionDef<void> = noPayload(() => ({
-	type: EffectType.ASK,
-	prompt: {
-		message: FEE_PROMPT_MESSAGE,
-		placeholder: FEE_PLACEHOLDER,
+	flow: toReset(),
+	effect: {
+		type: EffectType.ASK,
+		prompt: {
+			message: FEE_PROMPT_MESSAGE,
+			placeholder: FEE_PLACEHOLDER,
+		},
+		onSubmit: actionIds.submitConfirmSetDefaultFee,
 	},
-	onSubmit: actionIds.submitConfirmSetDefaultFee,
 }))
 
 export const submitConfirmSetDefaultFee: ActionDef<string> =
 	withPayload<string>(
 		(v) => v,
 		(v) => v,
-		(session, payload) => {
+		(_session, payload) => {
 			const bp = parseFeeBp(payload)
 
-			setFlow(session, 'setDefaultFee', 'confirm', { bp })
+			const flow = toFlow<Flow, 'setDefaultFee', 'confirm'>(
+				'setDefaultFee',
+				'confirm',
+				{ bp },
+			)
 
 			return {
-				type: EffectType.EDIT,
-				page: ConfirmationPage.render(
-					`This will set the default referral fee to <b>${String(bp)} bp</b>.`,
-					actionIds.executeConfirmSetDefaultFee,
-				),
+				flow,
+				effect: {
+					type: EffectType.EDIT,
+					page: ConfirmationPage.render(
+						`This will set the default referral fee to <b>${String(bp)} bp</b>.`,
+						actionIds.executeConfirmSetDefaultFee,
+					),
+				},
 			}
 		},
 	)
@@ -53,23 +70,28 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 		const { bp } = session.flow.data
 
 		return {
-			type: EffectType.SEND_LOADING,
-			message: 'Setting default fee...',
-			next: async () => {
-				const { data: tx } = await adminControllerSetDefaultReferralFee(
-					{
-						headers: adminApiHeader,
-						body: { feePercent: bp },
-					},
-				)
+			flow: toHold(),
+			effect: {
+				type: EffectType.SEND_LOADING,
+				message: 'Setting default fee...',
+				next: async () => {
+					const { data: tx } =
+						await adminControllerSetDefaultReferralFee({
+							headers: adminApiHeader,
+							body: { feePercent: bp },
+						})
 
-				return {
-					type: EffectType.EDIT,
-					page: TransactionPage.render(
-						`Default fee set to ${String(bp)} bp`,
-						tx,
-					),
-				}
+					return {
+						flow: toReset(),
+						effect: {
+							type: EffectType.EDIT,
+							page: TransactionPage.render(
+								`Default fee set to ${String(bp)} bp`,
+								tx,
+							),
+						},
+					}
+				},
 			},
 		}
 	},

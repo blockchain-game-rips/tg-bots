@@ -1,4 +1,4 @@
-import { assertFlow } from '@rips/grammy-kit'
+import { assertFlow, toHold } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawChooseAmountPage } from '../../pages/wallet/withdraw-choose-amount-page'
 import { EffectType } from '../../types'
@@ -17,8 +17,11 @@ export const openWithdrawChooseAmount: ActionDef<void> = noPayload(
 		)
 
 		return {
-			type: EffectType.EDIT,
-			page: WithdrawChooseAmountPage.render(currencyBalance),
+			flow: toHold(),
+			effect: {
+				type: EffectType.EDIT,
+				page: WithdrawChooseAmountPage.render(currencyBalance),
+			},
 		}
 	},
 )

@@ -3,13 +3,13 @@ import {
 	ripsControllerQuoteZap,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { assertFlow, setFlowStep } from '@rips/grammy-kit'
+import { assertFlow, HandlerResult, toStep } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
 import { Flow } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
-import { Effect, EffectType, SessionData } from '../../types'
+import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
@@ -17,7 +17,7 @@ import { evmAddressFromUser } from '../../utils/wallet'
 async function buildZapCheckout(
 	session: SessionData<Flow>,
 	currencyChainAddress: ChainAddressDto,
-): Promise<Effect> {
+): Promise<HandlerResult<Flow>> {
 	assertFlow(
 		session,
 		'buyEntries',
@@ -59,22 +59,25 @@ async function buildZapCheckout(
 	)
 	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
-	setFlowStep(session, 'zap-currency-chosen', {
+	const flow = toStep(session.flow, 'zap-currency-chosen', {
 		presetId,
 		entryCount,
 		currency: currencyInBalance.currency,
 	})
 
 	return {
-		type: EffectType.EDIT,
-		page: ZapCheckoutPage.render({
-			availablePreset,
-			entryCount,
-			currencyInBalance,
-			nativeBalance,
-			zapQuote,
-			userEvmAddress: evmAddressFromUser(user),
-		}),
+		flow,
+		effect: {
+			type: EffectType.EDIT,
+			page: ZapCheckoutPage.render({
+				availablePreset,
+				entryCount,
+				currencyInBalance,
+				nativeBalance,
+				zapQuote,
+				userEvmAddress: evmAddressFromUser(user),
+			}),
+		},
 	}
 }
 

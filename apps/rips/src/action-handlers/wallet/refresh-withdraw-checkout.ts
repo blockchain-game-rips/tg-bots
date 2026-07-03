@@ -1,4 +1,4 @@
-import { assertFlow } from '@rips/grammy-kit'
+import { assertFlow, toStep } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { toCurrencyAmount } from '../../utils/currency'
 import { resolveWithdrawPage } from '../../utils/wallet'
@@ -14,11 +14,19 @@ export const refreshWithdrawCheckout: ActionDef<void> = noPayload(
 				? undefined
 				: toCurrencyAmount(amount, currency)
 
-		return resolveWithdrawPage(
+		const flow = toStep(session.flow, 'currency-chosen', {
+			currency,
+			amount,
+			recipientAddress,
+		})
+
+		const effect = await resolveWithdrawPage(
 			session.telegramId,
 			currency,
 			currencyAmount,
 			recipientAddress,
 		)
+
+		return { flow, effect }
 	},
 )

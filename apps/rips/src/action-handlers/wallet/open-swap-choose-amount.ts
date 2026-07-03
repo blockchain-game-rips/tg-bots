@@ -1,4 +1,4 @@
-import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, toHold } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { SwapChooseAmountPage } from '../../pages/wallet/swap-choose-amount'
 import { EffectType } from '../../types'
@@ -31,11 +31,14 @@ export const openSwapChooseAmount: ActionDef<void> = noPayload(
 			: undefined
 
 		return {
-			type: EffectType.EDIT,
-			page: SwapChooseAmountPage.render({
-				currencyInBalance,
-				currencyOutBalance,
-			}),
+			flow: toHold(),
+			effect: {
+				type: EffectType.EDIT,
+				page: SwapChooseAmountPage.render({
+					currencyInBalance,
+					currencyOutBalance,
+				}),
+			},
 		}
 	},
 )

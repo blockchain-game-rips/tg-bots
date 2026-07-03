@@ -1,3 +1,4 @@
+import { toHold } from '@rips/grammy-kit'
 import { parseChain } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS } from '../../constants'
@@ -13,8 +14,11 @@ export const openSwapChooseTokenIn: ActionDef<Chain> = withPayload(
 		const currencies = await fetchCurrencies(getCurrenciesForChain(chain))
 
 		return {
-			type: EffectType.EDIT,
-			page: SwapChooseTokenPage.render(currencies, 'in'),
+			flow: toHold(),
+			effect: {
+				type: EffectType.EDIT,
+				page: SwapChooseTokenPage.render(currencies, 'in'),
+			},
 		}
 	},
 )

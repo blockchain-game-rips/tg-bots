@@ -313,6 +313,11 @@ export const mockBalance: CurrencyAmountDto = {
 	amount: '2000000000000000', // 0.002 ETH — intentionally low for insufficient-funds preview
 }
 
+export const mockZeroBalance: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '0',
+}
+
 export const mockSufficientBalance: CurrencyAmountDto = {
 	currency: mockEth,
 	amount: '100000000000000000', // 0.1 ETH

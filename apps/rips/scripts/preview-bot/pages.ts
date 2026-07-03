@@ -68,6 +68,7 @@ import {
 	mockZapCurrencyInBalance,
 	mockZapQuote,
 	mockZapSuccessResult,
+	mockZeroBalance,
 } from './static-data'
 
 export interface PageEntry {
@@ -110,10 +111,35 @@ if (mockRevealedPayout0 === undefined)
 	throw new Error('mockRevealedPayouts[0] is missing')
 
 export const pages: Record<string, PageEntry> = {
-	home: {
+	'home-new-user': {
 		description:
-			'Main entry point of the bot. Shows navigation to Play, Wallet, About, and Referral System.',
-		render: () => HomePage.render(),
+			'Home page for a new user with no funds and no pulls. Prompts to fund the wallet.',
+		render: () =>
+			HomePage.render({
+				unopenedPulls: 0,
+				baseBalance: mockZeroBalance,
+				referralFee: 0.1,
+			}),
+	},
+	'home-funded': {
+		description:
+			'Home page for a user with funds but no unopened pulls. Prompts to enter a Rip.',
+		render: () =>
+			HomePage.render({
+				unopenedPulls: 0,
+				baseBalance: mockSufficientBalance,
+				referralFee: 0.1,
+			}),
+	},
+	'home-pulls': {
+		description:
+			'Home page for a user with unopened pulls. Prompts to open pulls.',
+		render: () =>
+			HomePage.render({
+				unopenedPulls: 8,
+				baseBalance: mockSufficientBalance,
+				referralFee: 0.1,
+			}),
 	},
 	play: {
 		description:

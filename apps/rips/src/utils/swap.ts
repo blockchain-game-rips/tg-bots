@@ -102,6 +102,9 @@ export async function resolveSwapPage(
 ): Promise<Effect> {
 	const { currencyIn, currencyOut, amountIn } = state
 
+	// TODO: this reads its own flow writes mid-function (sets 'idle' here, then
+	// re-sets with quotedAmountOut below), so it doesn't fit the return-a-transition
+	// model. Left mutating in place — refactor to thread flow state through locals.
 	// quotedAmountOut is intentionally dropped — any token or amount change invalidates it
 	setFlow(session, 'swap', 'idle', { currencyIn, currencyOut, amountIn })
 

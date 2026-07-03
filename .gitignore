@@ -15,6 +15,7 @@ logs
 configs/
 generated/
 CLAUDE.md
+.claude
 .tmp/
 
 # Yarn Berry (node-modules linker)

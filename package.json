@@ -6,6 +6,7 @@
 		"apps/*"
 	],
 	"scripts": {
+		"prepare": "lefthook install",
 		"dev:rips": "yarn workspace @rips/bot-rips dev",
 		"dev:admin": "yarn workspace @rips/bot-admin dev",
 		"build": "yarn workspaces foreach -At run build",
@@ -23,6 +24,7 @@
 		"eslint": "^9.0.0",
 		"eslint-plugin-unused-imports": "^4.4.1",
 		"jest": "30.0.2",
+		"lefthook": "^2.1.9",
 		"prettier": "^3.8.1",
 		"prettier-plugin-organize-imports": "4.1.0",
 		"ts-jest": "29.4.0",

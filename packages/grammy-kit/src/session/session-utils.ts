@@ -75,3 +75,65 @@ export function setFlow<
 >(session: SessionData<F>, flowType: FT, step: S, data: DataOf<F, FT, S>) {
 	session.flow = { flowType, step, data } as FlowByTypeAndStep<F, FT, S>
 }
+
+const SET = 'set'
+const RESET = 'reset'
+const HOLD = 'hold'
+
+export type FlowTransition<F extends FlowBase | null> =
+	| { kind: typeof SET; flow: NonNullable<F> }
+	| { kind: typeof RESET }
+	| { kind: typeof HOLD }
+
+export function toStep<
+	F extends FlowBase | null,
+	FT extends ActiveFlow<F>['flowType'],
+	S extends StepOf<F, FT>,
+>(
+	current: FlowByType<F, FT>,
+	step: S,
+	data: DataOf<F, FT, S>,
+): FlowTransition<F> {
+	const flow = {
+		flowType: current.flowType,
+		step,
+		data,
+	} as unknown as NonNullable<F>
+
+	return { kind: SET, flow }
+}
+
+export function toFlow<
+	F extends FlowBase | null,
+	FT extends ActiveFlow<F>['flowType'],
+	S extends StepOf<F, FT>,
+>(flowType: FT, step: S, data: DataOf<F, FT, S>): FlowTransition<F> {
+	const flow = { flowType, step, data } as unknown as NonNullable<F>
+
+	return { kind: SET, flow }
+}
+
+export function toReset<F extends FlowBase | null>(): FlowTransition<F> {
+	return { kind: RESET }
+}
+
+export function toHold<F extends FlowBase | null>(): FlowTransition<F> {
+	return { kind: HOLD }
+}
+
+export function applyFlowTransition<F extends FlowBase | null>(
+	session: SessionData<F>,
+	transition: FlowTransition<F>,
+): void {
+	if (transition.kind === HOLD) {
+		return
+	}
+
+	if (transition.kind === SET) {
+		session.flow = transition.flow
+
+		return
+	}
+
+	session.flow = null as F
+}

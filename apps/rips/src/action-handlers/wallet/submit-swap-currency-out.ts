@@ -1,5 +1,5 @@
 import { ChainAddressDto } from '@rips/api-client'
-import { assertFlow } from '@rips/grammy-kit'
+import { assertFlow, toHold } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
@@ -28,6 +28,8 @@ export const submitSwapCurrencyOut: ActionDef<ChainAddressDto> = withPayload(
 			amountIn,
 		}
 
-		return resolveSwapPage(session, state)
+		const effect = await resolveSwapPage(session, state)
+
+		return { flow: toHold(), effect }
 	},
 )

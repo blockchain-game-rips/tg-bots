@@ -1,4 +1,4 @@
-import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, toHold } from '@rips/grammy-kit'
 import { parseCurrencyAmount } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { resolveSwapPage } from '../../utils/swap'
@@ -16,10 +16,12 @@ export const submitSwapAmount: ActionDef<string> = withPayload(
 
 		const parsed = parseCurrencyAmount(amountRaw, currencyIn)
 
-		return resolveSwapPage(session, {
+		const effect = await resolveSwapPage(session, {
 			currencyIn,
 			currencyOut,
 			amountIn: BigInt(parsed.amount),
 		})
+
+		return { flow: toHold(), effect }
 	},
 )

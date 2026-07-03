@@ -1,5 +1,5 @@
-import { FlowBase } from '../session/session-utils'
-import { Effect, SessionData } from '../types'
+import { applyFlowTransition, FlowBase } from '../session/session-utils'
+import { Effect, HandlerResult, SessionData } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySession = SessionData<any>
@@ -8,7 +8,11 @@ export interface ActionDef<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
 	// Session typed as `any`-based to allow app-specific Flow types in handlers.
-	handler: (session: AnySession, payload: P) => Promise<Effect> | Effect
+	handler: (
+		session: AnySession,
+		payload: P,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	) => Promise<HandlerResult<any>> | HandlerResult<any>
 }
 
 // `any` is required here — ActionDef<P> is invariant in P (P appears in both encode's input
@@ -17,7 +21,9 @@ export interface ActionDef<P> {
 export type AnyActionDef = ActionDef<any>
 
 export function noPayload<F extends FlowBase | null = FlowBase | null>(
-	handler: (session: SessionData<F>) => Promise<Effect> | Effect,
+	handler: (
+		session: SessionData<F>,
+	) => Promise<HandlerResult<F>> | HandlerResult<F>,
 ): ActionDef<void> {
 	return {
 		encode: () => '',
@@ -29,7 +35,10 @@ export function noPayload<F extends FlowBase | null = FlowBase | null>(
 export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
 	encode: (value: P) => string,
 	decode: (raw: string) => P,
-	handler: (session: SessionData<F>, payload: P) => Promise<Effect> | Effect,
+	handler: (
+		session: SessionData<F>,
+		payload: P,
+	) => Promise<HandlerResult<F>> | HandlerResult<F>,
 ): ActionDef<P> {
 	return {
 		encode,
@@ -37,4 +46,13 @@ export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
 		handler: (session, payload) =>
 			handler(session as SessionData<F>, payload),
 	}
+}
+
+export function resolveEffect<F extends FlowBase | null>(
+	session: SessionData<F>,
+	result: HandlerResult<F>,
+): Effect {
+	applyFlowTransition(session, result.flow)
+
+	return result.effect
 }

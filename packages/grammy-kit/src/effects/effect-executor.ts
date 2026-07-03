@@ -1,4 +1,5 @@
 import { Api, GrammyError } from 'grammy'
+import { resolveEffect } from '../action/action-def'
 import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
 import { Effect, EffectType, MessageToEdit, SessionData } from '../types'
@@ -62,7 +63,7 @@ async function executeEffect(
 			)
 
 			await executeEffect(
-				await effect.next(),
+				resolveEffect(session, await effect.next()),
 				api,
 				chatId,
 				messageToEdit,

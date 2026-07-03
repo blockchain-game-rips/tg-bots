@@ -1,7 +1,7 @@
 import { botActionDuration } from '../metrics/registry'
 import { ActionId, Effect, SessionData } from '../types'
 import { registerEncoder } from './action-data'
-import { ActionDef, AnyActionDef } from './action-def'
+import { ActionDef, AnyActionDef, resolveEffect } from './action-def'
 
 export type { ActionId }
 
@@ -46,7 +46,9 @@ export function buildActions(
 			handler: async (session, payload) => {
 				const end = botActionDuration.startTimer({ action: name })
 				try {
-					return await def.handler(session, payload)
+					const result = await def.handler(session, payload)
+
+					return resolveEffect(session, result)
 				} finally {
 					end()
 				}

@@ -1,5 +1,6 @@
-.env
-.env.docker*
+.env*
+!.env.*.example
+!.env.example
 node_modules
 .vscode
 .cursorrules

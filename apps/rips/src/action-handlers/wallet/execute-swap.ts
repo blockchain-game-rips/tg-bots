@@ -4,7 +4,7 @@ import {
 	walletsControllerGetSwapResult,
 	walletsControllerSwap,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, toHold, toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { SwapFailedPage } from '../../pages/wallet/swap-failed-page'
 import { SwapSuccessPage } from '../../pages/wallet/swap-success-page'
@@ -63,44 +63,51 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 	}
 
 	return {
-		type: EffectType.SEND_LOADING,
-		message: 'Swapping...',
-		next: async () => {
-			const { data: swapResponse } = await walletsControllerSwap({
-				headers: { 'x-telegram-id': session.telegramId },
-				body: {
-					tokenInChainAddress: currencyIn.chainAddress,
-					tokenOutChainAddress: currencyOut.chainAddress,
-					amountIn: amountIn.toString(),
-				},
-			})
+		flow: toHold(),
+		effect: {
+			type: EffectType.SEND_LOADING,
+			message: 'Swapping...',
+			next: async () => {
+				const { data: swapResponse } = await walletsControllerSwap({
+					headers: { 'x-telegram-id': session.telegramId },
+					body: {
+						tokenInChainAddress: currencyIn.chainAddress,
+						tokenOutChainAddress: currencyOut.chainAddress,
+						amountIn: amountIn.toString(),
+					},
+				})
 
-			const outcome = await pollSwapResult(swapResponse.zapId)
-			const amountInDisplay = toCurrencyAmount(
-				BigInt(swapResponse.amountIn.amount),
-				currencyIn,
-			)
+				const outcome = await pollSwapResult(swapResponse.zapId)
+				const amountInDisplay = toCurrencyAmount(
+					BigInt(swapResponse.amountIn.amount),
+					currencyIn,
+				)
 
-			resetFlow(session)
-
-			if (outcome.status === 'failed') {
-				return {
-					type: EffectType.EDIT,
-					page: SwapFailedPage.render({
-						amountIn: amountInDisplay,
-						refund: outcome.refund,
-					}),
+				if (outcome.status === 'failed') {
+					return {
+						flow: toReset(),
+						effect: {
+							type: EffectType.EDIT,
+							page: SwapFailedPage.render({
+								amountIn: amountInDisplay,
+								refund: outcome.refund,
+							}),
+						},
+					}
 				}
-			}
 
-			return {
-				type: EffectType.EDIT,
-				page: SwapSuccessPage.render({
-					amountIn: amountInDisplay,
-					amountOut: quotedAmountOut,
-					transactionId: swapResponse.srcTransaction.id,
-				}),
-			}
+				return {
+					flow: toReset(),
+					effect: {
+						type: EffectType.EDIT,
+						page: SwapSuccessPage.render({
+							amountIn: amountInDisplay,
+							amountOut: quotedAmountOut,
+							transactionId: swapResponse.srcTransaction.id,
+						}),
+					},
+				}
+			},
 		},
 	}
 })

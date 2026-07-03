@@ -1,4 +1,4 @@
-import { assertFlow } from '@rips/grammy-kit'
+import { assertFlow, toHold } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { ZapChooseChainPage } from '../../pages/play/zap-choose-chain-page'
 import { EffectType } from '../../types'
@@ -13,8 +13,14 @@ export const openZapChooseChain: ActionDef<void> = noPayload(
 		const availablePreset = await fetchPreset(presetId)
 
 		return {
-			type: EffectType.EDIT,
-			page: ZapChooseChainPage.render({ availablePreset, entryCount }),
+			flow: toHold(),
+			effect: {
+				type: EffectType.EDIT,
+				page: ZapChooseChainPage.render({
+					availablePreset,
+					entryCount,
+				}),
+			},
 		}
 	},
 )

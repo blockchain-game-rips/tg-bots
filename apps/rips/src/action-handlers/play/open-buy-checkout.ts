@@ -2,7 +2,7 @@ import {
 	ripsControllerQuotePurchase,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { assertFlow, setFlowStep } from '@rips/grammy-kit'
+import { assertFlow, toStep } from '@rips/grammy-kit'
 import { parseEntryCount, resolveConfig } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
@@ -46,19 +46,25 @@ export const openBuyCheckout: ActionDef<number> = withPayload(
 			currency: nativeBalance.currency,
 		}
 
-		setFlowStep(session, 'entry-count-chosen', { presetId, entryCount })
+		const flow = toStep(session.flow, 'entry-count-chosen', {
+			presetId,
+			entryCount,
+		})
 
 		return {
-			type: EffectType.EDIT,
-			page: BuyCheckoutPage.render({
-				availablePreset,
-				entryCount,
-				currencyInAmount,
-				purchaseQuote,
-				nativeBalance,
-				currencyInBalance: nativeBalance,
-				userEvmAddress: evmAddressFromUser(user),
-			}),
+			flow,
+			effect: {
+				type: EffectType.EDIT,
+				page: BuyCheckoutPage.render({
+					availablePreset,
+					entryCount,
+					currencyInAmount,
+					purchaseQuote,
+					nativeBalance,
+					currencyInBalance: nativeBalance,
+					userEvmAddress: evmAddressFromUser(user),
+				}),
+			},
 		}
 	},
 )

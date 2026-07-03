@@ -1,4 +1,4 @@
-import { assertFlow } from '@rips/grammy-kit'
+import { assertFlow, toHold } from '@rips/grammy-kit'
 import { parseChain } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS } from '../../constants'
@@ -21,12 +21,15 @@ export const openZapChooseToken: ActionDef<Chain> = withPayload(
 		])
 
 		return {
-			type: EffectType.EDIT,
-			page: ZapChooseTokenPage.render({
-				availablePreset,
-				entryCount,
-				currencies,
-			}),
+			flow: toHold(),
+			effect: {
+				type: EffectType.EDIT,
+				page: ZapChooseTokenPage.render({
+					availablePreset,
+					entryCount,
+					currencies,
+				}),
+			},
 		}
 	},
 )

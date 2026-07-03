@@ -1,3 +1,4 @@
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import {
 	RevealPayoutsNoBackPage,
@@ -10,8 +11,11 @@ export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
 	const unrevealedPayouts = await fetchUnrevealedPayouts(session.telegramId)
 
 	return {
-		type: EffectType.EDIT,
-		page: RevealPayoutsPage.render(unrevealedPayouts),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: RevealPayoutsPage.render(unrevealedPayouts),
+		},
 	}
 })
 
@@ -22,8 +26,11 @@ export const openOpenRipsNoBack: ActionDef<void> = noPayload(
 		)
 
 		return {
-			type: EffectType.EDIT,
-			page: RevealPayoutsNoBackPage.render(unrevealedPayouts),
+			flow: toReset(),
+			effect: {
+				type: EffectType.EDIT,
+				page: RevealPayoutsNoBackPage.render(unrevealedPayouts),
+			},
 		}
 	},
 )

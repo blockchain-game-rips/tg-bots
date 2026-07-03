@@ -2,6 +2,7 @@ import {
 	ripsControllerGetRips,
 	ripsControllerRevealPayouts,
 } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'
@@ -32,7 +33,14 @@ export const openRevealSingle: ActionDef<void> = noPayload(async (session) => {
 		throw new Error('Revealed payout not found')
 
 	return {
-		type: EffectType.EDIT,
-		page: RevealSinglePage.render(rip, revealedPayout, unrevealedPayouts),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: RevealSinglePage.render(
+				rip,
+				revealedPayout,
+				unrevealedPayouts,
+			),
+		},
 	}
 })

@@ -2,6 +2,7 @@ import {
 	ripsControllerGetRips,
 	ripsControllerRevealPayouts,
 } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { RevealAllPage } from '../../pages/play/reveal-all-page'
 import { EffectType } from '../../types'
@@ -25,11 +26,14 @@ export const openRevealAll: ActionDef<void> = noPayload(async (session) => {
 	])
 
 	return {
-		type: EffectType.EDIT,
-		page: RevealAllPage.render(
-			ripsData.rips,
-			revealData.payouts,
-			unrevealedPayouts,
-		),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: RevealAllPage.render(
+				ripsData.rips,
+				revealData.payouts,
+				unrevealedPayouts,
+			),
+		},
 	}
 })

@@ -2,6 +2,7 @@ import {
 	ripsControllerGetOngoingRips,
 	usersControllerGetUser,
 } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { StatusPage } from '../../pages/play/status-page'
 import { EffectType } from '../../types'
@@ -16,7 +17,10 @@ export const openStatus: ActionDef<void> = noPayload(async (session) => {
 	])
 
 	return {
-		type: EffectType.EDIT,
-		page: StatusPage.render(ripsData.rips, evmAddressFromUser(user)),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: StatusPage.render(ripsData.rips, evmAddressFromUser(user)),
+		},
 	}
 })

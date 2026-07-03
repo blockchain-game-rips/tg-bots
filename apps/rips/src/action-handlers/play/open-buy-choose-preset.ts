@@ -1,3 +1,4 @@
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { BuyChoosePresetPage } from '../../pages/play/buy-choose-preset-page'
 import { EffectType } from '../../types'
@@ -7,7 +8,10 @@ export const openBuyChoosePreset: ActionDef<void> = noPayload(async () => {
 	const availablePresets = await fetchPresets()
 
 	return {
-		type: EffectType.EDIT,
-		page: BuyChoosePresetPage.render(availablePresets),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: BuyChoosePresetPage.render(availablePresets),
+		},
 	}
 })

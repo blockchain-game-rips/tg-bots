@@ -1,4 +1,5 @@
 import { ripsControllerGetCardCollection } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'
@@ -10,8 +11,11 @@ export const openCardCollection: ActionDef<void> = noPayload(
 		})
 
 		return {
-			type: EffectType.EDIT,
-			page: CardCollectionPage.render(data),
+			flow: toReset(),
+			effect: {
+				type: EffectType.EDIT,
+				page: CardCollectionPage.render(data),
+			},
 		}
 	},
 )

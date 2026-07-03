@@ -2,7 +2,7 @@ import {
 	ripsControllerBuyEntriesPurchase,
 	ripsControllerGetOngoingRips,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { BuySuccessPage } from '../../pages/play/buy-success-page'
@@ -34,10 +34,11 @@ export const executeBuyEntries: ActionDef<void> = noPayload(async (session) => {
 
 	const rip = ripsData.rips.find((r) => r.id === purchase.ripId)
 
-	resetFlow(session)
-
 	return {
-		type: EffectType.EDIT,
-		page: BuySuccessPage.render(purchase, rip),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: BuySuccessPage.render(purchase, rip),
+		},
 	}
 })

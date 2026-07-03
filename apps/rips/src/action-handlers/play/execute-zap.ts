@@ -4,7 +4,7 @@ import {
 	ripsControllerBuyEntriesZap,
 	ripsControllerGetZapResult,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, resetFlow } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, toHold, toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
@@ -55,48 +55,57 @@ export const executeZap: ActionDef<void> = noPayload((session) => {
 	const { presetId, entryCount, currency } = session.flow.data
 
 	return {
-		type: EffectType.SEND_LOADING,
-		message: 'Buying entries...',
-		next: async () => {
-			const { data: zapResponse } = await ripsControllerBuyEntriesZap({
-				headers: { 'x-telegram-id': session.telegramId },
-				body: {
-					presetId,
-					entryCount,
-					paymentCurrencyChainAddress: currency.chainAddress,
-				},
-			})
+		flow: toHold(),
+		effect: {
+			type: EffectType.SEND_LOADING,
+			message: 'Buying entries...',
+			next: async () => {
+				const { data: zapResponse } = await ripsControllerBuyEntriesZap(
+					{
+						headers: { 'x-telegram-id': session.telegramId },
+						body: {
+							presetId,
+							entryCount,
+							paymentCurrencyChainAddress: currency.chainAddress,
+						},
+					},
+				)
 
-			const outcome = await pollZapResult(zapResponse.zapId)
-			const availablePreset = await fetchPreset(presetId)
-			const amountIn = toCurrencyAmount(
-				BigInt(zapResponse.amountIn.amount),
-				currency,
-			)
+				const outcome = await pollZapResult(zapResponse.zapId)
+				const availablePreset = await fetchPreset(presetId)
+				const amountIn = toCurrencyAmount(
+					BigInt(zapResponse.amountIn.amount),
+					currency,
+				)
 
-			resetFlow(session)
-
-			if (outcome.status === 'failed') {
-				return {
-					type: EffectType.EDIT,
-					page: ZapFailedPage.render({
-						availablePreset,
-						entryCount,
-						amountIn,
-						refund: outcome.refund,
-					}),
+				if (outcome.status === 'failed') {
+					return {
+						flow: toReset(),
+						effect: {
+							type: EffectType.EDIT,
+							page: ZapFailedPage.render({
+								availablePreset,
+								entryCount,
+								amountIn,
+								refund: outcome.refund,
+							}),
+						},
+					}
 				}
-			}
 
-			return {
-				type: EffectType.EDIT,
-				page: ZapSuccessPage.render({
-					availablePreset,
-					entryCount,
-					amountIn,
-					zapSuccessResult: outcome.result,
-				}),
-			}
+				return {
+					flow: toReset(),
+					effect: {
+						type: EffectType.EDIT,
+						page: ZapSuccessPage.render({
+							availablePreset,
+							entryCount,
+							amountIn,
+							zapSuccessResult: outcome.result,
+						}),
+					},
+				}
+			},
 		},
 	}
 })

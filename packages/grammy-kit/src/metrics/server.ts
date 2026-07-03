@@ -1,9 +1,8 @@
 import { createServer } from 'node:http'
 import { logger } from '../logging/pino-logger'
-import { getEnvSafe } from '../utils/common'
 import { registry } from './registry'
 
-const METRICS_PORT = getEnvSafe('METRICS_PORT')
+const METRICS_PORT = Number(process.env['METRICS_PORT'] ?? 9090)
 
 export function startMetricsServer(): void {
 	const server = createServer((req, res) => {
@@ -26,6 +25,8 @@ export function startMetricsServer(): void {
 	})
 
 	server.listen(METRICS_PORT, () => {
-		logger.info(`Metrics server listening on port ${METRICS_PORT}`)
+		logger.info(
+			`Metrics server listening on port ${METRICS_PORT.toString()}`,
+		)
 	})
 }

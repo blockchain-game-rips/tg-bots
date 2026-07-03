@@ -3,7 +3,7 @@ import {
 	referralSystemControllerGetTierTables,
 	ripsControllerGetRipsState,
 } from '@rips/api-client'
-import { ActionDef } from '@rips/grammy-kit'
+import { ActionDef, toReset } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
 import { StatePage } from '../pages/state-page'
 import { EffectType } from '../types'
@@ -18,7 +18,10 @@ export const openState: ActionDef<void> = noPayload(async () => {
 		])
 
 	return {
-		type: EffectType.EDIT,
-		page: StatePage.render(state, adminWallet, tierTablesRes),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: StatePage.render(state, adminWallet, tierTablesRes),
+		},
 	}
 })

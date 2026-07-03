@@ -2,7 +2,7 @@ import {
 	adminControllerGetAdminWallet,
 	ripsControllerGetRipsState,
 } from '@rips/api-client'
-import { ActionDef } from '@rips/grammy-kit'
+import { ActionDef, toReset } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'
@@ -15,7 +15,10 @@ export const openHome: ActionDef<void> = noPayload(async () => {
 	])
 
 	return {
-		type: EffectType.EDIT,
-		page: HomePage.render(state, adminWallet),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: HomePage.render(state, adminWallet),
+		},
 	}
 })

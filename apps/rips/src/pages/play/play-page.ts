@@ -26,7 +26,7 @@ export const PlayPage = {
 			.row()
 			.text(
 				'Card Collection',
-				buildActionData(actionIds.openCardChoosePreset, undefined),
+				buildActionData(actionIds.openCardCollection, undefined),
 			)
 			.row()
 

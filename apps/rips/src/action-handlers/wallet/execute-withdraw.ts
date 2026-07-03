@@ -1,5 +1,5 @@
 import { walletsControllerCreateWithdrawal } from '@rips/api-client'
-import { assertFlow, resetFlow } from '@rips/grammy-kit'
+import { assertFlow, toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'
@@ -30,15 +30,16 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 		},
 	})
 
-	resetFlow(session)
-
 	return {
-		type: EffectType.EDIT,
-		page: WithdrawSuccessPage.render({
-			transaction: withdrawResult,
-			currencyAmount,
-			blockchainFee: withdrawResult.cost,
-			recipientAddress,
-		}),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: WithdrawSuccessPage.render({
+				transaction: withdrawResult,
+				currencyAmount,
+				blockchainFee: withdrawResult.cost,
+				recipientAddress,
+			}),
+		},
 	}
 })

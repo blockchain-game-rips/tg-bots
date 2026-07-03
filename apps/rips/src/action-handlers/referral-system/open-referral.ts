@@ -2,6 +2,7 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
 } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
 import { EffectType } from '../../types'
@@ -22,11 +23,14 @@ export const openReferral: ActionDef<void> = noPayload(async (session) => {
 	])
 
 	return {
-		type: EffectType.EDIT,
-		page: ReferralSystemPage.render({
-			referrerData,
-			tierTables,
-			referralLink,
-		}),
+		flow: toReset(),
+		effect: {
+			type: EffectType.EDIT,
+			page: ReferralSystemPage.render({
+				referrerData,
+				tierTables,
+				referralLink,
+			}),
+		},
 	}
 })

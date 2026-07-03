@@ -1,4 +1,5 @@
 import { referralSystemControllerWithdrawReward } from '@rips/api-client'
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { WithdrawRewardSuccessPage } from '../../pages/referral-system/withdraw-reward-success-page'
@@ -12,8 +13,11 @@ export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 		})
 
 		return {
-			type: EffectType.EDIT,
-			page: WithdrawRewardSuccessPage.render(data),
+			flow: toReset(),
+			effect: {
+				type: EffectType.EDIT,
+				page: WithdrawRewardSuccessPage.render(data),
+			},
 		}
 	},
 )

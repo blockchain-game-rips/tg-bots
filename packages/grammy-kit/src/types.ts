@@ -1,5 +1,5 @@
 import { InlineKeyboard } from 'grammy'
-import { FlowBase } from './session/session-utils'
+import { FlowBase, FlowTransition } from './session/session-utils'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
 
@@ -35,13 +35,18 @@ export interface EffectAsk {
 	onSubmit: ActionId<unknown>
 }
 
-export interface EffectLoading {
+export interface EffectLoading<F extends FlowBase | null = FlowBase | null> {
 	type: EffectType.SEND_LOADING
 	message: string
-	next: () => Promise<Effect>
+	next: () => Promise<HandlerResult<F>>
 }
 
 export type Effect = EffectEdit | EffectAsk | EffectLoading
+
+export interface HandlerResult<F extends FlowBase | null> {
+	flow: FlowTransition<F>
+	effect: Effect
+}
 
 export interface PageContent {
 	message: string

@@ -8,18 +8,20 @@ export {
 	Effect,
 	EffectAsk,
 	EffectEdit,
-	EffectLoading,
 	EffectType,
+	HandlerResult,
 	MessageToEdit,
 	PageContent,
 	PromptContent,
 	SessionData,
 } from '@rips/grammy-kit'
 
-import { SessionData } from '@rips/grammy-kit'
+import { EffectLoading as _EffectLoading, SessionData } from '@rips/grammy-kit'
 
 export type Context = GrammyContext &
 	SessionFlavor<SessionData<Flow>> & { from: User }
+
+export type EffectLoading = _EffectLoading<Flow>
 
 export interface NavIds {
 	home: string

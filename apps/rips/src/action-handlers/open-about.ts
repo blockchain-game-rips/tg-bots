@@ -1,3 +1,4 @@
+import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../action-def'
 import { AboutPage } from '../pages/about/about-page'
 import { EffectType } from '../types'
@@ -10,5 +11,8 @@ export const openAbout: ActionDef<void> = noPayload(async () => {
 		.map((s) => s.fillingRip?.config ?? s.preset.currentConfig)
 		.filter((config) => config !== null)
 
-	return { type: EffectType.EDIT, page: AboutPage.render(configs) }
+	return {
+		flow: toReset(),
+		effect: { type: EffectType.EDIT, page: AboutPage.render(configs) },
+	}
 })

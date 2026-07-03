@@ -1,9 +1,7 @@
-export function getAllowedUserIds(): Set<number> {
-	const value = process.env['ALLOWED_USER_IDS']
+import { getEnvSafe } from '@rips/grammy-kit'
 
-	if (!value) {
-		throw new Error('Environment variable ALLOWED_USER_IDS is not set')
-	}
+export function getAllowedUserIds(): Set<number> {
+	const value = getEnvSafe('ALLOWED_USER_IDS')
 
 	return new Set(value.split(',').map((id) => Number(id.trim())))
 }

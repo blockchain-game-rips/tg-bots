@@ -69,8 +69,8 @@ export const HomePage = {
 			)
 			.row()
 			.text(
-				'Open Rips',
-				buildActionData(actionIds.openOpenRips, undefined),
+				'🎁 Open Pulls',
+				buildActionData(actionIds.openOpenPulls, undefined),
 			)
 			.row()
 			.text('Status', buildActionData(actionIds.openStatus, undefined))

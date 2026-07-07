@@ -7,7 +7,7 @@ import {
 import { EffectType } from '../../types'
 import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'
 
-export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
+export const openOpenPulls: ActionDef<void> = noPayload(async (session) => {
 	const unrevealedPayouts = await fetchUnrevealedPayouts(session.telegramId)
 
 	return {
@@ -19,7 +19,7 @@ export const openOpenRips: ActionDef<void> = noPayload(async (session) => {
 	}
 })
 
-export const openOpenRipsNoBack: ActionDef<void> = noPayload(
+export const openOpenPullsNoBack: ActionDef<void> = noPayload(
 	async (session) => {
 		const unrevealedPayouts = await fetchUnrevealedPayouts(
 			session.telegramId,

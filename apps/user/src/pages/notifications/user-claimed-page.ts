@@ -17,7 +17,7 @@ export const UserClaimedRipPage = {
 
 		const keyboard = new InlineKeyboard().text(
 			'Open Rips 🎁',
-			buildActionData(actionIds.openOpenRipsNoBack, undefined),
+			buildActionData(actionIds.openOpenPullsNoBack, undefined),
 		)
 
 		return {

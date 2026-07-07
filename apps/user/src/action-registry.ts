@@ -10,9 +10,9 @@ import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCompletedRips } from './action-handlers/play/open-completed-rips'
 import { openOngoingRips } from './action-handlers/play/open-ongoing-rips'
 import {
-	openOpenRips,
-	openOpenRipsNoBack,
-} from './action-handlers/play/open-open-rips'
+	openOpenPulls,
+	openOpenPullsNoBack,
+} from './action-handlers/play/open-open-pulls'
 import { openRevealAll } from './action-handlers/play/open-reveal-all'
 import { openRevealPayouts } from './action-handlers/play/open-reveal-payouts'
 import { openRevealSingle } from './action-handlers/play/open-reveal-single'
@@ -67,8 +67,8 @@ export const actionRegistry = {
 	executeBuyEntries,
 
 	// Open RIPs / rips
-	openOpenRips,
-	openOpenRipsNoBack,
+	openOpenPulls,
+	openOpenPullsNoBack,
 	openRevealPayouts,
 	openRevealSingle,
 	openRevealAll,

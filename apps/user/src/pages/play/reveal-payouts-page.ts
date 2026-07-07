@@ -43,7 +43,7 @@ export const RevealPayoutsPage = {
 
 		addNav(keyboard, {
 			home: actionIds.openHome,
-			parent: actionIds.openPlay,
+			parent: actionIds.openHome,
 		})
 
 		return { message: lines.join('\n'), keyboard }

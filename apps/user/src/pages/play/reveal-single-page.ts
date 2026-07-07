@@ -46,7 +46,7 @@ export const RevealSinglePage = {
 			message: lines.join('\n'),
 			keyboard: addNav(keyboard, {
 				home: actionIds.openHome,
-				parent: actionIds.openPlay,
+				parent: actionIds.openHome,
 			}),
 		}
 	},

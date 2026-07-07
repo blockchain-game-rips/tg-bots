@@ -13,7 +13,6 @@ import {
 	openOpenRips,
 	openOpenRipsNoBack,
 } from './action-handlers/play/open-open-rips'
-import { openPlay } from './action-handlers/play/open-play'
 import { openRevealAll } from './action-handlers/play/open-reveal-all'
 import { openRevealPayouts } from './action-handlers/play/open-reveal-payouts'
 import { openRevealSingle } from './action-handlers/play/open-reveal-single'
@@ -61,7 +60,6 @@ export const actionRegistry = {
 	openAbout,
 
 	// Play
-	openPlay,
 	openChoosePreset: openBuyChoosePreset,
 	openChooseEntryAmount: openBuyChooseEntryCount,
 	promptEntryCount,

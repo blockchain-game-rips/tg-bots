@@ -51,7 +51,7 @@ export const StatusPage = {
 					'Completed rips',
 					buildActionData(actionIds.openCompletedRips, undefined),
 				),
-			{ home: actionIds.openHome, parent: actionIds.openPlay },
+			{ home: actionIds.openHome, parent: actionIds.openHome },
 		)
 
 		return { message: lines.join('\n'), keyboard }

@@ -26,7 +26,7 @@ export const CardCollectionPage = {
 		return {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
-				parent: actionIds.openPlay,
+				parent: actionIds.openHome,
 				home: actionIds.openHome,
 			}),
 		}

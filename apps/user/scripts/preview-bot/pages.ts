@@ -8,7 +8,6 @@ import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
 import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
 import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
-import { PlayPage } from '../../src/pages/play/play-page'
 import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
 import { RevealPayoutsPage } from '../../src/pages/play/reveal-payouts-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
@@ -106,11 +105,6 @@ export const pages: Record<string, PageEntry> = {
 				referralFee: REFERRAL_FEE_BPS,
 			})
 		},
-	},
-	play: {
-		description:
-			'The Play hub. Shows the main game actions: buy entries, open (reveal) rips, check rip status, and access the card collection.',
-		render: () => PlayPage.render(),
 	},
 	'card-collection': {
 		description:

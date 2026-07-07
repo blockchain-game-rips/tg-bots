@@ -63,8 +63,22 @@ export const HomePage = {
 		const lines = messageLines(args)
 
 		const keyboard = new InlineKeyboard()
-			.text('Play', buildActionData(actionIds.openPlay, undefined))
+			.text(
+				'Buy Entries',
+				buildActionData(actionIds.openChoosePreset, undefined),
+			)
 			.row()
+			.text(
+				'Open Rips',
+				buildActionData(actionIds.openOpenRips, undefined),
+			)
+			.row()
+			.text('Status', buildActionData(actionIds.openStatus, undefined))
+			.row()
+			.text(
+				'Card Collection',
+				buildActionData(actionIds.openCardCollection, undefined),
+			)
 			.text('Wallet', buildActionData(actionIds.openWallet, undefined))
 			.row()
 			.text(

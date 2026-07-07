@@ -29,7 +29,7 @@ export const BuyChoosePresetPage = {
 			),
 			keyboard: addNav(keyboard, {
 				home: actionIds.openHome,
-				parent: actionIds.openPlay,
+				parent: actionIds.openHome,
 			}),
 		}
 	},

@@ -43,7 +43,7 @@ export const RevealAllPage = {
 			message: lines.join('\n'),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
-				parent: actionIds.openPlay,
+				parent: actionIds.openHome,
 			}),
 		}
 	},

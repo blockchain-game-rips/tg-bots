@@ -1,3 +1,4 @@
+import { PageEntry, resolveVariant, VariantError } from '@rips/grammy-kit'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { BuyCheckoutPage } from '../../src/pages/play/buy-checkout-page'
@@ -33,7 +34,6 @@ import { WithdrawChooseChainPage } from '../../src/pages/wallet/withdraw-choose-
 import { WithdrawChooseCurrencyPage } from '../../src/pages/wallet/withdraw-choose-currency-page'
 import { WithdrawPage } from '../../src/pages/wallet/withdraw-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
-import { PageContent } from '../../src/types'
 import {
 	mockAllBalances,
 	mockAvailablePresets,
@@ -70,34 +70,6 @@ import {
 	mockZapSuccessResult,
 	mockZeroBalance,
 } from './static-data'
-
-export interface PageEntry {
-	description: string
-	variants?: string[]
-	render: (variant?: string) => PageContent
-}
-
-export class VariantError extends Error {
-	constructor(
-		readonly received: string | undefined,
-		readonly available: string[],
-	) {
-		super()
-	}
-}
-
-export function resolveVariant(
-	entry: PageEntry,
-	variant: string | undefined,
-): string {
-	if (!entry.variants?.length) return variant ?? ''
-
-	const match = entry.variants.find((v) => v === variant)
-
-	if (!match) throw new VariantError(variant, entry.variants)
-
-	return match
-}
 
 const REFERRAL_FEE_BPS = 1000
 const PULLS_COUNT = 8

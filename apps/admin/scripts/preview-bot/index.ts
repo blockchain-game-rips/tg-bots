@@ -1,6 +1,6 @@
 import { getEnvSafe } from '@rips/grammy-kit'
-import { Bot } from 'grammy'
-import { pages, VariantError } from './pages'
+import { Bot, type Context } from 'grammy'
+import { pages, VariantError, type PageEntry } from './pages'
 
 const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
@@ -27,23 +27,12 @@ bot.command('pages', async (ctx) => {
 	await ctx.reply(`Available pages:\n\n${list}`, { parse_mode: 'HTML' })
 })
 
-bot.command('r', async (ctx) => {
-	const [pageName, variant] = ctx.match.trim().split(' ')
-
-	if (!pageName) {
-		await ctx.reply('Usage: /r <page-name> [variant]')
-		return
-	}
-
-	const page = pages[pageName]
-
-	if (!page) {
-		await ctx.reply(
-			`Unknown page: "${pageName}"\n\nUse /pages to see available pages.`,
-		)
-		return
-	}
-
+async function renderVariant(
+	ctx: Context,
+	page: PageEntry,
+	pageName: string,
+	variant: string | undefined,
+): Promise<void> {
 	let rendered
 	try {
 		rendered = page.render(variant)
@@ -68,6 +57,35 @@ bot.command('r', async (ctx) => {
 		reply_markup: keyboard,
 		parse_mode: 'HTML',
 	})
+}
+
+bot.command('r', async (ctx) => {
+	const [pageName, variant] = ctx.match.trim().split(' ')
+
+	if (!pageName) {
+		await ctx.reply('Usage: /r <page-name> [variant]')
+		return
+	}
+
+	const page = pages[pageName]
+
+	if (!page) {
+		await ctx.reply(
+			`Unknown page: "${pageName}"\n\nUse /pages to see available pages.`,
+		)
+		return
+	}
+
+	const shouldRenderAll = !variant && !!page.variants?.length
+
+	if (shouldRenderAll) {
+		for (const pageVariant of page.variants ?? []) {
+			await renderVariant(ctx, page, pageName, pageVariant)
+		}
+		return
+	}
+
+	await renderVariant(ctx, page, pageName, variant)
 })
 
 bot.command('d', async (ctx) => {

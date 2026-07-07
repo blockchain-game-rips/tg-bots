@@ -127,7 +127,7 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 					body: {
 						config: {
 							entryCap,
-							feePercent,
+							feeBps: feePercent,
 							entryPrice: {
 								currencyChainAddress: NATIVE_ON_BASE,
 								amount: toBigintAsString(entryPrice),

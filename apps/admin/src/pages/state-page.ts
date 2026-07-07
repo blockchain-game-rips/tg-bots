@@ -19,18 +19,18 @@ type PresetConfig = NonNullable<PresetEntry['preset']['currentConfig']>
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 
 function renderTierTable(table: TierTable): string[] {
-	const { currency, defaultFeePercent, tiers } = table
+	const { currency, defaultFeeBps, tiers } = table
 
 	const lines: string[] = [
 		`<b>Referral System</b> (${currency.symbol})`,
-		`Default fee: ${formatPercent(defaultFeePercent)}`,
+		`Default fee: ${formatPercent(defaultFeeBps)}`,
 		`Tiers:`,
 	]
 
 	for (const tier of tiers) {
 		const minVolume = formatUnits(BigInt(tier.minVolume), currency.decimals)
 		lines.push(
-			`  ≥${minVolume} ${currency.symbol}: ${formatPercent(tier.feePercent)}`,
+			`  ≥${minVolume} ${currency.symbol}: ${formatPercent(tier.feeBps)}`,
 		)
 	}
 
@@ -41,7 +41,7 @@ function renderConfig(config: PresetConfig): string[] {
 	const {
 		entryPrice,
 		entryCap,
-		feePercent,
+		feeBps,
 		durationSeconds,
 		payoutDistribution,
 	} = config
@@ -50,7 +50,7 @@ function renderConfig(config: PresetConfig): string[] {
 	const lines = [
 		`  Price: ${formatUnits(BigInt(amount), currency.decimals)} ${currency.symbol}`,
 		`  Cap: ${String(entryCap)} entries`,
-		`  Fee: ${formatPercent(feePercent)}`,
+		`  Fee: ${formatPercent(feeBps)}`,
 		`  Duration: ${toShortDurationFormat(durationSeconds)}`,
 		`  Payouts:`,
 	]

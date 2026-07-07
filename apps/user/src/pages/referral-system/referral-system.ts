@@ -30,7 +30,7 @@ function tierTableLines(tierTable: TierTable): string[] {
 				amount: tier.minVolume,
 				currency: tierTable.currency,
 			})
-			return `  Tier ${(i + 1).toString()}: ≥${minVolume} → ${formatPercent(tier.feePercent)}`
+			return `  Tier ${(i + 1).toString()}: ≥${minVolume} → ${formatPercent(tier.feeBps)}`
 		}),
 	]
 }

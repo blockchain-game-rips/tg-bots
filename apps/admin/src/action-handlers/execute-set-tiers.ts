@@ -103,7 +103,7 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 					t.minVolume.toString(),
 					decimals,
 				).toString(),
-				feePercent: t.feePercent,
+				feeBps: t.feePercent,
 			}))
 
 			const { data: tx } = await adminControllerSetReferralTiers({

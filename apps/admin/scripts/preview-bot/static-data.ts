@@ -215,11 +215,11 @@ export const mockTierTables: GetTierTablesResponseDtoOutput = {
 	tierTables: [
 		{
 			currency: mockEth,
-			defaultFeePercent: 500,
+			defaultFeeBps: 500,
 			tiers: [
-				{ minVolume: '100000000000000000', feePercent: 500 }, // ≥0.1 ETH → 5%
-				{ minVolume: '500000000000000000', feePercent: 1000 }, // ≥0.5 ETH → 10%
-				{ minVolume: '1000000000000000000', feePercent: 1500 }, // ≥1 ETH → 15%
+				{ minVolume: '100000000000000000', feeBps: 500 }, // ≥0.1 ETH → 5%
+				{ minVolume: '500000000000000000', feeBps: 1000 }, // ≥0.5 ETH → 10%
+				{ minVolume: '1000000000000000000', feeBps: 1500 }, // ≥1 ETH → 15%
 			],
 		},
 	],
@@ -326,7 +326,7 @@ export const mockRip: RipDto = {
 	currency: mockEth,
 	config: {
 		entryCap: 8,
-		feePercent: 5,
+		feeBps: 500,
 		entryPrice: { currency: mockEth, amount: '5000000000000000' },
 		durationSeconds: 3600,
 		payoutDistribution: [
@@ -422,7 +422,7 @@ export const mockUnrevealedPayouts: PayoutDto[] = [
 
 const mockRipConfig = {
 	entryCap: 8,
-	feePercent: 5,
+	feeBps: 500,
 	entryPrice: { currency: mockEth, amount: '5000000000000000' },
 	durationSeconds: 3600,
 	payoutDistribution: [
@@ -446,7 +446,7 @@ const mockRipConfig = {
 
 const mockRipConfig2 = {
 	entryCap: 20,
-	feePercent: 5,
+	feeBps: 500,
 	entryPrice: { currency: mockEth, amount: '50000000000000000' },
 	durationSeconds: 86400,
 	payoutDistribution: [
@@ -561,7 +561,7 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 export const mockConfigs: ConfigDto[] = [
 	{
 		entryCap: 8,
-		feePercent: 5,
+		feeBps: 500,
 		durationSeconds: 3600,
 		entryPrice: { currency: mockEth, amount: '5000000000000000' }, // 0.005 ETH
 		payoutDistribution: [
@@ -584,7 +584,7 @@ export const mockConfigs: ConfigDto[] = [
 	},
 	{
 		entryCap: 20,
-		feePercent: 5,
+		feeBps: 500,
 		durationSeconds: 86400,
 		entryPrice: { currency: mockEth, amount: '50000000000000000' }, // 0.05 ETH
 		payoutDistribution: [

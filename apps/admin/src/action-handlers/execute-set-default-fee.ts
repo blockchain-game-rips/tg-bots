@@ -78,7 +78,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 					const { data: tx } =
 						await adminControllerSetDefaultReferralFee({
 							headers: adminApiHeader,
-							body: { feePercent: bp },
+							body: { feeBps: bp },
 						})
 
 					return {

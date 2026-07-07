@@ -99,6 +99,9 @@ export function resolveVariant(
 	return match
 }
 
+const REFERRAL_FEE_BPS = 1000
+const PULLS_COUNT = 8
+
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
 const mockSwapCurrencies = [mockSwapAmountIn.currency]
 
@@ -111,35 +114,26 @@ if (mockRevealedPayout0 === undefined)
 	throw new Error('mockRevealedPayouts[0] is missing')
 
 export const pages: Record<string, PageEntry> = {
-	'home-new-user': {
+	home: {
 		description:
-			'Home page for a new user with no funds and no pulls. Prompts to fund the wallet.',
-		render: () =>
-			HomePage.render({
-				unopenedPulls: 0,
-				baseBalance: mockZeroBalance,
-				referralFee: 0.1,
-			}),
-	},
-	'home-funded': {
-		description:
-			'Home page for a user with funds but no unopened pulls. Prompts to enter a Rip.',
-		render: () =>
-			HomePage.render({
-				unopenedPulls: 0,
-				baseBalance: mockSufficientBalance,
-				referralFee: 0.1,
-			}),
-	},
-	'home-pulls': {
-		description:
-			'Home page for a user with unopened pulls. Prompts to open pulls.',
-		render: () =>
-			HomePage.render({
-				unopenedPulls: 8,
-				baseBalance: mockSufficientBalance,
-				referralFee: 0.1,
-			}),
+			'Home page. Adapts to user state: new user (no funds, prompts to fund), funded (prompts to enter a Rip), or pulls (prompts to open unopened pulls).',
+		variants: ['new-user', 'funded', 'pulls'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const baseBalance =
+				resolvedVariant === 'new-user'
+					? mockZeroBalance
+					: mockSufficientBalance
+
+			const unopenedPulls = resolvedVariant === 'pulls' ? PULLS_COUNT : 0
+
+			return HomePage.render({
+				unopenedPulls,
+				baseBalance,
+				referralFee: REFERRAL_FEE_BPS,
+			})
+		},
 	},
 	play: {
 		description:

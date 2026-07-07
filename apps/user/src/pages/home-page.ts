@@ -5,6 +5,8 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
 
+const WELCOME_HEADER = '👋 <b>Welcome to Rips</b>'
+
 interface HomePageArgs {
 	unopenedPulls: number
 	baseBalance: CurrencyAmountDto
@@ -27,9 +29,9 @@ function statsLines(args: HomePageArgs): string[] {
 function messageLines(args: HomePageArgs): string[] {
 	if (args.unopenedPulls > 0) {
 		return [
-			`🎁 <b>You have ${args.unopenedPulls.toString()} unopened pulls</b>`,
+			WELCOME_HEADER,
 			'',
-			'Open them to reveal your cards.',
+			'Your pulls are ready and waiting. Open them to reveal your cards.',
 			'',
 			...statsLines(args),
 		]
@@ -39,7 +41,7 @@ function messageLines(args: HomePageArgs): string[] {
 
 	if (hasFunds) {
 		return [
-			'👋 <b>Welcome to Rips</b>',
+			WELCOME_HEADER,
 			'',
 			"You're ready to go. Enter a live Rip to collect cards.",
 			'',
@@ -48,7 +50,7 @@ function messageLines(args: HomePageArgs): string[] {
 	}
 
 	return [
-		'👋 <b>Welcome to Rips</b>',
+		WELCOME_HEADER,
 		'',
 		'Enter live Rips, open your pulls, and collect cards.',
 		'',

@@ -107,7 +107,11 @@ bot.command('d', async (ctx) => {
 
 void bot.api.setMyCommands([
 	{ command: 'pages', description: 'List all available pages' },
-	{ command: 'r', description: 'Render a page: /r <page-name>' },
+	{
+		command: 'r',
+		description:
+			'Render a page: /r <page-name> [variant] (omit variant to render all)',
+	},
 	{
 		command: 'd',
 		description: 'Describe a page: /d <page-name>',

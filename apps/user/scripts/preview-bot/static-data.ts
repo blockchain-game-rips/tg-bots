@@ -593,12 +593,25 @@ export const mockRip3: RipDto = {
 	startTime: '2026-04-24T12:00:00.000Z',
 }
 
+export const mockAvailablePresetNoRip: AvailablePresetDto = {
+	preset: { id: 1, currentConfig: mockRipConfig },
+	fillingRip: null,
+}
+
+const MILLISECONDS_PER_MINUTE = 60 * 1000
+const FILLING_RIP_STARTED_MINUTES_AGO = 20
+
+const fillingRipStartTime = new Date(
+	Date.now() - FILLING_RIP_STARTED_MINUTES_AGO * MILLISECONDS_PER_MINUTE,
+).toISOString()
+
 export const mockAvailablePresets: AvailablePresetDto[] = [
 	{
 		preset: { id: 1, currentConfig: mockRipConfig },
 		fillingRip: {
 			...mockRip,
 			id: 1,
+			startTime: fillingRipStartTime,
 		},
 	},
 	{

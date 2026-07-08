@@ -64,7 +64,7 @@ export const HomePage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'Buy Entries',
+				'🎮 Enter Rip',
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()

@@ -19,5 +19,5 @@ export function swapBreadcrumb(...segments: (string | undefined)[]): string {
 export function buyEntriesBreadcrumb(
 	...segments: (string | undefined)[]
 ): string {
-	return breadcrumb('🎮 Buy Entries', ...segments)
+	return breadcrumb('🎮 Enter Rip', ...segments)
 }

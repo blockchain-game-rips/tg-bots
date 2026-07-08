@@ -21,7 +21,7 @@ export const BuyChooseEntryCountPage = {
 
 		return {
 			message: [
-				'<b>🎮 Buy Entries</b>',
+				'<b>🎮 Enter Rip</b>',
 				'',
 				`Preset: ${configName(config)}`,
 				'',

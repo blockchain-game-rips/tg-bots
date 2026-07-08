@@ -35,6 +35,7 @@ import { WithdrawPage } from '../../src/pages/wallet/withdraw-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
 import {
 	mockAllBalances,
+	mockAvailablePresetNoRip,
 	mockAvailablePresets,
 	mockBalance,
 	mockCardCollection,
@@ -118,8 +119,16 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'buy-choose-entry-count': {
 		description:
-			'Second step of buying entries. Choose how many entries to buy: preset options or custom amount. Opened from choose-preset.',
-		render: () => BuyChooseEntryCountPage.render(mockAvailablePreset0),
+			'Second step of buying entries. Choose how many entries to buy: preset options or custom amount. Opened from choose-preset. The "no-rip" variant has no filling rip yet (entry starts one); the "filling" variant joins an in-progress rip and shows time left with a refund warning.',
+		variants: ['no-rip', 'filling'],
+		render(variant) {
+			const availablePreset =
+				resolveVariant(this, variant) === 'no-rip'
+					? mockAvailablePresetNoRip
+					: mockAvailablePreset0
+
+			return BuyChooseEntryCountPage.render(availablePreset)
+		},
 	},
 	'buy-checkout': {
 		description:

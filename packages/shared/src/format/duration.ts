@@ -25,25 +25,25 @@ export function parseDuration(totalSeconds: number): Duration {
 export function toShortDurationFormat(seconds: number): string {
 	const duration = parseDuration(seconds)
 
-	return [
+	const parts = [
 		duration.days > 0 ? `${duration.days.toString()}d` : null,
 		duration.hours > 0 ? `${duration.hours.toString()}h` : null,
 		duration.minutes > 0 ? `${duration.minutes.toString()}m` : null,
 		duration.seconds > 0 ? `${duration.seconds.toString()}s` : null,
-	]
-		.filter(Boolean)
-		.join(' ')
+	].filter(Boolean)
+
+	return parts.length > 0 ? parts.join(' ') : '0s'
 }
 
 export function toLongDurationFormat(seconds: number): string {
 	const duration = parseDuration(seconds)
 
-	return [
+	const parts = [
 		duration.days > 0 ? `${duration.days.toString()}days` : null,
 		duration.hours > 0 ? `${duration.hours.toString()}hours` : null,
 		duration.minutes > 0 ? `${duration.minutes.toString()}minutes` : null,
 		duration.seconds > 0 ? `${duration.seconds.toString()}seconds` : null,
-	]
-		.filter(Boolean)
-		.join(' ')
+	].filter(Boolean)
+
+	return parts.length > 0 ? parts.join(' ') : '0seconds'
 }

@@ -478,6 +478,30 @@ const mockRipConfig2 = {
 	],
 }
 
+const mockRipConfig3 = {
+	entryCap: 12,
+	feeBps: 500,
+	entryPrice: { currency: mockEth, amount: '10000000000000000' }, // 0.01 ETH
+	durationSeconds: 43200,
+	payoutDistribution: [
+		{
+			payoutCount: '6',
+			minPayout: '2000000000000000',
+			maxPayout: '5000000000000000',
+		},
+		{
+			payoutCount: '3',
+			minPayout: '20000000000000000',
+			maxPayout: '30000000000000000',
+		},
+		{
+			payoutCount: '1',
+			minPayout: '60000000000000000',
+			maxPayout: '60000000000000000',
+		},
+	],
+}
+
 export const mockFinishedRips: RipDto[] = [
 	{
 		id: 2,
@@ -549,6 +573,26 @@ export const mockRip2: RipDto = {
 	startTime: '2026-04-24T09:00:00.000Z',
 }
 
+export const mockRip3: RipDto = {
+	id: 5,
+	presetId: 3,
+	currency: mockEth,
+	config: mockRipConfig3,
+	actions: {
+		purchases: [
+			{
+				userAddress: mockUserEvmAddress,
+				entryCount: '4',
+				startEntryIndex: '0',
+			},
+		],
+		claims: [],
+		refunds: [],
+	},
+	status: 'FILLING',
+	startTime: '2026-04-24T12:00:00.000Z',
+}
+
 export const mockAvailablePresets: AvailablePresetDto[] = [
 	{
 		preset: { id: 1, currentConfig: mockRipConfig },
@@ -560,6 +604,10 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 	{
 		preset: { id: 2, currentConfig: mockRipConfig2 },
 		fillingRip: mockRip2,
+	},
+	{
+		preset: { id: 3, currentConfig: mockRipConfig3 },
+		fillingRip: mockRip3,
 	},
 ]
 

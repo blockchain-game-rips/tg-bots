@@ -21,6 +21,7 @@ import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
+import { SwapChooseDstChainPage } from '../../src/pages/swap/swap-choose-dst-chain-page'
 import { SwapChooseSrcChainPage } from '../../src/pages/swap/swap-choose-src-chain-page'
 import { SwapChooseSrcTokenPage } from '../../src/pages/swap/swap-choose-src-token-page'
 import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
@@ -356,6 +357,30 @@ export const pages: Record<string, PageEntry> = {
 				srcChain,
 				currencies,
 				dstCurrency: mockUsdcArb,
+				amount: mockUsdcArbWithdrawAmount,
+			})
+		},
+	},
+	'swap-choose-dst-chain': {
+		description:
+			'Third step of the swap flow. Choose a destination chain. The "fresh-draft" variant is opened from choose-src-token and shows the source token plus its balance, back leads to choose-src-token. The "draft-edit" variant is opened from swap checkout via Change Destination and also shows the chosen amount, back leads to checkout.',
+		variants: ['fresh-draft', 'draft-edit'],
+		render(variant) {
+			const srcCurrency = mockUsdcArb
+			const srcBalance = mockUsdcArbWithdrawAmount
+			const dstChains = [...SUPPORTED_CHAINS]
+
+			if (resolveVariant(this, variant) === 'fresh-draft')
+				return SwapChooseDstChainPage.renderFreshDraft({
+					srcCurrency,
+					srcBalance,
+					dstChains,
+				})
+
+			return SwapChooseDstChainPage.renderDraftEdit({
+				srcCurrency,
+				srcBalance,
+				dstChains,
 				amount: mockUsdcArbWithdrawAmount,
 			})
 		},

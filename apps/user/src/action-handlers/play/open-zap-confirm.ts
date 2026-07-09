@@ -1,8 +1,4 @@
-import {
-	ChainAddressDto,
-	ripsControllerQuoteZap,
-	usersControllerGetUser,
-} from '@rips/api-client'
+import { ChainAddressDto, usersControllerGetUser } from '@rips/api-client'
 import { assertFlow, HandlerResult, toStep } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
@@ -13,6 +9,7 @@ import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
+import { ripsControllerQuoteZap } from './zap-api-stub'
 
 async function buildZapCheckout(
 	session: SessionData<Flow>,

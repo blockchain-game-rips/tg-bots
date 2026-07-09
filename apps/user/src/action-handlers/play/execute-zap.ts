@@ -1,7 +1,6 @@
 import {
 	CurrencyAmountDto,
 	GetZapResultResponseDtoOutput,
-	ripsControllerBuyEntriesZap,
 	ripsControllerGetZapResult,
 } from '@rips/api-client'
 import { assertFlow, ErrorToRender, toHold, toReset } from '@rips/grammy-kit'
@@ -11,6 +10,7 @@ import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'
 import { fetchPreset } from '../../utils/api/wrappers'
 import { toCurrencyAmount } from '../../utils/currency'
+import { ripsControllerBuyEntriesZap } from './zap-api-stub'
 
 const ZAP_POLL_INTERVAL_MS = 2000
 const ZAP_POLL_TIMEOUT_MS = 60000

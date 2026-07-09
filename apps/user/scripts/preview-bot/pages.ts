@@ -1,4 +1,5 @@
 import { PageEntry, resolveVariant, VariantError } from '@rips/grammy-kit'
+import { SUPPORTED_CHAINS } from '../../src/constants'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { BuyCheckoutPage } from '../../src/pages/play/buy-checkout-page'
@@ -20,6 +21,7 @@ import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
+import { SwapChooseSrcChainPage } from '../../src/pages/swap/swap-choose-src-chain-page'
 import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
@@ -50,6 +52,7 @@ import {
 	mockSufficientBalance,
 	mockTierTables,
 	mockUnrevealedPayouts,
+	mockUsdcArb,
 	mockUsdcArbBalance,
 	mockUsdcArbWithdrawAmount,
 	mockUsdcArbWithdrawAmountInsufficient,
@@ -316,6 +319,23 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Shows all token balances grouped by chain. Opened from Wallet.',
 		render: () => AllBalancesPage.render(mockAllBalances),
+	},
+	'swap-choose-src-chain': {
+		description:
+			'First step of the swap flow. Choose a source chain. The "fresh-draft" variant is opened from Wallet and starts a new swap; the "draft-edit" variant is opened from swap checkout via Change Source and shows the already chosen destination and amount, back leads to checkout.',
+		variants: ['fresh-draft', 'draft-edit'],
+		render(variant) {
+			const chains = [...SUPPORTED_CHAINS]
+
+			if (resolveVariant(this, variant) === 'fresh-draft')
+				return SwapChooseSrcChainPage.renderFreshDraft({ chains })
+
+			return SwapChooseSrcChainPage.renderDraftEdit({
+				chains,
+				dstCurrency: mockUsdcArb,
+				amount: mockUsdcArbWithdrawAmount,
+			})
+		},
 	},
 	'referral-system': {
 		description:

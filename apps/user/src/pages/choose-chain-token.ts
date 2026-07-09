@@ -1,4 +1,4 @@
-import { CurrencyDto } from '@rips/api-client'
+import { ChainAddressDto, CurrencyDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
@@ -63,6 +63,32 @@ export function appendChainButtonRows(
 			.text(
 				chainToName(chain),
 				buildActionData(onChainSelectedActionId, chain),
+			)
+			.row()
+	})
+}
+
+export function buildTokenKeyboard(
+	currencies: CurrencyDto[],
+	onTokenSelectedActionId: ActionId<ChainAddressDto>,
+): InlineKeyboard {
+	const keyboard = new InlineKeyboard()
+
+	appendTokenButtonRows(keyboard, currencies, onTokenSelectedActionId)
+
+	return keyboard
+}
+
+export function appendTokenButtonRows(
+	keyboard: InlineKeyboard,
+	currencies: CurrencyDto[],
+	onTokenSelectedActionId: ActionId<ChainAddressDto>,
+) {
+	currencies.forEach((currency) => {
+		keyboard
+			.text(
+				currency.symbol,
+				buildActionData(onTokenSelectedActionId, currency.chainAddress),
 			)
 			.row()
 	})

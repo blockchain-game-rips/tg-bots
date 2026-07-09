@@ -20,6 +20,7 @@ interface ChooseTokenParams<T> {
 	nav: NavIds
 }
 
+// TODO: refactor: not pure (reads SUPPORTED_CHAINS) and hard to follow
 export function buildChooseChainPage<T>(
 	params: ChooseChainParams<T>,
 ): PageContent {

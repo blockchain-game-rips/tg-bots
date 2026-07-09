@@ -66,6 +66,7 @@ export interface PromptContent {
 	placeholder: string
 }
 
+//TODO: move from this package, it shouldn't be here
 export interface Chain {
 	namespace: string
 	reference: string

@@ -21,11 +21,6 @@ import { ReferralAboutPage } from '../../src/pages/referral-system/referral-abou
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
 import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
-import { SwapCheckoutPage } from '../../src/pages/wallet/swap-checkout'
-import { SwapChooseAmountPage } from '../../src/pages/wallet/swap-choose-amount'
-import { SwapChooseChainPage } from '../../src/pages/wallet/swap-choose-chain'
-import { SwapChooseTokenPage } from '../../src/pages/wallet/swap-choose-token'
-import { SwapPage } from '../../src/pages/wallet/swap-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
@@ -53,9 +48,6 @@ import {
 	mockRip,
 	mockRip2,
 	mockSufficientBalance,
-	mockSwapAmountIn,
-	mockSwapNetworkFee,
-	mockSwapQuote,
 	mockTierTables,
 	mockUnrevealedPayouts,
 	mockUsdcArbBalance,
@@ -75,7 +67,6 @@ const REFERRAL_FEE_BPS = 1000
 const PULLS_COUNT = 8
 
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
-const mockSwapCurrencies = [mockSwapAmountIn.currency]
 
 const mockAvailablePreset0 = mockAvailablePresets[0]
 const mockRevealedPayout0 = mockRevealedPayouts[0]
@@ -314,47 +305,6 @@ export const pages: Record<string, PageEntry> = {
 				currencyAmount: mockUsdcArbWithdrawAmount,
 				blockchainFee: mockEthArbNetworkFee,
 				recipientAddress: mockReceiverAddress,
-			}),
-	},
-	swap: {
-		description:
-			'Swap hub. Select token in and token out, then proceed to choose amount. Opened from Wallet.',
-		render: () =>
-			SwapPage.render({
-				currencyInBalance: mockSwapAmountIn,
-				currencyOutBalance: mockSwapQuote.amountOut,
-			}),
-	},
-	'swap-choose-chain': {
-		description:
-			'Choose a chain when selecting a token for the swap. Opened from swap.',
-		render: () => SwapChooseChainPage.render('in'),
-	},
-	'swap-choose-token': {
-		description:
-			'Choose a token on the selected chain. Opened from swap-choose-chain.',
-		render: () => SwapChooseTokenPage.render(mockSwapCurrencies, 'in'),
-	},
-	'swap-choose-amount': {
-		description:
-			'Choose how much to swap — max or custom amount. Opened from swap after both tokens are selected.',
-		render: () =>
-			SwapChooseAmountPage.render({
-				currencyInBalance: mockSwapAmountIn,
-				currencyOutBalance: mockSwapQuote.amountOut,
-			}),
-	},
-	'swap-confirm': {
-		description:
-			'Shows swap quote: amount in, amount out, swap fee, network fee. Confirm to proceed. Opened from swap-choose-amount.',
-		render: () =>
-			SwapCheckoutPage.render({
-				currencyInBalance: mockSwapAmountIn,
-				nativeInBalance: mockSwapNetworkFee,
-				amountIn: mockSwapAmountIn,
-				currencyOutBalance: mockSwapQuote.amountOut,
-				swapQuote: mockSwapQuote,
-				userEvmAddress: mockUserEvmAddress,
 			}),
 	},
 	wallet: {

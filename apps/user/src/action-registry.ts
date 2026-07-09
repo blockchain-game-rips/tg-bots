@@ -27,27 +27,17 @@ import { promptEntryCount } from './action-handlers/play/prompt-entry-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
-import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
 import { openSwap } from './action-handlers/wallet/open-swap'
-import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
-import { openSwapChooseChainIn } from './action-handlers/wallet/open-swap-choose-chain-in'
-import { openSwapChooseChainOut } from './action-handlers/wallet/open-swap-choose-chain-out'
-import { openSwapChooseTokenIn } from './action-handlers/wallet/open-swap-choose-token-in'
-import { openSwapChooseTokenOut } from './action-handlers/wallet/open-swap-choose-token-out'
 import { openWallet } from './action-handlers/wallet/open-wallet'
 import { openWithdraw } from './action-handlers/wallet/open-withdraw'
 import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
 import { openWithdrawChooseChain } from './action-handlers/wallet/open-withdraw-choose-chain'
 import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdraw-choose-currency'
-import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
 import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
-import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
-import { submitSwapCurrencyIn } from './action-handlers/wallet/submit-swap-currency-in'
-import { submitSwapCurrencyOut } from './action-handlers/wallet/submit-swap-currency-out'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 
@@ -109,14 +99,4 @@ export const actionRegistry = {
 
 	// Swap
 	openSwap,
-	openSwapChooseChainIn,
-	openSwapChooseChainOut,
-	openSwapChooseTokenIn,
-	openSwapChooseTokenOut,
-	openSwapChooseAmount,
-	submitSwapCurrencyIn,
-	submitSwapCurrencyOut,
-	submitSwapAmount,
-	executeSwap,
-	promptSwapAmount,
 } satisfies Record<string, AnyActionDef>

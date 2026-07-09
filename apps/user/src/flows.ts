@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyDto } from '@rips/api-client'
 
 export type BuyEntriesFlow =
 	| {
@@ -31,17 +31,4 @@ export interface WithdrawFlow {
 	}
 }
 
-export type SwapSelecting = 'in' | 'out'
-
-export interface SwapFlow {
-	flowType: 'swap'
-	step: 'idle'
-	data: {
-		currencyIn?: CurrencyDto
-		currencyOut?: CurrencyDto
-		amountIn?: bigint
-		quotedAmountOut?: CurrencyAmountDto
-	}
-}
-
-export type Flow = BuyEntriesFlow | WithdrawFlow | SwapFlow | null
+export type Flow = BuyEntriesFlow | WithdrawFlow | null

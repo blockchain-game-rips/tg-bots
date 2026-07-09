@@ -9,7 +9,6 @@ import {
 	GetZapResultResponseDtoOutput,
 	PayoutDto,
 	QuotePurchaseResponseDtoOutput,
-	QuoteSwapResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	RipDto,
 	TransactionDto,
@@ -169,29 +168,6 @@ export const mockUsdcOnBase = {
 	symbol: 'USDC',
 	name: 'USD Coin',
 	decimals: 6,
-}
-
-export const mockSwapQuote: QuoteSwapResponseDtoOutput = {
-	amountOut: { currency: mockUsdcOnBase, amount: '12400000' }, // 12.4 USDC
-	fee: { currency: mockEth, amount: '1000000000000000' }, // ~0.001 ETH
-	durationMs: 30000,
-	blockchainFee: {
-		currency: mockEth,
-		amount: '100000000000000', // 0.0001 ETH
-	},
-}
-
-export const mockSwapNetworkFee: CurrencyAmountDto = {
-	currency: mockEth,
-	amount: '210000000000000', // ~0.00021 ETH
-}
-
-// SUPPORTED_CURRENCIES indices: 0 = USDC/Arbitrum, 1 = ETH/Arbitrum, 2 = USDC/Base
-export const mockSwapTokenInIndex = 1 // ETH on Arbitrum
-export const mockSwapTokenOutIndex = 2 // USDC on Base
-export const mockSwapAmountIn: CurrencyAmountDto = {
-	currency: mockEth,
-	amount: '5000000000000000', // 0.005 ETH
 }
 
 export const mockWithdrawTransaction: TransactionDto = {

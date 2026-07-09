@@ -31,6 +31,7 @@ import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
 import { openSwap } from './action-handlers/wallet/open-swap'
 import { openSwapCheckout } from './action-handlers/wallet/open-swap-checkout'
+import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
 import { openSwapChooseDstChain } from './action-handlers/wallet/open-swap-choose-dst-chain'
 import { openSwapChooseDstToken } from './action-handlers/wallet/open-swap-choose-dst-token'
 import { openSwapChooseSrcToken } from './action-handlers/wallet/open-swap-choose-src-token'
@@ -106,5 +107,6 @@ export const actionRegistry = {
 	openSwapChooseSrcToken,
 	openSwapChooseDstChain,
 	openSwapChooseDstToken,
+	openSwapChooseAmount,
 	openSwapCheckout,
 } satisfies Record<string, AnyActionDef>

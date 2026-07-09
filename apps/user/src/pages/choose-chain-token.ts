@@ -42,6 +42,32 @@ export function buildChooseChainPage<T>(
 	return { message: lines.join('\n'), keyboard }
 }
 
+export function buildChainKeyboard(
+	chains: Chain[],
+	onChainSelectedActionId: ActionId<Chain>,
+): InlineKeyboard {
+	const keyboard = new InlineKeyboard()
+
+	appendChainButtonRows(keyboard, chains, onChainSelectedActionId)
+
+	return keyboard
+}
+
+export function appendChainButtonRows(
+	keyboard: InlineKeyboard,
+	chains: Chain[],
+	onChainSelectedActionId: ActionId<Chain>,
+) {
+	chains.forEach((chain) => {
+		keyboard
+			.text(
+				chainToName(chain),
+				buildActionData(onChainSelectedActionId, chain),
+			)
+			.row()
+	})
+}
+
 export function buildChooseTokenPage<T>(
 	params: ChooseTokenParams<T>,
 ): PageContent {

@@ -27,6 +27,7 @@ import { promptEntryCount } from './action-handlers/play/prompt-entry-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
+import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
 import { openSwap } from './action-handlers/wallet/open-swap'
@@ -113,4 +114,5 @@ export const actionRegistry = {
 	submitSwapAmount,
 	promptSwapAmount,
 	openSwapCheckout,
+	executeSwap,
 } satisfies Record<string, AnyActionDef>

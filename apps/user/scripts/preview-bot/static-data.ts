@@ -9,6 +9,8 @@ import {
 	GetZapResultResponseDtoOutput,
 	PayoutDto,
 	QuotePurchaseResponseDtoOutput,
+	QuoteSwapResponseDtoOutput,
+	QuoteSwapSamechainResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	RipDto,
 	TransactionDto,
@@ -80,6 +82,11 @@ export const mockEthArbBalance: CurrencyAmountDto = {
 export const mockEthArbBalanceInsufficient: CurrencyAmountDto = {
 	currency: mockEthArb,
 	amount: '0', // no ETH for gas
+}
+
+export const mockEthArbBalanceSufficient: CurrencyAmountDto = {
+	currency: mockEthArb,
+	amount: '100000000000000000', // 0.1 ETH, covers bridge + network fee
 }
 
 export const mockEthArbNetworkFee: CurrencyAmountDto = {
@@ -168,6 +175,30 @@ export const mockUsdcOnBase = {
 	symbol: 'USDC',
 	name: 'USD Coin',
 	decimals: 6,
+}
+
+const mockSwapAmountOut: CurrencyAmountDto = {
+	currency: mockUsdcOnBase,
+	amount: '24900000', // ~24.9 USDC on Base
+}
+
+const mockSwapBridgeFee: CurrencyAmountDto = {
+	currency: mockEthArb,
+	amount: '1000000000000000', // 0.001 ETH
+}
+
+const SWAP_DURATION_MS = 6000
+
+export const mockSwapCrosschainQuote: QuoteSwapResponseDtoOutput = {
+	amountOut: mockSwapAmountOut,
+	fee: mockSwapBridgeFee,
+	blockchainFee: mockEthArbNetworkFee,
+	durationMs: SWAP_DURATION_MS,
+}
+
+export const mockSwapSamechainQuote: QuoteSwapSamechainResponseDtoOutput = {
+	amountOut: { currency: mockUsdcArb, amount: '24900000' }, // ~24.9 USDC on Arbitrum
+	blockchainFee: mockEthArbNetworkFee,
 }
 
 export const mockWithdrawTransaction: TransactionDto = {

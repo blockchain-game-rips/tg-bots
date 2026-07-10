@@ -21,6 +21,7 @@ import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
+import { SwapCheckoutPage } from '../../src/pages/swap/swap-checkout-page'
 import { SwapChooseAmountPage } from '../../src/pages/swap/swap-choose-amount-page'
 import { SwapChooseDstChainPage } from '../../src/pages/swap/swap-choose-dst-chain-page'
 import { SwapChooseDstTokenPage } from '../../src/pages/swap/swap-choose-dst-token-page'
@@ -44,6 +45,7 @@ import {
 	mockEntryCost,
 	mockEthArbBalance,
 	mockEthArbBalanceInsufficient,
+	mockEthArbBalanceSufficient,
 	mockEthArbNetworkFee,
 	mockFinishedRips,
 	mockPurchase,
@@ -54,12 +56,15 @@ import {
 	mockRip,
 	mockRip2,
 	mockSufficientBalance,
+	mockSwapCrosschainQuote,
+	mockSwapSamechainQuote,
 	mockTierTables,
 	mockUnrevealedPayouts,
 	mockUsdcArb,
 	mockUsdcArbBalance,
 	mockUsdcArbWithdrawAmount,
 	mockUsdcArbWithdrawAmountInsufficient,
+	mockUsdcOnBase,
 	mockUserEvmAddress,
 	mockWithdrawAmount,
 	mockWithdrawRewardResponse,
@@ -426,6 +431,51 @@ export const pages: Record<string, PageEntry> = {
 				return SwapChooseAmountPage.renderFreshDraft(draft)
 
 			return SwapChooseAmountPage.renderDraftEdit(draft)
+		},
+	},
+	'swap-checkout': {
+		description:
+			'Final step of the swap flow. Shows the quote: amount, estimated receive, fees, and source balance. Confirm if funds cover the amount and fees; otherwise a warning replaces Confirm. The "crosschain-*" variants swap across chains (Arbitrum → Base) and show estimated time plus a bridge fee; the "samechain-sufficient" variant swaps on one chain with only a network fee. The two crosschain-insufficient variants differ by which balance is short: "amount" suggests entering a smaller amount, "native" warns there is not enough gas.',
+		variants: [
+			'crosschain-sufficient',
+			'crosschain-insufficient-amount',
+			'crosschain-insufficient-native',
+			'samechain-sufficient',
+		],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const isSamechain = resolvedVariant === 'samechain-sufficient'
+
+			const amountIn =
+				resolvedVariant === 'crosschain-insufficient-amount'
+					? mockUsdcArbWithdrawAmountInsufficient
+					: mockUsdcArbWithdrawAmount
+
+			const nativeBalance =
+				resolvedVariant === 'crosschain-insufficient-native'
+					? mockEthArbBalanceInsufficient
+					: mockEthArbBalanceSufficient
+
+			if (isSamechain) {
+				return SwapCheckoutPage.render({
+					srcCurrency: mockUsdcArb,
+					srcBalance: mockUsdcArbBalance,
+					nativeBalance,
+					dstCurrency: mockUsdcArb,
+					amountIn,
+					quote: { kind: 'samechain', quote: mockSwapSamechainQuote },
+				})
+			}
+
+			return SwapCheckoutPage.render({
+				srcCurrency: mockUsdcArb,
+				srcBalance: mockUsdcArbBalance,
+				nativeBalance,
+				dstCurrency: mockUsdcOnBase,
+				amountIn,
+				quote: { kind: 'crosschain', quote: mockSwapCrosschainQuote },
+			})
 		},
 	},
 	'referral-system': {

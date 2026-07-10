@@ -40,9 +40,11 @@ import { openWithdraw } from './action-handlers/wallet/open-withdraw'
 import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
 import { openWithdrawChooseChain } from './action-handlers/wallet/open-withdraw-choose-chain'
 import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdraw-choose-currency'
+import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
 import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
+import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 
@@ -108,5 +110,7 @@ export const actionRegistry = {
 	openSwapChooseDstChain,
 	openSwapChooseDstToken,
 	openSwapChooseAmount,
+	submitSwapAmount,
+	promptSwapAmount,
 	openSwapCheckout,
 } satisfies Record<string, AnyActionDef>

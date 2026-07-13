@@ -3,7 +3,6 @@ import { ActionDef, noPayload } from '../../action-def'
 import { WithdrawChooseAmountPage } from '../../pages/wallet/withdraw-choose-amount-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
-import { toCurrencyId } from '../../utils/currency'
 
 export const openWithdrawChooseAmount: ActionDef<void> = noPayload(
 	async (session) => {
@@ -13,7 +12,7 @@ export const openWithdrawChooseAmount: ActionDef<void> = noPayload(
 
 		const currencyBalance = await fetchSingleBalance(
 			session.telegramId,
-			toCurrencyId(currency.chainAddress),
+			currency.chainAddress,
 		)
 
 		return {

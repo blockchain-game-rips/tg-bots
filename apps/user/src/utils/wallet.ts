@@ -10,7 +10,6 @@ import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'
 import { Effect, EffectType } from '../types'
 import { fetchBalances } from './api/wrappers'
-import { toCurrencyId } from './currency'
 
 export function evmAddressFromUser(user: UserDtoOutput) {
 	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
@@ -30,7 +29,7 @@ export async function resolveWithdrawPage(
 ): Promise<Effect> {
 	if (currencyAmount === undefined || recipientAddress === undefined) {
 		const balances = await fetchBalances(telegramId, [
-			toCurrencyId(currency.chainAddress),
+			currency.chainAddress,
 		])
 
 		const currencyBalance = balances[0]
@@ -63,8 +62,8 @@ export async function resolveWithdrawPage(
 	])
 
 	const balances = await fetchBalances(telegramId, [
-		toCurrencyId(currency.chainAddress),
-		toCurrencyId(withdrawQuote.blockchainFee.currency.chainAddress),
+		currency.chainAddress,
+		withdrawQuote.blockchainFee.currency.chainAddress,
 	])
 
 	const nativeBalance = balances.find(

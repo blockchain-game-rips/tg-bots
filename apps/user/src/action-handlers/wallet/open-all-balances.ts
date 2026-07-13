@@ -4,7 +4,6 @@ import { SUPPORTED_CURRENCIES } from '../../constants'
 import { AllBalancesPage } from '../../pages/wallet/all-balances-page'
 import { EffectType } from '../../types'
 import { fetchBalances } from '../../utils/api/wrappers'
-import { toCurrencyId } from '../../utils/currency'
 
 export const openAllBalances: ActionDef<void> = noPayload((session) => {
 	const { telegramId } = session
@@ -15,9 +14,10 @@ export const openAllBalances: ActionDef<void> = noPayload((session) => {
 			type: EffectType.SEND_LOADING,
 			message: 'Fetching balances...',
 			next: async () => {
-				const chainAddresses = SUPPORTED_CURRENCIES.map(toCurrencyId)
-
-				const balances = await fetchBalances(telegramId, chainAddresses)
+				const balances = await fetchBalances(
+					telegramId,
+					SUPPORTED_CURRENCIES,
+				)
 
 				return {
 					flow: toReset(),

@@ -1,4 +1,5 @@
 import {
+	ChainAddressDto,
 	createQuerySerializer,
 	currencyControllerGetCurrencies,
 	ripsControllerGetPayouts,
@@ -17,11 +18,11 @@ const chainAddressQuerySerializer = createQuerySerializer({
 
 export async function fetchBalances(
 	telegramId: string,
-	chainAddresses: string[],
+	chainAddresses: ChainAddressDto[],
 ) {
 	const { data } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
-		query: { chainAddress: chainAddresses },
+		query: { chainAddress: chainAddresses.map(toCurrencyId) },
 		querySerializer: chainAddressQuerySerializer,
 	})
 
@@ -38,9 +39,7 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 }
 
 export async function fetchNativeBalance(telegramId: string) {
-	const balances = await fetchBalances(telegramId, [
-		toCurrencyId(NATIVE_ON_BASE),
-	])
+	const balances = await fetchBalances(telegramId, [NATIVE_ON_BASE])
 
 	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]
 
@@ -80,7 +79,7 @@ export async function fetchUnrevealedPayouts(telegramId: string) {
 
 export async function fetchSingleBalance(
 	telegramId: string,
-	chainAddress: string,
+	chainAddress: ChainAddressDto,
 ) {
 	const balances = await fetchBalances(telegramId, [chainAddress])
 

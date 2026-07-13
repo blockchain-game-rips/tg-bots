@@ -7,7 +7,7 @@ import { Flow } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
-import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
+import { findCurrencyIndex } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { ripsControllerQuoteZap } from './zap-api-stub'
 
@@ -41,8 +41,8 @@ async function buildZapCheckout(
 		])
 
 	const balances = await fetchBalances(session.telegramId, [
-		toCurrencyId(currencyChainAddress),
-		toCurrencyId(zapQuote.blockchainFee.currency.chainAddress),
+		currencyChainAddress,
+		zapQuote.blockchainFee.currency.chainAddress,
 	])
 
 	const currencyInBalance = balances.find(

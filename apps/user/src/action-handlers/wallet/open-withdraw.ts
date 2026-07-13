@@ -7,7 +7,7 @@ import { Flow } from '../../flows'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
-import { findCurrencyIndex, toCurrencyId } from '../../utils/currency'
+import { findCurrencyIndex } from '../../utils/currency'
 
 export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(
 	(currencyChainAddress) =>
@@ -16,7 +16,7 @@ export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(
 	async (session, currencyChainAddress) => {
 		const currencyBalance = await fetchSingleBalance(
 			session.telegramId,
-			toCurrencyId(currencyChainAddress),
+			currencyChainAddress,
 		)
 
 		const flow = toFlow<Flow, 'withdraw', 'currency-chosen'>(

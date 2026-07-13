@@ -1,5 +1,5 @@
 import { ChainAddressDto } from '@rips/api-client'
-import { isFlow } from '@rips/grammy-kit'
+import { isFlow, SessionData } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import {
@@ -7,9 +7,9 @@ import {
 	SUPPORTED_CHAINS,
 	SUPPORTED_CURRENCIES,
 } from '../../constants'
-import { toFlow, toHold } from '../../flows'
+import { Flow, toFlow, toHold } from '../../flows'
 import { SwapChooseDstChainPage } from '../../pages/swap/swap-choose-dst-chain-page'
-import { EffectType } from '../../types'
+import { EffectType, HandlerResult } from '../../types'
 import { fetchBalances, getBalance } from '../../utils/api/wrappers'
 import { findCurrencyIndex } from '../../utils/currency'
 
@@ -17,49 +17,52 @@ export const openSwapChooseDstChain: ActionDef<ChainAddressDto> = withPayload(
 	(currencyChainAddress) =>
 		findCurrencyIndex(currencyChainAddress).toString(),
 	(raw) => parseCurrencyChainAddress(raw, SUPPORTED_CURRENCIES),
-	async (session, srcChainAddress) => {
-		const dstChains = [...SUPPORTED_CHAINS]
+	handler,
+)
 
-		if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-			const { srcCurrencyBalance, amountIn } = session.flow.data
+async function handler(
+	session: SessionData<Flow>,
+	srcChainAddress: ChainAddressDto,
+): Promise<HandlerResult<Flow>> {
+	const dstChains = [...SUPPORTED_CHAINS]
 
-			return {
-				flow: toHold(),
-				effect: {
-					type: EffectType.EDIT,
-					page: SwapChooseDstChainPage.renderDraftEdit({
-						srcCurrency: srcCurrencyBalance.currency,
-						srcBalance: srcCurrencyBalance,
-						dstChains,
-						amount: amountIn,
-					}),
-				},
-			}
-		}
-
-		const { srcCurrencyBalance, nativeCurrencyBalance } = await getBalances(
-			srcChainAddress,
-			session.telegramId,
-		)
-
-		const flow = toFlow('swap', 'src-chosen', {
-			srcCurrencyBalance,
-			nativeCurrencyBalance,
-		})
+	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
+		const { srcCurrencyBalance, amountIn } = session.flow.data
 
 		return {
-			flow,
+			flow: toHold(),
 			effect: {
 				type: EffectType.EDIT,
-				page: SwapChooseDstChainPage.renderFreshDraft({
+				page: SwapChooseDstChainPage.renderDraftEdit({
 					srcCurrency: srcCurrencyBalance.currency,
 					srcBalance: srcCurrencyBalance,
 					dstChains,
+					amount: amountIn,
 				}),
 			},
 		}
-	},
-)
+	}
+
+	const { srcCurrencyBalance, nativeCurrencyBalance } = await getBalances(
+		srcChainAddress,
+		session.telegramId,
+	)
+
+	return {
+		flow: toFlow('swap', 'src-chosen', {
+			srcCurrencyBalance,
+			nativeCurrencyBalance,
+		}),
+		effect: {
+			type: EffectType.EDIT,
+			page: SwapChooseDstChainPage.renderFreshDraft({
+				srcCurrency: srcCurrencyBalance.currency,
+				srcBalance: srcCurrencyBalance,
+				dstChains,
+			}),
+		},
+	}
+}
 
 async function getBalances(
 	srcChainAddress: ChainAddressDto,

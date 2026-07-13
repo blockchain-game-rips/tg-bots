@@ -6,8 +6,10 @@ import { toCurrencyAmount } from '../../utils/currency'
 import { resolveWithdrawPage } from '../../utils/wallet'
 
 export const submitWithdrawRecipient: ActionDef<string> = withPayload(
-	(address) => address,
-	(raw) => parseEvmAddress(raw),
+	{
+		encode: (address) => address,
+		decode: (raw) => parseEvmAddress(raw),
+	},
 	async (session, recipientAddress) => {
 		assertFlow(session, 'withdraw', 'currency-chosen')
 

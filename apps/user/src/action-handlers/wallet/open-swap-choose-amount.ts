@@ -1,13 +1,9 @@
 import { ChainAddressDto } from '@rips/api-client'
-import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
-import { SUPPORTED_CURRENCIES } from '../../constants'
-import { findCurrencyIndex } from '../../utils/currency'
+import { currencyChainAddressCodec } from '../../utils/currency'
 
 export const openSwapChooseAmount: ActionDef<ChainAddressDto> = withPayload(
-	(currencyChainAddress) =>
-		findCurrencyIndex(currencyChainAddress).toString(),
-	(raw) => parseCurrencyChainAddress(raw, SUPPORTED_CURRENCIES),
+	currencyChainAddressCodec,
 	() => {
 		// TODO: swap: implement
 		throw new Error('Not implemented')

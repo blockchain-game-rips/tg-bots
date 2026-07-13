@@ -2,11 +2,11 @@ import { assertFlow } from '@rips/grammy-kit'
 import { parseCurrencyAmount } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { toStep } from '../../flows'
+import { rawStringCodec } from '../../utils/codecs'
 import { resolveWithdrawPage } from '../../utils/wallet'
 
 export const submitWithdrawAmount: ActionDef<string> = withPayload(
-	(amount) => amount,
-	(raw) => raw,
+	rawStringCodec,
 	async (session, amountRaw) => {
 		assertFlow(session, 'withdraw', 'currency-chosen')
 

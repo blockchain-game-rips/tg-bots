@@ -4,6 +4,11 @@ import { Effect, HandlerResult, SessionData } from '../types'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySession = SessionData<any>
 
+export interface PayloadCodec<P> {
+	encode: (value: P) => string
+	decode: (raw: string) => P
+}
+
 export interface ActionDef<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
@@ -33,16 +38,15 @@ export function noPayload<F extends FlowBase | null = FlowBase | null>(
 }
 
 export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
-	encode: (value: P) => string,
-	decode: (raw: string) => P,
+	codec: PayloadCodec<P>,
 	handler: (
 		session: SessionData<F>,
 		payload: P,
 	) => Promise<HandlerResult<F>> | HandlerResult<F>,
 ): ActionDef<P> {
 	return {
-		encode,
-		decode,
+		encode: codec.encode,
+		decode: codec.decode,
 		handler: (session, payload) =>
 			handler(session as SessionData<F>, payload),
 	}

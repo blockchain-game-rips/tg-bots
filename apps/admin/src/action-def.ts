@@ -22,5 +22,5 @@ export function withPayload<P>(
 	decode: (raw: string) => P,
 	handler: (session: SessionData<Flow>, payload: P) => Result,
 ): ActionDef<P> {
-	return _withPayload(encode, decode, handler)
+	return _withPayload({ encode, decode }, handler)
 }

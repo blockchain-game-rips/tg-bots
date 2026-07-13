@@ -6,8 +6,10 @@ import { EffectType } from '../../types'
 import { fetchPreset } from '../../utils/api/wrappers'
 
 export const openBuyChooseEntryCount: ActionDef<number> = withPayload(
-	(presetId) => presetId.toString(),
-	(raw) => parsePresetId(raw),
+	{
+		encode: (presetId) => presetId.toString(),
+		decode: (raw) => parsePresetId(raw),
+	},
 	async (_session, presetId) => {
 		const availablePreset = await fetchPreset(presetId)
 

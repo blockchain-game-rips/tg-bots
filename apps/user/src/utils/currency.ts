@@ -3,6 +3,8 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 } from '@rips/api-client'
+import { PayloadCodec } from '@rips/grammy-kit'
+import { parseCurrencyChainAddress } from '@rips/shared'
 import { SUPPORTED_CURRENCIES } from '../constants'
 
 export function findCurrencyIndex(value: ChainAddressDto): number {
@@ -11,6 +13,12 @@ export function findCurrencyIndex(value: ChainAddressDto): number {
 			c.address === value.address &&
 			c.chain.reference === value.chain.reference,
 	)
+}
+
+export const currencyChainAddressCodec: PayloadCodec<ChainAddressDto> = {
+	encode: (currencyChainAddress) =>
+		findCurrencyIndex(currencyChainAddress).toString(),
+	decode: (raw) => parseCurrencyChainAddress(raw, SUPPORTED_CURRENCIES),
 }
 
 export function isSameChainAddress(

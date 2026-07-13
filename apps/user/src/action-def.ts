@@ -1,6 +1,7 @@
 import {
 	ActionDef,
 	HandlerResult,
+	PayloadCodec,
 	noPayload as _noPayload,
 	withPayload as _withPayload,
 } from '@rips/grammy-kit'
@@ -18,9 +19,8 @@ export function noPayload(
 }
 
 export function withPayload<P>(
-	encode: (value: P) => string,
-	decode: (raw: string) => P,
+	codec: PayloadCodec<P>,
 	handler: (session: SessionData<Flow>, payload: P) => Result,
 ): ActionDef<P> {
-	return _withPayload(encode, decode, handler)
+	return _withPayload(codec, handler)
 }

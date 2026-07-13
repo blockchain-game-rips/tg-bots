@@ -1,3 +1,5 @@
+import { PayloadCodec } from '@rips/grammy-kit'
+import { parseChain } from '@rips/shared'
 import {
 	EIP155_NAMESPACE,
 	SUPPORTED_CHAINS as SUPPORTED_CHAINS_LIST,
@@ -31,6 +33,11 @@ export function findChainIndex(chain: Chain): number {
 		(c) =>
 			c.namespace === chain.namespace && c.reference === chain.reference,
 	)
+}
+
+export const chainCodec: PayloadCodec<Chain> = {
+	encode: (chain) => findChainIndex(chain).toString(),
+	decode: (raw) => parseChain(raw, SUPPORTED_CHAINS_LIST),
 }
 
 export function getCurrenciesForChain(chain: Chain): string[] {

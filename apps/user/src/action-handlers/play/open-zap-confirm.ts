@@ -1,13 +1,11 @@
 import { ChainAddressDto, usersControllerGetUser } from '@rips/api-client'
 import { assertFlow, HandlerResult } from '@rips/grammy-kit'
-import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
-import { SUPPORTED_CURRENCIES } from '../../constants'
 import { Flow, toStep } from '../../flows'
 import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
-import { findCurrencyIndex } from '../../utils/currency'
+import { currencyChainAddressCodec } from '../../utils/currency'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { ripsControllerQuoteZap } from './zap-api-stub'
 
@@ -79,9 +77,7 @@ async function buildZapCheckout(
 }
 
 export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
-	(currencyChainAddress) =>
-		findCurrencyIndex(currencyChainAddress).toString(),
-	(raw) => parseCurrencyChainAddress(raw, SUPPORTED_CURRENCIES),
+	currencyChainAddressCodec,
 	(session, currencyChainAddress) =>
 		buildZapCheckout(session, currencyChainAddress),
 )

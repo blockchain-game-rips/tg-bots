@@ -30,6 +30,12 @@ export const NATIVE_ON_BASE: ChainAddressDto = {
 	chain: BASE_CHAIN,
 }
 
+export function nativeChainAddress(
+	chain: ChainAddressDto['chain'],
+): ChainAddressDto {
+	return { address: NATIVE_ADDRESS, chain }
+}
+
 export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
 	// Ethereum
 	{ address: NATIVE_ADDRESS, chain: ETHEREUM_CHAIN },

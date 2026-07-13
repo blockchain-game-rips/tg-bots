@@ -5,6 +5,7 @@ import {
 	CurrencyAmountDto,
 	GetCardCollectionResponseDtoOutput,
 	GetReferrerResponseDtoOutput,
+	GetSwapResultResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
 	PayoutDto,
@@ -13,6 +14,8 @@ import {
 	QuoteSwapSamechainResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	RipDto,
+	SwapResponseDtoOutput,
+	SwapSamechainResponseDtoOutput,
 	TransactionDto,
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
@@ -199,6 +202,29 @@ export const mockSwapCrosschainQuote: QuoteSwapResponseDtoOutput = {
 export const mockSwapSamechainQuote: QuoteSwapSamechainResponseDtoOutput = {
 	amountOut: { currency: mockUsdcArb, amount: '24900000' }, // ~24.9 USDC on Arbitrum
 	blockchainFee: mockEthArbNetworkFee,
+}
+
+const mockSwapSrcTxId = '0xecc4a1c2b3d4e5f60718293a4b5c6d7e8f9012345678d3bf'
+const mockSwapDstTxId = '0x1a2b3c4d5e6f708192a3b4c5d6e7f80912345678aabbccdd'
+
+export const mockSwapSamechainResult: SwapSamechainResponseDtoOutput = {
+	transaction: { id: mockSwapSrcTxId, cost: mockEthArbNetworkFee },
+	amountOut: { currency: mockUsdcArb, amount: '24900000' }, // ~24.9 USDC on Arbitrum
+}
+
+export const mockSwapCrosschainResponse: SwapResponseDtoOutput = {
+	zapId: 'swap_abc123',
+	srcTransaction: { id: mockSwapSrcTxId, cost: mockEthArbNetworkFee },
+	amountIn: mockUsdcArbWithdrawAmount,
+	fee: mockSwapBridgeFee,
+	durationMs: SWAP_DURATION_MS,
+}
+
+export const mockSwapCrosschainSuccessResult: NonNullable<
+	GetSwapResultResponseDtoOutput['success']
+> = {
+	dstTransaction: { id: mockSwapDstTxId, cost: mockEthArbNetworkFee },
+	amountOut: mockSwapAmountOut,
 }
 
 export const mockWithdrawTransaction: TransactionDto = {

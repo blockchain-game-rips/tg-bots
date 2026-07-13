@@ -27,6 +27,7 @@ import { SwapChooseDstChainPage } from '../../src/pages/swap/swap-choose-dst-cha
 import { SwapChooseDstTokenPage } from '../../src/pages/swap/swap-choose-dst-token-page'
 import { SwapChooseSrcChainPage } from '../../src/pages/swap/swap-choose-src-chain-page'
 import { SwapChooseSrcTokenPage } from '../../src/pages/swap/swap-choose-src-token-page'
+import { SwapSuccessPage } from '../../src/pages/swap/swap-success-page'
 import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
@@ -57,7 +58,10 @@ import {
 	mockRip2,
 	mockSufficientBalance,
 	mockSwapCrosschainQuote,
+	mockSwapCrosschainResponse,
+	mockSwapCrosschainSuccessResult,
 	mockSwapSamechainQuote,
+	mockSwapSamechainResult,
 	mockTierTables,
 	mockUnrevealedPayouts,
 	mockUsdcArb,
@@ -475,6 +479,24 @@ export const pages: Record<string, PageEntry> = {
 				dstCurrency: mockUsdcOnBase,
 				amountIn,
 				quote: { kind: 'crosschain', quote: mockSwapCrosschainQuote },
+			})
+		},
+	},
+	'swap-success': {
+		description:
+			'Final step of the swap flow. Confirms the swap succeeded — shows amount received, network fee, and transaction hashes. The "samechain" variant shows a single transaction; the "crosschain" variant shows one transaction per chain (source and destination).',
+		variants: ['crosschain', 'samechain'],
+		render(variant) {
+			if (resolveVariant(this, variant) === 'samechain')
+				return SwapSuccessPage.render({
+					kind: 'samechain',
+					result: mockSwapSamechainResult,
+				})
+
+			return SwapSuccessPage.render({
+				kind: 'crosschain',
+				swapResponse: mockSwapCrosschainResponse,
+				result: mockSwapCrosschainSuccessResult,
 			})
 		},
 	},

@@ -9,7 +9,7 @@ import { EIP155_NAMESPACE } from '../constants'
 import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'
 import { Effect, EffectType } from '../types'
-import { fetchBalances } from './api/wrappers'
+import { fetchBalances, getBalance } from './api/wrappers'
 
 export function evmAddressFromUser(user: UserDtoOutput) {
 	const userEvmAddress = user.wallets[EIP155_NAMESPACE]
@@ -32,9 +32,7 @@ export async function resolveWithdrawPage(
 			currency.chainAddress,
 		])
 
-		const currencyBalance = balances[0]
-
-		if (currencyBalance === undefined) throw new Error('Balance not found')
+		const currencyBalance = getBalance(balances, currency.chainAddress)
 
 		return {
 			type: EffectType.EDIT,
@@ -66,17 +64,12 @@ export async function resolveWithdrawPage(
 		withdrawQuote.blockchainFee.currency.chainAddress,
 	])
 
-	const nativeBalance = balances.find(
-		(balance) =>
-			balance.currency.id === withdrawQuote.blockchainFee.currency.id,
+	const nativeBalance = getBalance(
+		balances,
+		withdrawQuote.blockchainFee.currency.chainAddress,
 	)
-	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
-	const currencyBalance = balances.find(
-		(balance) => balance.currency.id === currency.id,
-	)
-	if (currencyBalance === undefined)
-		throw new Error('Currency balance not found')
+	const currencyBalance = getBalance(balances, currency.chainAddress)
 
 	return {
 		type: EffectType.EDIT,

@@ -13,6 +13,17 @@ export function findCurrencyIndex(value: ChainAddressDto): number {
 	)
 }
 
+export function isSameChainAddress(
+	a: ChainAddressDto,
+	b: ChainAddressDto,
+): boolean {
+	return (
+		a.chain.namespace === b.chain.namespace &&
+		a.chain.reference === b.chain.reference &&
+		a.address.toLowerCase() === b.address.toLowerCase()
+	)
+}
+
 export function toCurrencyId(currencyChainAddress: ChainAddressDto) {
 	const { address, chain } = currencyChainAddress
 

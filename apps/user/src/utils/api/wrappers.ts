@@ -1,6 +1,7 @@
 import {
 	ChainAddressDto,
 	createQuerySerializer,
+	CurrencyAmountDto,
 	currencyControllerGetCurrencies,
 	ripsControllerGetPayouts,
 	ripsControllerGetPresets,
@@ -10,7 +11,7 @@ import {
 	walletsControllerGetBalances,
 } from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
-import { toCurrencyId } from '../currency'
+import { isSameChainAddress, toCurrencyId } from '../currency'
 
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
@@ -20,13 +21,35 @@ export async function fetchBalances(
 	telegramId: string,
 	chainAddresses: ChainAddressDto[],
 ) {
+	const uniqueChainAddresses = chainAddresses.filter(
+		(chainAddress, index) =>
+			chainAddresses.findIndex((other) =>
+				isSameChainAddress(chainAddress, other),
+			) === index,
+	)
+
 	const { data } = await walletsControllerGetBalances({
 		headers: { 'x-telegram-id': telegramId },
-		query: { chainAddress: chainAddresses.map(toCurrencyId) },
+		query: { chainAddress: uniqueChainAddresses.map(toCurrencyId) },
 		querySerializer: chainAddressQuerySerializer,
 	})
 
 	return data.balances
+}
+
+export function getBalance(
+	balances: CurrencyAmountDto[],
+	chainAddress: ChainAddressDto,
+): CurrencyAmountDto {
+	const balance = balances.find((b) =>
+		isSameChainAddress(b.currency.chainAddress, chainAddress),
+	)
+
+	if (balance === undefined) {
+		throw new Error(`Balance not found for ${toCurrencyId(chainAddress)}`)
+	}
+
+	return balance
 }
 
 export async function fetchCurrencies(chainAddresses: string[]) {
@@ -41,13 +64,7 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 export async function fetchNativeBalance(telegramId: string) {
 	const balances = await fetchBalances(telegramId, [NATIVE_ON_BASE])
 
-	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]
-
-	if (balance === undefined) {
-		throw new Error('No balance found for native asset')
-	}
-
-	return balance
+	return getBalance(balances, NATIVE_ON_BASE)
 }
 
 export async function fetchRips(
@@ -83,11 +100,7 @@ export async function fetchSingleBalance(
 ) {
 	const balances = await fetchBalances(telegramId, [chainAddress])
 
-	const balance = (balances as ((typeof balances)[number] | undefined)[])[0]
-
-	if (balance === undefined) throw new Error('Balance not found')
-
-	return balance
+	return getBalance(balances, chainAddress)
 }
 
 export async function fetchPreset(

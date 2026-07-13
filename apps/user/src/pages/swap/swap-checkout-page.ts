@@ -219,4 +219,6 @@ function buildKeyboard(
 				srcCurrency.chainAddress.chain,
 			),
 		)
+		.row()
+		.appendHomeButton()
 }

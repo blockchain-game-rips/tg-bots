@@ -54,9 +54,7 @@ export const RevealPayoutsNoBackPage = {
 	render(unrevealedPayouts: PayoutDto[]): PageContent {
 		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
-		keyboard
-			.row()
-			.text('Home', buildActionData(actionIds.openHome, undefined))
+		keyboard.row().appendHomeButton()
 
 		return { message: lines.join('\n'), keyboard }
 	},

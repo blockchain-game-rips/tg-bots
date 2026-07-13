@@ -1,5 +1,4 @@
 import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
 import {
 	buyEntriesBreadcrumb,
 	configName,
@@ -7,7 +6,6 @@ import {
 	resolveConfig,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 
@@ -40,10 +38,7 @@ export const ZapFailedPage = {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text(
-				'Home',
-				buildActionData(actionIds.openHome, undefined),
-			),
+			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},
 }

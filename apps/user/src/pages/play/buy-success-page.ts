@@ -1,12 +1,10 @@
 import { BuyEntriesPurchaseResponseDtoOutput, RipDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
 import {
 	buyEntriesBreadcrumb,
 	configName,
 	formatAmountWithUsd,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 export const BuySuccessPage = {
@@ -48,10 +46,7 @@ export const BuySuccessPage = {
 
 		return {
 			message: lines.join('\n'),
-			keyboard: new InlineKeyboard().text(
-				'Home',
-				buildActionData(actionIds.openHome, undefined),
-			),
+			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},
 }

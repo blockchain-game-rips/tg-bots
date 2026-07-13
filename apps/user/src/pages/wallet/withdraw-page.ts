@@ -49,7 +49,7 @@ export const WithdrawPage = {
 				'Back',
 				buildActionData(actionIds.openWithdrawChooseToken, chain),
 			)
-			.text('Home', buildActionData(actionIds.openHome, undefined))
+			.appendHomeButton()
 
 		return { message: lines.join('\n'), keyboard }
 	},

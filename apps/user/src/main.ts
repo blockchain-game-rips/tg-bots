@@ -14,6 +14,7 @@ import { Flow } from './flows'
 import { Notifier } from './notifier'
 import { Context, EffectType, PageContent, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
+import { installKeyboardExtensions } from './utils/keyboard'
 
 client.setConfig({
 	baseUrl: getEnvSafe('BACKEND_URL'),
@@ -25,6 +26,8 @@ client.interceptors.error.use((error, response) => {
 })
 
 startMetricsServer()
+
+installKeyboardExtensions()
 
 const bot = new Bot<Context>(getEnvSafe('BOT_TOKEN'))
 

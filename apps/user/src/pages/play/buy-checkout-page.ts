@@ -99,7 +99,7 @@ export const BuyCheckoutPage = {
 					availablePreset.preset.id,
 				),
 			)
-			.text('Home', buildActionData(actionIds.openHome, undefined))
+			.appendHomeButton()
 
 		return { message: lines.join('\n'), keyboard }
 	},

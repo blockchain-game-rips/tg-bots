@@ -16,7 +16,10 @@ export const SwapChooseSrcTokenPage = {
 
 		return {
 			message: buildMessage([`From: ${chainToName(srcChain)}`]),
-			keyboard: buildKeyboard(currencies, actionIds.openSwap),
+			keyboard: buildKeyboard(
+				currencies,
+				actionIds.openSwapChooseSrcChain,
+			),
 		}
 	},
 

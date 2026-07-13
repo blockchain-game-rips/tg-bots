@@ -29,7 +29,10 @@ export const WalletPage = {
 				buildActionData(actionIds.openWithdrawChooseChain, undefined),
 			)
 			.row()
-			.text('Swap', buildActionData(actionIds.openSwap, undefined))
+			.text(
+				'Swap',
+				buildActionData(actionIds.openSwapChooseSrcChain, undefined),
+			)
 			.row()
 
 		addNav(keyboard, {

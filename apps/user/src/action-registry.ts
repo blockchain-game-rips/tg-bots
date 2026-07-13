@@ -30,11 +30,11 @@ import { openReferralWithdrawReward } from './action-handlers/referral-system/op
 import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
-import { openSwap } from './action-handlers/wallet/open-swap'
 import { openSwapCheckout } from './action-handlers/wallet/open-swap-checkout'
 import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
 import { openSwapChooseDstChain } from './action-handlers/wallet/open-swap-choose-dst-chain'
 import { openSwapChooseDstToken } from './action-handlers/wallet/open-swap-choose-dst-token'
+import { openSwapChooseSrcChain } from './action-handlers/wallet/open-swap-choose-src-chain'
 import { openSwapChooseSrcToken } from './action-handlers/wallet/open-swap-choose-src-token'
 import { openWallet } from './action-handlers/wallet/open-wallet'
 import { openWithdraw } from './action-handlers/wallet/open-withdraw'
@@ -106,7 +106,7 @@ export const actionRegistry = {
 	executeZap,
 
 	// Swap
-	openSwap,
+	openSwapChooseSrcChain,
 	openSwapChooseSrcToken,
 	openSwapChooseDstChain,
 	openSwapChooseDstToken,

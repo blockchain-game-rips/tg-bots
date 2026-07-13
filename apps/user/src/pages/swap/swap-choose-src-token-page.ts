@@ -3,7 +3,7 @@ import { addNav } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { ActionId, Chain, PageContent } from '../../types'
+import { Chain, PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { buildTokenKeyboard } from '../choose-chain-token'
 
@@ -16,10 +16,7 @@ export const SwapChooseSrcTokenPage = {
 
 		return {
 			message: buildMessage([`From: ${chainToName(srcChain)}`]),
-			keyboard: buildKeyboard(
-				currencies,
-				actionIds.openSwapChooseSrcChain,
-			),
+			keyboard: buildFreshDraftKeyboard(currencies),
 		}
 	},
 
@@ -33,7 +30,7 @@ export const SwapChooseSrcTokenPage = {
 
 		return {
 			message: buildMessage(draftLines(srcChain, dstCurrency, amount)),
-			keyboard: buildKeyboard(currencies, actionIds.openSwapCheckout),
+			keyboard: buildDraftEditKeyboard(currencies),
 		}
 	},
 }
@@ -59,17 +56,26 @@ function draftLines(
 	]
 }
 
-function buildKeyboard(
-	currencies: CurrencyDto[],
-	parentActionId: ActionId,
-): InlineKeyboard {
+function buildFreshDraftKeyboard(currencies: CurrencyDto[]): InlineKeyboard {
 	const keyboard = buildTokenKeyboard(
 		currencies,
 		actionIds.openSwapChooseDstChain,
 	)
 
 	return addNav(keyboard, {
-		parent: parentActionId,
+		parent: actionIds.openSwapChooseSrcChain,
+		home: actionIds.openHome,
+	})
+}
+
+function buildDraftEditKeyboard(currencies: CurrencyDto[]): InlineKeyboard {
+	const keyboard = buildTokenKeyboard(
+		currencies,
+		actionIds.openSwapCheckoutFromSrc,
+	)
+
+	return addNav(keyboard, {
+		parent: actionIds.openSwapCheckout,
 		home: actionIds.openHome,
 	})
 }

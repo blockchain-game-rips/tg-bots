@@ -1,5 +1,5 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
-import { addNav, NavIds } from '@rips/grammy-kit'
+import { addNav } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -16,27 +16,16 @@ interface Draft {
 
 export const SwapChooseDstTokenPage = {
 	renderFreshDraft(draft: Draft): PageContent {
-		const backToDstChain: NavIds = {
-			parent: actionIds.openSwapChooseDstChain,
-			parentPayload: draft.srcCurrency.chainAddress,
-			home: actionIds.openHome,
-		}
-
 		return {
 			message: buildMessage(draft),
-			keyboard: buildKeyboard(draft.dstCurrencies, backToDstChain),
+			keyboard: buildFreshDraftKeyboard(draft),
 		}
 	},
 
 	renderDraftEdit(draft: Draft, amount: CurrencyAmountDto): PageContent {
-		const backToCheckout: NavIds = {
-			parent: actionIds.openSwapCheckout,
-			home: actionIds.openHome,
-		}
-
 		return {
 			message: buildMessage(draft, amount),
-			keyboard: buildKeyboard(draft.dstCurrencies, backToCheckout),
+			keyboard: buildDraftEditKeyboard(draft.dstCurrencies),
 		}
 	},
 }
@@ -72,14 +61,27 @@ function formatAmount(amount: CurrencyAmountDto): string {
 	return `${displayAmount} ${symbol}`
 }
 
-function buildKeyboard(
-	dstCurrencies: CurrencyDto[],
-	back: NavIds,
-): InlineKeyboard {
+function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
 	const keyboard = buildTokenKeyboard(
-		dstCurrencies,
+		draft.dstCurrencies,
 		actionIds.openSwapChooseAmount,
 	)
 
-	return addNav(keyboard, back)
+	return addNav(keyboard, {
+		parent: actionIds.openSwapChooseDstChain,
+		parentPayload: draft.srcCurrency.chainAddress,
+		home: actionIds.openHome,
+	})
+}
+
+function buildDraftEditKeyboard(dstCurrencies: CurrencyDto[]): InlineKeyboard {
+	const keyboard = buildTokenKeyboard(
+		dstCurrencies,
+		actionIds.openSwapCheckoutFromDst,
+	)
+
+	return addNav(keyboard, {
+		parent: actionIds.openSwapCheckout,
+		home: actionIds.openHome,
+	})
 }

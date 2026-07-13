@@ -75,7 +75,10 @@ function buildKeyboard(
 	)
 
 	const keyboard = new InlineKeyboard()
-		.text('Max', buildActionData(actionIds.submitSwapAmount, maxAmount))
+		.text(
+			'Max',
+			buildActionData(actionIds.openSwapCheckoutFromAmount, maxAmount),
+		)
 		.row()
 		.text(
 			'Custom amount',

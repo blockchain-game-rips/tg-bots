@@ -30,7 +30,12 @@ import { openReferralWithdrawReward } from './action-handlers/referral-system/op
 import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
-import { openSwapCheckout } from './action-handlers/wallet/open-swap-checkout'
+import {
+	openSwapCheckout,
+	openSwapCheckoutFromAmount,
+	openSwapCheckoutFromDst,
+	openSwapCheckoutFromSrc,
+} from './action-handlers/wallet/open-swap-checkout'
 import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
 import { openSwapChooseDstChain } from './action-handlers/wallet/open-swap-choose-dst-chain'
 import { openSwapChooseDstToken } from './action-handlers/wallet/open-swap-choose-dst-token'
@@ -45,7 +50,6 @@ import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
 import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
-import { submitSwapAmount } from './action-handlers/wallet/submit-swap-amount'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 
@@ -111,8 +115,10 @@ export const actionRegistry = {
 	openSwapChooseDstChain,
 	openSwapChooseDstToken,
 	openSwapChooseAmount,
-	submitSwapAmount,
 	promptSwapAmount,
 	openSwapCheckout,
+	openSwapCheckoutFromSrc,
+	openSwapCheckoutFromDst,
+	openSwapCheckoutFromAmount,
 	executeSwap,
 } satisfies Record<string, AnyActionDef>

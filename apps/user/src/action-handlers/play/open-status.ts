@@ -2,8 +2,8 @@ import {
 	ripsControllerGetOngoingRips,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { StatusPage } from '../../pages/play/status-page'
 import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'

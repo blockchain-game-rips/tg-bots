@@ -1,9 +1,8 @@
 import { ChainAddressDto } from '@rips/api-client'
-import { toFlow } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
-import { Flow } from '../../flows'
+import { toFlow } from '../../flows'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
@@ -19,11 +18,9 @@ export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(
 			currencyChainAddress,
 		)
 
-		const flow = toFlow<Flow, 'withdraw', 'currency-chosen'>(
-			'withdraw',
-			'currency-chosen',
-			{ currency: currencyBalance.currency },
-		)
+		const flow = toFlow('withdraw', 'currency-chosen', {
+			currency: currencyBalance.currency,
+		})
 
 		return {
 			flow,

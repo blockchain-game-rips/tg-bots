@@ -1,6 +1,6 @@
 import { referralSystemControllerGetTierTables } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { ReferralAboutPage } from '../../pages/referral-system/referral-about-page'
 import { EffectType } from '../../types'
 

@@ -2,9 +2,10 @@ import {
 	ripsControllerBuyEntriesPurchase,
 	ripsControllerGetOngoingRips,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, toReset } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
+import { toReset } from '../../flows'
 import { BuySuccessPage } from '../../pages/play/buy-success-page'
 import { EffectType } from '../../types'
 import { isApiErrorWithStatus } from '../../utils/api/error'

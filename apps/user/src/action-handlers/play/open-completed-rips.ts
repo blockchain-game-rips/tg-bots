@@ -1,6 +1,6 @@
 import { ripsControllerGetCompletedRips } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { FinishedRipsPage } from '../../pages/play/finished-rips-page'
 import { EffectType } from '../../types'
 

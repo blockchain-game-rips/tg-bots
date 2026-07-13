@@ -1,5 +1,5 @@
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../action-def'
+import { toReset } from '../flows'
 import { AboutPage } from '../pages/about/about-page'
 import { EffectType } from '../types'
 import { fetchPresets } from '../utils/api/wrappers'

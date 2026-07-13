@@ -2,8 +2,8 @@ import {
 	ripsControllerGetRips,
 	ripsControllerRevealPayouts,
 } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { RevealSinglePage } from '../../pages/play/reveal-single-page'
 import { EffectType } from '../../types'
 import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'

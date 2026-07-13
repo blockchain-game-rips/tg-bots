@@ -3,8 +3,8 @@ import {
 	usersControllerCreateUser,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../action-def'
+import { toReset } from '../flows'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'
 import { isApiErrorWithStatus } from '../utils/api/error'

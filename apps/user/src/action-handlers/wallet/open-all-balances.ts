@@ -1,6 +1,6 @@
-import { toHold, toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../constants'
+import { toHold, toReset } from '../../flows'
 import { AllBalancesPage } from '../../pages/wallet/all-balances-page'
 import { EffectType } from '../../types'
 import { fetchBalances } from '../../utils/api/wrappers'

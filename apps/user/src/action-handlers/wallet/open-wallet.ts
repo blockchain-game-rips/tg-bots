@@ -1,6 +1,6 @@
 import { usersControllerGetUser } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance } from '../../utils/api/wrappers'

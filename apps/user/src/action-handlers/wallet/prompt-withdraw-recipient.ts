@@ -1,6 +1,6 @@
-import { toHold } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { actionIds } from '../../actions'
+import { toHold } from '../../flows'
 import { WithdrawAddressPrompt } from '../../prompts/withdraw-address-prompt'
 import { EffectType } from '../../types'
 

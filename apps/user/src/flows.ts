@@ -1,4 +1,5 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { createFlowTransitions } from '@rips/grammy-kit'
 
 export type BuyEntriesFlow =
 	| {
@@ -61,3 +62,5 @@ export type SwapFlow =
 	  }
 
 export type Flow = BuyEntriesFlow | WithdrawFlow | SwapFlow | null
+
+export const { toFlow, toStep, toHold, toReset } = createFlowTransitions<Flow>()

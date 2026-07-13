@@ -139,6 +139,26 @@ export function toHold<F extends FlowBase | null>(): FlowTransition<F> {
 	return { kind: HOLD }
 }
 
+export function createFlowTransitions<F extends FlowBase | null>() {
+	return {
+		toFlow: <FT extends ActiveFlow<F>['flowType'], S extends StepOf<F, FT>>(
+			flowType: FT,
+			step: S,
+			data: DataOf<F, FT, S>,
+		) => toFlow<F, FT, S>(flowType, step, data),
+
+		toStep: <FT extends ActiveFlow<F>['flowType'], S extends StepOf<F, FT>>(
+			current: FlowByType<F, FT>,
+			step: S,
+			data: DataOf<F, FT, S>,
+		) => toStep<F, FT, S>(current, step, data),
+
+		toHold: () => toHold<F>(),
+
+		toReset: () => toReset<F>(),
+	}
+}
+
 export function applyFlowTransition<F extends FlowBase | null>(
 	session: SessionData<F>,
 	transition: FlowTransition<F>,

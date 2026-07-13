@@ -3,8 +3,9 @@ import {
 	GetZapResultResponseDtoOutput,
 	ripsControllerGetZapResult,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, toHold, toReset } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toHold, toReset } from '../../flows'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
 import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'

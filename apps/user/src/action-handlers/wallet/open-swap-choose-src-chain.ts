@@ -1,6 +1,7 @@
-import { isFlow, toHold, toReset } from '@rips/grammy-kit'
+import { isFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { SUPPORTED_CHAINS } from '../../constants'
+import { toHold, toReset } from '../../flows'
 import { SwapChooseSrcChainPage } from '../../pages/swap/swap-choose-src-chain-page'
 import { EffectType } from '../../types'
 

@@ -1,5 +1,5 @@
 import { ChainAddressDto } from '@rips/api-client'
-import { isFlow, toFlow, toHold } from '@rips/grammy-kit'
+import { isFlow } from '@rips/grammy-kit'
 import { parseCurrencyChainAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import {
@@ -7,7 +7,7 @@ import {
 	SUPPORTED_CHAINS,
 	SUPPORTED_CURRENCIES,
 } from '../../constants'
-import { Flow } from '../../flows'
+import { toFlow, toHold } from '../../flows'
 import { SwapChooseDstChainPage } from '../../pages/swap/swap-choose-dst-chain-page'
 import { EffectType } from '../../types'
 import { fetchBalances, getBalance } from '../../utils/api/wrappers'
@@ -42,7 +42,7 @@ export const openSwapChooseDstChain: ActionDef<ChainAddressDto> = withPayload(
 			session.telegramId,
 		)
 
-		const flow = toFlow<Flow, 'swap', 'src-chosen'>('swap', 'src-chosen', {
+		const flow = toFlow('swap', 'src-chosen', {
 			srcCurrencyBalance,
 			nativeCurrencyBalance,
 		})

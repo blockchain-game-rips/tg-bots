@@ -1,5 +1,6 @@
-import { assertFlow, toHold } from '@rips/grammy-kit'
+import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toHold } from '../../flows'
 import { WithdrawChooseAmountPage } from '../../pages/wallet/withdraw-choose-amount-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'

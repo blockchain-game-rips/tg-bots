@@ -1,5 +1,6 @@
-import { assertFlow, toStep } from '@rips/grammy-kit'
+import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toStep } from '../../flows'
 import { toCurrencyAmount } from '../../utils/currency'
 import { resolveWithdrawPage } from '../../utils/wallet'
 

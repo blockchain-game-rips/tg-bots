@@ -2,8 +2,8 @@ import {
 	ripsControllerGetOngoingRips,
 	ripsControllerGetPresets,
 } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { OngoingRipsPage } from '../../pages/play/ongoing-rips-page'
 import { EffectType } from '../../types'
 

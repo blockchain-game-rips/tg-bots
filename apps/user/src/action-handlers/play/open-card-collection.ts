@@ -1,6 +1,6 @@
 import { ripsControllerGetCardCollection } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
 import { CardCollectionPage } from '../../pages/play/card-collection'
 import { EffectType } from '../../types'
 

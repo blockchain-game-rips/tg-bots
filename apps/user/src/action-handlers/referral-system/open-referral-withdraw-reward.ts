@@ -1,7 +1,7 @@
 import { referralSystemControllerWithdrawReward } from '@rips/api-client'
-import { toReset } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
+import { toReset } from '../../flows'
 import { WithdrawRewardSuccessPage } from '../../pages/referral-system/withdraw-reward-success-page'
 import { EffectType } from '../../types'
 

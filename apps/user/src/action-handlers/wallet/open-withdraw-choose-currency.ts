@@ -1,7 +1,7 @@
-import { toHold } from '@rips/grammy-kit'
 import { parseChain } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { SUPPORTED_CHAINS } from '../../constants'
+import { toHold } from '../../flows'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
 import { Chain, EffectType } from '../../types'
 import { fetchCurrencies } from '../../utils/api/wrappers'

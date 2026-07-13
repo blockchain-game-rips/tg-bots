@@ -2,10 +2,11 @@ import {
 	ripsControllerQuotePurchase,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { assertFlow, toStep } from '@rips/grammy-kit'
+import { assertFlow } from '@rips/grammy-kit'
 import { parseEntryCount, resolveConfig } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
+import { toStep } from '../../flows'
 import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance, fetchPreset } from '../../utils/api/wrappers'

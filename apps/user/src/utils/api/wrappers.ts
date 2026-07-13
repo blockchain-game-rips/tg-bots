@@ -61,6 +61,20 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 	return data.currencies
 }
 
+export async function fetchCurrency(chainAddress: ChainAddressDto) {
+	const currencies = await fetchCurrencies([toCurrencyId(chainAddress)])
+
+	const currency = currencies.find((c) =>
+		isSameChainAddress(c.chainAddress, chainAddress),
+	)
+
+	if (currency === undefined) {
+		throw new Error(`Currency not found for ${toCurrencyId(chainAddress)}`)
+	}
+
+	return currency
+}
+
 export async function fetchNativeBalance(telegramId: string) {
 	const balances = await fetchBalances(telegramId, [NATIVE_ON_BASE])
 

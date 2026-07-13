@@ -52,6 +52,24 @@ export function assertFlow<
 	}
 }
 
+export function isFlow<
+	F extends FlowBase | null,
+	FT extends ActiveFlow<F>['flowType'],
+	S extends StepOf<F, FT>,
+>(
+	session: SessionData<F>,
+	flowType: FT,
+	...steps: S[]
+): session is SessionData<FlowByTypeAndStep<F, FT, S>> {
+	const { flow } = session
+
+	return (
+		flow !== null &&
+		flow.flowType === flowType &&
+		(steps as ActiveFlow<F>['step'][]).includes(flow.step)
+	)
+}
+
 export function setFlowStep<
 	F extends FlowBase | null,
 	FT extends ActiveFlow<F>['flowType'],

@@ -2,6 +2,12 @@ import { InlineKeyboard } from 'grammy'
 import { buildActionData } from '../action/action-data'
 import { NavIds } from '../types'
 
+declare module 'grammy' {
+	interface InlineKeyboard {
+		appendHomeButton(): this
+	}
+}
+
 export function addNav(keyboard: InlineKeyboard, ids: NavIds): InlineKeyboard {
 	if ('parentPayload' in ids) {
 		keyboard
@@ -12,7 +18,7 @@ export function addNav(keyboard: InlineKeyboard, ids: NavIds): InlineKeyboard {
 	}
 
 	if (ids.home !== ids.parent) {
-		keyboard.text('Home', buildActionData(ids.home, undefined))
+		keyboard.appendHomeButton()
 	}
 
 	return keyboard

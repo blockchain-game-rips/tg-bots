@@ -1,10 +1,10 @@
 import { isFlow } from '@rips/grammy-kit'
-import { ActionDef, withPayload } from '../../action-def'
-import { toHold } from '../../flows'
-import { SwapChooseSrcTokenPage } from '../../pages/swap/swap-choose-src-token-page'
-import { Chain, EffectType } from '../../types'
-import { fetchCurrencies } from '../../utils/api/wrappers'
-import { chainCodec, getCurrenciesForChain } from '../../utils/chain'
+import { ActionDef, withPayload } from '../../../action-def'
+import { toHold } from '../../../flows'
+import { SwapChooseSrcTokenPage } from '../../../pages/swap/swap-choose-src-token-page'
+import { Chain, EffectType } from '../../../types'
+import { fetchCurrencies } from '../../../utils/api/wrappers'
+import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 
 export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 	chainCodec,

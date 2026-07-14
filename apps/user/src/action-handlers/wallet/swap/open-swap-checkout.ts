@@ -9,18 +9,18 @@ import {
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import { parseCurrencyAmount } from '@rips/shared'
-import { ActionDef, noPayload, withPayload } from '../../action-def'
-import { nativeChainAddress } from '../../constants'
-import { Flow, toFlow } from '../../flows'
-import { SwapCheckoutPage } from '../../pages/swap/swap-checkout-page'
-import { Chain, EffectType, HandlerResult } from '../../types'
+import { ActionDef, noPayload, withPayload } from '../../../action-def'
+import { nativeChainAddress } from '../../../constants'
+import { Flow, toFlow } from '../../../flows'
+import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
+import { Chain, EffectType, HandlerResult } from '../../../types'
 import {
 	fetchBalances,
 	fetchCurrency,
 	getBalance,
-} from '../../utils/api/wrappers'
-import { rawStringCodec } from '../../utils/codecs'
-import { currencyChainAddressCodec } from '../../utils/currency'
+} from '../../../utils/api/wrappers'
+import { rawStringCodec } from '../../../utils/codecs'
+import { currencyChainAddressCodec } from '../../../utils/currency'
 
 interface CheckoutDraft {
 	srcCurrencyBalance: CurrencyAmountDto

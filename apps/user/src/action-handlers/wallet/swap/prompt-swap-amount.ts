@@ -1,4 +1,4 @@
-import { ActionDef, noPayload } from '../../action-def'
+import { ActionDef, noPayload } from '../../../action-def'
 
 export const promptSwapAmount: ActionDef<void> = noPayload(() => {
 	// TODO: swap: implement

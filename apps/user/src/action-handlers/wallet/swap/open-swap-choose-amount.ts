@@ -1,11 +1,11 @@
 import { ChainAddressDto } from '@rips/api-client'
 import { assertFlow, isFlow, SessionData } from '@rips/grammy-kit'
-import { ActionDef, withPayload } from '../../action-def'
-import { Flow, toHold, toStep } from '../../flows'
-import { SwapChooseAmountPage } from '../../pages/swap/swap-choose-amount-page'
-import { EffectType, HandlerResult } from '../../types'
-import { fetchCurrency } from '../../utils/api/wrappers'
-import { currencyChainAddressCodec } from '../../utils/currency'
+import { ActionDef, withPayload } from '../../../action-def'
+import { Flow, toHold, toStep } from '../../../flows'
+import { SwapChooseAmountPage } from '../../../pages/swap/swap-choose-amount-page'
+import { EffectType, HandlerResult } from '../../../types'
+import { fetchCurrency } from '../../../utils/api/wrappers'
+import { currencyChainAddressCodec } from '../../../utils/currency'
 
 export const openSwapChooseAmount: ActionDef<ChainAddressDto> = withPayload(
 	currencyChainAddressCodec,

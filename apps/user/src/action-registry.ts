@@ -27,31 +27,31 @@ import { promptEntryCount } from './action-handlers/play/prompt-entry-count'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralAbout } from './action-handlers/referral-system/open-referral-about'
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
-import { executeSwap } from './action-handlers/wallet/execute-swap'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openAllBalances } from './action-handlers/wallet/open-all-balances'
-import {
-	openSwapCheckout,
-	openSwapCheckoutFromAmount,
-	openSwapCheckoutFromDst,
-	openSwapCheckoutFromSrc,
-} from './action-handlers/wallet/open-swap-checkout'
-import { openSwapChooseAmount } from './action-handlers/wallet/open-swap-choose-amount'
-import { openSwapChooseDstChain } from './action-handlers/wallet/open-swap-choose-dst-chain'
-import { openSwapChooseDstToken } from './action-handlers/wallet/open-swap-choose-dst-token'
-import { openSwapChooseSrcChain } from './action-handlers/wallet/open-swap-choose-src-chain'
-import { openSwapChooseSrcToken } from './action-handlers/wallet/open-swap-choose-src-token'
 import { openWallet } from './action-handlers/wallet/open-wallet'
 import { openWithdraw } from './action-handlers/wallet/open-withdraw'
 import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
 import { openWithdrawChooseChain } from './action-handlers/wallet/open-withdraw-choose-chain'
 import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdraw-choose-currency'
-import { promptSwapAmount } from './action-handlers/wallet/prompt-swap-amount'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
 import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
 import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
 import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
+import { executeSwap } from './action-handlers/wallet/swap/execute-swap'
+import {
+	openSwapCheckout,
+	openSwapCheckoutFromAmount,
+	openSwapCheckoutFromDst,
+	openSwapCheckoutFromSrc,
+} from './action-handlers/wallet/swap/open-swap-checkout'
+import { openSwapChooseAmount } from './action-handlers/wallet/swap/open-swap-choose-amount'
+import { openSwapChooseDstChain } from './action-handlers/wallet/swap/open-swap-choose-dst-chain'
+import { openSwapChooseDstToken } from './action-handlers/wallet/swap/open-swap-choose-dst-token'
+import { openSwapChooseSrcChain } from './action-handlers/wallet/swap/open-swap-choose-src-chain'
+import { openSwapChooseSrcToken } from './action-handlers/wallet/swap/open-swap-choose-src-token'
+import { promptSwapAmount } from './action-handlers/wallet/swap/prompt-swap-amount'
 
 export const actionRegistry = {
 	// Home

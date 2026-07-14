@@ -1,10 +1,6 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 import { addNav, buildActionData, NavIds } from '@rips/grammy-kit'
-import {
-	currencyAmountDisplayParts,
-	formatUnits,
-	swapBreadcrumb,
-} from '@rips/shared'
+import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -36,7 +32,7 @@ export const SwapChooseAmountPage = {
 function render(draft: Draft, back: NavIds): PageContent {
 	return {
 		message: buildMessage(draft),
-		keyboard: buildKeyboard(draft.srcBalance, back),
+		keyboard: buildKeyboard(back),
 	}
 }
 
@@ -65,19 +61,13 @@ function formatAmount(amount: CurrencyAmountDto): string {
 	return `${displayAmount} ${symbol}`
 }
 
-function buildKeyboard(
-	srcBalance: CurrencyAmountDto,
-	back: NavIds,
-): InlineKeyboard {
-	const maxAmount = formatUnits(
-		BigInt(srcBalance.amount),
-		srcBalance.currency.decimals,
-	)
-
+function buildKeyboard(back: NavIds): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 		.text(
 			'Max',
-			buildActionData(actionIds.openSwapCheckoutFromAmount, maxAmount),
+			buildActionData(actionIds.openSwapCheckoutFromAmount, {
+				kind: 'max',
+			}),
 		)
 		.row()
 		.text(

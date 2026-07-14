@@ -8,9 +8,9 @@ import {
 	walletsControllerQuoteSwapSamechain,
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
-import { parseCurrencyAmount } from '@rips/shared'
+import { parseCurrencyAmount, parseUnits } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
-import { nativeChainAddress } from '../../../constants'
+import { isNativeChainAddress, nativeChainAddress } from '../../../constants'
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
 import { Chain, EffectType, HandlerResult } from '../../../types'
@@ -19,7 +19,7 @@ import {
 	fetchCurrency,
 	getBalance,
 } from '../../../utils/api/wrappers'
-import { rawStringCodec } from '../../../utils/codecs'
+import { SwapAmountPayload, swapAmountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
 interface CheckoutDraft {
@@ -74,17 +74,18 @@ export const openSwapCheckoutFromDst: ActionDef<ChainAddressDto> = withPayload(
 	},
 )
 
-export const openSwapCheckoutFromAmount: ActionDef<string> = withPayload(
-	rawStringCodec,
-	(session, amountRaw) => {
+export const openSwapCheckoutFromAmount: ActionDef<SwapAmountPayload> =
+	withPayload(swapAmountCodec, async (session, amountPayload) => {
 		assertFlow(session, 'swap', 'src-dst-chosen', 'src-dst-amount-chosen')
 
 		const { srcCurrencyBalance, nativeCurrencyBalance, dstCurrency } =
 			session.flow.data
 
-		const amountIn = parseCurrencyAmount(
-			amountRaw,
-			srcCurrencyBalance.currency,
+		const amountIn = await resolveAmountIn(
+			session.telegramId,
+			amountPayload,
+			srcCurrencyBalance,
+			dstCurrency,
 		)
 
 		return renderCheckout(session.telegramId, {
@@ -93,8 +94,71 @@ export const openSwapCheckoutFromAmount: ActionDef<string> = withPayload(
 			dstCurrency,
 			amountIn,
 		})
-	},
-)
+	})
+
+async function resolveAmountIn(
+	telegramId: string,
+	amountPayload: SwapAmountPayload,
+	srcCurrencyBalance: CurrencyAmountDto,
+	dstCurrency: CurrencyDto,
+): Promise<CurrencyAmountDto> {
+	const srcCurrency = srcCurrencyBalance.currency
+
+	if (amountPayload.kind === 'exact') {
+		return parseCurrencyAmount(String(amountPayload.value), srcCurrency)
+	}
+
+	if (!isNativeChainAddress(srcCurrency.chainAddress)) {
+		return srcCurrencyBalance
+	}
+
+	return resolveNativeMaxAmount(telegramId, srcCurrencyBalance, dstCurrency)
+}
+
+const NATIVE_MAX_MARGIN_USD = 0.1
+
+async function resolveNativeMaxAmount(
+	telegramId: string,
+	srcCurrencyBalance: CurrencyAmountDto,
+	dstCurrency: CurrencyDto,
+): Promise<CurrencyAmountDto> {
+	const srcCurrency = srcCurrencyBalance.currency
+
+	const probeQuote = await fetchSwapQuote(
+		telegramId,
+		srcCurrencyBalance,
+		dstCurrency,
+	)
+
+	const nativeFee = sumNativeFees(probeQuote, srcCurrency)
+	const margin = usdToTokenUnits(NATIVE_MAX_MARGIN_USD, srcCurrency)
+
+	const reserved = nativeFee + margin
+	const balance = BigInt(srcCurrencyBalance.amount)
+	const spendable = balance > reserved ? balance - reserved : 0n
+
+	return { currency: srcCurrency, amount: spendable.toString() }
+}
+
+function usdToTokenUnits(usd: number, currency: CurrencyDto): bigint {
+	if (currency.priceUsd <= 0) return 0n
+
+	const tokenAmount = usd / currency.priceUsd
+
+	return parseUnits(tokenAmount.toFixed(currency.decimals), currency.decimals)
+}
+
+function sumNativeFees(quote: SwapQuote, srcCurrency: CurrencyDto): bigint {
+	const fees = [quote.quote.blockchainFee]
+
+	if (quote.kind === 'crosschain') fees.push(quote.quote.fee)
+
+	return fees.reduce((sum, fee) => {
+		if (fee.currency.id !== srcCurrency.id) return sum
+
+		return sum + BigInt(fee.amount)
+	}, 0n)
+}
 
 async function renderCheckout(
 	telegramId: string,

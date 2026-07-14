@@ -36,6 +36,10 @@ export function nativeChainAddress(
 	return { address: NATIVE_ADDRESS, chain }
 }
 
+export function isNativeChainAddress(chainAddress: ChainAddressDto): boolean {
+	return chainAddress.address.toLowerCase() === NATIVE_ADDRESS
+}
+
 export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
 	// Ethereum
 	{ address: NATIVE_ADDRESS, chain: ETHEREUM_CHAIN },

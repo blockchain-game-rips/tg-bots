@@ -214,10 +214,7 @@ function buildKeyboard(
 		.row()
 		.text(
 			'Change Source',
-			buildActionData(
-				actionIds.openSwapChooseSrcToken,
-				srcCurrency.chainAddress.chain,
-			),
+			buildActionData(actionIds.openSwapChooseSrcChain, undefined),
 		)
 		.row()
 		.appendHomeButton()

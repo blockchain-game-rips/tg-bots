@@ -1,8 +1,9 @@
 import { CurrencyAmountDto, TransactionDto } from '@rips/api-client'
-import { formatAmountWithUsd, withdrawBreadcrumb } from '@rips/shared'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawSuccessPage = {
 	render(args: {

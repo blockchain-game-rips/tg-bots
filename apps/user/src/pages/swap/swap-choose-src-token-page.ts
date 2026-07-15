@@ -1,14 +1,11 @@
 import { CurrencyDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
-import {
-	currencyAmountDisplayParts,
-	swapBreadcrumb,
-	toCurrencyAmount,
-} from '@rips/shared'
+import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildTokenKeyboard } from '../choose-chain-token'
 
 export const SwapChooseSrcTokenPage = {

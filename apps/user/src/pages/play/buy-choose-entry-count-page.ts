@@ -1,7 +1,6 @@
 import { AvailablePresetDto, ConfigDto } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import {
-	buyEntriesBreadcrumb,
 	currencyAmountDisplayParts,
 	resolveConfig,
 	toShortDurationFormat,
@@ -9,6 +8,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const BuyChooseEntryCountPage = {
 	render(availablePreset: AvailablePresetDto): PageContent {

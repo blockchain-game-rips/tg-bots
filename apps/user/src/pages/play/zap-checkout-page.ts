@@ -5,7 +5,6 @@ import {
 } from '@rips/api-client'
 import { addNav, buildActionData } from '@rips/grammy-kit'
 import {
-	buyEntriesBreadcrumb,
 	configName,
 	fundsBreakdown,
 	insufficientFundsDepositLines,
@@ -16,6 +15,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 
 const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 

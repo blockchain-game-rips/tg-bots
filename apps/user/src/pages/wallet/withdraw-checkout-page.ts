@@ -7,12 +7,12 @@ import {
 	formatAmountWithUsd,
 	fundsBreakdown,
 	insufficientBalanceLines,
-	withdrawBreadcrumb,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawCheckoutPage = {
 	render(args: {

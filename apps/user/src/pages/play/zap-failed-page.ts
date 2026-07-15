@@ -1,13 +1,9 @@
 import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
-import {
-	buyEntriesBreadcrumb,
-	configName,
-	formatAmountWithUsd,
-	resolveConfig,
-} from '@rips/shared'
+import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const ZapFailedPage = {
 	render(args: {

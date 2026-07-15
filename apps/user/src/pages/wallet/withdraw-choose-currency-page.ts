@@ -1,7 +1,7 @@
 import { CurrencyDto } from '@rips/api-client'
-import { withdrawBreadcrumb } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 import {
 	buildChooseTokenPage,
 	chainBreadcrumbSegment,

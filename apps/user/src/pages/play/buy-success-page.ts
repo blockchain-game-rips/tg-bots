@@ -1,11 +1,8 @@
 import { BuyEntriesPurchaseResponseDtoOutput, RipDto } from '@rips/api-client'
-import {
-	buyEntriesBreadcrumb,
-	configName,
-	formatAmountWithUsd,
-} from '@rips/shared'
+import { configName, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
+import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const BuySuccessPage = {
 	render(

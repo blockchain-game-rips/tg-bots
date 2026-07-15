@@ -1,7 +1,8 @@
 import { AvailablePresetDto } from '@rips/api-client'
-import { buyEntriesBreadcrumb, configName, resolveConfig } from '@rips/shared'
+import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseChainPage } from '../choose-chain-token'
 
 export const ZapChooseChainPage = {

@@ -10,7 +10,6 @@ import {
 	Expense,
 	formatAmountWithUsd,
 	fundsBreakdown,
-	swapBreadcrumb,
 	toCurrencyAmount,
 	toShortDurationFormat,
 } from '@rips/shared'
@@ -18,6 +17,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const SwapCheckoutPage = {
 	render(args: CheckoutArgs): PageContent {

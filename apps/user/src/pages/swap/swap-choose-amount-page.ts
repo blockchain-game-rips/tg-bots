@@ -1,10 +1,11 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 import { addNav, buildActionData, NavIds } from '@rips/grammy-kit'
-import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
+import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
+import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface Draft {
 	srcBalance: CurrencyAmountDto

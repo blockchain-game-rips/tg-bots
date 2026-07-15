@@ -32,7 +32,7 @@ async function handler(
 		}
 	}
 
-	assertFlow(session, 'swap', 'src-chosen')
+	assertFlow(session, 'swap', 'src-chosen', 'src-dst-chosen')
 
 	const { srcCurrencyBalance, nativeCurrencyBalance } = session.flow.data
 

@@ -1,6 +1,10 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
-import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
+import {
+	currencyAmountDisplayParts,
+	swapBreadcrumb,
+	toCurrencyAmount,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
@@ -8,7 +12,6 @@ import { chainToName } from '../../utils/chain'
 import { buildTokenKeyboard } from '../choose-chain-token'
 
 interface Draft {
-	srcCurrency: CurrencyDto
 	srcBalance: CurrencyAmountDto
 	dstChain: Chain
 	dstCurrencies: CurrencyDto[]
@@ -22,17 +25,22 @@ export const SwapChooseDstTokenPage = {
 		}
 	},
 
-	renderDraftEdit(draft: Draft, amount: CurrencyAmountDto): PageContent {
+	renderDraftEdit(draft: Draft, amountIn: bigint): PageContent {
 		return {
-			message: buildMessage(draft, amount),
+			message: buildMessage(draft, amountIn),
 			keyboard: buildDraftEditKeyboard(draft.dstCurrencies),
 		}
 	},
 }
 
-function buildMessage(draft: Draft, amount?: CurrencyAmountDto): string {
-	const { srcCurrency, srcBalance, dstChain } = draft
+function buildMessage(draft: Draft, amountIn?: bigint): string {
+	const { srcBalance, dstChain } = draft
 
+	const srcCurrency = srcBalance.currency
+	const amount =
+		amountIn === undefined
+			? undefined
+			: toCurrencyAmount(amountIn, srcCurrency)
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 
 	return [
@@ -69,7 +77,7 @@ function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
 
 	return addNav(keyboard, {
 		parent: actionIds.openSwapChooseDstChain,
-		parentPayload: draft.srcCurrency.chainAddress,
+		parentPayload: draft.srcBalance.currency.chainAddress,
 		home: actionIds.openHome,
 	})
 }

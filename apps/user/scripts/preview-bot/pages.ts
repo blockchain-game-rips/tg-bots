@@ -345,8 +345,9 @@ export const pages: Record<string, PageEntry> = {
 
 			return SwapChooseSrcChainPage.renderDraftEdit({
 				chains,
+				srcCurrency: mockUsdcArb,
 				dstCurrency: mockUsdcArb,
-				amount: mockUsdcArbWithdrawAmount,
+				amountIn: BigInt(mockUsdcArbWithdrawAmount.amount),
 			})
 		},
 	},
@@ -367,8 +368,9 @@ export const pages: Record<string, PageEntry> = {
 			return SwapChooseSrcTokenPage.renderDraftEdit({
 				srcChain,
 				currencies,
+				srcCurrency: mockUsdcArb,
 				dstCurrency: mockUsdcArb,
-				amount: mockUsdcArbWithdrawAmount,
+				amountIn: BigInt(mockUsdcArbWithdrawAmount.amount),
 			})
 		},
 	},
@@ -377,22 +379,19 @@ export const pages: Record<string, PageEntry> = {
 			'Third step of the swap flow. Choose a destination chain. The "fresh-draft" variant is opened from choose-src-token and shows the source token plus its balance, back leads to choose-src-token. The "draft-edit" variant is opened from swap checkout via Change Destination and also shows the chosen amount, back leads to checkout.',
 		variants: ['fresh-draft', 'draft-edit'],
 		render(variant) {
-			const srcCurrency = mockUsdcArb
 			const srcBalance = mockUsdcArbWithdrawAmount
 			const dstChains = [...SUPPORTED_CHAINS]
 
 			if (resolveVariant(this, variant) === 'fresh-draft')
 				return SwapChooseDstChainPage.renderFreshDraft({
-					srcCurrency,
 					srcBalance,
 					dstChains,
 				})
 
 			return SwapChooseDstChainPage.renderDraftEdit({
-				srcCurrency,
 				srcBalance,
 				dstChains,
-				amount: mockUsdcArbWithdrawAmount,
+				amountIn: BigInt(mockUsdcArbWithdrawAmount.amount),
 			})
 		},
 	},
@@ -401,22 +400,20 @@ export const pages: Record<string, PageEntry> = {
 			'Fourth step of the swap flow. Choose a destination token on the already chosen destination chain. The "fresh-draft" variant is opened from choose-dst-chain and shows the source token, destination chain and source balance, back leads to choose-dst-chain. The "draft-edit" variant is opened from swap checkout via Change Destination and also shows the chosen amount, back leads to checkout.',
 		variants: ['fresh-draft', 'draft-edit'],
 		render(variant) {
-			const srcCurrency = mockUsdcArb
 			const srcBalance = mockUsdcArbWithdrawAmount
 			const dstChain = mockUsdcArb.chainAddress.chain
 			const dstCurrencies = [mockUsdcArb, ...mockWithdrawCurrencies]
 
 			if (resolveVariant(this, variant) === 'fresh-draft')
 				return SwapChooseDstTokenPage.renderFreshDraft({
-					srcCurrency,
 					srcBalance,
 					dstChain,
 					dstCurrencies,
 				})
 
 			return SwapChooseDstTokenPage.renderDraftEdit(
-				{ srcCurrency, srcBalance, dstChain, dstCurrencies },
-				mockUsdcArbWithdrawAmount,
+				{ srcBalance, dstChain, dstCurrencies },
+				BigInt(mockUsdcArbWithdrawAmount.amount),
 			)
 		},
 	},
@@ -426,7 +423,6 @@ export const pages: Record<string, PageEntry> = {
 		variants: ['fresh-draft', 'draft-edit'],
 		render(variant) {
 			const draft = {
-				srcCurrency: mockUsdcArb,
 				srcBalance: mockUsdcArbWithdrawAmount,
 				dstCurrency: mockUsdcArb,
 			}
@@ -463,21 +459,19 @@ export const pages: Record<string, PageEntry> = {
 
 			if (isSamechain) {
 				return SwapCheckoutPage.render({
-					srcCurrency: mockUsdcArb,
 					srcBalance: mockUsdcArbBalance,
 					nativeBalance,
 					dstCurrency: mockUsdcArb,
-					amountIn,
+					amountIn: BigInt(amountIn.amount),
 					quote: { kind: 'samechain', quote: mockSwapSamechainQuote },
 				})
 			}
 
 			return SwapCheckoutPage.render({
-				srcCurrency: mockUsdcArb,
 				srcBalance: mockUsdcArbBalance,
 				nativeBalance,
 				dstCurrency: mockUsdcOnBase,
-				amountIn,
+				amountIn: BigInt(amountIn.amount),
 				quote: { kind: 'crosschain', quote: mockSwapCrosschainQuote },
 			})
 		},

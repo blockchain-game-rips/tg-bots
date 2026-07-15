@@ -7,7 +7,6 @@ import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 
 interface Draft {
-	srcCurrency: CurrencyDto
 	srcBalance: CurrencyAmountDto
 	dstCurrency: CurrencyDto
 }
@@ -37,8 +36,9 @@ function render(draft: Draft, back: NavIds): PageContent {
 }
 
 function buildMessage(draft: Draft): string {
-	const { srcCurrency, srcBalance, dstCurrency } = draft
+	const { srcBalance, dstCurrency } = draft
 
+	const srcCurrency = srcBalance.currency
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
 

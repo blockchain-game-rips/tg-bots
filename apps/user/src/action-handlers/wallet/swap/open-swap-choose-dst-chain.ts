@@ -27,10 +27,9 @@ async function handler(
 			effect: {
 				type: EffectType.EDIT,
 				page: SwapChooseDstChainPage.renderDraftEdit({
-					srcCurrency: srcCurrencyBalance.currency,
 					srcBalance: srcCurrencyBalance,
 					dstChains,
-					amount: amountIn,
+					amountIn,
 				}),
 			},
 		}
@@ -49,7 +48,6 @@ async function handler(
 		effect: {
 			type: EffectType.EDIT,
 			page: SwapChooseDstChainPage.renderFreshDraft({
-				srcCurrency: srcCurrencyBalance.currency,
 				srcBalance: srcCurrencyBalance,
 				dstChains,
 			}),

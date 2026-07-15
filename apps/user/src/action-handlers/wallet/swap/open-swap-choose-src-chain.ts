@@ -9,7 +9,7 @@ export const openSwapChooseSrcChain: ActionDef<void> = noPayload((session) => {
 	const chains = [...SUPPORTED_CHAINS]
 
 	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { dstCurrency, amountIn } = session.flow.data
+		const { srcCurrencyBalance, dstCurrency, amountIn } = session.flow.data
 
 		return {
 			flow: toHold(),
@@ -17,8 +17,9 @@ export const openSwapChooseSrcChain: ActionDef<void> = noPayload((session) => {
 				type: EffectType.EDIT,
 				page: SwapChooseSrcChainPage.renderDraftEdit({
 					chains,
+					srcCurrency: srcCurrencyBalance.currency,
 					dstCurrency,
-					amount: amountIn,
+					amountIn,
 				}),
 			},
 		}

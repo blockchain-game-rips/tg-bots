@@ -1,6 +1,10 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyDto } from '@rips/api-client'
 import { addNav } from '@rips/grammy-kit'
-import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
+import {
+	currencyAmountDisplayParts,
+	swapBreadcrumb,
+	toCurrencyAmount,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { ActionId, Chain, PageContent } from '../../types'
@@ -17,13 +21,16 @@ export const SwapChooseSrcChainPage = {
 
 	renderDraftEdit(args: {
 		chains: Chain[]
+		srcCurrency: CurrencyDto
 		dstCurrency: CurrencyDto
-		amount: CurrencyAmountDto
+		amountIn: bigint
 	}): PageContent {
-		const { chains, dstCurrency, amount } = args
+		const { chains, srcCurrency, dstCurrency, amountIn } = args
 
 		return {
-			message: buildMessage(draftLines(dstCurrency, amount)),
+			message: buildMessage(
+				draftLines(srcCurrency, dstCurrency, amountIn),
+			),
 			keyboard: buildKeyboard(chains, actionIds.openSwapCheckout),
 		}
 	},
@@ -40,9 +47,11 @@ function buildMessage(contextLines: string[]): string {
 }
 
 function draftLines(
+	srcCurrency: CurrencyDto,
 	dstCurrency: CurrencyDto,
-	amount: CurrencyAmountDto,
+	amountIn: bigint,
 ): string[] {
+	const amount = toCurrencyAmount(amountIn, srcCurrency)
 	const { displayAmount } = currencyAmountDisplayParts(amount)
 	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
 

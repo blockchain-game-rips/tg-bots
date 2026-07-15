@@ -11,6 +11,7 @@ import {
 	formatAmountWithUsd,
 	fundsBreakdown,
 	swapBreadcrumb,
+	toCurrencyAmount,
 	toShortDurationFormat,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -20,11 +21,16 @@ import { chainToName } from '../../utils/chain'
 
 export const SwapCheckoutPage = {
 	render(args: CheckoutArgs): PageContent {
-		const insufficientAmounts = findInsufficientBalances(args)
+		const resolved: ResolvedArgs = {
+			...args,
+			amountIn: toCurrencyAmount(args.amountIn, args.srcBalance.currency),
+		}
+
+		const insufficientAmounts = findInsufficientBalances(resolved)
 
 		return {
-			message: buildMessage(args, insufficientAmounts),
-			keyboard: buildKeyboard(args, insufficientAmounts),
+			message: buildMessage(resolved, insufficientAmounts),
+			keyboard: buildKeyboard(resolved, insufficientAmounts),
 		}
 	},
 }
@@ -42,27 +48,30 @@ interface SamechainQuote {
 type SwapQuote = CrosschainQuote | SamechainQuote
 
 interface CheckoutArgs {
-	srcCurrency: CurrencyDto
 	srcBalance: CurrencyAmountDto
 	nativeBalance: CurrencyAmountDto
 	dstCurrency: CurrencyDto
-	amountIn: CurrencyAmountDto
+	amountIn: bigint
 	quote: SwapQuote
 }
 
+type ResolvedArgs = Omit<CheckoutArgs, 'amountIn'> & {
+	amountIn: CurrencyAmountDto
+}
+
 function buildMessage(
-	args: CheckoutArgs,
+	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDto[],
 ): string {
-	const { srcCurrency, srcBalance, dstCurrency, amountIn, quote } = args
+	const { srcBalance, dstCurrency, amountIn, quote } = args
 
-	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
+	const srcChainName = chainToName(srcBalance.currency.chainAddress.chain)
 	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
 
 	return [
 		swapBreadcrumb(),
 		'',
-		`From: ${srcChainName} ${srcCurrency.symbol}`,
+		`From: ${srcChainName} ${srcBalance.currency.symbol}`,
 		`To: ${dstChainName} ${dstCurrency.symbol}`,
 		`Amount: ${formatAmount(amountIn)}`,
 		'',
@@ -77,7 +86,7 @@ function buildMessage(
 	].join('\n')
 }
 
-function findInsufficientBalances(args: CheckoutArgs): CurrencyAmountDto[] {
+function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
 	const { srcBalance, nativeBalance, amountIn, quote } = args
 
 	const expenses: Expense[] = [
@@ -115,7 +124,7 @@ function feeExpenses(quote: SwapQuote): Expense[] {
 }
 
 function insufficientLines(
-	args: CheckoutArgs,
+	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDto[],
 ): string[] {
 	if (isSufficientAmounts(insufficientAmounts)) return []
@@ -182,10 +191,10 @@ function formatAmount(amount: CurrencyAmountDto): string {
 }
 
 function buildKeyboard(
-	args: CheckoutArgs,
+	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDto[],
 ): InlineKeyboard {
-	const { srcCurrency, dstCurrency } = args
+	const { srcBalance, dstCurrency } = args
 
 	const keyboard = new InlineKeyboard()
 
@@ -208,7 +217,7 @@ function buildKeyboard(
 			'Change Destination',
 			buildActionData(
 				actionIds.openSwapChooseDstChain,
-				srcCurrency.chainAddress,
+				srcBalance.currency.chainAddress,
 			),
 		)
 		.row()

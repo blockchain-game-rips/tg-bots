@@ -9,6 +9,7 @@ import {
 	walletsControllerSwapSamechain,
 } from '@rips/api-client'
 import { assertFlow, ErrorToRender, wait } from '@rips/grammy-kit'
+import { toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { Flow, toHold, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
@@ -22,7 +23,9 @@ type SwapSuccess = NonNullable<GetSwapResultResponseDtoOutput['success']>
 export const executeSwap: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
-	const { dstCurrency, amountIn } = session.flow.data
+	const { srcCurrencyBalance, dstCurrency, amountIn } = session.flow.data
+
+	const amountInDto = toCurrencyAmount(amountIn, srcCurrencyBalance.currency)
 
 	return {
 		flow: toHold(),
@@ -30,7 +33,11 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 			type: EffectType.SEND_LOADING,
 			message: 'Swapping...',
 			next: () =>
-				executeSwapRequest(session.telegramId, amountIn, dstCurrency),
+				executeSwapRequest(
+					session.telegramId,
+					amountInDto,
+					dstCurrency,
+				),
 		},
 	}
 })

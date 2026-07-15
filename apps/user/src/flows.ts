@@ -57,7 +57,7 @@ export type SwapFlow =
 				srcCurrencyBalance: CurrencyAmountDto
 				nativeCurrencyBalance: CurrencyAmountDto
 				dstCurrency: CurrencyDto
-				amountIn: CurrencyAmountDto
+				amountIn: bigint
 			}
 	  }
 

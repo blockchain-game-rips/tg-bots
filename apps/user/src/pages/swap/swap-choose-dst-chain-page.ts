@@ -1,6 +1,10 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDto } from '@rips/api-client'
 import { addNav, NavIds } from '@rips/grammy-kit'
-import { currencyAmountDisplayParts, swapBreadcrumb } from '@rips/shared'
+import {
+	currencyAmountDisplayParts,
+	swapBreadcrumb,
+	toCurrencyAmount,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
@@ -9,31 +13,29 @@ import { buildChainKeyboard } from '../choose-chain-token'
 
 export const SwapChooseDstChainPage = {
 	renderFreshDraft(args: {
-		srcCurrency: CurrencyDto
 		srcBalance: CurrencyAmountDto
 		dstChains: Chain[]
 	}): PageContent {
-		const { srcCurrency, srcBalance, dstChains } = args
+		const { srcBalance, dstChains } = args
 
 		const backToSrcToken: NavIds = {
 			parent: actionIds.openSwapChooseSrcToken,
-			parentPayload: srcCurrency.chainAddress.chain,
+			parentPayload: srcBalance.currency.chainAddress.chain,
 			home: actionIds.openHome,
 		}
 
 		return {
-			message: buildMessage(srcCurrency, srcBalance),
+			message: buildMessage(srcBalance),
 			keyboard: buildKeyboard(dstChains, backToSrcToken),
 		}
 	},
 
 	renderDraftEdit(args: {
-		srcCurrency: CurrencyDto
 		srcBalance: CurrencyAmountDto
 		dstChains: Chain[]
-		amount: CurrencyAmountDto
+		amountIn: bigint
 	}): PageContent {
-		const { srcCurrency, srcBalance, dstChains, amount } = args
+		const { srcBalance, dstChains, amountIn } = args
 
 		const backToCheckout: NavIds = {
 			parent: actionIds.openSwapCheckout,
@@ -41,18 +43,23 @@ export const SwapChooseDstChainPage = {
 		}
 
 		return {
-			message: buildMessage(srcCurrency, srcBalance, amount),
+			message: buildMessage(srcBalance, amountIn),
 			keyboard: buildKeyboard(dstChains, backToCheckout),
 		}
 	},
 }
 
 function buildMessage(
-	srcCurrency: CurrencyDto,
 	srcBalance: CurrencyAmountDto,
-	amount?: CurrencyAmountDto,
+	amountIn?: bigint,
 ): string {
+	const srcCurrency = srcBalance.currency
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
+
+	const amount =
+		amountIn === undefined
+			? undefined
+			: toCurrencyAmount(amountIn, srcCurrency)
 	const { displayAmount: balanceAmount, symbol: balanceSymbol } =
 		currencyAmountDisplayParts(srcBalance)
 

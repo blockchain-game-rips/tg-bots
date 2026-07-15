@@ -14,7 +14,8 @@ export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 		)
 
 		if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-			const { dstCurrency, amountIn } = session.flow.data
+			const { srcCurrencyBalance, dstCurrency, amountIn } =
+				session.flow.data
 
 			return {
 				flow: toHold(),
@@ -23,8 +24,9 @@ export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 					page: SwapChooseSrcTokenPage.renderDraftEdit({
 						srcChain,
 						currencies,
+						srcCurrency: srcCurrencyBalance.currency,
 						dstCurrency,
-						amount: amountIn,
+						amountIn,
 					}),
 				},
 			}

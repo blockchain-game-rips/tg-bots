@@ -30,7 +30,7 @@ export const WalletPage = {
 			)
 			.row()
 			.text(
-				'Swap',
+				'Bridge / Swap',
 				buildActionData(actionIds.openSwapChooseSrcChain, undefined),
 			)
 			.row()

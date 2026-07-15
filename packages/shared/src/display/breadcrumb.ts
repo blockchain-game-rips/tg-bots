@@ -13,7 +13,7 @@ export function withdrawBreadcrumb(
 }
 
 export function swapBreadcrumb(...segments: (string | undefined)[]): string {
-	return breadcrumb('🔄 Swap', ...segments)
+	return breadcrumb('🌉 Bridge / Swap', ...segments)
 }
 
 export function buyEntriesBreadcrumb(

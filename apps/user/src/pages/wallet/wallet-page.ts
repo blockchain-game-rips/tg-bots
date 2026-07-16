@@ -34,6 +34,11 @@ export const WalletPage = {
 				buildActionData(actionIds.openSwapChooseSrcChain, undefined),
 			)
 			.row()
+			.text(
+				'Export Private Key',
+				buildActionData(actionIds.openExportKeyWarning, undefined),
+			)
+			.row()
 
 		addNav(keyboard, {
 			home: actionIds.openHome,

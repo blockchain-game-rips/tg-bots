@@ -2,11 +2,16 @@ import {
 	referralSystemControllerGetReferrer,
 	usersControllerCreateUser,
 	usersControllerGetUser,
+	usersControllerImportUser,
 } from '@rips/api-client'
-import { ActionDef, noPayload } from '../action-def'
-import { toReset } from '../flows'
+import { parseEvmPrivateKey } from '@rips/shared'
+import { ActionDef, noPayload, withPayload } from '../action-def'
+import { actionIds } from '../actions'
+import { toHold, toReset, type Flow } from '../flows'
 import { HomePage } from '../pages/home-page'
-import { EffectType } from '../types'
+import { WelcomePage } from '../pages/onboarding/welcome-page'
+import { ImportKeyPrompt } from '../prompts/import-key-prompt'
+import { EffectType, HandlerResult } from '../types'
 import { isApiErrorWithStatus } from '../utils/api/error'
 import {
 	fetchNativeBalance,
@@ -18,16 +23,61 @@ const NOT_FOUND_STATUS = 404
 export const openHome: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	await usersControllerGetUser({ path: { telegramId } }).catch(
-		async (error: unknown) => {
-			if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) {
-				return usersControllerCreateUser({ body: { telegramId } })
-			}
+	const isNewUser = await usersControllerGetUser({ path: { telegramId } })
+		.then(() => false)
+		.catch((error: unknown) => {
+			if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) return true
 
 			throw error
-		},
-	)
+		})
 
+	if (isNewUser) {
+		return {
+			flow: toReset(),
+			effect: {
+				type: EffectType.EDIT,
+				page: WelcomePage.render(),
+			},
+		}
+	}
+
+	return renderHome(telegramId)
+})
+
+export const chooseCreateAccount: ActionDef<void> = noPayload(
+	async (session) => {
+		const { telegramId } = session
+
+		await usersControllerCreateUser({ body: { telegramId } })
+
+		return renderHome(telegramId)
+	},
+)
+
+export const startImportKey: ActionDef<void> = noPayload(() => ({
+	flow: toHold(),
+	effect: {
+		type: EffectType.ASK,
+		prompt: ImportKeyPrompt.render(),
+		onSubmit: actionIds.submitImportKey,
+	},
+}))
+
+export const submitImportKey: ActionDef<string> = withPayload(
+	{
+		encode: (privateKey) => privateKey,
+		decode: (raw) => parseEvmPrivateKey(raw),
+	},
+	async (session, privateKey) => {
+		const { telegramId } = session
+
+		await usersControllerImportUser({ body: { telegramId, privateKey } })
+
+		return renderHome(telegramId)
+	},
+)
+
+async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
 	const [baseBalance, unrevealedPayouts, { data: referrerData }] =
 		await Promise.all([
 			fetchNativeBalance(telegramId),
@@ -50,4 +100,4 @@ export const openHome: ActionDef<void> = noPayload(async (session) => {
 			}),
 		},
 	}
-})
+}

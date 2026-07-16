@@ -1,6 +1,11 @@
 import { AnyActionDef } from '@rips/grammy-kit'
 import { openAbout } from './action-handlers/open-about'
-import { openHome } from './action-handlers/open-home'
+import {
+	chooseCreateAccount,
+	openHome,
+	startImportKey,
+	submitImportKey,
+} from './action-handlers/open-home'
 import { executeBuyEntries } from './action-handlers/play/execute-buy-entries'
 import { executeZap } from './action-handlers/play/execute-zap'
 import { openBuyCheckout } from './action-handlers/play/open-buy-checkout'
@@ -57,6 +62,11 @@ export const actionRegistry = {
 	// Home
 	// SHOULD BE AT THE START DUE TO CIRCULAR DEPS
 	openHome,
+
+	// Onboarding
+	chooseCreateAccount,
+	startImportKey,
+	submitImportKey,
 
 	// About
 	openAbout,

@@ -28,6 +28,25 @@ const CHAIN_NAMES: {
 	},
 }
 
+const CHAIN_EMOJIS: {
+	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string>
+} = {
+	[EIP155_NAMESPACE]: {
+		'1': '⚫',
+		'56': '🟡',
+		'42161': '🔷',
+		'10': '🔴',
+		'8453': '🔵',
+	},
+}
+
+function isSupportedReference<N extends SupportedNamespace>(
+	namespace: N,
+	reference: string,
+): reference is ReferencesForNamespace<N> {
+	return reference in CHAIN_EMOJIS[namespace]
+}
+
 export function findChainIndex(chain: Chain): number {
 	return SUPPORTED_CHAINS_LIST.findIndex(
 		(c) =>
@@ -72,4 +91,20 @@ export function chainToName(chain: Chain): string {
 	}
 
 	return chainName
+}
+
+export function chainToEmoji(chain: Chain): string {
+	if (!isSupportedNamespace(chain.namespace)) {
+		throw new Error(
+			`Chain emoji not found for namespace ${chain.namespace} and reference ${chain.reference}`,
+		)
+	}
+
+	if (!isSupportedReference(chain.namespace, chain.reference)) {
+		throw new Error(
+			`Chain emoji not found for namespace ${chain.namespace} and reference ${chain.reference}`,
+		)
+	}
+
+	return CHAIN_EMOJIS[chain.namespace][chain.reference]
 }

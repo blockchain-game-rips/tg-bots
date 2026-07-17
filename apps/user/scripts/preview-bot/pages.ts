@@ -28,6 +28,9 @@ import { SwapChooseDstTokenPage } from '../../src/pages/swap/swap-choose-dst-tok
 import { SwapChooseSrcChainPage } from '../../src/pages/swap/swap-choose-src-chain-page'
 import { SwapChooseSrcTokenPage } from '../../src/pages/swap/swap-choose-src-token-page'
 import { SwapSuccessPage } from '../../src/pages/swap/swap-success-page'
+import { DepositAddressPage } from '../../src/pages/wallet/deposit-address-page'
+import { DepositChooseChainPage } from '../../src/pages/wallet/deposit-choose-chain-page'
+import { DepositChooseCurrencyPage } from '../../src/pages/wallet/deposit-choose-currency-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
@@ -326,6 +329,22 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Wallet hub. Shows the user's balances across all supported chains (natives always shown, non-zero tokens beneath), with navigation to Deposit, Withdraw and Swap. Opened from Home.",
 		render: () => WalletPage.render(mockWalletBalances),
+	},
+	'deposit-choose-chain': {
+		description:
+			'First step of the deposit flow. Choose a chain to deposit to. Opened from Wallet.',
+		render: () => DepositChooseChainPage.render(),
+	},
+	'deposit-choose-token': {
+		description:
+			'Second step of the deposit flow. Choose a token on the selected chain.',
+		render: () => DepositChooseCurrencyPage.render(mockWithdrawCurrencies),
+	},
+	'deposit-address': {
+		description:
+			'Final step of the deposit flow. Shows the deposit address (tap-to-copy) and the current balance of the chosen token, plus a warning about unsupported assets. Refresh re-fetches the balance.',
+		render: () =>
+			DepositAddressPage.render(mockBalance, mockUserEvmAddress),
 	},
 	'swap-choose-src-chain': {
 		description:

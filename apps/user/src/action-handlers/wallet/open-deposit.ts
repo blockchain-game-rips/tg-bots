@@ -1,6 +1,9 @@
 import { ActionDef, noPayload } from '../../action-def'
+import { toReset } from '../../flows'
+import { DepositChooseChainPage } from '../../pages/wallet/deposit-choose-chain-page'
+import { EffectType } from '../../types'
 
-export const openDeposit: ActionDef<void> = noPayload(() => {
-	// TODO: implement deposit flow
-	throw new Error('Deposit flow is not implemented yet')
-})
+export const openDeposit: ActionDef<void> = noPayload(() => ({
+	flow: toReset(),
+	effect: { type: EffectType.EDIT, page: DepositChooseChainPage.render() },
+}))

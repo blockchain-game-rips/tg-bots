@@ -657,7 +657,7 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 	},
 ]
 
-export const mockAllBalances: CurrencyAmountDto[] = [
+export const mockWalletBalances: CurrencyAmountDto[] = [
 	{ currency: mockEth, amount: '2000000000000000' }, // 0.002 ETH on Base
 	{
 		currency: mockUsdcOnBase,

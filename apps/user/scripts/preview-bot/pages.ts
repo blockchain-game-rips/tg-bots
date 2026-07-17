@@ -28,7 +28,6 @@ import { SwapChooseDstTokenPage } from '../../src/pages/swap/swap-choose-dst-tok
 import { SwapChooseSrcChainPage } from '../../src/pages/swap/swap-choose-src-chain-page'
 import { SwapChooseSrcTokenPage } from '../../src/pages/swap/swap-choose-src-token-page'
 import { SwapSuccessPage } from '../../src/pages/swap/swap-success-page'
-import { AllBalancesPage } from '../../src/pages/wallet/all-balances-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
@@ -37,7 +36,6 @@ import { WithdrawChooseCurrencyPage } from '../../src/pages/wallet/withdraw-choo
 import { WithdrawPage } from '../../src/pages/wallet/withdraw-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
 import {
-	mockAllBalances,
 	mockAvailablePresetNoRip,
 	mockAvailablePresets,
 	mockBalance,
@@ -70,6 +68,7 @@ import {
 	mockUsdcArbWithdrawAmountInsufficient,
 	mockUsdcOnBase,
 	mockUserEvmAddress,
+	mockWalletBalances,
 	mockWithdrawAmount,
 	mockWithdrawRewardResponse,
 	mockWithdrawTransaction,
@@ -325,13 +324,8 @@ export const pages: Record<string, PageEntry> = {
 	},
 	wallet: {
 		description:
-			"Wallet hub. Shows the user's ETH balance and deposit address, with navigation to Withdraw and Swap. Opened from Home.",
-		render: () => WalletPage.render(mockBalance, mockUserEvmAddress),
-	},
-	'all-balances': {
-		description:
-			'Shows all token balances grouped by chain. Opened from Wallet.',
-		render: () => AllBalancesPage.render(mockAllBalances),
+			"Wallet hub. Shows the user's balances across all supported chains (natives always shown, non-zero tokens beneath), with navigation to Deposit, Withdraw and Swap. Opened from Home.",
+		render: () => WalletPage.render(mockWalletBalances),
 	},
 	'swap-choose-src-chain': {
 		description:

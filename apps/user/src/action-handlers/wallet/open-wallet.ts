@@ -1,24 +1,20 @@
-import { usersControllerGetUser } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
+import { SUPPORTED_CURRENCIES } from '../../constants'
 import { toReset } from '../../flows'
 import { WalletPage } from '../../pages/wallet/wallet-page'
 import { EffectType } from '../../types'
-import { fetchNativeBalance } from '../../utils/api/wrappers'
-import { evmAddressFromUser } from '../../utils/wallet'
+import { fetchBalances } from '../../utils/api/wrappers'
 
 export const openWallet: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const [balance, { data: user }] = await Promise.all([
-		fetchNativeBalance(telegramId),
-		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
-	])
+	const balances = await fetchBalances(telegramId, SUPPORTED_CURRENCIES)
 
 	return {
 		flow: toReset(),
 		effect: {
 			type: EffectType.EDIT,
-			page: WalletPage.render(balance, evmAddressFromUser(user)),
+			page: WalletPage.render(balances),
 		},
 	}
 })

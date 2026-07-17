@@ -3,26 +3,108 @@ import { addNav, buildActionData } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { PageContent } from '../../types'
+import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
+import { Chain, PageContent } from '../../types'
+import { chainToEmoji, chainToName } from '../../utils/chain'
+
+function isZeroAmount(balance: CurrencyAmountDto): boolean {
+	return BigInt(balance.amount) === 0n
+}
+
+function isBaseChain(chain: Chain): boolean {
+	return (
+		chain.namespace === BASE_CHAIN.namespace &&
+		chain.reference === BASE_CHAIN.reference
+	)
+}
+
+function groupBalancesByChain(
+	balances: CurrencyAmountDto[],
+): Map<string, CurrencyAmountDto[]> {
+	const groups = new Map<string, CurrencyAmountDto[]>()
+
+	for (const balance of balances) {
+		const { namespace, reference } = balance.currency.chainAddress.chain
+		const key = `${namespace}:${reference}`
+
+		const group = groups.get(key) ?? []
+		group.push(balance)
+		groups.set(key, group)
+	}
+
+	return groups
+}
+
+function nativeLine(nativeBalance: CurrencyAmountDto): string {
+	if (isZeroAmount(nativeBalance)) {
+		return `0 ${nativeBalance.currency.symbol}`
+	}
+
+	return formatAmountWithUsd(nativeBalance)
+}
+
+function chainBalanceLines(chainBalances: CurrencyAmountDto[]): string[] {
+	const nativeBalance = chainBalances.find((balance) =>
+		isNativeChainAddress(balance.currency.chainAddress),
+	)
+
+	if (nativeBalance === undefined) {
+		throw new Error('Native balance not found for chain')
+	}
+
+	const chain = nativeBalance.currency.chainAddress.chain
+
+	const tokenLines = chainBalances
+		.filter(
+			(balance) =>
+				!isNativeChainAddress(balance.currency.chainAddress) &&
+				!isZeroAmount(balance),
+		)
+		.map((balance) => formatAmountWithUsd(balance))
+
+	return [
+		`${chainToEmoji(chain)} ${chainToName(chain)}`,
+		nativeLine(nativeBalance),
+		...tokenLines,
+		'',
+	]
+}
 
 export const WalletPage = {
-	render(balance: CurrencyAmountDto, userEvmAddress: string): PageContent {
+	render(balances: CurrencyAmountDto[]): PageContent {
+		const settlementHeader = `${chainToEmoji(BASE_CHAIN)} ${chainToName(BASE_CHAIN)}`
+
+		const groups = [...groupBalancesByChain(balances).values()]
+
+		// Base is the settlement chain and is always listed first.
+		const baseGroup = groups.find((group) =>
+			group.some((balance) =>
+				isBaseChain(balance.currency.chainAddress.chain),
+			),
+		)
+
+		const orderedGroups =
+			baseGroup === undefined
+				? groups
+				: [baseGroup, ...groups.filter((group) => group !== baseGroup)]
+
+		const balanceLines = orderedGroups.flatMap((group) =>
+			chainBalanceLines(group),
+		)
+
 		const lines = [
-			'<b>Wallet</b>',
+			'<b>💼 Wallet</b>',
 			'',
-			`💰 Balance: ${formatAmountWithUsd(balance)}`,
+			'Main settlement chain:',
+			settlementHeader,
 			'',
-			`Deposit address (Base):`,
-			`<code>${userEvmAddress}</code>`,
+			'Balances:',
+			'',
+			...balanceLines,
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text('Update', buildActionData(actionIds.openWallet, undefined))
-			.row()
-			.text(
-				'All Balances',
-				buildActionData(actionIds.openAllBalances, undefined),
-			)
+			.text('Deposit', buildActionData(actionIds.openDeposit, undefined))
 			.row()
 			.text(
 				'Withdraw',
@@ -37,6 +119,11 @@ export const WalletPage = {
 			.text(
 				'Export Private Key',
 				buildActionData(actionIds.openExportKeyWarning, undefined),
+			)
+			.row()
+			.text(
+				'Refresh Balances',
+				buildActionData(actionIds.openWallet, undefined),
 			)
 			.row()
 

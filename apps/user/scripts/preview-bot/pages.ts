@@ -38,6 +38,7 @@ import { WithdrawChooseChainPage } from '../../src/pages/wallet/withdraw-choose-
 import { WithdrawChooseCurrencyPage } from '../../src/pages/wallet/withdraw-choose-currency-page'
 import { WithdrawPage } from '../../src/pages/wallet/withdraw-page'
 import { WithdrawSuccessPage } from '../../src/pages/wallet/withdraw-success-page'
+import { addressQrInputFile } from '../../src/utils/qr'
 import {
 	mockAvailablePresetNoRip,
 	mockAvailablePresets,
@@ -342,9 +343,20 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'deposit-address': {
 		description:
-			'Final step of the deposit flow. Shows the deposit address (tap-to-copy) and the current balance of the chosen token, plus a warning about unsupported assets. Refresh re-fetches the balance.',
-		render: () =>
-			DepositAddressPage.render(mockBalance, mockUserEvmAddress),
+			'Final step of the deposit flow. Shows the deposit address (tap-to-copy) and the current balance of the chosen token, plus a warning about unsupported assets. Refresh re-fetches the balance. The "qr" variant shows the same page as a photo message with a scannable QR of the address.',
+		variants: ['text', 'qr'],
+		async render(variant) {
+			const qr =
+				variant === 'qr'
+					? await addressQrInputFile(mockUserEvmAddress)
+					: undefined
+
+			return DepositAddressPage.render({
+				balance: mockBalance,
+				depositAddress: mockUserEvmAddress,
+				qr,
+			})
+		},
 	},
 	'swap-choose-src-chain': {
 		description:

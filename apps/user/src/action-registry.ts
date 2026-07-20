@@ -34,7 +34,10 @@ import { openReferralAbout } from './action-handlers/referral-system/open-referr
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
 import { executeWithdraw } from './action-handlers/wallet/execute-withdraw'
 import { openDeposit } from './action-handlers/wallet/open-deposit'
-import { openDepositAddress } from './action-handlers/wallet/open-deposit-address'
+import {
+	openDepositAddress,
+	openDepositAddressQr,
+} from './action-handlers/wallet/open-deposit-address'
 import { openDepositChooseCurrency } from './action-handlers/wallet/open-deposit-choose-currency'
 import {
 	openExportKey,
@@ -102,6 +105,7 @@ export const actionRegistry = {
 	openDeposit,
 	openDepositChooseToken: openDepositChooseCurrency,
 	openDepositAddress,
+	openDepositAddressQr,
 	openExportKeyWarning,
 	openExportKey,
 

@@ -1,30 +1,44 @@
 import { ChainAddressDto, usersControllerGetUser } from '@rips/api-client'
 import { ActionDef, withPayload } from '../../action-def'
-import { toHold } from '../../flows'
+import { Flow, toHold } from '../../flows'
 import { DepositAddressPage } from '../../pages/wallet/deposit-address-page'
-import { EffectType } from '../../types'
+import { EffectType, HandlerResult } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../utils/currency'
+import { addressQrInputFile } from '../../utils/qr'
 import { evmAddressFromUser } from '../../utils/wallet'
+
+async function renderDepositAddress(
+	telegramId: string,
+	currencyChainAddress: ChainAddressDto,
+	showQr: boolean,
+): Promise<HandlerResult<Flow>> {
+	const [balance, { data: user }] = await Promise.all([
+		fetchSingleBalance(telegramId, currencyChainAddress),
+		usersControllerGetUser({ path: { telegramId } }),
+	])
+
+	const depositAddress = evmAddressFromUser(user)
+
+	const qr = showQr ? await addressQrInputFile(depositAddress) : undefined
+
+	return {
+		flow: toHold(),
+		effect: {
+			type: EffectType.EDIT,
+			page: DepositAddressPage.render({ balance, depositAddress, qr }),
+		},
+	}
+}
 
 export const openDepositAddress: ActionDef<ChainAddressDto> = withPayload(
 	currencyChainAddressCodec,
-	async (session, currencyChainAddress) => {
-		const { telegramId } = session
+	(session, currencyChainAddress) =>
+		renderDepositAddress(session.telegramId, currencyChainAddress, false),
+)
 
-		const [balance, { data: user }] = await Promise.all([
-			fetchSingleBalance(telegramId, currencyChainAddress),
-			usersControllerGetUser({ path: { telegramId } }),
-		])
-
-		const depositAddress = evmAddressFromUser(user)
-
-		return {
-			flow: toHold(),
-			effect: {
-				type: EffectType.EDIT,
-				page: DepositAddressPage.render(balance, depositAddress),
-			},
-		}
-	},
+export const openDepositAddressQr: ActionDef<ChainAddressDto> = withPayload(
+	currencyChainAddressCodec,
+	(session, currencyChainAddress) =>
+		renderDepositAddress(session.telegramId, currencyChainAddress, true),
 )

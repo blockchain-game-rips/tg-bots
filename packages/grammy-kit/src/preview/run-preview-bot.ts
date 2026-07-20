@@ -12,7 +12,7 @@ async function renderVariant(
 ): Promise<void> {
 	let rendered
 	try {
-		rendered = page.render(variant)
+		rendered = await page.render(variant)
 	} catch (e) {
 		if (e instanceof VariantError) {
 			const available = e.available
@@ -28,7 +28,17 @@ async function renderVariant(
 		throw e
 	}
 
-	const { message, keyboard } = rendered
+	const { message, keyboard, photo } = rendered
+
+	if (photo !== undefined) {
+		await ctx.replyWithPhoto(photo, {
+			caption: message,
+			reply_markup: keyboard,
+			parse_mode: 'HTML',
+		})
+
+		return
+	}
 
 	await ctx.reply(message, {
 		reply_markup: keyboard,

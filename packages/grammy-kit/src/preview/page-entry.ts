@@ -3,7 +3,7 @@ import { PageContent } from '../types'
 export interface PageEntry {
 	description: string
 	variants?: string[]
-	render: (variant?: string) => PageContent
+	render: (variant?: string) => PageContent | Promise<PageContent>
 }
 
 export class VariantError extends Error {

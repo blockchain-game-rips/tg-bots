@@ -1,8 +1,14 @@
-import { Api, GrammyError } from 'grammy'
+import { Api, GrammyError, InputMediaBuilder } from 'grammy'
 import { resolveEffect } from '../action/action-def'
 import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
-import { Effect, EffectType, MessageToEdit, SessionData } from '../types'
+import {
+	Effect,
+	EffectType,
+	MessageToEdit,
+	PageContent,
+	SessionData,
+} from '../types'
 import { fireAndForget } from '../utils/common'
 import { composePageContentWithError, ErrorToRender } from './error-to-render'
 
@@ -16,6 +22,61 @@ function isMessageNotModifiedError(error: unknown): boolean {
 	)
 }
 
+async function renderPage(
+	api: Api,
+	chatId: number,
+	messageToEdit: MessageToEdit,
+	page: PageContent,
+): Promise<void> {
+	const currentlyPhoto = messageToEdit.hasPhoto
+	const targetPhoto = page.photo !== undefined
+
+	if (currentlyPhoto === targetPhoto) {
+		if (targetPhoto && page.photo !== undefined) {
+			await api.editMessageMedia(
+				chatId,
+				messageToEdit.messageId,
+				InputMediaBuilder.photo(page.photo, {
+					caption: page.message,
+					parse_mode: 'HTML',
+				}),
+				{ reply_markup: page.keyboard },
+			)
+
+			return
+		}
+
+		await api.editMessageText(
+			chatId,
+			messageToEdit.messageId,
+			page.message,
+			{
+				reply_markup: page.keyboard,
+				parse_mode: 'HTML',
+			},
+		)
+
+		return
+	}
+
+	await api.deleteMessage(chatId, messageToEdit.messageId)
+
+	if (targetPhoto && page.photo !== undefined) {
+		await api.sendPhoto(chatId, page.photo, {
+			caption: page.message,
+			reply_markup: page.keyboard,
+			parse_mode: 'HTML',
+		})
+
+		return
+	}
+
+	await api.sendMessage(chatId, page.message, {
+		reply_markup: page.keyboard,
+		parse_mode: 'HTML',
+	})
+}
+
 async function executeEffect(
 	effect: Effect,
 	api: Api,
@@ -26,15 +87,8 @@ async function executeEffect(
 ): Promise<void> {
 	switch (effect.type) {
 		case EffectType.EDIT:
-			await api.editMessageText(
-				chatId,
-				messageToEdit.messageId,
-				effect.page.message,
-				{
-					reply_markup: effect.page.keyboard,
-					parse_mode: 'HTML',
-				},
-			)
+			await renderPage(api, chatId, messageToEdit, effect.page)
+
 			session.lastPage = effect.page
 			break
 
@@ -102,17 +156,7 @@ export async function executeEffectOrDisplayError(
 			error,
 		)
 
-		fireAndForget(
-			api.editMessageText(
-				chatId,
-				messageToEdit.messageId,
-				errorPage.message,
-				{
-					reply_markup: errorPage.keyboard,
-					parse_mode: 'HTML',
-				},
-			),
-		)
+		fireAndForget(renderPage(api, chatId, messageToEdit, errorPage))
 	} finally {
 		if (messagesToDelete.length !== 0) {
 			fireAndForget(api.deleteMessages(chatId, messagesToDelete))

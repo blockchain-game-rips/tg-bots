@@ -84,11 +84,12 @@ function getChatIdAndPage(ctx: Filter<BaseContext, 'callback_query:data'>): {
 	if (message === undefined)
 		throw new Error('No message id on callback query')
 
-	const text = message.text ?? ''
+	const hasPhoto = message.photo !== undefined
+	const text = (hasPhoto ? message.caption : message.text) ?? ''
 	const messageId = message.message_id
 
 	return {
-		page: { pageContent: { message: text, keyboard }, messageId },
+		page: { pageContent: { message: text, keyboard }, messageId, hasPhoto },
 		chatId: message.chat.id,
 	}
 }

@@ -1,4 +1,4 @@
-import { InlineKeyboard } from 'grammy'
+import { InlineKeyboard, InputFile } from 'grammy'
 import { FlowBase, FlowTransition } from './session/session-utils'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
@@ -6,6 +6,7 @@ export type ActionId<P = void> = string & { readonly __payloadType: P }
 export interface MessageToEdit {
 	pageContent: PageContent
 	messageId: number
+	hasPhoto: boolean
 }
 
 export interface SessionData<F extends FlowBase | null> {
@@ -51,6 +52,7 @@ export interface HandlerResult<F extends FlowBase | null> {
 export interface PageContent {
 	message: string
 	keyboard: InlineKeyboard
+	photo?: InputFile
 }
 
 export type NavIds =

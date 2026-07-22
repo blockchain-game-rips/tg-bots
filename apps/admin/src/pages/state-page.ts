@@ -3,6 +3,7 @@ import {
 	GetRipsStateResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import {
 	formatAmountWithUsd,
 	formatPercent,
@@ -18,11 +19,11 @@ type PresetEntry = GetRipsStateResponseDtoOutput['availablePresets'][number]
 type PresetConfig = NonNullable<PresetEntry['preset']['currentConfig']>
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 
-function renderTierTable(table: TierTable): string[] {
+function renderTierTable(table: TierTable): Line[] {
 	const { currency, defaultFeeBps, tiers } = table
 
-	const lines: string[] = [
-		`<b>Referral System</b> (${currency.symbol})`,
+	const lines: Line[] = [
+		fmt`${FormattedString.b('Referral System')} (${currency.symbol})`,
 		`Default fee: ${formatPercent(defaultFeeBps)}`,
 		`Tiers:`,
 	]
@@ -64,9 +65,9 @@ function renderConfig(config: PresetConfig): string[] {
 	return lines
 }
 
-function renderPreset(entry: PresetEntry): string[] {
+function renderPreset(entry: PresetEntry): Line[] {
 	const { preset, fillingRip } = entry
-	const lines: string[] = [`<b>Preset #${String(preset.id)}</b>`]
+	const lines: Line[] = [FormattedString.b(`Preset #${String(preset.id)}`)]
 
 	const ripConfig = fillingRip?.config ?? null
 	const nextConfig = preset.currentConfig
@@ -110,16 +111,16 @@ export const StatePage = {
 		tierTablesRes: GetTierTablesResponseDtoOutput,
 	): PageContent {
 		const statusLine = state.isPaused
-			? '⏸ <b>PAUSED</b>'
-			: '▶ <b>RUNNING</b>'
+			? fmt`⏸ ${FormattedString.b('PAUSED')}`
+			: fmt`▶ ${FormattedString.b('RUNNING')}`
 
 		const evmAddress =
 			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE] ?? ''
 		const balanceDisplay = formatAmountWithUsd(adminWallet.balance)
 
-		const lines: string[] = [
-			`<b>Rips State</b>  ${statusLine}`,
-			`Admin: <code>${evmAddress}</code>`,
+		const lines: Line[] = [
+			fmt`${FormattedString.b('Rips State')}  ${statusLine}`,
+			fmt`Admin: ${FormattedString.code(evmAddress)}`,
 			`Balance: ${balanceDisplay}`,
 			`Presets: ${String(state.availablePresets.length)}`,
 			'',
@@ -142,7 +143,7 @@ export const StatePage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: keyboardFromLayout([
 				[{ label: 'Update', actionId: actionIds.openState }],
 				[{ label: 'Home', actionId: actionIds.openHome }],

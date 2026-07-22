@@ -5,6 +5,7 @@ import {
 	createButtonHandler,
 	createMessageHandler,
 	createTelegramMetricsTransformer,
+	fmt,
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
@@ -76,7 +77,7 @@ const handleMessage = createMessageHandler(actions)
 bot.command('start', async (ctx) => {
 	let pageContent: PageContent = {
 		keyboard: new InlineKeyboard(),
-		message: 'Failed to load home',
+		message: fmt`Failed to load home`,
 	}
 
 	try {
@@ -93,9 +94,9 @@ bot.command('start', async (ctx) => {
 		logger.error(error, 'Error in /start command')
 	}
 
-	await ctx.reply(pageContent.message, {
+	await ctx.reply(pageContent.message.text, {
+		entities: pageContent.message.entities,
 		reply_markup: pageContent.keyboard,
-		parse_mode: 'HTML',
 	})
 })
 

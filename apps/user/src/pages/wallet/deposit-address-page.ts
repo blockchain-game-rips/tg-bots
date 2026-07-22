@@ -1,5 +1,11 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard, InputFile } from 'grammy'
 import { actionIds } from '../../actions'
@@ -19,11 +25,11 @@ export const DepositAddressPage = {
 		const chain = currency.chainAddress.chain
 		const chainName = chainToName(chain)
 
-		const lines = [
+		const lines: Line[] = [
 			depositBreadcrumb(chainName, currency.symbol),
 			'',
 			`Send ${currency.symbol} on ${chainName} to this address:`,
-			`<code>${depositAddress}</code>`,
+			FormattedString.code(depositAddress),
 			'',
 			`Balance: ${formatAmountWithUsd(balance)}`,
 			'',
@@ -65,6 +71,10 @@ export const DepositAddressPage = {
 			home: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard, photo: qr }
+		return {
+			message: joinLines(lines),
+			keyboard,
+			photo: qr,
+		}
 	},
 }

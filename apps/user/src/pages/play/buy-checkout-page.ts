@@ -3,12 +3,17 @@ import {
 	CurrencyAmountDto,
 	QuotePurchaseResponseDtoOutput,
 } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { configName, fundsBreakdown, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
 import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const BuyCheckoutPage = {
@@ -33,7 +38,7 @@ export const BuyCheckoutPage = {
 
 		const config = resolveConfig(availablePreset)
 
-		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
+		const { insufficientAmounts } = fundsBreakdown(
 			[
 				{ label: 'Entry cost', amount: currencyInAmount },
 				{
@@ -42,15 +47,12 @@ export const BuyCheckoutPage = {
 				},
 			],
 			[nativeBalance, currencyInBalance],
-			chainToName,
 		)
 
-		const lines = [
+		const lines: Line[] = [
 			buyEntriesBreadcrumb(configName(config)),
 			'',
 			`Entry count: ${entryCount.toString()}`,
-			'',
-			...breakdownLines,
 		]
 
 		const insufficient = insufficientAmounts.length > 0
@@ -72,10 +74,12 @@ export const BuyCheckoutPage = {
 
 			lines.push('')
 			lines.push('Option 1: Deposit ETH on Base to')
-			lines.push(`<code>${userEvmAddress}</code>`)
-			lines.push('then press <b>Update</b>')
+			lines.push(FormattedString.code(userEvmAddress))
+			lines.push(fmt`then press ${FormattedString.b('Update')}`)
 			lines.push('')
-			lines.push('Option 2: <b>Enter from another token</b>')
+			lines.push(
+				fmt`Option 2: ${FormattedString.b('Enter from another token')}`,
+			)
 		} else {
 			lines.push('')
 			lines.push('Confirm to proceed')
@@ -97,6 +101,6 @@ export const BuyCheckoutPage = {
 			)
 			.appendHomeButton()
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

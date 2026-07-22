@@ -1,4 +1,9 @@
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+} from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -6,14 +11,14 @@ import { PageContent } from '../../types'
 export const WelcomePage = {
 	render(): PageContent {
 		const lines = [
-			'👋 <b>Welcome to Rips</b>',
+			fmt`👋 ${FormattedString.b('Welcome to Rips')}`,
 			'',
 			'Choose how to set up your account:',
 			'',
-			'• <b>Create new account</b> — we generate a fresh wallet for you.',
-			'• <b>Import private key</b> — bring your own wallet.',
+			fmt`• ${FormattedString.b('Create new account')} — we generate a fresh wallet for you.`,
+			fmt`• ${FormattedString.b('Import private key')} — bring your own wallet.`,
 			'',
-			'<b>This choice is permanent.</b> Your account can’t be changed or replaced later.',
+			fmt`${FormattedString.b('This choice is permanent.')} Your account can’t be changed or replaced later.`,
 		]
 
 		const keyboard = new InlineKeyboard()
@@ -27,6 +32,6 @@ export const WelcomePage = {
 				buildActionData(actionIds.startImportKey, undefined),
 			)
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

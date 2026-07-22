@@ -1,9 +1,10 @@
+import { fmt } from '@rips/grammy-kit'
 import { PromptContent } from '../types'
 
 export const CustomSwapAmountPrompt = {
 	render(): PromptContent {
 		return {
-			message: 'Enter the amount to swap',
+			message: fmt`Enter the amount to swap`,
 			placeholder: '0.01',
 		}
 	},

@@ -103,9 +103,9 @@ export class Notifier {
 	}
 
 	private async sendNotification(chatId: string, page: PageContent) {
-		await this.bot.api.sendMessage(chatId, page.message, {
+		await this.bot.api.sendMessage(chatId, page.message.text, {
 			reply_markup: page.keyboard,
-			parse_mode: 'HTML',
+			entities: page.message.entities,
 		})
 	}
 }

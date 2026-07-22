@@ -8,7 +8,7 @@ import {
 	walletsControllerSwapCrosschain,
 	walletsControllerSwapSamechain,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, wait } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { Flow, toHold, toReset } from '../../../flows'
@@ -31,7 +31,7 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 		flow: toHold(),
 		effect: {
 			type: EffectType.SEND_LOADING,
-			message: 'Swapping...',
+			message: fmt`Swapping...`,
 			next: () =>
 				executeSwapRequest(
 					session.telegramId,

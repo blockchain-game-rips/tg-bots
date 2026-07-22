@@ -1,5 +1,11 @@
 import { AvailablePresetDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	fmt,
+	FormattedString,
+	Line,
+} from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -63,16 +69,20 @@ function toPresetLevel(
 	}
 }
 
-function buildMessage(levels: PresetLevel[]): string {
-	const header = ['<b>🎮 Enter Rip</b>', '', 'Choose your entry level:']
-
-	const levelLines = levels.flatMap((level) => [
+function buildMessage(levels: PresetLevel[]): FormattedString {
+	const header: Line[] = [
+		FormattedString.b('🎮 Enter Rip'),
 		'',
-		`${level.emoji} <b>${level.name}</b>`,
+		'Choose your entry level:',
+	]
+
+	const levelLines = levels.flatMap((level): Line[] => [
+		'',
+		fmt`${level.emoji} ${FormattedString.b(level.name)}`,
 		`${level.displayAmount} ${level.symbol} ≈ ${level.displayUsdAmount}`,
 	])
 
-	return [...header, ...levelLines].join('\n')
+	return FormattedString.join([...header, ...levelLines], '\n')
 }
 
 function buildKeyboard(levels: PresetLevel[]): InlineKeyboard {

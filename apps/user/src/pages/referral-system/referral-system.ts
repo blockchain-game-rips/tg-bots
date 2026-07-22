@@ -2,7 +2,7 @@ import {
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import { addNav, buildActionData, joinLines } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -100,6 +100,6 @@ export const ReferralSystemPage = {
 			home: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

@@ -3,7 +3,7 @@ import {
 	CurrencyAmountDto,
 	QuoteZapResponseDtoOutput,
 } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import {
 	configName,
 	fundsBreakdown,
@@ -41,19 +41,18 @@ export const ZapCheckoutPage = {
 		const { currency } = zapQuote.amountIn
 		const chain = currency.chainAddress.chain
 
-		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
+		const { insufficientAmounts } = fundsBreakdown(
 			[
 				{ label: 'Entry cost', amount: zapQuote.amountIn },
 				{ label: 'Zap fee', amount: zapQuote.fee },
 				{ label: 'Blockchain fee', amount: zapQuote.blockchainFee },
 			],
 			[currencyInBalance, nativeBalance],
-			chainToName,
 		)
 
 		const insufficient = insufficientAmounts.length > 0
 
-		const lines = [
+		const lines: Line[] = [
 			buyEntriesBreadcrumb(
 				configName(config),
 				chainToName(chain),
@@ -62,8 +61,6 @@ export const ZapCheckoutPage = {
 			'',
 			`Entry count: ${entryCount.toString()}`,
 			`Estimated time: ${toShortDurationFormat(zapQuote.durationMs / 1000 + TRANSACTION_SEND_OVERHEAD_SECONDS)}`,
-			'',
-			...breakdownLines,
 		]
 
 		if (insufficient) {
@@ -97,6 +94,6 @@ export const ZapCheckoutPage = {
 			home: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

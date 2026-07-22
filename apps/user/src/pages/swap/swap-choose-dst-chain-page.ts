@@ -1,5 +1,11 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { addNav, NavIds } from '@rips/grammy-kit'
+import {
+	addNav,
+	FormattedString,
+	joinLines,
+	Line,
+	NavIds,
+} from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -49,7 +55,7 @@ export const SwapChooseDstChainPage = {
 function buildMessage(
 	srcBalance: CurrencyAmountDto,
 	amountIn?: bigint,
-): string {
+): FormattedString {
 	const srcCurrency = srcBalance.currency
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 
@@ -60,7 +66,7 @@ function buildMessage(
 	const { displayAmount: balanceAmount, symbol: balanceSymbol } =
 		currencyAmountDisplayParts(srcBalance)
 
-	return [
+	const lines: Line[] = [
 		swapBreadcrumb(),
 		'',
 		`From: ${srcChainName} ${srcCurrency.symbol}`,
@@ -70,7 +76,9 @@ function buildMessage(
 		`${balanceAmount} ${balanceSymbol}`,
 		'',
 		'Choose destination chain:',
-	].join('\n')
+	]
+
+	return joinLines(lines)
 }
 
 function amountLines(amount?: CurrencyAmountDto): string[] {

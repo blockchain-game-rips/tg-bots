@@ -1,5 +1,12 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
-import { addNav, buildActionData, NavIds } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	Line,
+	NavIds,
+} from '@rips/grammy-kit'
 import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -36,14 +43,14 @@ function render(draft: Draft, back: NavIds): PageContent {
 	}
 }
 
-function buildMessage(draft: Draft): string {
+function buildMessage(draft: Draft): FormattedString {
 	const { srcBalance, dstCurrency } = draft
 
 	const srcCurrency = srcBalance.currency
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
 
-	return [
+	const lines: Line[] = [
 		swapBreadcrumb(),
 		'',
 		`From: ${srcChainName} ${srcCurrency.symbol}`,
@@ -53,7 +60,9 @@ function buildMessage(draft: Draft): string {
 		formatAmount(srcBalance),
 		'',
 		'Choose amount:',
-	].join('\n')
+	]
+
+	return joinLines(lines)
 }
 
 function formatAmount(amount: CurrencyAmountDto): string {

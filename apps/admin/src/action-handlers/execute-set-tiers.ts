@@ -5,6 +5,9 @@ import {
 import {
 	ActionDef,
 	assertFlow,
+	fmt,
+	FormattedString,
+	joinLines,
 	toFlow,
 	toHold,
 	toReset,
@@ -20,15 +23,17 @@ import { Effect, EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parseTierList } from '../validation/tier-list'
 
-const TIERS_PROMPT_MESSAGE = [
+const TIERS_PROMPT_MESSAGE = joinLines([
 	'Enter the referral tier list as JSON.',
 	'',
 	'Example:',
-	'<code>[{"minVolume":0,"feePercent":500},{"minVolume":1.5,"feePercent":300}]</code>',
+	FormattedString.code(
+		'[{"minVolume":0,"feePercent":500},{"minVolume":1.5,"feePercent":300}]',
+	),
 	'',
-	'<b>minVolume</b>: minimum cumulative volume in human-readable units (e.g. 1.5 ETH)',
-	'<b>feePercent</b>: fee in basis points (e.g. 500 = 5%)',
-].join('\n')
+	fmt`${FormattedString.b('minVolume')}: minimum cumulative volume in human-readable units (e.g. 1.5 ETH)`,
+	fmt`${FormattedString.b('feePercent')}: fee in basis points (e.g. 500 = 5%)`,
+])
 
 const TIERS_PLACEHOLDER = '[{"minVolume":0,"feePercent":500}]'
 
@@ -68,7 +73,7 @@ export const submitConfirmSetTiers: ActionDef<string> = withPayload<string>(
 			effect: {
 				type: EffectType.EDIT,
 				page: ConfirmationPage.render(
-					`This will set <b>${String(tiers.length)}</b> referral tier(s):\n${tierSummary}`,
+					fmt`This will set ${FormattedString.b(String(tiers.length))} referral tier(s):\n${tierSummary}`,
 					actionIds.executeConfirmSetTiers,
 				),
 			},
@@ -83,7 +88,7 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 
 	const effect: Effect = {
 		type: EffectType.SEND_LOADING,
-		message: 'Setting referral tiers...',
+		message: fmt`Setting referral tiers...`,
 		next: async () => {
 			const { data: currenciesRes } =
 				await currencyControllerGetCurrencies({

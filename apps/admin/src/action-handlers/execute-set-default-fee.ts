@@ -2,6 +2,9 @@ import { adminControllerSetDefaultReferralFee } from '@rips/api-client'
 import {
 	ActionDef,
 	assertFlow,
+	fmt,
+	FormattedString,
+	joinLines,
 	toFlow,
 	toHold,
 	toReset,
@@ -15,13 +18,13 @@ import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parseFeeBp } from '../validation/fee-bp'
 
-const FEE_PROMPT_MESSAGE = [
+const FEE_PROMPT_MESSAGE = joinLines([
 	'Enter the default referral fee in basis points (bp).',
 	'',
-	'<code>1000 bp</code> = 10%',
-	'<code>100 bp</code> = 1%',
-	'<code>1 bp</code> = 0.01%',
-].join('\n')
+	fmt`${FormattedString.code('1000 bp')} = 10%`,
+	fmt`${FormattedString.code('100 bp')} = 1%`,
+	fmt`${FormattedString.code('1 bp')} = 0.01%`,
+])
 
 const FEE_PLACEHOLDER = 'e.g. 1000 for 10%'
 
@@ -55,7 +58,7 @@ export const submitConfirmSetDefaultFee: ActionDef<string> =
 				effect: {
 					type: EffectType.EDIT,
 					page: ConfirmationPage.render(
-						`This will set the default referral fee to <b>${String(bp)} bp</b>.`,
+						fmt`This will set the default referral fee to ${FormattedString.b(`${String(bp)} bp`)}.`,
 						actionIds.executeConfirmSetDefaultFee,
 					),
 				},
@@ -73,7 +76,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 			flow: toHold(),
 			effect: {
 				type: EffectType.SEND_LOADING,
-				message: 'Setting default fee...',
+				message: fmt`Setting default fee...`,
 				next: async () => {
 					const { data: tx } =
 						await adminControllerSetDefaultReferralFee({

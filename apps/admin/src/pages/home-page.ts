@@ -2,6 +2,7 @@ import {
 	AdminWalletResponseDtoOutput,
 	GetRipsStateResponseDtoOutput,
 } from '@rips/api-client'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { actionIds } from '../actions'
 import { EIP155_NAMESPACE } from '../constants'
@@ -14,21 +15,21 @@ export const HomePage = {
 		adminWallet: AdminWalletResponseDtoOutput,
 	): PageContent {
 		const statusLine = state.isPaused
-			? '⏸ <b>PAUSED</b>'
-			: '▶ <b>RUNNING</b>'
+			? fmt`⏸ ${FormattedString.b('PAUSED')}`
+			: fmt`▶ ${FormattedString.b('RUNNING')}`
 
 		const evmAddress =
 			adminWallet.wallet.namespaceToAddress[EIP155_NAMESPACE] ?? ''
 		const balanceDisplay = formatAmountWithUsd(adminWallet.balance)
 
-		const lines = [
-			`<b>Rips Admin</b>  ${statusLine}`,
-			`Admin: <code>${evmAddress}</code>`,
+		const lines: Line[] = [
+			fmt`${FormattedString.b('Rips Admin')}  ${statusLine}`,
+			fmt`Admin: ${FormattedString.code(evmAddress)}`,
 			`Balance: ${balanceDisplay}`,
 		]
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: keyboardFromLayout([
 				[{ label: 'State', actionId: actionIds.openState }],
 				[

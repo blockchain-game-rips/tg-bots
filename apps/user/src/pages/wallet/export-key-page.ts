@@ -1,14 +1,14 @@
-import { addNav } from '@rips/grammy-kit'
+import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 export const ExportKeyPage = {
 	render(privateKey: string): PageContent {
-		const lines = [
+		const lines: Line[] = [
 			'Your private key (tap to copy):',
 			'',
-			`<code>${privateKey}</code>`,
+			FormattedString.code(privateKey),
 			'',
 			'⚠️ Delete this message once you have saved the key.',
 		]
@@ -20,6 +20,6 @@ export const ExportKeyPage = {
 			parent: actionIds.openWallet,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

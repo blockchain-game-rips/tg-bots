@@ -1,5 +1,10 @@
 import { AvailablePresetDto, ConfigDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+} from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
 	resolveConfig,
@@ -24,11 +29,11 @@ export const BuyChooseEntryCountPage = {
 function buildMessage(
 	config: ConfigDto,
 	availablePreset: AvailablePresetDto,
-): string {
+): FormattedString {
 	const { displayAmount, symbol, displayUsdAmount } =
 		currencyAmountDisplayParts(config.entryPrice)
 
-	return [
+	return joinLines([
 		buyEntriesBreadcrumb(`${displayAmount} ${symbol}`),
 		'',
 		'Choose number of entries:',
@@ -36,7 +41,7 @@ function buildMessage(
 		`Entry amount: ${displayAmount} ${symbol} ≈ ${displayUsdAmount}`,
 		`Current Rip: ${ripLabel(availablePreset)}`,
 		fillStatusLine(config, availablePreset),
-	].join('\n')
+	])
 }
 
 const REFUND_WARNING = 'refunded if not filled in time'

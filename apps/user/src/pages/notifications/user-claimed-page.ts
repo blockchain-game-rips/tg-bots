@@ -1,5 +1,10 @@
 import { RipDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+} from '@rips/grammy-kit'
 import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -10,7 +15,7 @@ export const UserClaimedRipPage = {
 		const preset = configName(rip.config)
 
 		const lines = [
-			`🏆 <b>Rip #${rip.id.toString()} is over — open your payouts!</b>`,
+			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} is over — open your payouts!`)}`,
 			'',
 			`Preset: ${preset}`,
 		]
@@ -21,7 +26,7 @@ export const UserClaimedRipPage = {
 		)
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard,
 		}
 	},

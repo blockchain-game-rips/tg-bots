@@ -1,5 +1,5 @@
 import { CurrencyDto } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -40,10 +40,16 @@ export const SwapChooseSrcTokenPage = {
 	},
 }
 
-function buildMessage(contextLines: string[]): string {
-	return [swapBreadcrumb(), '', ...contextLines, '', 'Choose token:'].join(
-		'\n',
-	)
+function buildMessage(contextLines: string[]): FormattedString {
+	const lines: Line[] = [
+		swapBreadcrumb(),
+		'',
+		...contextLines,
+		'',
+		'Choose token:',
+	]
+
+	return joinLines(lines)
 }
 
 function draftLines(

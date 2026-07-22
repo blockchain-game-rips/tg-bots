@@ -5,6 +5,9 @@ import {
 import {
 	ActionDef,
 	assertFlow,
+	fmt,
+	FormattedString,
+	joinLines,
 	toFlow,
 	toHold,
 	toReset,
@@ -20,16 +23,18 @@ import { Effect, EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parsePresetConfig } from '../validation/preset-config'
 
-const CONFIG_PROMPT_MESSAGE = [
+const CONFIG_PROMPT_MESSAGE = joinLines([
 	'Enter the preset config as JSON.',
 	'',
 	'Example:',
-	'<code>{"presetId":1,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}</code>',
+	FormattedString.code(
+		'{"presetId":1,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}',
+	),
 	'',
-	'<b>entryCap</b>: must be a power of 2 (e.g. 8, 16, 32)',
-	'<b>feePercent</b>: in basis points (e.g. 500 = 5%)',
-	'<b>entryPrice</b>, <b>minPayout</b>, <b>maxPayout</b>: human-readable ETH amounts',
-].join('\n')
+	fmt`${FormattedString.b('entryCap')}: must be a power of 2 (e.g. 8, 16, 32)`,
+	fmt`${FormattedString.b('feePercent')}: in basis points (e.g. 500 = 5%)`,
+	fmt`${FormattedString.b('entryPrice')}, ${FormattedString.b('minPayout')}, ${FormattedString.b('maxPayout')}: human-readable ETH amounts`,
+])
 
 const CONFIG_PLACEHOLDER =
 	'{"presetId":0,"entryCap":16,"feePercent":500,"entryPrice":0.01,"durationSeconds":86400,"payoutDistribution":[{"payoutCount":1,"minPayout":0.1,"maxPayout":1.0}]}'
@@ -103,7 +108,7 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 
 		const effect: Effect = {
 			type: EffectType.SEND_LOADING,
-			message: 'Updating preset config...',
+			message: fmt`Updating preset config...`,
 			next: async () => {
 				const { data: currenciesRes } =
 					await currencyControllerGetCurrencies({

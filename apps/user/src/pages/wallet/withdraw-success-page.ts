@@ -1,4 +1,5 @@
 import { CurrencyAmountDto, TransactionDto } from '@rips/api-client'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
@@ -18,13 +19,13 @@ export const WithdrawSuccessPage = {
 		const { currency } = currencyAmount
 		const chain = currency.chainAddress.chain
 
-		const lines = [
+		const lines: Line[] = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			'✅ Withdrawal successful!',
 			'',
 			`${formatAmountWithUsd(currencyAmount)} sent to`,
-			`<code>${recipientAddress}</code>`,
+			FormattedString.code(recipientAddress),
 		]
 
 		if (blockchainFee !== undefined) {
@@ -33,10 +34,10 @@ export const WithdrawSuccessPage = {
 		}
 
 		lines.push('')
-		lines.push(`Transaction: <code>${transaction.id}</code>`)
+		lines.push(fmt`Transaction: ${FormattedString.code(transaction.id)}`)
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},

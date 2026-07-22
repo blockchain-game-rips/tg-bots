@@ -1,11 +1,17 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
 
-const WELCOME_HEADER = '👋 <b>Welcome to Rips</b>'
+const WELCOME_HEADER = fmt`👋 ${FormattedString.b('Welcome to Rips')}`
 
 interface HomePageArgs {
 	unopenedPulls: number
@@ -13,8 +19,8 @@ interface HomePageArgs {
 	referralFee: number
 }
 
-function statsLines(args: HomePageArgs): string[] {
-	const lines: string[] = []
+function statsLines(args: HomePageArgs): Line[] {
+	const lines: Line[] = []
 
 	if (args.unopenedPulls > 0) {
 		lines.push(`🎁 Unopened pulls: ${args.unopenedPulls.toString()}`)
@@ -26,7 +32,7 @@ function statsLines(args: HomePageArgs): string[] {
 	return lines
 }
 
-function messageLines(args: HomePageArgs): string[] {
+function messageLines(args: HomePageArgs): Line[] {
 	if (args.unopenedPulls > 0) {
 		return [
 			WELCOME_HEADER,
@@ -88,6 +94,6 @@ export const HomePage = {
 			.row()
 			.text('About', buildActionData(actionIds.openAbout, undefined))
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

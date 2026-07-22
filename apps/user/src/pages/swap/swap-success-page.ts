@@ -4,6 +4,7 @@ import {
 	SwapResponseDtoOutput,
 	SwapSamechainResponseDtoOutput,
 } from '@rips/api-client'
+import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
@@ -24,7 +25,7 @@ type SwapSuccessResult = SamechainResult | CrosschainResult
 
 export const SwapSuccessPage = {
 	render(result: SwapSuccessResult): PageContent {
-		const lines = [
+		const lines: Line[] = [
 			'✅ Swap succeeded',
 			'',
 			'You received:',
@@ -35,7 +36,7 @@ export const SwapSuccessPage = {
 		]
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},
@@ -66,9 +67,12 @@ function formatAmount(amount: CurrencyAmountDto): string {
 	return `${displayAmount} ${symbol} ≈ ${displayUsdAmount}`
 }
 
-function transactionLines(result: SwapSuccessResult): string[] {
+function transactionLines(result: SwapSuccessResult): Line[] {
 	if (result.kind === 'samechain') {
-		return ['Transaction:', `<code>${result.result.transaction.id}</code>`]
+		return [
+			'Transaction:',
+			FormattedString.code(result.result.transaction.id),
+		]
 	}
 
 	const { swapResponse } = result
@@ -82,9 +86,9 @@ function transactionLines(result: SwapSuccessResult): string[] {
 
 	return [
 		`Transaction on ${srcChainName}:`,
-		`<code>${swapResponse.srcTransaction.id}</code>`,
+		FormattedString.code(swapResponse.srcTransaction.id),
 		'',
 		`Transaction on ${dstChainName}:`,
-		`<code>${result.result.dstTransaction.id}</code>`,
+		FormattedString.code(result.result.dstTransaction.id),
 	]
 }

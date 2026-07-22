@@ -2,6 +2,8 @@ import { adminControllerSetReferrerFrozen } from '@rips/api-client'
 import {
 	ActionDef,
 	assertFlow,
+	fmt,
+	FormattedString,
 	toFlow,
 	toHold,
 	toReset,
@@ -15,7 +17,7 @@ import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 
-const ADDRESS_PROMPT_MESSAGE = 'Enter the referrer EVM address to update.'
+const ADDRESS_PROMPT_MESSAGE = fmt`Enter the referrer EVM address to update.`
 const ADDRESS_PLACEHOLDER = '0x...'
 
 function openSetReferrerFrozen(frozen: boolean): ActionDef<void> {
@@ -48,8 +50,8 @@ function submitConfirmSetReferrerFrozen(frozen: boolean): ActionDef<string> {
 			)
 
 			const description = frozen
-				? `This will <b>freeze</b> referrer <code>${address}</code>.`
-				: `This will <b>unfreeze</b> referrer <code>${address}</code>.`
+				? fmt`This will ${FormattedString.b('freeze')} referrer ${FormattedString.code(address)}.`
+				: fmt`This will ${FormattedString.b('unfreeze')} referrer ${FormattedString.code(address)}.`
 
 			return {
 				flow,
@@ -83,8 +85,8 @@ export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
 			effect: {
 				type: EffectType.SEND_LOADING,
 				message: frozen
-					? 'Freezing referrer...'
-					: 'Unfreezing referrer...',
+					? fmt`Freezing referrer...`
+					: fmt`Unfreezing referrer...`,
 				next: async () => {
 					const { data: tx } = await adminControllerSetReferrerFrozen(
 						{

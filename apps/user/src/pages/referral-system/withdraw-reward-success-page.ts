@@ -1,5 +1,5 @@
 import { WithdrawRewardResponseDtoOutput } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, joinLines } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -20,7 +20,7 @@ export const WithdrawRewardSuccessPage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.openReferral,
 				home: actionIds.openHome,

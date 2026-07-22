@@ -1,4 +1,5 @@
 import { BuyEntriesPurchaseResponseDtoOutput, RipDto } from '@rips/api-client'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
@@ -9,7 +10,7 @@ export const BuySuccessPage = {
 		purchase: BuyEntriesPurchaseResponseDtoOutput,
 		rip?: RipDto,
 	): PageContent {
-		const lines = [
+		const lines: Line[] = [
 			buyEntriesBreadcrumb(
 				rip !== undefined ? configName(rip.config) : undefined,
 			),
@@ -39,10 +40,12 @@ export const BuySuccessPage = {
 		}
 
 		lines.push('')
-		lines.push(`Transaction: <code>${purchase.transaction.id}</code>`)
+		lines.push(
+			fmt`Transaction: ${FormattedString.code(purchase.transaction.id)}`,
+		)
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},

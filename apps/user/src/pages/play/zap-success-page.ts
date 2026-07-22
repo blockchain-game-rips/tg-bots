@@ -3,6 +3,7 @@ import {
 	CurrencyAmountDto,
 	GetZapResultResponseDtoOutput,
 } from '@rips/api-client'
+import { joinLines } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
@@ -43,7 +44,7 @@ export const ZapSuccessPage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},

@@ -1,3 +1,4 @@
+import { fmt, FormattedString } from '@grammyjs/parse-mode'
 import { Bot, type Context } from 'grammy'
 import { getEnvSafe } from '../utils/common'
 import { PageEntry, VariantError } from './page-entry'
@@ -15,14 +16,15 @@ async function renderVariant(
 		rendered = await page.render(variant)
 	} catch (e) {
 		if (e instanceof VariantError) {
-			const available = e.available
-				.map((v) => `<code>${v}</code>`)
-				.join(', ')
-			const received = e.received ? `<code>${e.received}</code>` : 'none'
-			await ctx.reply(
-				`Unknown variant ${received} for page "${pageName}".\n\nAvailable: ${available}`,
-				{ parse_mode: 'HTML' },
+			const available = FormattedString.join(
+				e.available.map((v) => FormattedString.code(v)),
+				', ',
 			)
+			const received = e.received
+				? FormattedString.code(e.received)
+				: fmt`none`
+			const message = fmt`Unknown variant ${received} for page "${pageName}".\n\nAvailable: ${available}`
+			await ctx.reply(message.text, { entities: message.entities })
 			return
 		}
 		throw e
@@ -32,17 +34,17 @@ async function renderVariant(
 
 	if (photo !== undefined) {
 		await ctx.replyWithPhoto(photo, {
-			caption: message,
+			caption: message.caption,
+			caption_entities: message.caption_entities,
 			reply_markup: keyboard,
-			parse_mode: 'HTML',
 		})
 
 		return
 	}
 
-	await ctx.reply(message, {
+	await ctx.reply(message.text, {
 		reply_markup: keyboard,
-		parse_mode: 'HTML',
+		entities: message.entities,
 	})
 }
 
@@ -50,23 +52,27 @@ export function runPreviewBot(pages: Pages): void {
 	const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
 	bot.command('pages', async (ctx) => {
-		const list = Object.entries(pages)
-			.map(([name, entry]) => {
-				const variants = entry?.variants
+		const entries = Object.entries(pages).map(([name, entry]) => {
+			const variants = entry?.variants
 
-				if (!variants?.length) return `<code>${name}</code>`
+			if (!variants?.length) return FormattedString.code(name)
 
-				const [first, ...rest] = variants
-				const indent = ' '.repeat(name.length)
+			const [first, ...rest] = variants
+			const indent = ' '.repeat(name.length)
 
-				return [
-					`<code>${name} ${first ?? ''}</code>`,
-					...rest.map((v) => `<code>${indent} ${v}</code>`),
-				].join('\n')
-			})
-			.join('\n')
+			return FormattedString.join(
+				[
+					FormattedString.code(`${name} ${first ?? ''}`),
+					...rest.map((v) => FormattedString.code(`${indent} ${v}`)),
+				],
+				'\n',
+			)
+		})
 
-		await ctx.reply(`Available pages:\n\n${list}`, { parse_mode: 'HTML' })
+		const list = FormattedString.join(entries, '\n')
+		const message = fmt`Available pages:\n\n${list}`
+
+		await ctx.reply(message.text, { entities: message.entities })
 	})
 
 	bot.command('r', async (ctx) => {

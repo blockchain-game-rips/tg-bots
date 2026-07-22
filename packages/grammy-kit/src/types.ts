@@ -1,3 +1,4 @@
+import { FormattedString } from '@grammyjs/parse-mode'
 import { InlineKeyboard, InputFile } from 'grammy'
 import { FlowBase, FlowTransition } from './session/session-utils'
 
@@ -38,7 +39,7 @@ export interface EffectAsk {
 
 export interface EffectLoading<F extends FlowBase | null = FlowBase | null> {
 	type: EffectType.SEND_LOADING
-	message: string
+	message: FormattedString
 	next: () => Promise<HandlerResult<F>>
 }
 
@@ -49,8 +50,10 @@ export interface HandlerResult<F extends FlowBase | null> {
 	effect: Effect
 }
 
+export type Line = string | FormattedString
+
 export interface PageContent {
-	message: string
+	message: FormattedString
 	keyboard: InlineKeyboard
 	photo?: InputFile
 }
@@ -64,7 +67,7 @@ export type NavIds =
 	  }
 
 export interface PromptContent {
-	message: string
+	message: FormattedString
 	placeholder: string
 }
 

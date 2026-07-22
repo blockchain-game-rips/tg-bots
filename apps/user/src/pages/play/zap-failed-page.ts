@@ -1,4 +1,5 @@
 import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
+import { joinLines } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
@@ -33,7 +34,7 @@ export const ZapFailedPage = {
 		]
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},

@@ -4,7 +4,13 @@ import {
 	QuoteSwapResponseDtoOutput,
 	QuoteSwapSamechainResponseDtoOutput,
 } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
 	Expense,
@@ -62,13 +68,13 @@ type ResolvedArgs = Omit<CheckoutArgs, 'amountIn'> & {
 function buildMessage(
 	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDto[],
-): string {
+): FormattedString {
 	const { srcBalance, dstCurrency, amountIn, quote } = args
 
 	const srcChainName = chainToName(srcBalance.currency.chainAddress.chain)
 	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
 
-	return [
+	const lines: Line[] = [
 		swapBreadcrumb(),
 		'',
 		`From: ${srcChainName} ${srcBalance.currency.symbol}`,
@@ -83,7 +89,9 @@ function buildMessage(
 		`Your ${srcChainName} balance:`,
 		formatAmount(srcBalance),
 		...insufficientLines(args, insufficientAmounts),
-	].join('\n')
+	]
+
+	return joinLines(lines)
 }
 
 function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
@@ -94,11 +102,10 @@ function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
 		...feeExpenses(quote),
 	]
 
-	const { insufficientAmounts } = fundsBreakdown(
-		expenses,
-		[srcBalance, nativeBalance],
-		chainToName,
-	)
+	const { insufficientAmounts } = fundsBreakdown(expenses, [
+		srcBalance,
+		nativeBalance,
+	])
 
 	return insufficientAmounts
 }
@@ -126,7 +133,7 @@ function feeExpenses(quote: SwapQuote): Expense[] {
 function insufficientLines(
 	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDto[],
-): string[] {
+): Line[] {
 	if (isSufficientAmounts(insufficientAmounts)) return []
 
 	const { amountIn, nativeBalance } = args
@@ -138,7 +145,7 @@ function insufficientLines(
 	if (amountInInsufficient) {
 		return [
 			'',
-			`⚠️ <b>Not enough ${currencyLabel(amountIn.currency)}</b>`,
+			fmt`⚠️ ${FormattedString.b(`Not enough ${currencyLabel(amountIn.currency)}`)}`,
 			'',
 			'Enter a smaller amount.',
 		]
@@ -146,7 +153,7 @@ function insufficientLines(
 
 	return [
 		'',
-		`⚠️ <b>Not enough ${currencyLabel(nativeBalance.currency)} to cover fee</b>`,
+		fmt`⚠️ ${FormattedString.b(`Not enough ${currencyLabel(nativeBalance.currency)} to cover fee`)}`,
 		'',
 		`Your ${currencyLabel(nativeBalance.currency)} balance: ${formatAmount(nativeBalance)}`,
 	]

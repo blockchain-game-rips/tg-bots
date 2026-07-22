@@ -1,4 +1,5 @@
 import { AdminTransactionResponseDtoOutput } from '@rips/api-client'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
@@ -6,10 +7,10 @@ import { PageContent } from '../types'
 
 export const TransactionPage = {
 	render(title: string, tx: AdminTransactionResponseDtoOutput): PageContent {
-		const lines = [
-			`<b>${title}</b>`,
+		const lines: Line[] = [
+			FormattedString.b(title),
 			'',
-			`Tx: <code>${tx.transaction.id}</code>`,
+			fmt`Tx: ${FormattedString.code(tx.transaction.id)}`,
 		]
 
 		if (tx.transaction.cost !== undefined) {
@@ -18,6 +19,6 @@ export const TransactionPage = {
 
 		const keyboard = new InlineKeyboard().text('Home', actionIds.openHome)
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

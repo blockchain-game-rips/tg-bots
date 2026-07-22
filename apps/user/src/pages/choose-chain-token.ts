@@ -1,19 +1,19 @@
 import { ChainAddressDto, CurrencyDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
 import { ActionId, Chain, NavIds, PageContent } from '../types'
 import { chainToName } from '../utils/chain'
 
 interface ChooseChainParams<T> {
-	lines: string[]
+	lines: Line[]
 	chainActionId: ActionId<T>
 	chainPayload: (chain: Chain) => T
 	nav: NavIds
 }
 
 interface ChooseTokenParams<T> {
-	lines: string[]
+	lines: Line[]
 	currencies: CurrencyDto[]
 	tokenActionId: ActionId<T>
 	tokenPayload: (currency: CurrencyDto) => T
@@ -39,7 +39,7 @@ export function buildChooseChainPage<T>(
 
 	addNav(keyboard, nav)
 
-	return { message: lines.join('\n'), keyboard }
+	return { message: joinLines(lines), keyboard }
 }
 
 export function buildChainKeyboard(
@@ -112,7 +112,7 @@ export function buildChooseTokenPage<T>(
 
 	addNav(keyboard, nav)
 
-	return { message: lines.join('\n'), keyboard }
+	return { message: joinLines(lines), keyboard }
 }
 
 export function chainBreadcrumbSegment(currencies: CurrencyDto[]): string {

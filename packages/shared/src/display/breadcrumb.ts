@@ -1,7 +1,9 @@
+import { FormattedString } from '@rips/grammy-kit'
+
 export function breadcrumb(
 	prefix: string,
 	...segments: (string | undefined)[]
-): string {
+): FormattedString {
 	const parts = [prefix, ...segments.filter((s) => s !== undefined)]
-	return `<b>${parts.join(' › ')}</b>`
+	return FormattedString.b(parts.join(' › '))
 }

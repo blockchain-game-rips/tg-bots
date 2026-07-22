@@ -3,7 +3,7 @@ import {
 	GetZapResultResponseDtoOutput,
 	ripsControllerGetZapResult,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
+import { assertFlow, ErrorToRender, fmt } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { toHold, toReset } from '../../flows'
 import { ZapFailedPage } from '../../pages/play/zap-failed-page'
@@ -59,7 +59,7 @@ export const executeZap: ActionDef<void> = noPayload((session) => {
 		flow: toHold(),
 		effect: {
 			type: EffectType.SEND_LOADING,
-			message: 'Buying entries...',
+			message: fmt`Buying entries...`,
 			next: async () => {
 				const { data: zapResponse } = await ripsControllerBuyEntriesZap(
 					{

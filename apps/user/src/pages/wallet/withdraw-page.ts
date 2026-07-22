@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -23,7 +23,7 @@ export const WithdrawPage = {
 
 		const recipient = recipientAddress ?? '-'
 
-		const lines = [
+		const lines: Line[] = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			`Balance: ${formatAmountWithUsd(currencyBalance)}`,
@@ -52,6 +52,6 @@ export const WithdrawPage = {
 			)
 			.appendHomeButton()
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

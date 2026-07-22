@@ -1,10 +1,14 @@
-import { composePageContentWithError, ErrorToRender } from '@rips/grammy-kit'
+import {
+	composePageContentWithError,
+	ErrorToRender,
+	fmt,
+} from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 
 const errorPrefix = '❌ Error:'
 
 const makePageContent = (message: string) => ({
-	message,
+	message: fmt`${message}`,
 	keyboard: new InlineKeyboard(),
 })
 
@@ -12,14 +16,16 @@ describe('ErrorToRender', () => {
 	it('stores formatted messageToRender', () => {
 		const err = new ErrorToRender('something went wrong')
 
-		expect(err.messageToRender).toBe(`${errorPrefix} something went wrong`)
+		expect(err.messageToRender.text).toBe(
+			`${errorPrefix} something went wrong`,
+		)
 	})
 
 	it('stores optional internal message separately', () => {
 		const err = new ErrorToRender('user-facing', 'internal details')
 
 		expect(err.message).toBe('internal details')
-		expect(err.messageToRender).toBe(`${errorPrefix} user-facing`)
+		expect(err.messageToRender.text).toBe(`${errorPrefix} user-facing`)
 	})
 
 	it('is an instance of Error', () => {
@@ -36,7 +42,7 @@ describe('composePageContentWithError', () => {
 				new ErrorToRender('bad input'),
 			)
 
-			expect(result.message).toBe(
+			expect(result.message.text).toBe(
 				`Hello world\n\n${errorPrefix} bad input`,
 			)
 		})
@@ -62,7 +68,7 @@ describe('composePageContentWithError', () => {
 				new ErrorToRender('new error'),
 			)
 
-			expect(result.message).toBe(
+			expect(result.message.text).toBe(
 				`Hello world\n\n${errorPrefix} new error`,
 			)
 		})
@@ -76,7 +82,7 @@ describe('composePageContentWithError', () => {
 				new ErrorToRender('second error'),
 			)
 
-			const occurrences = (result.message.match(/❌ Error:/g) ?? [])
+			const occurrences = (result.message.text.match(/❌ Error:/g) ?? [])
 				.length
 
 			expect(occurrences).toBe(1)
@@ -91,15 +97,15 @@ describe('composePageContentWithError', () => {
 				new Error('unexpected'),
 			)
 
-			expect(result.message).toContain(errorPrefix)
-			expect(result.message).toContain('Internal server error')
+			expect(result.message.text).toContain(errorPrefix)
+			expect(result.message.text).toContain('Internal server error')
 		})
 
 		it('handles non-Error thrown values', () => {
 			const page = makePageContent('Hello')
 			const result = composePageContentWithError(page, 'string error')
 
-			expect(result.message).toContain('Internal server error')
+			expect(result.message.text).toContain('Internal server error')
 		})
 	})
 })

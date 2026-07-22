@@ -2,6 +2,8 @@ import { adminControllerSetPaused } from '@rips/api-client'
 import {
 	ActionDef,
 	assertFlow,
+	fmt,
+	FormattedString,
 	toFlow,
 	toHold,
 	toReset,
@@ -16,8 +18,8 @@ import { adminApiHeader } from '../utils/api'
 
 function openConfirmPaused(isPaused: boolean): ActionDef<void> {
 	const description = isPaused
-		? 'This will <b>pause</b> the protocol.'
-		: 'This will <b>unpause</b> the protocol.'
+		? fmt`This will ${FormattedString.b('pause')} the protocol.`
+		: fmt`This will ${FormattedString.b('unpause')} the protocol.`
 
 	return noPayload(() => {
 		const flow = toFlow<Flow, 'setPaused', 'confirm'>(
@@ -51,7 +53,7 @@ export const executeConfirmPaused: ActionDef<void> = noPayload((session) => {
 		flow: toHold(),
 		effect: {
 			type: EffectType.SEND_LOADING,
-			message: isPaused ? 'Pausing...' : 'Unpausing...',
+			message: isPaused ? fmt`Pausing...` : fmt`Unpausing...`,
 			next: async () => {
 				const { data: tx } = await adminControllerSetPaused({
 					headers: adminApiHeader,

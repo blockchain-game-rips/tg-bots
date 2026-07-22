@@ -1,5 +1,5 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -30,7 +30,7 @@ export const SwapChooseDstTokenPage = {
 	},
 }
 
-function buildMessage(draft: Draft, amountIn?: bigint): string {
+function buildMessage(draft: Draft, amountIn?: bigint): FormattedString {
 	const { srcBalance, dstChain } = draft
 
 	const srcCurrency = srcBalance.currency
@@ -40,7 +40,7 @@ function buildMessage(draft: Draft, amountIn?: bigint): string {
 			: toCurrencyAmount(amountIn, srcCurrency)
 	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 
-	return [
+	const lines: Line[] = [
 		swapBreadcrumb(),
 		'',
 		`From: ${srcChainName} ${srcCurrency.symbol}`,
@@ -51,7 +51,9 @@ function buildMessage(draft: Draft, amountIn?: bigint): string {
 		formatAmount(srcBalance),
 		'',
 		'Choose token:',
-	].join('\n')
+	]
+
+	return joinLines(lines)
 }
 
 function amountLine(amount?: CurrencyAmountDto): string[] {

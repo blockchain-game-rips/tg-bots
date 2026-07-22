@@ -1,5 +1,12 @@
 import { RipDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -14,12 +21,15 @@ export const StatusPage = {
 			),
 		)
 
-		const lines: string[] = ['<b>Status</b>', '']
+		const lines: Line[] = [FormattedString.b('Status'), '']
 
 		if (userRips.length === 0) {
 			lines.push('You have no entries in ongoing rips.')
 		} else {
-			lines.push('🎟 <b>Your entries in ongoing rips</b>', '')
+			lines.push(
+				fmt`🎟 ${FormattedString.b('Your entries in ongoing rips')}`,
+				'',
+			)
 
 			for (const rip of userRips) {
 				const userEntries = rip.actions.purchases
@@ -54,6 +64,6 @@ export const StatusPage = {
 			{ home: actionIds.openHome, parent: actionIds.openHome },
 		)
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

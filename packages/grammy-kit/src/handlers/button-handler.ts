@@ -1,3 +1,4 @@
+import { FormattedString } from '@grammyjs/parse-mode'
 import { User } from '@grammyjs/types'
 import {
 	Filter,
@@ -86,10 +87,17 @@ function getChatIdAndPage(ctx: Filter<BaseContext, 'callback_query:data'>): {
 
 	const hasPhoto = message.photo !== undefined
 	const text = (hasPhoto ? message.caption : message.text) ?? ''
+	const entities =
+		(hasPhoto ? message.caption_entities : message.entities) ?? []
+	const formatted = new FormattedString(text, entities)
 	const messageId = message.message_id
 
 	return {
-		page: { pageContent: { message: text, keyboard }, messageId, hasPhoto },
+		page: {
+			pageContent: { message: formatted, keyboard },
+			messageId,
+			hasPhoto,
+		},
 		chatId: message.chat.id,
 	}
 }

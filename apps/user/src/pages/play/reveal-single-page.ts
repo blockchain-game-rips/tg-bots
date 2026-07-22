@@ -1,5 +1,12 @@
 import { PayoutDto, RipDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -17,10 +24,10 @@ export const RevealSinglePage = {
 			currency: rip.currency,
 		}
 
-		const lines = [
-			'<b>Open Rips</b>',
+		const lines: Line[] = [
+			FormattedString.b('Open Rips'),
 			'',
-			`🎁 <a href="${revealedPayout.card.imageUrl}">${revealedPayout.card.name}</a> [${tierName(revealedPayout.card.tier)}]`,
+			fmt`🎁 ${FormattedString.a(revealedPayout.card.name, revealedPayout.card.imageUrl)} [${tierName(revealedPayout.card.tier)}]`,
 			`Entry #${revealedPayout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
 			'',
 			`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
@@ -43,7 +50,7 @@ export const RevealSinglePage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: addNav(keyboard, {
 				home: actionIds.openHome,
 				parent: actionIds.openHome,

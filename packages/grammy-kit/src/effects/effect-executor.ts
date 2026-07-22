@@ -1,3 +1,4 @@
+import { FormattedString } from '@grammyjs/parse-mode'
 import { Api, GrammyError, InputMediaBuilder } from 'grammy'
 import { resolveEffect } from '../action/action-def'
 import { BoundAction } from '../action/actions'
@@ -13,6 +14,13 @@ import { fireAndForget } from '../utils/common'
 import { composePageContentWithError, ErrorToRender } from './error-to-render'
 
 const MESSAGE_NOT_MODIFIED = 'message is not modified'
+
+function captionArgs(message: FormattedString) {
+	return {
+		caption: message.caption,
+		caption_entities: message.caption_entities,
+	}
+}
 
 function isMessageNotModifiedError(error: unknown): boolean {
 	return (
@@ -36,10 +44,7 @@ async function renderPage(
 			await api.editMessageMedia(
 				chatId,
 				messageToEdit.messageId,
-				InputMediaBuilder.photo(page.photo, {
-					caption: page.message,
-					parse_mode: 'HTML',
-				}),
+				InputMediaBuilder.photo(page.photo, captionArgs(page.message)),
 				{ reply_markup: page.keyboard },
 			)
 
@@ -49,10 +54,10 @@ async function renderPage(
 		await api.editMessageText(
 			chatId,
 			messageToEdit.messageId,
-			page.message,
+			page.message.text,
 			{
 				reply_markup: page.keyboard,
-				parse_mode: 'HTML',
+				entities: page.message.entities,
 			},
 		)
 
@@ -63,17 +68,16 @@ async function renderPage(
 
 	if (targetPhoto && page.photo !== undefined) {
 		await api.sendPhoto(chatId, page.photo, {
-			caption: page.message,
+			...captionArgs(page.message),
 			reply_markup: page.keyboard,
-			parse_mode: 'HTML',
 		})
 
 		return
 	}
 
-	await api.sendMessage(chatId, page.message, {
+	await api.sendMessage(chatId, page.message.text, {
 		reply_markup: page.keyboard,
-		parse_mode: 'HTML',
+		entities: page.message.entities,
 	})
 }
 
@@ -93,12 +97,12 @@ async function executeEffect(
 			break
 
 		case EffectType.ASK:
-			await api.sendMessage(chatId, effect.prompt.message, {
+			await api.sendMessage(chatId, effect.prompt.message.text, {
 				reply_markup: {
 					force_reply: true,
 					input_field_placeholder: effect.prompt.placeholder,
 				},
-				parse_mode: 'HTML',
+				entities: effect.prompt.message.entities,
 			})
 			session.lastAsk = {
 				onSubmit: effect.onSubmit,
@@ -110,9 +114,9 @@ async function executeEffect(
 			await api.editMessageText(
 				chatId,
 				messageToEdit.messageId,
-				effect.message,
+				effect.message.text,
 				{
-					parse_mode: 'HTML',
+					entities: effect.message.entities,
 				},
 			)
 

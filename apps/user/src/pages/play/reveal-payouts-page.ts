@@ -1,15 +1,21 @@
 import { PayoutDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 function buildRevealPayoutsContent(unrevealedPayouts: PayoutDto[]): {
-	lines: string[]
+	lines: Line[]
 	keyboard: InlineKeyboard
 } {
-	const lines = [
-		'<b>Open Rips</b>',
+	const lines: Line[] = [
+		FormattedString.b('Open Rips'),
 		'',
 		`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
 	]
@@ -46,7 +52,7 @@ export const RevealPayoutsPage = {
 			parent: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }
 
@@ -56,6 +62,6 @@ export const RevealPayoutsNoBackPage = {
 
 		keyboard.row().appendHomeButton()
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

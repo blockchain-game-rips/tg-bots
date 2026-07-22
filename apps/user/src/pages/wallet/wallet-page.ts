@@ -1,5 +1,11 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -92,8 +98,8 @@ export const WalletPage = {
 			chainBalanceLines(group),
 		)
 
-		const lines = [
-			'<b>💼 Wallet</b>',
+		const lines: Line[] = [
+			FormattedString.b('💼 Wallet'),
 			'',
 			'Main settlement chain:',
 			settlementHeader,
@@ -132,6 +138,6 @@ export const WalletPage = {
 			parent: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

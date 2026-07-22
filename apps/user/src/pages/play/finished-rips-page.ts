@@ -1,5 +1,5 @@
 import { RipDto } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, fmt, joinLines } from '@rips/grammy-kit'
 import { configName, displayStatus } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -16,7 +16,7 @@ export const FinishedRipsPage = {
 		}
 
 		const message =
-			lines.length > 0 ? lines.join('\n') : 'No completed rips yet'
+			lines.length > 0 ? joinLines(lines) : fmt`No completed rips yet`
 
 		return {
 			message,

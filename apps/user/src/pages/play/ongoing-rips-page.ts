@@ -1,5 +1,5 @@
 import { AvailablePresetDto, RipDto } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, joinLines } from '@rips/grammy-kit'
 import {
 	configName,
 	displayStatus,
@@ -75,7 +75,7 @@ export const OngoingRipsPage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
 				parent: actionIds.openStatus,

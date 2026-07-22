@@ -1,5 +1,10 @@
 import { RipDto } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import {
+	buildActionData,
+	fmt,
+	FormattedString,
+	joinLines,
+} from '@rips/grammy-kit'
 import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -10,7 +15,7 @@ export const UserRefundedRipPage = {
 		const preset = configName(rip.config)
 
 		const lines = [
-			`↩️ <b>Rip #${rip.id.toString()} was refunded</b>`,
+			fmt`↩️ ${FormattedString.b(`Rip #${rip.id.toString()} was refunded`)}`,
 			'',
 			`Preset: ${preset}`,
 			'Your funds have been returned to your balance.',
@@ -22,7 +27,7 @@ export const UserRefundedRipPage = {
 		)
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard,
 		}
 	},

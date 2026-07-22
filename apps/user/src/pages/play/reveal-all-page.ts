@@ -1,5 +1,5 @@
 import { PayoutDto, RipDto } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -12,12 +12,12 @@ export const RevealAllPage = {
 		revealedPayouts: PayoutDto[],
 		unrevealedPayouts: PayoutDto[],
 	): PageContent {
-		const lines = [
-			'<b>Open Rips</b>',
+		const lines: Line[] = [
+			FormattedString.b('Open Rips'),
 			'',
 			`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
 			'',
-			'🎁 <b>Your payouts</b>',
+			fmt`🎁 ${FormattedString.b('Your payouts')}`,
 			'',
 		]
 
@@ -35,12 +35,12 @@ export const RevealAllPage = {
 			}
 
 			lines.push(
-				`<a href="${payout.card.imageUrl}">${payout.card.name}</a> [${tierName(payout.card.tier)}] — Entry #${payout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
+				fmt`${FormattedString.a(payout.card.name, payout.card.imageUrl)} [${tierName(payout.card.tier)}] — Entry #${payout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
 			)
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
 				parent: actionIds.openHome,

@@ -3,7 +3,7 @@ import {
 	CurrencyAmountDto,
 	CurrencyDto,
 } from '@rips/api-client'
-import { Chain } from '@rips/grammy-kit'
+import { fmt, FormattedString } from '@rips/grammy-kit'
 
 import { formatUnits } from './format/units'
 
@@ -19,7 +19,6 @@ export interface Expense {
 }
 
 export interface FundsBreakdownResult {
-	lines: string[]
 	insufficientAmounts: CurrencyAmountDto[]
 }
 
@@ -80,7 +79,7 @@ export function toFixedDigitsFromPrice(priceUsd: number): number {
 
 export function formatUsd(usd: number): string {
 	if (usd === 0) return '$0'
-	if (usd < USD_MIN_DISPLAY) return `&lt;$${USD_MIN_DISPLAY.toFixed(2)}`
+	if (usd < USD_MIN_DISPLAY) return `<$${USD_MIN_DISPLAY.toFixed(2)}`
 	return `$${usd.toFixed(2)}`
 }
 
@@ -91,7 +90,7 @@ export function formatTokenAmount(amount: number, priceUsd: number): string {
 	const minDisplayAmount = Math.pow(10, -digits)
 
 	if (amount < minDisplayAmount)
-		return `&lt;${parseFloat(minDisplayAmount.toFixed(digits)).toString()}`
+		return `<${parseFloat(minDisplayAmount.toFixed(digits)).toString()}`
 
 	return parseFloat(amount.toFixed(digits)).toString()
 }
@@ -124,44 +123,13 @@ export function formatPercent(basisPoints: number): string {
 	return `${((basisPoints / FEE_BASIS) * 100).toFixed(2)}%`
 }
 
-export function tokenLabel(
-	amount: CurrencyAmountDto,
-	chainToName: (chain: Chain) => string,
-): string {
-	const { currency } = amount
-	return `${currency.symbol} (${chainToName(currency.chainAddress.chain)})`
-}
-
-export function twoLineEntry(
-	label: string,
-	amount: CurrencyAmountDto,
-	suffix = '',
-): string[] {
-	const { displayAmount, symbol, displayUsdAmount } =
-		currencyAmountDisplayParts(amount)
-	const indent = ' '.repeat(label.length + 3)
-
-	return [
-		`${label}   ${displayAmount} ${symbol}${suffix}`,
-		`${indent}${displayUsdAmount}`,
-	]
-}
-
-export function labelColumnWidth(labels: string[]): number {
-	return Math.max(...labels.map((l) => l.length))
-}
-
-export function padLabel(label: string, width: number): string {
-	return label.padEnd(width)
-}
-
 export function insufficientBalanceLines(args: {
 	tokenAmount: CurrencyAmountDto
 	feeAmount: CurrencyAmountDto
 	insufficientAmounts: CurrencyAmountDto[]
 	userEvmAddress: string
 	feeLabel: string
-}): string[] {
+}): FormattedString[] {
 	const {
 		tokenAmount,
 		feeAmount,
@@ -177,107 +145,61 @@ export function insufficientBalanceLines(args: {
 	if (tokenInsufficient) {
 		const tokenSymbol = tokenAmount.currency.symbol
 		return [
-			`⚠️ <b>Insufficient ${tokenSymbol}</b>`,
-			'',
-			'Enter a smaller amount',
+			fmt`⚠️ ${FormattedString.b(`Insufficient ${tokenSymbol}`)}`,
+			fmt``,
+			fmt`Enter a smaller amount`,
 		]
 	}
 
 	const feeSymbol = feeAmount.currency.symbol
 
 	return [
-		`⚠️ <b>Insufficient ${feeSymbol} for ${feeLabel}</b>`,
-		'',
-		`Deposit ${feeSymbol} to:`,
-		`<code>${userEvmAddress}</code>`,
-		'',
-		'Then press Update',
+		fmt`⚠️ ${FormattedString.b(`Insufficient ${feeSymbol} for ${feeLabel}`)}`,
+		fmt``,
+		fmt`Deposit ${feeSymbol} to:`,
+		FormattedString.code(userEvmAddress),
+		fmt``,
+		fmt`Then press Update`,
 	]
 }
 
 export function insufficientFundsDepositLines(
 	userEvmAddress: string,
-): string[] {
+): FormattedString[] {
 	return [
-		`⚠️ <b>Insufficient funds</b>`,
-		'',
-		'Deposit to:',
-		`<code>${userEvmAddress}</code>`,
-		'',
-		'Then press Update',
+		fmt`⚠️ ${FormattedString.b('Insufficient funds')}`,
+		fmt``,
+		fmt`Deposit to:`,
+		FormattedString.code(userEvmAddress),
+		fmt``,
+		fmt`Then press Update`,
 	]
 }
 
+// TODO: the funds breakdown display block was removed during the
+// FormattedString migration. Only the insufficient-balance computation
+// remains. Re-introduce a rendered breakdown as FormattedString if needed.
 export function fundsBreakdown(
 	expenses: Expense[],
 	balances: CurrencyAmountDto[],
-	chainToName: (chain: Chain) => string,
 ): FundsBreakdownResult {
-	const expenseLabels = expenses.map(({ label }) => label)
-
 	const uniqueBalances = balances.filter(
 		(b, i, arr) =>
 			arr.findIndex((x) => x.currency.id === b.currency.id) === i,
 	)
-	const balanceLabels = uniqueBalances.map((b) => b.currency.symbol)
-
-	const labelWidth = labelColumnWidth([...expenseLabels, ...balanceLabels])
-
-	const expenseLines = expenses.flatMap(({ amount, label }) =>
-		twoLineEntry(padLabel(label, labelWidth), amount),
-	)
 
 	const insufficientAmounts: CurrencyAmountDto[] = []
 
-	const balanceLines = uniqueBalances.flatMap((balance) => {
+	for (const balance of uniqueBalances) {
 		const totalRequired = expenses.reduce((sum, { amount }) => {
 			if (amount.currency.id !== balance.currency.id) return sum
 			return sum + BigInt(amount.amount)
 		}, 0n)
 
-		const insufficient = BigInt(balance.amount) < totalRequired
-		if (insufficient) insufficientAmounts.push(balance)
+		if (BigInt(balance.amount) < totalRequired) {
+			insufficientAmounts.push(balance)
+		}
+	}
 
-		const suffix = insufficient ? ' ⚠️' : ''
-
-		return twoLineEntry(
-			padLabel(balance.currency.symbol, labelWidth),
-			balance,
-			suffix,
-		)
-	})
-
-	const firstExpense = expenses[0]
-
-	if (firstExpense === undefined) throw new Error('No expenses provided')
-
-	const firstChain = firstExpense.amount.currency.chainAddress.chain
-	const chainName = chainToName(firstChain)
-	const chainPrefix = '⛓ '
-	const chainLabel = padLabel('Chain', labelWidth - chainPrefix.length)
-	const chainLine = `${chainPrefix}${chainLabel}   ${chainName}`
-
-	const allLines = [
-		chainLine,
-		'💸 Costs',
-		...expenseLines,
-		'💼 Balance',
-		...balanceLines,
-	]
-	const maxWidth = Math.max(...allLines.map((l) => l.length))
-	const divider = '─'.repeat(maxWidth)
-
-	const block = [
-		chainLine,
-		divider,
-		'💸 Costs',
-		'',
-		...expenseLines,
-		divider,
-		'💼 Balance',
-		'',
-		...balanceLines,
-	].join('\n')
-
-	return { lines: [`<pre>${block}</pre>`], insufficientAmounts }
+	return { insufficientAmounts }
 }

@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { addNav, buildActionData } from '@rips/grammy-kit'
+import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatUnits } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -13,7 +13,7 @@ export const WithdrawChooseAmountPage = {
 
 		const maxAmount = formatUnits(BigInt(balance.amount), currency.decimals)
 
-		const lines = [
+		const lines: Line[] = [
 			`Chain: ${chainToName(chain)}`,
 			`Token: ${currency.symbol}`,
 			`Balance: ${formatAmountWithUsd(balance)}`,
@@ -39,6 +39,6 @@ export const WithdrawChooseAmountPage = {
 			home: actionIds.openHome,
 		})
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

@@ -1,9 +1,10 @@
+import { fmt, FormattedString } from '@grammyjs/parse-mode'
 import { PageContent } from '../types'
 
 const errorPrefixToRender = '❌ Error:'
 
 export class ErrorToRender extends Error {
-	messageToRender: string
+	messageToRender: FormattedString
 
 	constructor(rawMessageToRender: string, message?: string) {
 		super(message)
@@ -15,20 +16,28 @@ export class ErrorToRender extends Error {
 export function composePageContentWithError(
 	currentPageContent: PageContent,
 	error: unknown,
-) {
-	const errorMessageToRender = getErrorMessageToRender(error)
+): PageContent {
+	const errorMessage = getErrorMessageToRender(error)
 
-	const baseMessage = currentPageContent.message.includes(errorPrefixToRender)
-		? currentPageContent.message.replace(
-				/❌ Error:.*$/,
-				errorMessageToRender,
-			)
-		: `${currentPageContent.message}\n\n${errorMessageToRender}`
+	const baseMessage = stripExistingError(currentPageContent.message)
 
-	return { ...currentPageContent, message: baseMessage }
+	const message = fmt`${baseMessage}\n\n${errorMessage}`
+
+	return { ...currentPageContent, message }
 }
 
-function getErrorMessageToRender(error: unknown) {
+function stripExistingError(message: FormattedString): FormattedString {
+	const errorIndex = message.text.indexOf(errorPrefixToRender)
+
+	if (errorIndex === -1) return message
+
+	const beforeError = message.text.slice(0, errorIndex)
+	const trimmedEnd = beforeError.trimEnd().length
+
+	return message.slice(0, trimmedEnd)
+}
+
+function getErrorMessageToRender(error: unknown): FormattedString {
 	if (error instanceof ErrorToRender) {
 		return error.messageToRender
 	}
@@ -38,6 +47,6 @@ function getErrorMessageToRender(error: unknown) {
 	)
 }
 
-function errorMessageToRender(rawErrorMessage: string) {
-	return `${errorPrefixToRender} ${rawErrorMessage}`
+function errorMessageToRender(rawErrorMessage: string): FormattedString {
+	return fmt`${errorPrefixToRender} ${rawErrorMessage}`
 }

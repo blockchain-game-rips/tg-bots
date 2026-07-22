@@ -2,7 +2,7 @@ import {
 	CurrencyAmountDto,
 	QuoteWithdrawResponseDtoOutput,
 } from '@rips/api-client'
-import { buildActionData } from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import {
 	formatAmountWithUsd,
 	fundsBreakdown,
@@ -35,7 +35,7 @@ export const WithdrawCheckoutPage = {
 		const { currency } = currencyAmount
 		const chain = currency.chainAddress.chain
 
-		const { lines: breakdownLines, insufficientAmounts } = fundsBreakdown(
+		const { insufficientAmounts } = fundsBreakdown(
 			[
 				{ label: 'Amount', amount: currencyAmount },
 				{
@@ -44,12 +44,11 @@ export const WithdrawCheckoutPage = {
 				},
 			],
 			[currencyBalance, nativeBalance],
-			chainToName,
 		)
 
 		const insufficient = insufficientAmounts.length > 0
 
-		const lines = [
+		const lines: Line[] = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),
 			'',
 			'Amount',
@@ -57,8 +56,6 @@ export const WithdrawCheckoutPage = {
 			'',
 			'Recipient',
 			recipientAddress,
-			'',
-			...breakdownLines,
 		]
 
 		if (insufficient) {
@@ -115,6 +112,6 @@ export const WithdrawCheckoutPage = {
 			)
 			.appendHomeButton()
 
-		return { message: lines.join('\n'), keyboard }
+		return { message: joinLines(lines), keyboard }
 	},
 }

@@ -1,5 +1,7 @@
+export { FormattedString, fmt } from '@grammyjs/parse-mode'
 export * from './action'
 export * from './effects'
+export * from './format/lines'
 export * from './handlers'
 export * from './keyboard'
 export * from './logging/pino-logger'

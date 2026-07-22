@@ -5,6 +5,7 @@ import {
 	createButtonHandler,
 	createMessageHandler,
 	createTelegramMetricsTransformer,
+	fmt,
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
@@ -72,7 +73,7 @@ const handleMessage = createMessageHandler(actions)
 bot.command('start', async (ctx) => {
 	let pageContent: PageContent = {
 		keyboard: new InlineKeyboard(),
-		message: 'Failed to get or create user',
+		message: fmt`Failed to get or create user`,
 	}
 
 	try {
@@ -89,9 +90,9 @@ bot.command('start', async (ctx) => {
 		logger.error(error, 'Error in /start command')
 	}
 
-	await ctx.reply(pageContent.message, {
+	await ctx.reply(pageContent.message.text, {
 		reply_markup: pageContent.keyboard,
-		parse_mode: 'HTML',
+		entities: pageContent.message.entities,
 	})
 })
 

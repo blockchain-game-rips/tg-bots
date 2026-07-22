@@ -1,5 +1,5 @@
 import { GetTierTablesResponseDtoOutput } from '@rips/api-client'
-import { addNav } from '@rips/grammy-kit'
+import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -7,9 +7,9 @@ import { PageContent } from '../../types'
 
 type TierTable = GetTierTablesResponseDtoOutput['tierTables'][number]
 
-function tierTableLines(tierTable: TierTable): string[] {
+function tierTableLines(tierTable: TierTable): Line[] {
 	return [
-		`<b>${tierTable.currency.symbol} volume tiers:</b>`,
+		FormattedString.b(`${tierTable.currency.symbol} volume tiers:`),
 		...tierTable.tiers.map((tier, i) => {
 			const minVolume = formatAmountWithUsd({
 				amount: tier.minVolume,
@@ -22,16 +22,16 @@ function tierTableLines(tierTable: TierTable): string[] {
 
 export const ReferralAboutPage = {
 	render(tierTables: GetTierTablesResponseDtoOutput): PageContent {
-		const lines = [
-			'<b>How the referral system works</b>',
+		const lines: Line[] = [
+			FormattedString.b('How the referral system works'),
 			'',
 			'When someone uses your referral link and pays a protocol fee, you receive a share of that fee as a reward.',
 			'',
-			'<b>Fee share</b>',
+			FormattedString.b('Fee share'),
 			'Your fee share percentage is determined at the start of each 30-day period based on your total referred volume in the previous period.',
 			'The higher your volume, the higher your tier and fee share.',
 			'',
-			'<b>Custom percent</b>',
+			FormattedString.b('Custom percent'),
 			'If you have a custom fee percent set, it always takes priority over the tier-based percent.',
 		]
 
@@ -40,7 +40,7 @@ export const ReferralAboutPage = {
 		}
 
 		return {
-			message: lines.join('\n'),
+			message: joinLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				parent: actionIds.openReferral,
 				home: actionIds.openHome,

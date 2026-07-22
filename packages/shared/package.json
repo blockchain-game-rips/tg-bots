@@ -9,6 +9,8 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@rips/api-client": "*"
+		"@grammyjs/parse-mode": "^2.3.0",
+		"@rips/api-client": "*",
+		"grammy": "^1.45.1"
 	}
 }

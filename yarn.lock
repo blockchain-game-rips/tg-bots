@@ -533,6 +533,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@grammyjs/parse-mode@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@grammyjs/parse-mode@npm:2.3.0"
+  peerDependencies:
+    grammy: ^1.41.0
+  checksum: 10c0/0d31420b8254f58d8a46e098ff6abf55314da49227c762125c5fed1f789d7b333a47464c1826b581f35d9cbc0e0d0c4671b8482a522e85f420e7f2b12e04b862
+  languageName: node
+  linkType: hard
+
 "@grammyjs/runner@npm:^2.0.3":
   version: 2.0.3
   resolution: "@grammyjs/runner@npm:2.0.3"
@@ -548,6 +557,13 @@ __metadata:
   version: 3.27.3
   resolution: "@grammyjs/types@npm:3.27.3"
   checksum: 10c0/d14008a8357fe29fb2f09da3973f470ee699dd3b5183e703668cbfbf1933bf2d3c65a79a33d6a023cd07111f7079a14dbc38be85f49e4ae0d02595651554cd5d
+  languageName: node
+  linkType: hard
+
+"@grammyjs/types@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@grammyjs/types@npm:4.0.0"
+  checksum: 10c0/00fa7e9c5e4552de5671a699386099e15a1ca757f9a4f5fcd9280b954d66b234a1256263abdff96cb85fd1bcd9c89abb60b2803910b1f771f1f2ef30c3986b46
   languageName: node
   linkType: hard
 
@@ -1124,6 +1140,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rips/grammy-kit@workspace:packages/grammy-kit"
   dependencies:
+    "@grammyjs/parse-mode": "npm:^2.3.0"
     dotenv: "npm:^17.3.1"
     grammy: "npm:^1.40.1"
     pino: "npm:^10.3.1"
@@ -1135,7 +1152,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rips/shared@workspace:packages/shared"
   dependencies:
+    "@grammyjs/parse-mode": "npm:^2.3.0"
     "@rips/api-client": "npm:*"
+    grammy: "npm:^1.45.1"
   languageName: unknown
   linkType: soft
 
@@ -2991,6 +3010,18 @@ __metadata:
     debug: "npm:^4.4.3"
     node-fetch: "npm:^2.7.0"
   checksum: 10c0/975a76cbe1da8a049c3ac407f1b59e1f49819954c0207f73ff45bd0b853a96b2aec809908c40185777a993fbd793a7baa94c9c42e438cadb69622e3bed4de00c
+  languageName: node
+  linkType: hard
+
+"grammy@npm:^1.45.1":
+  version: 1.45.1
+  resolution: "grammy@npm:1.45.1"
+  dependencies:
+    "@grammyjs/types": "npm:4.0.0"
+    abort-controller: "npm:^3.0.0"
+    debug: "npm:^4.4.3"
+    node-fetch: "npm:^2.7.0"
+  checksum: 10c0/d0fc8e12ba249fba995ee1c30484ff2bf796e71782f194619df87a75b41f5db9172ff4ef1b04824191ecfa518d13e86386600b6df30d66798777143e2b4a05ed
   languageName: node
   linkType: hard
 

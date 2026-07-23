@@ -6,6 +6,7 @@
 	"types": "./dist/src/index.d.ts",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
+		"test": "vitest run --project packages/grammy-kit --passWithNoTests",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

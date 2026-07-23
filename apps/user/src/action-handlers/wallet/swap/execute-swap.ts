@@ -71,8 +71,8 @@ function toSwapBody(
 	dstCurrency: CurrencyDto,
 ): SwapBodyDto {
 	return {
-		tokenInChainAddress: amountIn.currency.chainAddress,
-		tokenOutChainAddress: dstCurrency.chainAddress,
+		currencyInChainAddress: amountIn.currency.chainAddress,
+		currencyOutChainAddress: dstCurrency.chainAddress,
 		amountIn: amountIn.amount,
 	}
 }

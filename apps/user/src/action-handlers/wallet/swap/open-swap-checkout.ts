@@ -231,8 +231,8 @@ async function fetchSwapQuote(
 ): Promise<SwapQuote> {
 	const headers = { 'x-telegram-id': telegramId }
 	const body = {
-		tokenInChainAddress: amountIn.currency.chainAddress,
-		tokenOutChainAddress: dstCurrency.chainAddress,
+		currencyInChainAddress: amountIn.currency.chainAddress,
+		currencyOutChainAddress: dstCurrency.chainAddress,
 		amountIn: amountIn.amount,
 	}
 

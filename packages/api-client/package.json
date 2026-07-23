@@ -8,7 +8,8 @@
 		"generate": "openapi-ts",
 		"predev": "yarn generate",
 		"prebuild": "yarn generate",
-		"build": "tsc -p tsconfig.build.json"
+		"build": "tsc -p tsconfig.build.json",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@hey-api/openapi-ts": "0.96.1",

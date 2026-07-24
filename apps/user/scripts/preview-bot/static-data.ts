@@ -97,6 +97,25 @@ export const mockEthArbNetworkFee: CurrencyAmountDto = {
 	amount: '210000000000000', // ~0.00021 ETH
 }
 
+const mockOptimismNativeChainAddress = {
+	address: '0x0000000000000000000000000000000000000000',
+	chain: { reference: '10', namespace: 'eip155' },
+}
+
+export const mockEthOptimism: ConfigDto['entryPrice']['currency'] = {
+	id: 'eip155:10:0x0000000000000000000000000000000000000000',
+	priceUsd: 2500,
+	chainAddress: mockOptimismNativeChainAddress,
+	symbol: 'ETH',
+	name: 'Ethereum',
+	decimals: 18,
+}
+
+export const mockEthOptimismBalance: CurrencyAmountDto = {
+	currency: mockEthOptimism,
+	amount: '100000000000000000', // 0.1 ETH
+}
+
 export const mockCardCollection: GetCardCollectionResponseDtoOutput = {
 	tiers: [
 		[
@@ -355,6 +374,14 @@ export const mockSufficientBalance: CurrencyAmountDto = {
 	currency: mockEth,
 	amount: '100000000000000000', // 0.1 ETH
 }
+
+// Base ETH (native base), Arbitrum USDC (non-native non-base),
+// Optimism ETH (native non-base).
+export const mockPaymentWalletBalances: CurrencyAmountDto[] = [
+	mockSufficientBalance,
+	mockUsdcArbBalance,
+	mockEthOptimismBalance,
+]
 
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
 

@@ -4,6 +4,7 @@ import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { BuyCheckoutPage } from '../../src/pages/play/buy-checkout-page'
 import { BuyChooseEntryCountPage } from '../../src/pages/play/buy-choose-entry-count-page'
+import { BuyChoosePaymentWalletPage } from '../../src/pages/play/buy-choose-payment-wallet-page'
 import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
 import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
@@ -51,6 +52,7 @@ import {
 	mockEthArbBalanceSufficient,
 	mockEthArbNetworkFee,
 	mockFinishedRips,
+	mockPaymentWalletBalances,
 	mockPurchase,
 	mockPurchaseQuote,
 	mockReceiverAddress,
@@ -139,6 +141,16 @@ export const pages: Record<string, PageEntry> = {
 
 			return BuyChooseEntryCountPage.render(availablePreset)
 		},
+	},
+	'buy-choose-payment-wallet': {
+		description:
+			'Between choose-entry-count and checkout. Choose which wallet to pay from. Always shows Base ETH (native base) plus any funded chain — a native non-base balance (Optimism ETH) and a non-native non-base balance (Arbitrum USDC). Base ETH pays directly; other balances route through the zap flow.',
+		render: () =>
+			BuyChoosePaymentWalletPage.render({
+				availablePreset: mockAvailablePreset0,
+				entryCount: 8,
+				balances: mockPaymentWalletBalances,
+			}),
 	},
 	'buy-checkout': {
 		description:

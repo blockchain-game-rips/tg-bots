@@ -4,7 +4,7 @@
 		"rootDir": ".",
 		"outDir": "./dist"
 	},
-	"include": ["src", "generated"],
+	"include": ["src", "generated", "scripts"],
 	"references": [
 		{ "path": "../../packages/grammy-kit" },
 		{ "path": "../../packages/api-client/tsconfig.build.json" }

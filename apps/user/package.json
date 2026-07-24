@@ -9,6 +9,7 @@
 		"preview-bot": "BOT_USERNAME=BOT_USERNAME tsx scripts/preview-bot/index.ts",
 		"build": "tsc -p tsconfig.build.json",
 		"start": "node dist/src/main.js",
+		"start:preview": "BOT_USERNAME=BOT_USERNAME node dist/scripts/preview-bot/index.js",
 		"test": "vitest run --project apps/user --passWithNoTests",
 		"typecheck": "tsc --noEmit"
 	},

@@ -1,7 +1,12 @@
 import { fmt, FormattedString } from '@grammyjs/parse-mode'
 import { Bot, type Context } from 'grammy'
 import { getEnvSafe } from '../utils/common'
-import { PageEntry, VariantError } from './page-entry'
+import {
+	groupPagesBySection,
+	PageEntry,
+	PageSection,
+	VariantError,
+} from './page-entry'
 
 type Pages = Record<string, PageEntry | undefined>
 
@@ -48,7 +53,27 @@ async function renderVariant(
 	})
 }
 
-export function runPreviewBot(pages: Pages): void {
+function formatPageLine(name: string, entry: PageEntry): FormattedString {
+	const variants = entry.variants
+
+	if (!variants?.length) return FormattedString.code(name)
+
+	const [first, ...rest] = variants
+	const indent = ' '.repeat(name.length)
+
+	return FormattedString.join(
+		[
+			FormattedString.code(`${name} ${first ?? ''}`),
+			...rest.map((v) => FormattedString.code(`${indent} ${v}`)),
+		],
+		'\n',
+	)
+}
+
+export function runPreviewBot(
+	pages: Pages,
+	sections: PageSection[] = [],
+): void {
 	const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
 	bot.command('start', async (ctx) => {
@@ -71,25 +96,22 @@ ${FormattedString.code('/r checkout crosschain-sufficient')}`
 	})
 
 	bot.command('pages', async (ctx) => {
-		const entries = Object.entries(pages).map(([name, entry]) => {
-			const variants = entry?.variants
+		const groups = groupPagesBySection(pages, sections)
 
-			if (!variants?.length) return FormattedString.code(name)
-
-			const [first, ...rest] = variants
-			const indent = ' '.repeat(name.length)
-
-			return FormattedString.join(
-				[
-					FormattedString.code(`${name} ${first ?? ''}`),
-					...rest.map((v) => FormattedString.code(`${indent} ${v}`)),
-				],
-				'\n',
+		const blocks = groups.map((group) => {
+			const lines = group.pages.map(([name, entry]) =>
+				formatPageLine(name, entry),
 			)
+
+			const list = FormattedString.join(lines, '\n')
+
+			if (group.section === undefined) return list
+
+			return fmt`${FormattedString.b(group.section.title)}\n${list}`
 		})
 
-		const list = FormattedString.join(entries, '\n')
-		const message = fmt`Available pages:\n\n${list}`
+		const body = FormattedString.join(blocks, '\n\n')
+		const message = fmt`Available pages:\n\n${body}`
 
 		await ctx.reply(message.text, { entities: message.entities })
 	})

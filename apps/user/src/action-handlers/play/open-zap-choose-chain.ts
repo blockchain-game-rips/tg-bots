@@ -7,7 +7,7 @@ import { fetchPreset } from '../../utils/api/wrappers'
 
 export const openZapChooseChain: ActionDef<void> = noPayload(
 	async (session) => {
-		assertFlow(session, 'buyEntries', 'entry-count-chosen')
+		assertFlow(session, 'enter', 'entry-count-chosen')
 
 		const { presetId } = session.flow.data
 

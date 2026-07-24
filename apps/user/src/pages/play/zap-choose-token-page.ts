@@ -3,7 +3,7 @@ import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseTokenPage } from '../choose-chain-token'
 
 export const ZapChooseTokenPage = {
@@ -22,7 +22,7 @@ export const ZapChooseTokenPage = {
 
 		return buildChooseTokenPage({
 			lines: [
-				buyEntriesBreadcrumb(configName(config), srcChainName),
+				enterBreadcrumb(configName(config), srcChainName),
 				'',
 				'🌉 Enter from another chain',
 				'',

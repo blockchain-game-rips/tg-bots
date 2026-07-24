@@ -13,9 +13,9 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
-export const BuyChooseEntryCountPage = {
+export const EnterChooseEntryCountPage = {
 	render(availablePreset: AvailablePresetDto): PageContent {
 		const config = resolveConfig(availablePreset)
 
@@ -34,7 +34,7 @@ function buildMessage(
 		currencyAmountDisplayParts(config.entryPrice)
 
 	return joinLines([
-		buyEntriesBreadcrumb(`${displayAmount} ${symbol}`),
+		enterBreadcrumb(`${displayAmount} ${symbol}`),
 		'',
 		'Choose number of entries:',
 		'',
@@ -96,7 +96,7 @@ function buildKeyboard(): InlineKeyboard {
 		keyboard
 			.text(
 				entryCountLabel(count),
-				buildActionData(actionIds.openBuyCheckout, count),
+				buildActionData(actionIds.openEnterCheckout, count),
 			)
 			.row()
 

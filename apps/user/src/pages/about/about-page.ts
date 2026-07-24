@@ -20,7 +20,7 @@ export const AboutPage = {
 		const lines = [
 			FormattedString.b('About the Game'),
 			'',
-			'Buy entries to enter a rip. When a rip fills up, payouts are distributed among participants.',
+			'Enter a rip to take part. When a rip fills up, payouts are distributed among participants.',
 			'',
 			FormattedString.b('Presets'),
 			'',

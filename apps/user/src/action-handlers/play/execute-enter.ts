@@ -6,14 +6,14 @@ import { assertFlow, ErrorToRender } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { toReset } from '../../flows'
-import { BuySuccessPage } from '../../pages/play/buy-success-page'
+import { EnterSuccessPage } from '../../pages/play/enter-success-page'
 import { EffectType } from '../../types'
 import { isApiErrorWithStatus } from '../../utils/api/error'
 
 const TRANSACTION_REVERTED_STATUS = 502
 
-export const executeBuyEntries: ActionDef<void> = noPayload(async (session) => {
-	assertFlow(session, 'buyEntries', 'entry-count-chosen')
+export const executeEnter: ActionDef<void> = noPayload(async (session) => {
+	assertFlow(session, 'enter', 'entry-count-chosen')
 	const { presetId, entryCount } = session.flow.data
 
 	const { data: purchase } = await ripsControllerBuyEntriesPurchase({
@@ -39,7 +39,7 @@ export const executeBuyEntries: ActionDef<void> = noPayload(async (session) => {
 		flow: toReset(),
 		effect: {
 			type: EffectType.EDIT,
-			page: BuySuccessPage.render(purchase, rip),
+			page: EnterSuccessPage.render(purchase, rip),
 		},
 	}
 })

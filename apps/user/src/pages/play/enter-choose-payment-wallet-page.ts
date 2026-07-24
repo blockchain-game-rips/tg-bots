@@ -7,9 +7,9 @@ import { NATIVE_ON_BASE } from '../../constants'
 import { PageContent } from '../../types'
 import { chainToEmoji, chainToName } from '../../utils/chain'
 import { isSameChainAddress } from '../../utils/currency'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
-export const BuyChoosePaymentWalletPage = {
+export const EnterChoosePaymentWalletPage = {
 	render(args: {
 		availablePreset: AvailablePresetDto
 		entryCount: number
@@ -47,7 +47,7 @@ function buildMessage(
 	payableBalances: CurrencyAmountDto[],
 ): ReturnType<typeof joinLines> {
 	const lines: Line[] = [
-		buyEntriesBreadcrumb(configName(config)),
+		enterBreadcrumb(configName(config)),
 		'',
 		WALLET_TITLE,
 		'',
@@ -103,7 +103,7 @@ function payLabel(balance: CurrencyAmountDto): string {
 
 function payActionData(balance: CurrencyAmountDto, entryCount: number): string {
 	if (isBaseNative(balance)) {
-		return buildActionData(actionIds.openBuyCheckout, entryCount)
+		return buildActionData(actionIds.openEnterCheckout, entryCount)
 	}
 
 	return buildActionData(

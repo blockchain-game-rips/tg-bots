@@ -19,7 +19,7 @@ export function swapBreadcrumb(
 	return breadcrumb('🌉 Bridge / Swap', ...segments)
 }
 
-export function buyEntriesBreadcrumb(
+export function enterBreadcrumb(
 	...segments: (string | undefined)[]
 ): FormattedString {
 	return breadcrumb('🎮 Enter Rip', ...segments)

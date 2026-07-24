@@ -4,10 +4,10 @@ import { buildCardCollection } from '../../src/domain/card-collection'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { CheckoutPage } from '../../src/pages/play/checkout-page'
-import { BuyChooseEntryCountPage } from '../../src/pages/play/buy-choose-entry-count-page'
-import { BuyChoosePaymentWalletPage } from '../../src/pages/play/buy-choose-payment-wallet-page'
-import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
-import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
+import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
+import { EnterChoosePaymentWalletPage } from '../../src/pages/play/enter-choose-payment-wallet-page'
+import { EnterChoosePresetPage } from '../../src/pages/play/enter-choose-preset-page'
+import { EnterSuccessPage } from '../../src/pages/play/enter-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
 import { CardCollectionTierPage } from '../../src/pages/play/card-collection-tier'
 import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
@@ -154,14 +154,14 @@ export const pages: Record<string, PageEntry> = {
 			return CardCollectionTierPage.render(tier)
 		},
 	},
-	'buy-choose-preset': {
+	'enter-choose-preset': {
 		description:
-			'First step of buying entries. Shows available preset tiers to pick from. Opened from Play.',
-		render: () => BuyChoosePresetPage.render(mockAvailablePresets),
+			'First step of entering. Shows available preset tiers to pick from. Opened from Play.',
+		render: () => EnterChoosePresetPage.render(mockAvailablePresets),
 	},
-	'buy-choose-entry-count': {
+	'enter-choose-entry-count': {
 		description:
-			'Second step of buying entries. Choose how many entries to buy: preset options or custom amount. Opened from choose-preset. The "no-rip" variant has no filling rip yet (entry starts one); the "filling" variant joins an in-progress rip and shows time left with a refund warning.',
+			'Second step of entering. Choose how many entries: preset options or custom amount. Opened from choose-preset. The "no-rip" variant has no filling rip yet (entry starts one); the "filling" variant joins an in-progress rip and shows time left with a refund warning.',
 		variants: ['no-rip', 'filling'],
 		render(variant) {
 			const availablePreset =
@@ -169,14 +169,14 @@ export const pages: Record<string, PageEntry> = {
 					? mockAvailablePresetNoRip
 					: mockAvailablePreset0
 
-			return BuyChooseEntryCountPage.render(availablePreset)
+			return EnterChooseEntryCountPage.render(availablePreset)
 		},
 	},
-	'buy-choose-payment-wallet': {
+	'enter-choose-payment-wallet': {
 		description:
 			'Between choose-entry-count and checkout. Choose which wallet to pay from. Always shows Base ETH (native base) plus any funded chain — a native non-base balance (Optimism ETH) and a non-native non-base balance (Arbitrum USDC). Base ETH pays directly; other balances route through the zap flow.',
 		render: () =>
-			BuyChoosePaymentWalletPage.render({
+			EnterChoosePaymentWalletPage.render({
 				availablePreset: mockAvailablePreset0,
 				entryCount: 8,
 				balances: mockPaymentWalletBalances,
@@ -253,14 +253,14 @@ export const pages: Record<string, PageEntry> = {
 			})
 		},
 	},
-	'buy-success': {
+	'enter-success': {
 		description:
-			'Final step of the buy flow. Confirms a successful entry purchase — shows rip number, entry count, total cost, and blockchain fee. Opened after buy-confirm.',
-		render: () => BuySuccessPage.render(mockPurchase, mockRip),
+			'Final step of the enter flow. Confirms a successful entry purchase — shows rip number, entry count, total cost, and blockchain fee. Opened after enter-confirm.',
+		render: () => EnterSuccessPage.render(mockPurchase, mockRip),
 	},
 	'zap-choose-chain': {
 		description:
-			'First step of the zap flow. Entered from buy-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
+			'First step of the zap flow. Entered from enter-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
 		render: () =>
 			ZapChooseChainPage.render({
 				availablePreset: mockAvailablePreset0,

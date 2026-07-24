@@ -11,7 +11,7 @@ import { ZapSuccessPage } from '../../pages/play/zap-success-page'
 import { EffectType } from '../../types'
 import { fetchPreset } from '../../utils/api/wrappers'
 import { toCurrencyAmount } from '../../utils/currency'
-import { ripsControllerBuyEntriesZap } from './zap-api-stub'
+import { ripsControllerEnterZap } from './zap-api-stub'
 
 const ZAP_POLL_INTERVAL_MS = 2000
 const ZAP_POLL_TIMEOUT_MS = 60000
@@ -51,7 +51,7 @@ async function pollZapResult(zapId: string): Promise<ZapOutcome> {
 }
 
 export const executeZap: ActionDef<void> = noPayload((session) => {
-	assertFlow(session, 'buyEntries', 'zap-currency-chosen')
+	assertFlow(session, 'enter', 'zap-currency-chosen')
 
 	const { presetId, entryCount, currency } = session.flow.data
 
@@ -59,18 +59,16 @@ export const executeZap: ActionDef<void> = noPayload((session) => {
 		flow: toHold(),
 		effect: {
 			type: EffectType.SEND_LOADING,
-			message: fmt`Buying entries...`,
+			message: fmt`Entering...`,
 			next: async () => {
-				const { data: zapResponse } = await ripsControllerBuyEntriesZap(
-					{
-						headers: { 'x-telegram-id': session.telegramId },
-						body: {
-							presetId,
-							entryCount,
-							paymentCurrencyChainAddress: currency.chainAddress,
-						},
+				const { data: zapResponse } = await ripsControllerEnterZap({
+					headers: { 'x-telegram-id': session.telegramId },
+					body: {
+						presetId,
+						entryCount,
+						paymentCurrencyChainAddress: currency.chainAddress,
 					},
-				)
+				})
 
 				const outcome = await pollZapResult(zapResponse.zapId)
 				const availablePreset = await fetchPreset(presetId)

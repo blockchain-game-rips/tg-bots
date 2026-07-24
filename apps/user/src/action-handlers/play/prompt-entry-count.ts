@@ -9,6 +9,6 @@ export const promptEntryCount: ActionDef<void> = noPayload(() => ({
 	effect: {
 		type: EffectType.ASK,
 		prompt: CustomEntryAmountPrompt.render(),
-		onSubmit: actionIds.openBuyCheckout,
+		onSubmit: actionIds.openEnterCheckout,
 	},
 }))

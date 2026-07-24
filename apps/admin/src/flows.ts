@@ -1,4 +1,4 @@
-export type BuyEntriesFlow =
+export type EnterFlow =
 	| {
 			flowType: 'example'
 			step: 'step1'
@@ -52,7 +52,7 @@ export interface UpdatePresetConfigFlow {
 }
 
 export type Flow =
-	| BuyEntriesFlow
+	| EnterFlow
 	| SetPausedFlow
 	| SetReferrerFrozenFlow
 	| SetDefaultFeeFlow

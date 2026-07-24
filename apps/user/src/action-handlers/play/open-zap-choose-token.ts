@@ -9,7 +9,7 @@ import { chainCodec, getCurrenciesForChain } from '../../utils/chain'
 export const openZapChooseToken: ActionDef<Chain> = withPayload(
 	chainCodec,
 	async (session, chain) => {
-		assertFlow(session, 'buyEntries', 'entry-count-chosen')
+		assertFlow(session, 'enter', 'entry-count-chosen')
 
 		const { presetId } = session.flow.data
 

@@ -1,19 +1,19 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 import { createFlowTransitions } from '@rips/grammy-kit'
 
-export type BuyEntriesFlow =
+export type EnterFlow =
 	| {
-			flowType: 'buyEntries'
+			flowType: 'enter'
 			step: 'preset-chosen'
 			data: { presetId: number }
 	  }
 	| {
-			flowType: 'buyEntries'
+			flowType: 'enter'
 			step: 'entry-count-chosen'
 			data: { presetId: number; entryCount: number }
 	  }
 	| {
-			flowType: 'buyEntries'
+			flowType: 'enter'
 			step: 'zap-currency-chosen'
 			data: {
 				presetId: number
@@ -61,6 +61,6 @@ export type SwapFlow =
 			}
 	  }
 
-export type Flow = BuyEntriesFlow | WithdrawFlow | SwapFlow | null
+export type Flow = EnterFlow | WithdrawFlow | SwapFlow | null
 
 export const { toFlow, toStep, toHold, toReset } = createFlowTransitions<Flow>()

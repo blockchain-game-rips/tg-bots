@@ -3,15 +3,15 @@ import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
-export const BuySuccessPage = {
+export const EnterSuccessPage = {
 	render(
 		purchase: BuyEntriesPurchaseResponseDtoOutput,
 		rip?: RipDto,
 	): PageContent {
 		const lines: Line[] = [
-			buyEntriesBreadcrumb(
+			enterBreadcrumb(
 				rip !== undefined ? configName(rip.config) : undefined,
 			),
 			'',

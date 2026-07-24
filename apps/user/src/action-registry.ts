@@ -6,12 +6,12 @@ import {
 	startImportKey,
 	submitImportKey,
 } from './action-handlers/open-home'
-import { executeBuyEntries } from './action-handlers/play/execute-buy-entries'
+import { executeEnter } from './action-handlers/play/execute-enter'
 import { executeZap } from './action-handlers/play/execute-zap'
-import { openBuyCheckout } from './action-handlers/play/open-buy-checkout'
-import { openBuyChooseEntryCount } from './action-handlers/play/open-buy-choose-entry-count'
-import { openBuyChoosePaymentWallet } from './action-handlers/play/open-buy-choose-payment-wallet'
-import { openBuyChoosePreset } from './action-handlers/play/open-buy-choose-preset'
+import { openEnterCheckout } from './action-handlers/play/open-enter-checkout'
+import { openEnterChooseEntryCount } from './action-handlers/play/open-enter-choose-entry-count'
+import { openEnterChoosePaymentWallet } from './action-handlers/play/open-enter-choose-payment-wallet'
+import { openEnterChoosePreset } from './action-handlers/play/open-enter-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCardCollectionTier } from './action-handlers/play/open-card-collection-tier'
 import { openCompletedRips } from './action-handlers/play/open-completed-rips'
@@ -83,12 +83,12 @@ export const actionRegistry = {
 	openAbout,
 
 	// Play
-	openChoosePreset: openBuyChoosePreset,
-	openChooseEntryAmount: openBuyChooseEntryCount,
-	openBuyChoosePaymentWallet,
+	openChoosePreset: openEnterChoosePreset,
+	openChooseEntryAmount: openEnterChooseEntryCount,
+	openEnterChoosePaymentWallet,
 	promptEntryCount,
-	openBuyCheckout,
-	executeBuyEntries,
+	openEnterCheckout,
+	executeEnter,
 
 	// Open RIPs / rips
 	openOpenPulls,

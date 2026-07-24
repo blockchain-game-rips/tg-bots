@@ -8,7 +8,7 @@ import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const ZapSuccessPage = {
 	render(args: {
@@ -24,7 +24,7 @@ export const ZapSuccessPage = {
 		const chain = currency.chainAddress.chain
 
 		const lines = [
-			buyEntriesBreadcrumb(
+			enterBreadcrumb(
 				configName(config),
 				chainToName(chain),
 				currency.symbol,

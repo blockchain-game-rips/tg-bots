@@ -3,11 +3,11 @@ import { parsePresetId } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { nativeChainAddress, SUPPORTED_CHAINS } from '../../constants'
 import { toStep } from '../../flows'
-import { BuyChoosePaymentWalletPage } from '../../pages/play/buy-choose-payment-wallet-page'
+import { EnterChoosePaymentWalletPage } from '../../pages/play/enter-choose-payment-wallet-page'
 import { EffectType } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 
-export const openBuyChoosePaymentWallet: ActionDef<number> = withPayload(
+export const openEnterChoosePaymentWallet: ActionDef<number> = withPayload(
 	{
 		encode: (presetId) => presetId.toString(),
 		decode: (raw) => parsePresetId(raw),
@@ -16,7 +16,7 @@ export const openBuyChoosePaymentWallet: ActionDef<number> = withPayload(
 		// TODO: revisit this handler — it wasn't checked after the change.
 		assertFlow(
 			session,
-			'buyEntries',
+			'enter',
 			'entry-count-chosen',
 			'zap-currency-chosen',
 		)
@@ -40,7 +40,7 @@ export const openBuyChoosePaymentWallet: ActionDef<number> = withPayload(
 			flow,
 			effect: {
 				type: EffectType.EDIT,
-				page: BuyChoosePaymentWalletPage.render({
+				page: EnterChoosePaymentWalletPage.render({
 					availablePreset,
 					entryCount,
 					balances,

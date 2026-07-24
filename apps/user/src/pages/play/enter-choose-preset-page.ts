@@ -20,7 +20,7 @@ interface PresetLevel {
 	displayUsdAmount: string
 }
 
-export const BuyChoosePresetPage = {
+export const EnterChoosePresetPage = {
 	render(availablePresets: AvailablePresetDto[]): PageContent {
 		const levels = toLevels(availablePresets)
 

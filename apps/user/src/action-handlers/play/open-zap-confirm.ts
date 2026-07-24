@@ -12,12 +12,7 @@ async function buildZapCheckout(
 	session: SessionData<Flow>,
 	currencyChainAddress: ChainAddressDto,
 ): Promise<HandlerResult<Flow>> {
-	assertFlow(
-		session,
-		'buyEntries',
-		'entry-count-chosen',
-		'zap-currency-chosen',
-	)
+	assertFlow(session, 'enter', 'entry-count-chosen', 'zap-currency-chosen')
 
 	const { presetId, entryCount } = session.flow.data
 
@@ -81,7 +76,7 @@ export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
 
 export const refreshZapCheckout: ActionDef<void> = noPayload(
 	async (session) => {
-		assertFlow(session, 'buyEntries', 'zap-currency-chosen')
+		assertFlow(session, 'enter', 'zap-currency-chosen')
 
 		return buildZapCheckout(
 			session,

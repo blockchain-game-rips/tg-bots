@@ -24,7 +24,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
-import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
 const MILLISECONDS_PER_SECOND = 1000
@@ -128,7 +128,7 @@ function buildMessage(
 	const srcChainName = chainToName(srcBalance.currency.chainAddress.chain)
 
 	const lines: Line[] = [
-		buyEntriesBreadcrumb(configName(config)),
+		enterBreadcrumb(configName(config)),
 		'',
 		...headerLines(quote),
 		`Pay from: ${srcChainName} ${srcBalance.currency.symbol}`,
@@ -257,7 +257,7 @@ function buildKeyboard(
 		.text(
 			'Change payment wallet',
 			buildActionData(
-				actionIds.openBuyChoosePaymentWallet,
+				actionIds.openEnterChoosePaymentWallet,
 				args.availablePreset.preset.id,
 			),
 		)
@@ -269,7 +269,7 @@ function buildKeyboard(
 
 function confirmActionData(quote: CheckoutQuote): string {
 	if (isDirect(quote)) {
-		return buildActionData(actionIds.executeBuyEntries, undefined)
+		return buildActionData(actionIds.executeEnter, undefined)
 	}
 
 	return buildActionData(actionIds.executeZap, undefined)

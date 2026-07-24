@@ -9,11 +9,11 @@ import {
 	ripsControllerQuotePurchase,
 } from '@rips/api-client'
 
-type BuyEntriesZapArgs = Parameters<typeof ripsControllerBuyEntriesPurchase>
+type EnterZapArgs = Parameters<typeof ripsControllerBuyEntriesPurchase>
 type QuoteZapArgs = Parameters<typeof ripsControllerQuotePurchase>
 
-export async function ripsControllerBuyEntriesZap(
-	...args: BuyEntriesZapArgs
+export async function ripsControllerEnterZap(
+	...args: EnterZapArgs
 ): Promise<{ data: BuyEntriesZapResponseDtoOutput }> {
 	const res = await ripsControllerBuyEntriesPurchase(...args)
 

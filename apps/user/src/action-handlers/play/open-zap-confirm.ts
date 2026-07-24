@@ -1,4 +1,4 @@
-import { ChainAddressDto, usersControllerGetUser } from '@rips/api-client'
+import { ChainAddressDto } from '@rips/api-client'
 import { assertFlow, HandlerResult } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { Flow, toStep } from '../../flows'
@@ -6,7 +6,6 @@ import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
 import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../utils/currency'
-import { evmAddressFromUser } from '../../utils/wallet'
 import { ripsControllerQuoteZap } from './zap-api-stub'
 
 async function buildZapCheckout(
@@ -22,21 +21,17 @@ async function buildZapCheckout(
 
 	const { presetId, entryCount } = session.flow.data
 
-	const [availablePreset, { data: zapQuote }, { data: user }] =
-		await Promise.all([
-			fetchPreset(presetId),
-			ripsControllerQuoteZap({
-				headers: { 'x-telegram-id': session.telegramId },
-				body: {
-					presetId,
-					entryCount,
-					paymentCurrencyChainAddress: currencyChainAddress,
-				},
-			}),
-			usersControllerGetUser({
-				path: { telegramId: session.telegramId },
-			}),
-		])
+	const [availablePreset, { data: zapQuote }] = await Promise.all([
+		fetchPreset(presetId),
+		ripsControllerQuoteZap({
+			headers: { 'x-telegram-id': session.telegramId },
+			body: {
+				presetId,
+				entryCount,
+				paymentCurrencyChainAddress: currencyChainAddress,
+			},
+		}),
+	])
 
 	const balances = await fetchBalances(session.telegramId, [
 		currencyChainAddress,
@@ -64,13 +59,15 @@ async function buildZapCheckout(
 		flow,
 		effect: {
 			type: EffectType.EDIT,
+			// TODO: choose samechain vs crosschain quote based on the
+			// payment chain (Base = samechain), and call the matching
+			// quote endpoint. Only crosschain is wired for now.
 			page: ZapCheckoutPage.render({
 				availablePreset,
 				entryCount,
-				currencyInBalance,
+				srcBalance: currencyInBalance,
 				nativeBalance,
-				zapQuote,
-				userEvmAddress: evmAddressFromUser(user),
+				quote: { kind: 'crosschain', quote: zapQuote },
 			}),
 		},
 	}

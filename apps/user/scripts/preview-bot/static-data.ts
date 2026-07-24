@@ -13,6 +13,7 @@ import {
 	QuoteSwapResponseDtoOutput,
 	QuoteSwapSamechainResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
+	QuoteZapSamechainResponseDtoOutput,
 	RipDto,
 	SwapResponseDtoOutput,
 	SwapSamechainResponseDtoOutput,
@@ -312,32 +313,48 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	entryCount: 3,
 }
 
-const mockUsdc = {
-	id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-	priceUsd: 1,
-	chainAddress: {
-		address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-		chain: { namespace: 'eip155', reference: '42161' },
+export const mockZapQuote: QuoteZapResponseDtoOutput = {
+	amountIn: { currency: mockUsdcArb, amount: '13500000' }, // 13.5 USDC
+	durationMs: 45000,
+	fee: { currency: mockEthArb, amount: '1000000000000000' }, // ~0.001 ETH
+	blockchainFee: {
+		currency: mockEthArb,
+		amount: '100000000000000', // 0.0001 ETH
 	},
-	symbol: 'USDC',
-	name: 'USD Coin',
-	decimals: 6,
 }
 
-export const mockZapQuote: QuoteZapResponseDtoOutput = {
-	amountIn: { currency: mockUsdc, amount: '13500000' }, // 13.5 USDC
-	durationMs: 45000,
-	fee: { currency: mockEth, amount: '1000000000000000' }, // ~0.001 ETH
+// Samechain zap pays a non-native Base token (USDC) that is swapped to the
+// Base ETH the game settles in; the network fee stays in Base ETH.
+export const mockZapSamechainQuote: QuoteZapSamechainResponseDtoOutput = {
+	amountIn: { currency: mockUsdcOnBase, amount: '13500000' }, // 13.5 USDC
 	blockchainFee: {
 		currency: mockEth,
 		amount: '100000000000000', // 0.0001 ETH
 	},
 }
 
-export const mockZapCurrencyInBalance: CurrencyAmountDto = {
-	currency: mockUsdc,
-	amount: '8000000', // 8 USDC — intentionally low for zap-insufficient-funds preview
+export const mockZapSamechainSrcBalance: CurrencyAmountDto = {
+	currency: mockUsdcOnBase,
+	amount: '100000000', // 100 USDC — covers the entry total
 }
+
+export const mockZapSamechainNativeBalance: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '100000000000000000', // 0.1 ETH — covers the network fee
+}
+
+export const mockZapSrcBalanceSufficient: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '100000000', // 100 USDC — covers the entry total
+}
+
+export const mockZapSrcBalanceInsufficient: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '8000000', // 8 USDC — below the 13.5 USDC entry total
+}
+
+export const mockZapCurrencyInBalance: CurrencyAmountDto =
+	mockZapSrcBalanceInsufficient
 
 export const mockZapSuccessResult: NonNullable<
 	GetZapResultResponseDtoOutput['success']

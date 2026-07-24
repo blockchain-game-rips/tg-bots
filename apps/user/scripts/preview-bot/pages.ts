@@ -80,6 +80,11 @@ import {
 	mockWithdrawTransaction,
 	mockZapCurrencyInBalance,
 	mockZapQuote,
+	mockZapSamechainNativeBalance,
+	mockZapSamechainQuote,
+	mockZapSamechainSrcBalance,
+	mockZapSrcBalanceInsufficient,
+	mockZapSrcBalanceSufficient,
 	mockZapSuccessResult,
 	mockZeroBalance,
 } from './static-data'
@@ -203,16 +208,46 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'zap-checkout': {
 		description:
-			'Third step of the zap flow. Shows zap quote: amount to pay, token balance, and network fee. Confirm to proceed.',
-		render: () =>
-			ZapCheckoutPage.render({
+			'Third step of the zap flow (Bridge & Enter). Shows the quote: entry total, estimated bridge/swap cost, network fee, time, and source balance. Confirm when funds cover everything; otherwise per-currency "Not enough" blocks and Deposit buttons replace Confirm. The "crosschain-*" variants pay from Arbitrum and bridge to Base (with bridge cost + time); "samechain-sufficient" pays on Base with only a network fee. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
+		variants: [
+			'crosschain-sufficient',
+			'crosschain-insufficient-amount',
+			'crosschain-insufficient-native',
+			'samechain-sufficient',
+		],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const isSamechain = resolvedVariant === 'samechain-sufficient'
+
+			const srcBalance =
+				resolvedVariant === 'crosschain-insufficient-amount'
+					? mockZapSrcBalanceInsufficient
+					: mockZapSrcBalanceSufficient
+
+			const nativeBalance =
+				resolvedVariant === 'crosschain-insufficient-native'
+					? mockEthArbBalanceInsufficient
+					: mockEthArbBalanceSufficient
+
+			if (isSamechain) {
+				return ZapCheckoutPage.render({
+					availablePreset: mockAvailablePreset0,
+					entryCount: 3,
+					srcBalance: mockZapSamechainSrcBalance,
+					nativeBalance: mockZapSamechainNativeBalance,
+					quote: { kind: 'samechain', quote: mockZapSamechainQuote },
+				})
+			}
+
+			return ZapCheckoutPage.render({
 				availablePreset: mockAvailablePreset0,
 				entryCount: 3,
-				nativeBalance: mockBalance,
-				currencyInBalance: mockZapCurrencyInBalance,
-				zapQuote: mockZapQuote,
-				userEvmAddress: mockUserEvmAddress,
-			}),
+				srcBalance,
+				nativeBalance,
+				quote: { kind: 'crosschain', quote: mockZapQuote },
+			})
+		},
 	},
 	'zap-failed': {
 		description:

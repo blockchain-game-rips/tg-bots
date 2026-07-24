@@ -2,7 +2,7 @@ import { ChainAddressDto } from '@rips/api-client'
 import { assertFlow, HandlerResult } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { Flow, toStep } from '../../flows'
-import { ZapCheckoutPage } from '../../pages/play/zap-checkout-page'
+import { CheckoutPage } from '../../pages/play/checkout-page'
 import { EffectType, SessionData } from '../../types'
 import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../utils/currency'
@@ -62,7 +62,7 @@ async function buildZapCheckout(
 			// TODO: choose samechain vs crosschain quote based on the
 			// payment chain (Base = samechain), and call the matching
 			// quote endpoint. Only crosschain is wired for now.
-			page: ZapCheckoutPage.render({
+			page: CheckoutPage.render({
 				availablePreset,
 				entryCount,
 				srcBalance: currencyInBalance,

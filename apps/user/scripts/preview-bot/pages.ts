@@ -1,8 +1,8 @@
-import { PageEntry, resolveVariant, VariantError } from '@rips/grammy-kit'
+import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { SUPPORTED_CHAINS } from '../../src/constants'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
-import { BuyCheckoutPage } from '../../src/pages/play/buy-checkout-page'
+import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { BuyChooseEntryCountPage } from '../../src/pages/play/buy-choose-entry-count-page'
 import { BuyChoosePaymentWalletPage } from '../../src/pages/play/buy-choose-payment-wallet-page'
 import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
@@ -14,7 +14,6 @@ import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
 import { RevealPayoutsPage } from '../../src/pages/play/reveal-payouts-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { StatusPage } from '../../src/pages/play/status-page'
-import { ZapCheckoutPage } from '../../src/pages/play/zap-checkout-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
@@ -157,30 +156,74 @@ export const pages: Record<string, PageEntry> = {
 				balances: mockPaymentWalletBalances,
 			}),
 	},
-	'buy-checkout': {
+	checkout: {
 		description:
-			'Third step of buying entries. Shows costs and balance breakdown. Confirm button if funds are sufficient, zap option if not.',
-		variants: ['insufficient', 'sufficient'],
+			'Unified checkout for all payment paths. "direct-*" pays Base ETH straight into the game (no bridge header, no "Receive on" line). "crosschain-*" pays from Arbitrum and bridges to Base (bridge cost + time). "samechain-sufficient" pays a non-native token on Base (network fee only). Confirm when funds cover everything; otherwise per-currency "Not enough" blocks with Deposit buttons replace Confirm. Every variant offers Change payment wallet. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
+		variants: [
+			'direct-sufficient',
+			'direct-insufficient',
+			'crosschain-sufficient',
+			'crosschain-insufficient-amount',
+			'crosschain-insufficient-native',
+			'samechain-sufficient',
+		],
 		render(variant) {
-			const balance = (() => {
-				switch (resolveVariant(this, variant)) {
-					case 'insufficient':
-						return mockBalance
-					case 'sufficient':
-						return mockSufficientBalance
-					default:
-						throw new VariantError(variant, this.variants ?? [])
-				}
-			})()
+			const resolvedVariant = resolveVariant(this, variant)
 
-			return BuyCheckoutPage.render({
+			if (resolvedVariant === 'direct-sufficient') {
+				return CheckoutPage.render({
+					availablePreset: mockAvailablePreset0,
+					entryCount: 3,
+					srcBalance: mockSufficientBalance,
+					nativeBalance: mockSufficientBalance,
+					quote: {
+						kind: 'direct',
+						amountIn: mockEntryCost,
+						quote: mockPurchaseQuote,
+					},
+				})
+			}
+
+			if (resolvedVariant === 'direct-insufficient') {
+				return CheckoutPage.render({
+					availablePreset: mockAvailablePreset0,
+					entryCount: 3,
+					srcBalance: mockBalance,
+					nativeBalance: mockBalance,
+					quote: {
+						kind: 'direct',
+						amountIn: mockEntryCost,
+						quote: mockPurchaseQuote,
+					},
+				})
+			}
+
+			if (resolvedVariant === 'samechain-sufficient') {
+				return CheckoutPage.render({
+					availablePreset: mockAvailablePreset0,
+					entryCount: 3,
+					srcBalance: mockZapSamechainSrcBalance,
+					nativeBalance: mockZapSamechainNativeBalance,
+					quote: { kind: 'samechain', quote: mockZapSamechainQuote },
+				})
+			}
+
+			const srcBalance =
+				resolvedVariant === 'crosschain-insufficient-amount'
+					? mockZapSrcBalanceInsufficient
+					: mockZapSrcBalanceSufficient
+
+			const nativeBalance =
+				resolvedVariant === 'crosschain-insufficient-native'
+					? mockEthArbBalanceInsufficient
+					: mockEthArbBalanceSufficient
+
+			return CheckoutPage.render({
 				availablePreset: mockAvailablePreset0,
 				entryCount: 3,
-				currencyInAmount: mockEntryCost,
-				purchaseQuote: mockPurchaseQuote,
-				nativeBalance: balance,
-				currencyInBalance: balance,
-				userEvmAddress: mockUserEvmAddress,
+				srcBalance,
+				nativeBalance,
+				quote: { kind: 'crosschain', quote: mockZapQuote },
 			})
 		},
 	},
@@ -205,49 +248,6 @@ export const pages: Record<string, PageEntry> = {
 				availablePreset: mockAvailablePreset0,
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
-	},
-	'zap-checkout': {
-		description:
-			'Third step of the zap flow (Bridge & Enter). Shows the quote: entry total, estimated bridge/swap cost, network fee, time, and source balance. Confirm when funds cover everything; otherwise per-currency "Not enough" blocks and Deposit buttons replace Confirm. The "crosschain-*" variants pay from Arbitrum and bridge to Base (with bridge cost + time); "samechain-sufficient" pays on Base with only a network fee. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
-		variants: [
-			'crosschain-sufficient',
-			'crosschain-insufficient-amount',
-			'crosschain-insufficient-native',
-			'samechain-sufficient',
-		],
-		render(variant) {
-			const resolvedVariant = resolveVariant(this, variant)
-
-			const isSamechain = resolvedVariant === 'samechain-sufficient'
-
-			const srcBalance =
-				resolvedVariant === 'crosschain-insufficient-amount'
-					? mockZapSrcBalanceInsufficient
-					: mockZapSrcBalanceSufficient
-
-			const nativeBalance =
-				resolvedVariant === 'crosschain-insufficient-native'
-					? mockEthArbBalanceInsufficient
-					: mockEthArbBalanceSufficient
-
-			if (isSamechain) {
-				return ZapCheckoutPage.render({
-					availablePreset: mockAvailablePreset0,
-					entryCount: 3,
-					srcBalance: mockZapSamechainSrcBalance,
-					nativeBalance: mockZapSamechainNativeBalance,
-					quote: { kind: 'samechain', quote: mockZapSamechainQuote },
-				})
-			}
-
-			return ZapCheckoutPage.render({
-				availablePreset: mockAvailablePreset0,
-				entryCount: 3,
-				srcBalance,
-				nativeBalance,
-				quote: { kind: 'crosschain', quote: mockZapQuote },
-			})
-		},
 	},
 	'zap-failed': {
 		description:

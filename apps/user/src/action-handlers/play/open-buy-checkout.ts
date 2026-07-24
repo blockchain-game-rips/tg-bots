@@ -1,16 +1,12 @@
-import {
-	ripsControllerQuotePurchase,
-	usersControllerGetUser,
-} from '@rips/api-client'
+import { ripsControllerQuotePurchase } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import { parseEntryCount, resolveConfig } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { toStep } from '../../flows'
-import { BuyCheckoutPage } from '../../pages/play/buy-checkout-page'
+import { CheckoutPage } from '../../pages/play/checkout-page'
 import { EffectType } from '../../types'
 import { fetchNativeBalance, fetchPreset } from '../../utils/api/wrappers'
-import { evmAddressFromUser } from '../../utils/wallet'
 
 export const openBuyCheckout: ActionDef<number> = withPayload(
 	{
@@ -21,30 +17,23 @@ export const openBuyCheckout: ActionDef<number> = withPayload(
 		assertFlow(session, 'buyEntries', 'preset-chosen', 'entry-count-chosen')
 		const { presetId } = session.flow.data
 
-		const [
-			{ data: user },
-			availablePreset,
-			nativeBalance,
-			{ data: purchaseQuote },
-		] = await Promise.all([
-			usersControllerGetUser({
-				path: { telegramId: session.telegramId },
-			}),
-			fetchPreset(presetId),
-			fetchNativeBalance(session.telegramId),
-			ripsControllerQuotePurchase({
-				body: {
-					paymentCurrencyChainAddress: NATIVE_ON_BASE,
-					presetId,
-					entryCount,
-				},
-			}),
-		])
+		const [availablePreset, nativeBalance, { data: purchaseQuote }] =
+			await Promise.all([
+				fetchPreset(presetId),
+				fetchNativeBalance(session.telegramId),
+				ripsControllerQuotePurchase({
+					body: {
+						paymentCurrencyChainAddress: NATIVE_ON_BASE,
+						presetId,
+						entryCount,
+					},
+				}),
+			])
 
 		const config = resolveConfig(availablePreset)
 		const totalCost = BigInt(config.entryPrice.amount) * BigInt(entryCount)
 
-		const currencyInAmount = {
+		const entryTotal = {
 			amount: totalCost.toString(),
 			currency: nativeBalance.currency,
 		}
@@ -58,14 +47,16 @@ export const openBuyCheckout: ActionDef<number> = withPayload(
 			flow,
 			effect: {
 				type: EffectType.EDIT,
-				page: BuyCheckoutPage.render({
+				page: CheckoutPage.render({
 					availablePreset,
 					entryCount,
-					currencyInAmount,
-					purchaseQuote,
+					srcBalance: nativeBalance,
 					nativeBalance,
-					currencyInBalance: nativeBalance,
-					userEvmAddress: evmAddressFromUser(user),
+					quote: {
+						kind: 'direct',
+						amountIn: entryTotal,
+						quote: purchaseQuote,
+					},
 				}),
 			},
 		}

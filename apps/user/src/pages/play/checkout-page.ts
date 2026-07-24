@@ -1,6 +1,7 @@
 import {
 	AvailablePresetDto,
 	CurrencyAmountDto,
+	QuotePurchaseResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	QuoteZapSamechainResponseDtoOutput,
 } from '@rips/api-client'
@@ -30,9 +31,12 @@ const MILLISECONDS_PER_SECOND = 1000
 
 const RECEIVE_CHAIN_NAME = 'Base'
 
-interface CrosschainQuote {
-	kind: 'crosschain'
-	quote: QuoteZapResponseDtoOutput
+// Direct entry pays Base ETH straight into the game; the entry total is derived
+// from the preset price, so amountIn is supplied alongside the purchase quote.
+interface DirectQuote {
+	kind: 'direct'
+	amountIn: CurrencyAmountDto
+	quote: QuotePurchaseResponseDtoOutput
 }
 
 interface SamechainQuote {
@@ -40,39 +44,52 @@ interface SamechainQuote {
 	quote: QuoteZapSamechainResponseDtoOutput
 }
 
-type ZapQuote = CrosschainQuote | SamechainQuote
+interface CrosschainQuote {
+	kind: 'crosschain'
+	quote: QuoteZapResponseDtoOutput
+}
+
+type CheckoutQuote = DirectQuote | SamechainQuote | CrosschainQuote
 
 interface CheckoutArgs {
 	availablePreset: AvailablePresetDto
 	entryCount: number
 	srcBalance: CurrencyAmountDto
 	nativeBalance: CurrencyAmountDto
-	quote: ZapQuote
+	quote: CheckoutQuote
 }
 
-export const ZapCheckoutPage = {
+export const CheckoutPage = {
 	render(args: CheckoutArgs): PageContent {
 		const insufficientAmounts = findInsufficientBalances(args)
 
 		return {
 			message: buildMessage(args, insufficientAmounts),
-			keyboard: buildKeyboard(insufficientAmounts),
+			keyboard: buildKeyboard(args, insufficientAmounts),
 		}
 	},
 }
 
-function isSamechain(quote: ZapQuote): quote is SamechainQuote {
-	return quote.kind === 'samechain'
+function isDirect(quote: CheckoutQuote): quote is DirectQuote {
+	return quote.kind === 'direct'
+}
+
+function isCrosschain(quote: CheckoutQuote): quote is CrosschainQuote {
+	return quote.kind === 'crosschain'
 }
 
 function isSufficient(insufficientAmounts: CurrencyAmountDto[]): boolean {
 	return insufficientAmounts.length === 0
 }
 
-function expenses(quote: ZapQuote): Expense[] {
+function entryTotalAmount(quote: CheckoutQuote): CurrencyAmountDto {
+	return isDirect(quote) ? quote.amountIn : quote.quote.amountIn
+}
+
+function expenses(quote: CheckoutQuote): Expense[] {
 	const entryTotal: Expense = {
 		label: 'Entry total',
-		amount: quote.quote.amountIn,
+		amount: entryTotalAmount(quote),
 	}
 
 	const networkFee: Expense = {
@@ -80,7 +97,7 @@ function expenses(quote: ZapQuote): Expense[] {
 		amount: quote.quote.blockchainFee,
 	}
 
-	if (isSamechain(quote)) return [entryTotal, networkFee]
+	if (!isCrosschain(quote)) return [entryTotal, networkFee]
 
 	const bridgeSwapCost: Expense = {
 		label: 'Bridge/swap cost',
@@ -113,12 +130,11 @@ function buildMessage(
 	const lines: Line[] = [
 		buyEntriesBreadcrumb(configName(config)),
 		'',
-		'🌉 Bridge & Enter',
-		'',
+		...headerLines(quote),
 		`Pay from: ${srcChainName} ${srcBalance.currency.symbol}`,
-		`Receive on: ${RECEIVE_CHAIN_NAME}`,
+		...receiveLine(quote),
 		`Entries: ${entryCount.toString()}`,
-		`Entry total: ${formatAmountWithUsd(quote.quote.amountIn)}`,
+		`Entry total: ${formatAmountWithUsd(entryTotalAmount(quote))}`,
 		'',
 		...costLines(quote),
 		`Your ${srcChainName} balance:`,
@@ -129,10 +145,22 @@ function buildMessage(
 	return joinLines(lines)
 }
 
-function costLines(quote: ZapQuote): Line[] {
+function headerLines(quote: CheckoutQuote): Line[] {
+	if (isDirect(quote)) return []
+
+	return ['🌉 Bridge & Enter', '']
+}
+
+function receiveLine(quote: CheckoutQuote): Line[] {
+	if (isDirect(quote)) return []
+
+	return [`Receive on: ${RECEIVE_CHAIN_NAME}`]
+}
+
+function costLines(quote: CheckoutQuote): Line[] {
 	const lines: Line[] = []
 
-	if (!isSamechain(quote)) {
+	if (isCrosschain(quote)) {
 		lines.push(
 			'Estimated bridge/swap cost:',
 			formatAmountWithUsd(quote.quote.fee),
@@ -146,7 +174,7 @@ function costLines(quote: ZapQuote): Line[] {
 		'',
 	)
 
-	if (!isSamechain(quote)) {
+	if (isCrosschain(quote)) {
 		const seconds =
 			quote.quote.durationMs / MILLISECONDS_PER_SECOND +
 			TRANSACTION_SEND_OVERHEAD_SECONDS
@@ -169,7 +197,7 @@ function insufficientLines(
 		insufficientCurrencyBlock(balance, allExpenses),
 	)
 
-	return ['', ...blocks, 'Choose another token or deposit.']
+	return ['', ...blocks, 'Choose another wallet or deposit.']
 }
 
 function insufficientCurrencyBlock(
@@ -199,20 +227,19 @@ function insufficientCurrencyBlock(
 }
 
 function buildKeyboard(
+	args: CheckoutArgs,
 	insufficientAmounts: CurrencyAmountDto[],
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	if (isSufficient(insufficientAmounts)) {
-		keyboard
-			.text('Confirm', buildActionData(actionIds.executeZap, undefined))
-			.row()
+		keyboard.text('Confirm', confirmActionData(args.quote)).row()
 	} else {
 		for (const balance of insufficientAmounts) {
 			const { currency } = balance
 			const chainName = chainToName(currency.chainAddress.chain)
 
-			// TODO: deposit back-nav should return to this zap checkout,
+			// TODO: deposit back-nav should return to this checkout,
 			// not the deposit flow's choose-token step.
 			keyboard
 				.text(
@@ -228,11 +255,22 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Choose Another Token',
-			buildActionData(actionIds.openZapChooseChain, undefined),
+			'Change payment wallet',
+			buildActionData(
+				actionIds.openBuyChoosePaymentWallet,
+				args.availablePreset.preset.id,
+			),
 		)
 		.row()
 		.appendHomeButton()
 
 	return keyboard
+}
+
+function confirmActionData(quote: CheckoutQuote): string {
+	if (isDirect(quote)) {
+		return buildActionData(actionIds.executeBuyEntries, undefined)
+	}
+
+	return buildActionData(actionIds.executeZap, undefined)
 }

@@ -85,6 +85,7 @@ export const HomePage = {
 				'Card Collection',
 				buildActionData(actionIds.openCardCollection, undefined),
 			)
+			.row()
 			.text('Wallet', buildActionData(actionIds.openWallet, undefined))
 			.row()
 			.text(

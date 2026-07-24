@@ -1,14 +1,47 @@
-FROM node:22-alpine
+# Preview bot image (multi-stage). Build from repo root:
+#   docker build -f apps/user/Dockerfile.preview-bot -t preview-bot .
+
+# --- builder: full install + compile, discarded from the final image ---
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY .yarnrc.yml package.json yarn.lock ./
+COPY .yarn/ ./.yarn/
 
-COPY tsconfig.json openapi-ts.config.ts open-api.json ./
-COPY scripts/ ./scripts/
-COPY src/ ./src/
+# Workspace manifests first, so the install layer caches until deps change.
+COPY apps/user/package.json apps/user/
+COPY apps/admin/package.json apps/admin/
+COPY packages/api-client/package.json packages/api-client/
+COPY packages/grammy-kit/package.json packages/grammy-kit/
+COPY packages/shared/package.json packages/shared/
+COPY tools/eslint-runner/package.json tools/eslint-runner/
 
-RUN yarn openapi-ts
+RUN yarn install --immutable
 
-CMD ["yarn", "preview-bot"]
+COPY . .
+
+RUN yarn build
+
+# --- runner: production-only deps + compiled output ---
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+COPY .yarnrc.yml package.json yarn.lock ./
+COPY .yarn/ ./.yarn/
+
+COPY apps/user/package.json apps/user/
+COPY packages/api-client/package.json packages/api-client/
+COPY packages/grammy-kit/package.json packages/grammy-kit/
+COPY packages/shared/package.json packages/shared/
+COPY tools/eslint-runner/package.json tools/eslint-runner/
+
+RUN yarn workspaces focus user --production
+
+COPY --from=builder /app/apps/user/dist apps/user/dist
+COPY --from=builder /app/packages/api-client/dist packages/api-client/dist
+COPY --from=builder /app/packages/grammy-kit/dist packages/grammy-kit/dist
+COPY --from=builder /app/packages/shared/dist packages/shared/dist
+
+CMD ["yarn", "user", "start:preview"]

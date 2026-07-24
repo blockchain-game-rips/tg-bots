@@ -6,20 +6,22 @@ import { buyEntriesBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseChainPage } from '../choose-chain-token'
 
 export const ZapChooseChainPage = {
-	render(args: {
-		availablePreset: AvailablePresetDto
-		entryCount: number
-	}): PageContent {
-		const { availablePreset, entryCount } = args
+	render(args: { availablePreset: AvailablePresetDto }): PageContent {
+		const { availablePreset } = args
 		const config = resolveConfig(availablePreset)
 
 		return buildChooseChainPage({
 			lines: [
 				buyEntriesBreadcrumb(configName(config)),
 				'',
-				`Entry count: ${entryCount.toString()}`,
+				'🌉 Enter from another chain',
 				'',
-				'Choose a chain to pay from:',
+				'Pay for your entries with funds on another chain.',
+				'The bot bridges/swaps and enters the Rip automatically.',
+				'',
+				'Payouts are credited on Base.',
+				'',
+				"First, choose a chain — you'll pick a token next.",
 			],
 			chainActionId: actionIds.openZapChooseToken,
 			chainPayload: (chain) => chain,

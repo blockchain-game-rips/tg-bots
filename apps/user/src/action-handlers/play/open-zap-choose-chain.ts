@@ -9,7 +9,7 @@ export const openZapChooseChain: ActionDef<void> = noPayload(
 	async (session) => {
 		assertFlow(session, 'buyEntries', 'entry-count-chosen')
 
-		const { presetId, entryCount } = session.flow.data
+		const { presetId } = session.flow.data
 
 		const availablePreset = await fetchPreset(presetId)
 
@@ -19,7 +19,6 @@ export const openZapChooseChain: ActionDef<void> = noPayload(
 				type: EffectType.EDIT,
 				page: ZapChooseChainPage.render({
 					availablePreset,
-					entryCount,
 				}),
 			},
 		}

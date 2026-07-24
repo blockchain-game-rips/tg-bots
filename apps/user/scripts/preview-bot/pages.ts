@@ -190,7 +190,6 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			ZapChooseChainPage.render({
 				availablePreset: mockAvailablePreset0,
-				entryCount: 3,
 			}),
 	},
 	'zap-choose-token': {

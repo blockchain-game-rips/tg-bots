@@ -1,5 +1,6 @@
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { SUPPORTED_CHAINS } from '../../src/constants'
+import { buildCardCollection } from '../../src/domain/card-collection'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { CheckoutPage } from '../../src/pages/play/checkout-page'
@@ -8,6 +9,7 @@ import { BuyChoosePaymentWalletPage } from '../../src/pages/play/buy-choose-paym
 import { BuyChoosePresetPage } from '../../src/pages/play/buy-choose-preset-page'
 import { BuySuccessPage } from '../../src/pages/play/buy-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
+import { CardCollectionTierPage } from '../../src/pages/play/card-collection-tier'
 import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
 import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
 import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
@@ -44,6 +46,7 @@ import {
 	mockAvailablePresets,
 	mockBalance,
 	mockCardCollection,
+	mockCardDefinitions,
 	mockConfigs,
 	mockEntryCost,
 	mockEthArbBalance,
@@ -125,8 +128,31 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'card-collection': {
 		description:
-			'Shows the full card collection — each card with name (linked to image) and how many the user owns.',
-		render: () => CardCollectionPage.render(mockCardCollection),
+			'Summary of the card collection — grand total, per-tier progress, and a button per tier to drill in.',
+		render: () =>
+			CardCollectionPage.render(
+				buildCardCollection(mockCardDefinitions, mockCardCollection),
+			),
+	},
+	'card-collection-tier': {
+		description:
+			'One tier of the collection — collected cards as image links first, then locked "Unknown" slots.',
+		render: () => {
+			const collection = buildCardCollection(
+				mockCardDefinitions,
+				mockCardCollection,
+			)
+
+			const COMMON_TIER_NAME = 'Common'
+
+			const tier = collection.tiers.find(
+				(t) => t.tier.name === COMMON_TIER_NAME,
+			)
+
+			if (tier === undefined) throw new Error('Common tier not found')
+
+			return CardCollectionTierPage.render(tier)
+		},
 	},
 	'buy-choose-preset': {
 		description:

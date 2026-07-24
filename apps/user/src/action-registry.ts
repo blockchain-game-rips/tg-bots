@@ -13,6 +13,7 @@ import { openBuyChooseEntryCount } from './action-handlers/play/open-buy-choose-
 import { openBuyChoosePaymentWallet } from './action-handlers/play/open-buy-choose-payment-wallet'
 import { openBuyChoosePreset } from './action-handlers/play/open-buy-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
+import { openCardCollectionTier } from './action-handlers/play/open-card-collection-tier'
 import { openCompletedRips } from './action-handlers/play/open-completed-rips'
 import { openOngoingRips } from './action-handlers/play/open-ongoing-rips'
 import {
@@ -101,6 +102,7 @@ export const actionRegistry = {
 
 	// Card collection
 	openCardCollection,
+	openCardCollectionTier,
 
 	// Wallet
 	openWallet,

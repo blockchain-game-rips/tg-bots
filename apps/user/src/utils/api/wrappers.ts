@@ -3,6 +3,8 @@ import {
 	createQuerySerializer,
 	CurrencyAmountDto,
 	currencyControllerGetCurrencies,
+	ripsControllerGetCardCollection,
+	ripsControllerGetCardDefinitions,
 	ripsControllerGetPayouts,
 	ripsControllerGetPresets,
 	RipsControllerGetPresetsResponse,
@@ -11,6 +13,10 @@ import {
 	walletsControllerGetBalances,
 } from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../../constants'
+import {
+	buildCardCollection,
+	CardCollection,
+} from '../../domain/card-collection'
 import { isSameChainAddress, toCurrencyId } from '../currency'
 
 const chainAddressQuerySerializer = createQuerySerializer({
@@ -115,6 +121,19 @@ export async function fetchSingleBalance(
 	const balances = await fetchBalances(telegramId, [chainAddress])
 
 	return getBalance(balances, chainAddress)
+}
+
+export async function fetchCardCollection(
+	telegramId: string,
+): Promise<CardCollection> {
+	const headers = { 'x-telegram-id': telegramId }
+
+	const [{ data: definitions }, { data: collection }] = await Promise.all([
+		ripsControllerGetCardDefinitions({ headers }),
+		ripsControllerGetCardCollection({ headers }),
+	])
+
+	return buildCardCollection(definitions, collection)
 }
 
 export async function fetchPreset(

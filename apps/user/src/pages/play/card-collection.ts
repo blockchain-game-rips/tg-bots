@@ -1,31 +1,61 @@
-import { GetCardCollectionResponseDtoOutput } from '@rips/api-client'
-import { addNav, fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
+import {
+	addNav,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	Line,
+} from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
+import { CardCollection } from '../../domain/card-collection'
 import { PageContent } from '../../types'
-import { tierName } from '../../utils/tiers'
 
-type CollectedCard = GetCardCollectionResponseDtoOutput['tiers'][number][number]
+const TITLE = '🃏 Card Collection'
 
-function cardLine(card: CollectedCard): FormattedString {
-	const count = card.count > 0 ? ` ×${card.count.toString()}` : ''
-	return fmt`${FormattedString.a(card.card.name, card.card.imageUrl)} [${tierName(card.card.tier)}]${count}`
+function progressLine(collected: number, total: number): string {
+	return `${collected.toString()} / ${total.toString()}`
 }
 
 export const CardCollectionPage = {
-	render(collection: GetCardCollectionResponseDtoOutput): PageContent {
-		const allCards = collection.tiers.flat()
-		const collectedCount = allCards.filter((c) => c.count > 0).length
+	render(collection: CardCollection): PageContent {
+		const progressByTier = collection.tiers.map(
+			(tier) =>
+				`${tier.tier.emoji} ${tier.tier.name}: ${progressLine(tier.collected.length, tier.total)}`,
+		)
 
 		const lines: Line[] = [
-			`Collected: ${collectedCount.toString()}/${allCards.length.toString()}`,
+			FormattedString.b(TITLE),
 			'',
-			...allCards.map(cardLine),
+			'Collected:',
+			progressLine(collection.totalCollected, collection.totalCards),
+			'',
+			'Progress by tier:',
+			'',
+			...progressByTier,
+			'',
+			'Cards are cosmetic collectibles.',
+			'Duplicates are possible.',
+			'',
+			'View by Tier:',
 		]
+
+		const keyboard = new InlineKeyboard()
+
+		for (const tier of collection.tiers) {
+			keyboard
+				.text(
+					tier.tier.name,
+					buildActionData(
+						actionIds.openCardCollectionTier,
+						tier.tier.index,
+					),
+				)
+				.row()
+		}
 
 		return {
 			message: joinLines(lines),
-			keyboard: addNav(new InlineKeyboard(), {
+			keyboard: addNav(keyboard, {
 				parent: actionIds.openHome,
 				home: actionIds.openHome,
 			}),

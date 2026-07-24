@@ -11,7 +11,7 @@ export const openZapChooseToken: ActionDef<Chain> = withPayload(
 	async (session, chain) => {
 		assertFlow(session, 'buyEntries', 'entry-count-chosen')
 
-		const { presetId, entryCount } = session.flow.data
+		const { presetId } = session.flow.data
 
 		const [availablePreset, currencies] = await Promise.all([
 			fetchPreset(presetId),
@@ -24,7 +24,6 @@ export const openZapChooseToken: ActionDef<Chain> = withPayload(
 				type: EffectType.EDIT,
 				page: ZapChooseTokenPage.render({
 					availablePreset,
-					entryCount,
 					currencies,
 				}),
 			},

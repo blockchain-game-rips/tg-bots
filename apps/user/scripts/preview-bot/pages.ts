@@ -198,7 +198,6 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			ZapChooseTokenPage.render({
 				availablePreset: mockAvailablePreset0,
-				entryCount: 3,
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
 	},

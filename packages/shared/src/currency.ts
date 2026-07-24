@@ -116,7 +116,7 @@ export function formatAmountWithUsd(currencyAmount: CurrencyAmountDto): string {
 	const { displayAmount, symbol, displayUsdAmount } =
 		currencyAmountDisplayParts(currencyAmount)
 
-	return `${displayAmount} ${symbol} (${displayUsdAmount})`
+	return `${displayAmount} ${symbol} ≈ ${displayUsdAmount}`
 }
 
 export function formatPercent(basisPoints: number): string {

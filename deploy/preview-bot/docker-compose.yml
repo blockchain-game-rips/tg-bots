@@ -1,0 +1,8 @@
+# Lives on the server at ${DEPLOY_PATH}. CI runs:
+#   docker compose pull preview-bot && docker compose up -d preview-bot
+services:
+  preview-bot:
+    image: ghcr.io/ripsgame/tg-bots-preview-bot:latest
+    restart: unless-stopped
+    env_file:
+      - .env.preview

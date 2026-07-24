@@ -4,7 +4,7 @@
 	"private": true,
 	"main": "src/main.ts",
 	"scripts": {
-		"dev": "ts-node-dev --respawn src/main.ts",
+		"dev": "tsx watch src/main.ts",
 		"build": "tsc -p tsconfig.build.json",
 		"start": "node dist/src/main.js",
 		"test": "vitest run --project apps/admin --passWithNoTests",

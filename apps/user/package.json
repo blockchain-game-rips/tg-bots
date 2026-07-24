@@ -4,9 +4,9 @@
 	"private": true,
 	"main": "src/main.ts",
 	"scripts": {
-		"dev": "ts-node-dev --respawn src/main.ts",
-		"dev:preview": "BOT_USERNAME=BOT_USERNAME dotenv -e .env.preview -- ts-node-dev --respawn scripts/preview-bot/index.ts",
-		"preview-bot": "BOT_USERNAME=BOT_USERNAME ts-node scripts/preview-bot/index.ts",
+		"dev": "tsx watch src/main.ts",
+		"dev:preview": "BOT_USERNAME=BOT_USERNAME dotenv -e .env.preview -- tsx watch scripts/preview-bot/index.ts",
+		"preview-bot": "BOT_USERNAME=BOT_USERNAME tsx scripts/preview-bot/index.ts",
 		"build": "tsc -p tsconfig.build.json",
 		"start": "node dist/src/main.js",
 		"test": "vitest run --project apps/user --passWithNoTests",

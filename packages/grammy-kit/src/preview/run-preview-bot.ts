@@ -51,6 +51,25 @@ async function renderVariant(
 export function runPreviewBot(pages: Pages): void {
 	const bot = new Bot(getEnvSafe('PREVIEW_BOT_TOKEN'))
 
+	bot.command('start', async (ctx) => {
+		const message = fmt`This bot renders the user app's pages so you can preview them in Telegram.
+
+${FormattedString.b('Getting started')}
+1. ${FormattedString.code('/pages')} — list every page and its variants.
+2. Pick a page name from that list.
+3. ${FormattedString.code('/r <page-name> [variant]')} — render it. Omit the variant to render all of them.
+
+${FormattedString.b('Commands')}
+${FormattedString.code('/pages')} — list all available pages.
+${FormattedString.code('/r <page-name> [variant]')} — render a page.
+${FormattedString.code('/d <page-name>')} — describe what a page is.
+
+${FormattedString.b('Example')}
+${FormattedString.code('/r checkout crosschain-sufficient')}`
+
+		await ctx.reply(message.text, { entities: message.entities })
+	})
+
 	bot.command('pages', async (ctx) => {
 		const entries = Object.entries(pages).map(([name, entry]) => {
 			const variants = entry?.variants
@@ -125,6 +144,7 @@ export function runPreviewBot(pages: Pages): void {
 	})
 
 	void bot.api.setMyCommands([
+		{ command: 'start', description: 'How to use this bot' },
 		{ command: 'pages', description: 'List all available pages' },
 		{
 			command: 'r',

@@ -1378,6 +1378,7 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	},
 	ripId: 1,
 	entryCount: 3,
+	startEntryIndex: 0,
 }
 
 export const mockZapQuote: QuoteZapResponseDtoOutput = {
@@ -1432,6 +1433,7 @@ export const mockZapSuccessResult: NonNullable<
 	},
 	entryCount: 3,
 	ripId: 1,
+	startEntryIndex: 0,
 }
 
 export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {
@@ -1500,8 +1502,8 @@ export const mockRip: RipDto = {
 		purchases: [
 			{
 				userAddress: '0x1234567890abcdef1234567890abcdef12345678',
-				entryCount: '4',
-				startEntryIndex: '0',
+				entryCount: 4,
+				startEntryIndex: 0,
 			},
 		],
 		claims: [],
@@ -1656,8 +1658,8 @@ export const mockFinishedRips: RipDto[] = [
 			purchases: [
 				{
 					userAddress: mockUserEvmAddress,
-					entryCount: '8',
-					startEntryIndex: '0',
+					entryCount: 8,
+					startEntryIndex: 0,
 				},
 			],
 			claims: [
@@ -1680,8 +1682,8 @@ export const mockFinishedRips: RipDto[] = [
 			purchases: [
 				{
 					userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
-					entryCount: '8',
-					startEntryIndex: '0',
+					entryCount: 8,
+					startEntryIndex: 0,
 				},
 			],
 			claims: [],
@@ -1701,13 +1703,13 @@ export const mockRip2: RipDto = {
 		purchases: [
 			{
 				userAddress: mockUserEvmAddress,
-				entryCount: '5',
-				startEntryIndex: '0',
+				entryCount: 5,
+				startEntryIndex: 0,
 			},
 			{
 				userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
-				entryCount: '8',
-				startEntryIndex: '5',
+				entryCount: 8,
+				startEntryIndex: 5,
 			},
 		],
 		claims: [],
@@ -1726,8 +1728,8 @@ export const mockRip3: RipDto = {
 		purchases: [
 			{
 				userAddress: mockUserEvmAddress,
-				entryCount: '4',
-				startEntryIndex: '0',
+				entryCount: 4,
+				startEntryIndex: 0,
 			},
 		],
 		claims: [],

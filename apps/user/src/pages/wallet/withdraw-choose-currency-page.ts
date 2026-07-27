@@ -3,21 +3,21 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 import {
-	buildChooseTokenPage,
+	buildChooseCurrencyPage,
 	chainBreadcrumbSegment,
-} from '../choose-chain-token'
+} from '../choose-chain-currency'
 
 export const WithdrawChooseCurrencyPage = {
 	render(currencies: CurrencyDto[]): PageContent {
-		return buildChooseTokenPage({
+		return buildChooseCurrencyPage({
 			lines: [
 				withdrawBreadcrumb(chainBreadcrumbSegment(currencies)),
 				'',
 				'Select a token:',
 			],
 			currencies,
-			tokenActionId: actionIds.openWithdraw,
-			tokenPayload: (currency) => currency.chainAddress,
+			currencyActionId: actionIds.openWithdraw,
+			currencyPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: actionIds.openWithdrawChooseChain,
 				home: actionIds.openHome,

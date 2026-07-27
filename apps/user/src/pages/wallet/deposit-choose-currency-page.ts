@@ -3,21 +3,21 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'
 import {
-	buildChooseTokenPage,
+	buildChooseCurrencyPage,
 	chainBreadcrumbSegment,
-} from '../choose-chain-token'
+} from '../choose-chain-currency'
 
 export const DepositChooseCurrencyPage = {
 	render(currencies: CurrencyDto[]): PageContent {
-		return buildChooseTokenPage({
+		return buildChooseCurrencyPage({
 			lines: [
 				depositBreadcrumb(chainBreadcrumbSegment(currencies)),
 				'',
 				'Select a token:',
 			],
 			currencies,
-			tokenActionId: actionIds.openDepositAddress,
-			tokenPayload: (currency) => currency.chainAddress,
+			currencyActionId: actionIds.openDepositAddress,
+			currencyPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: actionIds.openDeposit,
 				home: actionIds.openHome,

@@ -12,11 +12,11 @@ interface ChooseChainParams<T> {
 	nav: NavIds
 }
 
-interface ChooseTokenParams<T> {
+interface ChooseCurrencyParams<T> {
 	lines: Line[]
 	currencies: CurrencyDto[]
-	tokenActionId: ActionId<T>
-	tokenPayload: (currency: CurrencyDto) => T
+	currencyActionId: ActionId<T>
+	currencyPayload: (currency: CurrencyDto) => T
 	nav: NavIds
 }
 
@@ -68,36 +68,39 @@ export function appendChainButtonRows(
 	})
 }
 
-export function buildTokenKeyboard(
+export function buildCurrencyKeyboard(
 	currencies: CurrencyDto[],
-	onTokenSelectedActionId: ActionId<ChainAddressDto>,
+	onCurrencySelectedActionId: ActionId<ChainAddressDto>,
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
-	appendTokenButtonRows(keyboard, currencies, onTokenSelectedActionId)
+	appendCurrencyButtonRows(keyboard, currencies, onCurrencySelectedActionId)
 
 	return keyboard
 }
 
-export function appendTokenButtonRows(
+export function appendCurrencyButtonRows(
 	keyboard: InlineKeyboard,
 	currencies: CurrencyDto[],
-	onTokenSelectedActionId: ActionId<ChainAddressDto>,
+	onCurrencySelectedActionId: ActionId<ChainAddressDto>,
 ) {
 	currencies.forEach((currency) => {
 		keyboard
 			.text(
 				currency.symbol,
-				buildActionData(onTokenSelectedActionId, currency.chainAddress),
+				buildActionData(
+					onCurrencySelectedActionId,
+					currency.chainAddress,
+				),
 			)
 			.row()
 	})
 }
 
-export function buildChooseTokenPage<T>(
-	params: ChooseTokenParams<T>,
+export function buildChooseCurrencyPage<T>(
+	params: ChooseCurrencyParams<T>,
 ): PageContent {
-	const { lines, currencies, tokenActionId, tokenPayload, nav } = params
+	const { lines, currencies, currencyActionId, currencyPayload, nav } = params
 
 	const keyboard = new InlineKeyboard()
 
@@ -105,7 +108,7 @@ export function buildChooseTokenPage<T>(
 		keyboard
 			.text(
 				currency.symbol,
-				buildActionData(tokenActionId, tokenPayload(currency)),
+				buildActionData(currencyActionId, currencyPayload(currency)),
 			)
 			.row()
 	})

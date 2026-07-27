@@ -66,7 +66,7 @@ export const DepositAddressPage = {
 			)
 
 		addNav(keyboard, {
-			parent: actionIds.openDepositChooseToken,
+			parent: actionIds.openDepositChooseCurrency,
 			parentPayload: chain,
 			home: actionIds.openHome,
 		})

@@ -48,7 +48,7 @@ export const WithdrawPage = {
 			.row()
 			.text(
 				'Back',
-				buildActionData(actionIds.openWithdrawChooseToken, chain),
+				buildActionData(actionIds.openWithdrawChooseCurrency, chain),
 			)
 			.appendHomeButton()
 

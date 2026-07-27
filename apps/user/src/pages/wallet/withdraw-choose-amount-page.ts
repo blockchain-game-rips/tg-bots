@@ -34,7 +34,7 @@ export const WithdrawChooseAmountPage = {
 			.row()
 
 		addNav(keyboard, {
-			parent: actionIds.openWithdrawChooseToken,
+			parent: actionIds.openWithdrawChooseCurrency,
 			parentPayload: chain,
 			home: actionIds.openHome,
 		})

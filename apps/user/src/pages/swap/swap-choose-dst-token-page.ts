@@ -6,7 +6,7 @@ import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { buildTokenKeyboard } from '../choose-chain-token'
+import { buildCurrencyKeyboard } from '../choose-chain-currency'
 
 interface Draft {
 	srcBalance: CurrencyAmountDto
@@ -69,7 +69,7 @@ function formatAmount(amount: CurrencyAmountDto): string {
 }
 
 function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
-	const keyboard = buildTokenKeyboard(
+	const keyboard = buildCurrencyKeyboard(
 		draft.dstCurrencies,
 		actionIds.openSwapChooseAmount,
 	)
@@ -82,7 +82,7 @@ function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
 }
 
 function buildDraftEditKeyboard(dstCurrencies: CurrencyDto[]): InlineKeyboard {
-	const keyboard = buildTokenKeyboard(
+	const keyboard = buildCurrencyKeyboard(
 		dstCurrencies,
 		actionIds.openSwapCheckoutFromDst,
 	)

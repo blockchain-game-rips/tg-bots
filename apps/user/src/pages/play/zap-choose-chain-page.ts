@@ -3,7 +3,7 @@ import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
-import { buildChooseChainPage } from '../choose-chain-token'
+import { buildChooseChainPage } from '../choose-chain-currency'
 
 export const ZapChooseChainPage = {
 	render(args: { availablePreset: AvailablePresetDto }): PageContent {

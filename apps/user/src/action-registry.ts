@@ -107,7 +107,7 @@ export const actionRegistry = {
 	// Wallet
 	openWallet,
 	openDeposit,
-	openDepositChooseToken: openDepositChooseCurrency,
+	openDepositChooseCurrency,
 	openDepositAddress,
 	openDepositAddressQr,
 	openExportKeyWarning,
@@ -115,7 +115,7 @@ export const actionRegistry = {
 
 	// Withdraw
 	openWithdrawChooseChain,
-	openWithdrawChooseToken: openWithdrawChooseCurrency,
+	openWithdrawChooseCurrency,
 	openWithdraw,
 	openWithdrawChooseAmount,
 	executeWithdraw,

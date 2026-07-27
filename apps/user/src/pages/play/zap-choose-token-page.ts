@@ -4,7 +4,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
-import { buildChooseTokenPage } from '../choose-chain-token'
+import { buildChooseCurrencyPage } from '../choose-chain-currency'
 
 export const ZapChooseTokenPage = {
 	render(args: {
@@ -20,7 +20,7 @@ export const ZapChooseTokenPage = {
 
 		const srcChainName = chainToName(srcCurrency.chainAddress.chain)
 
-		return buildChooseTokenPage({
+		return buildChooseCurrencyPage({
 			lines: [
 				enterBreadcrumb(configName(config), srcChainName),
 				'',
@@ -31,8 +31,8 @@ export const ZapChooseTokenPage = {
 				'Choose a token to pay with:',
 			],
 			currencies,
-			tokenActionId: actionIds.openZapConfirm,
-			tokenPayload: (currency) => currency.chainAddress,
+			currencyActionId: actionIds.openZapConfirm,
+			currencyPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: actionIds.openZapChooseChain,
 				home: actionIds.openHome,

@@ -343,9 +343,9 @@ export const pages: Record<string, PageEntry> = {
 			'First step of the withdraw flow. Choose a chain to withdraw from.',
 		render: () => WithdrawChooseChainPage.render(),
 	},
-	'withdraw-choose-token': {
+	'withdraw-choose-currency': {
 		description:
-			'Second step of the withdraw flow. Choose a token on the selected chain.',
+			'Second step of the withdraw flow. Choose a currency on the selected chain.',
 		render: () => WithdrawChooseCurrencyPage.render(mockWithdrawCurrencies),
 	},
 	'withdraw-choose-amount': {
@@ -407,9 +407,9 @@ export const pages: Record<string, PageEntry> = {
 			'First step of the deposit flow. Choose a chain to deposit to. Opened from Wallet.',
 		render: () => DepositChooseChainPage.render(),
 	},
-	'deposit-choose-token': {
+	'deposit-choose-currency': {
 		description:
-			'Second step of the deposit flow. Choose a token on the selected chain.',
+			'Second step of the deposit flow. Choose a currency on the selected chain.',
 		render: () => DepositChooseCurrencyPage.render(mockWithdrawCurrencies),
 	},
 	'deposit-address': {

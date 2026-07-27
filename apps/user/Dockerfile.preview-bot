@@ -21,7 +21,6 @@ RUN yarn install --immutable
 
 COPY . .
 
-RUN yarn api-client generate
 RUN yarn build
 
 # --- runner: production-only deps + compiled output ---

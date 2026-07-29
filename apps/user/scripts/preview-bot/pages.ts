@@ -19,7 +19,6 @@ import { StatusPage } from '../../src/pages/play/status-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
-import { ZapSuccessPage } from '../../src/pages/play/zap-success-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
@@ -87,6 +86,7 @@ import {
 	mockZapSamechainSrcBalance,
 	mockZapSrcBalanceInsufficient,
 	mockZapSrcBalanceSufficient,
+	mockZapSubmit,
 	mockZapSuccessResult,
 	mockZeroBalance,
 } from './static-data'
@@ -255,8 +255,13 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'enter-success': {
 		description:
-			'Final step of the enter flow. Confirms a successful entry purchase — shows rip number, entry count, total cost, and blockchain fee. Opened after enter-confirm.',
-		render: () => EnterSuccessPage.render(mockPurchase, mockRip),
+			'Final step of the direct enter flow. Confirms a successful entry — shows rip number, entry count, entry total, fill status, and the transaction. Opened after enter-confirm.',
+		render: () =>
+			EnterSuccessPage.render({
+				kind: 'direct',
+				result: mockPurchase,
+				rip: mockRip,
+			}),
 	},
 	'zap-choose-chain': {
 		description:
@@ -288,13 +293,13 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'zap-success': {
 		description:
-			'Final step of the zap flow. Confirms zap + entry purchase succeeded — shows preset, rip, entry count, amount paid, and blockchain fee.',
+			'Final step of the crosschain zap flow. Confirms a successful entry — shows rip, entry count, entry total, fill status, and a transaction per chain.',
 		render: () =>
-			ZapSuccessPage.render({
-				availablePreset: mockAvailablePreset0,
-				entryCount: 3,
-				amountIn: mockZapCurrencyInBalance,
-				zapSuccessResult: mockZapSuccessResult,
+			EnterSuccessPage.render({
+				kind: 'crosschain',
+				submit: mockZapSubmit,
+				result: mockZapSuccessResult,
+				rip: mockRip,
 			}),
 	},
 	status: {

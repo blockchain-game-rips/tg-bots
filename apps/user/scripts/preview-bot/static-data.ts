@@ -1,6 +1,7 @@
 import {
 	AvailablePresetDto,
 	BuyEntriesPurchaseResponseDtoOutput,
+	BuyEntriesZapResponseDtoOutput,
 	ConfigDto,
 	CurrencyAmountDto,
 	GetCardCollectionResponseDtoOutput,
@@ -1434,6 +1435,18 @@ export const mockZapSuccessResult: NonNullable<
 	entryCount: 3,
 	ripId: 1,
 	startEntryIndex: 0,
+}
+
+// Crosschain zap submit — source tx on Arbitrum, paid in Arbitrum USDC.
+export const mockZapSubmit: BuyEntriesZapResponseDtoOutput = {
+	zapId: 'zap-1',
+	srcTransaction: {
+		id: '0x789abc',
+		cost: { currency: mockEthArb, amount: '100000000000000' },
+	},
+	amountIn: { currency: mockUsdcArb, amount: '13500000' },
+	fee: { currency: mockEthArb, amount: '1000000000000000' },
+	durationMs: 45000,
 }
 
 export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {

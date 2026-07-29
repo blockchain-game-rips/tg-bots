@@ -1,6 +1,6 @@
 import { RipDto } from '@rips/api-client'
 import { addNav, fmt, joinLines } from '@rips/grammy-kit'
-import { configName, displayStatus } from '@rips/shared'
+import { configName, groupRipStatus } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -11,7 +11,7 @@ export const FinishedRipsPage = {
 
 		for (const rip of completedRips) {
 			lines.push(
-				`${configName(rip.config)} preset | Rip #${rip.id.toString()} — ${displayStatus(rip.status)}`,
+				`${configName(rip.config)} preset | Rip #${rip.id.toString()} — ${groupRipStatus(rip.status)}`,
 			)
 		}
 

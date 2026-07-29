@@ -2,7 +2,7 @@ import { AvailablePresetDto, RipDto } from '@rips/api-client'
 import { addNav, joinLines } from '@rips/grammy-kit'
 import {
 	configName,
-	displayStatus,
+	groupRipStatus,
 	resolveConfig,
 	toShortDurationFormat,
 } from '@rips/shared'
@@ -11,7 +11,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 function ripLine(rip: RipDto): string {
-	const status = displayStatus(rip.status)
+	const status = groupRipStatus(rip.status)
 
 	if (rip.status !== 'FILLING') {
 		return `  Rip #${rip.id.toString()} — ${status}`

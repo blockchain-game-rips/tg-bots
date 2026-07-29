@@ -10,7 +10,7 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard, InputFile } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface RenderArgs {
@@ -22,7 +22,7 @@ interface RenderArgs {
 export const DepositAddressPage = {
 	render({ balance, depositAddress, qr }: RenderArgs): PageContent {
 		const { currency } = balance
-		const chain = currency.chainAddress.chain
+		const chain = currencyToChain(currency)
 		const chainName = chainToName(chain)
 
 		const lines: Line[] = [

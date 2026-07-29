@@ -4,7 +4,7 @@ import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { ActionId, Chain, PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChainKeyboard } from '../choose-chain-currency'
 
@@ -52,7 +52,7 @@ function draftLines(
 ): string[] {
 	const amount = toCurrencyAmount(amountIn, srcCurrency)
 	const { displayAmount } = currencyAmountDisplayParts(amount)
-	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
+	const dstChainName = currencyToChainName(dstCurrency)
 
 	return [
 		`To: ${dstChainName} ${dstCurrency.symbol}`,

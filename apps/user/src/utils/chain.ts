@@ -1,3 +1,4 @@
+import { CurrencyDto } from '@rips/api-client'
 import { PayloadCodec } from '@rips/grammy-kit'
 import { parseChain } from '@rips/shared'
 import {
@@ -5,9 +6,18 @@ import {
 	SUPPORTED_CURRENCIES,
 } from '../constants'
 import { Chain } from '../types'
+import { chainToName } from './chain-display'
 import { toCurrencyId } from './currency'
 
 export { chainToEmoji, chainToName } from './chain-display'
+
+export function currencyToChain(currency: CurrencyDto): Chain {
+	return currency.chainAddress.chain
+}
+
+export function currencyToChainName(currency: CurrencyDto): string {
+	return chainToName(currencyToChain(currency))
+}
 
 export function findChainIndex(chain: Chain): number {
 	return SUPPORTED_CHAINS_LIST.findIndex(

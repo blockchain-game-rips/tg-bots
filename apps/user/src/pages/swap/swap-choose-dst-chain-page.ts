@@ -10,7 +10,7 @@ import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChain, currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChainKeyboard } from '../choose-chain-currency'
 
@@ -23,7 +23,7 @@ export const SwapChooseDstChainPage = {
 
 		const backToSrcToken: NavIds = {
 			parent: actionIds.openSwapChooseSrcToken,
-			parentPayload: srcBalance.currency.chainAddress.chain,
+			parentPayload: currencyToChain(srcBalance.currency),
 			home: actionIds.openHome,
 		}
 
@@ -57,7 +57,7 @@ function buildMessage(
 	amountIn?: bigint,
 ): FormattedString {
 	const srcCurrency = srcBalance.currency
-	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
+	const srcChainName = currencyToChainName(srcCurrency)
 
 	const amount =
 		amountIn === undefined

@@ -8,7 +8,7 @@ import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 
 interface SamechainResult {
 	kind: 'samechain'
@@ -78,10 +78,10 @@ function transactionLines(result: SwapSuccessResult): Line[] {
 	const { swapResponse } = result
 
 	const srcChainName = chainToName(
-		swapResponse.amountIn.currency.chainAddress.chain,
+		currencyToChain(swapResponse.amountIn.currency),
 	)
 	const dstChainName = chainToName(
-		result.result.amountOut.currency.chainAddress.chain,
+		currencyToChain(result.result.amountOut.currency),
 	)
 
 	return [

@@ -11,7 +11,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
 import { Chain, PageContent } from '../../types'
-import { chainToEmoji, chainToName } from '../../utils/chain'
+import { chainToEmoji, chainToName, currencyToChain } from '../../utils/chain'
 
 function isZeroAmount(balance: CurrencyAmountDto): boolean {
 	return BigInt(balance.amount) === 0n
@@ -30,7 +30,7 @@ function groupBalancesByChain(
 	const groups = new Map<string, CurrencyAmountDto[]>()
 
 	for (const balance of balances) {
-		const { namespace, reference } = balance.currency.chainAddress.chain
+		const { namespace, reference } = currencyToChain(balance.currency)
 		const key = `${namespace}:${reference}`
 
 		const group = groups.get(key) ?? []
@@ -58,7 +58,7 @@ function chainBalanceLines(chainBalances: CurrencyAmountDto[]): string[] {
 		throw new Error('Native balance not found for chain')
 	}
 
-	const chain = nativeBalance.currency.chainAddress.chain
+	const chain = currencyToChain(nativeBalance.currency)
 
 	const tokenLines = chainBalances
 		.filter(
@@ -85,7 +85,7 @@ export const WalletPage = {
 		// Base is the settlement chain and is always listed first.
 		const baseGroup = groups.find((group) =>
 			group.some((balance) =>
-				isBaseChain(balance.currency.chainAddress.chain),
+				isBaseChain(currencyToChain(balance.currency)),
 			),
 		)
 

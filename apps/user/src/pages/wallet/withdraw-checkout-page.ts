@@ -11,7 +11,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawCheckoutPage = {
@@ -33,7 +33,7 @@ export const WithdrawCheckoutPage = {
 		} = args
 
 		const { currency } = currencyAmount
-		const chain = currency.chainAddress.chain
+		const chain = currencyToChain(currency)
 
 		const { insufficientAmounts } = fundsBreakdown(
 			[

@@ -3,7 +3,7 @@ import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawSuccessPage = {
@@ -17,7 +17,7 @@ export const WithdrawSuccessPage = {
 			args
 
 		const { currency } = currencyAmount
-		const chain = currency.chainAddress.chain
+		const chain = currencyToChain(currency)
 
 		const lines: Line[] = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),

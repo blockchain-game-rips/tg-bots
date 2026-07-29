@@ -2,7 +2,7 @@ import { AvailablePresetDto, CurrencyDto } from '@rips/api-client'
 import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChainName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseCurrencyPage } from '../choose-chain-currency'
 
@@ -18,7 +18,7 @@ export const ZapChooseTokenPage = {
 
 		if (srcCurrency === undefined) throw new Error('No currencies provided')
 
-		const srcChainName = chainToName(srcCurrency.chainAddress.chain)
+		const srcChainName = currencyToChainName(srcCurrency)
 
 		return buildChooseCurrencyPage({
 			lines: [

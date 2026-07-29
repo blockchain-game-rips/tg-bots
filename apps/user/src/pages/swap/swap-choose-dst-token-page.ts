@@ -4,7 +4,7 @@ import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { Chain, PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildCurrencyKeyboard } from '../choose-chain-currency'
 
@@ -38,7 +38,7 @@ function buildMessage(draft: Draft, amountIn?: bigint): FormattedString {
 		amountIn === undefined
 			? undefined
 			: toCurrencyAmount(amountIn, srcCurrency)
-	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
+	const srcChainName = currencyToChainName(srcCurrency)
 
 	const lines: Line[] = [
 		swapBreadcrumb(),

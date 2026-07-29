@@ -11,7 +11,7 @@ import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChain, currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface Draft {
@@ -23,7 +23,7 @@ export const SwapChooseAmountPage = {
 	renderFreshDraft(draft: Draft): PageContent {
 		return render(draft, {
 			parent: actionIds.openSwapChooseDstToken,
-			parentPayload: draft.dstCurrency.chainAddress.chain,
+			parentPayload: currencyToChain(draft.dstCurrency),
 			home: actionIds.openHome,
 		})
 	},
@@ -47,8 +47,8 @@ function buildMessage(draft: Draft): FormattedString {
 	const { srcBalance, dstCurrency } = draft
 
 	const srcCurrency = srcBalance.currency
-	const srcChainName = chainToName(srcCurrency.chainAddress.chain)
-	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
+	const srcChainName = currencyToChainName(srcCurrency)
+	const dstChainName = currencyToChainName(dstCurrency)
 
 	const lines: Line[] = [
 		swapBreadcrumb(),

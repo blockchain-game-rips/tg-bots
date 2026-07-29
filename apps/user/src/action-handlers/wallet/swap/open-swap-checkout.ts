@@ -25,6 +25,7 @@ import {
 	getBalance,
 } from '../../../utils/api/wrappers'
 import { SwapAmountPayload, swapAmountCodec } from '../../../utils/codecs'
+import { currencyToChain } from '../../../utils/chain'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
 interface CheckoutDraft {
@@ -238,8 +239,8 @@ async function fetchSwapQuote(
 
 	if (
 		isSameChain(
-			amountIn.currency.chainAddress.chain,
-			dstCurrency.chainAddress.chain,
+			currencyToChain(amountIn.currency),
+			currencyToChain(dstCurrency),
 		)
 	) {
 		const { data } = await walletsControllerQuoteSwapSamechain({

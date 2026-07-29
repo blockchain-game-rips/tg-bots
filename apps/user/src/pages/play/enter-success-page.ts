@@ -16,7 +16,7 @@ import { configName, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 type ZapSuccess = NonNullable<GetZapResultResponseDtoOutput['success']>
@@ -109,8 +109,8 @@ function transactionLines(args: SuccessResult): Line[] {
 		]
 	}
 
-	const srcChain = args.submit.amountIn.currency.chainAddress.chain
-	const dstChain = args.rip.currency.chainAddress.chain
+	const srcChain = currencyToChain(args.submit.amountIn.currency)
+	const dstChain = currencyToChain(args.rip.currency)
 
 	return [
 		...transactionOnChainLines(srcChain, args.submit.srcTransaction.id),

@@ -23,7 +23,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChainName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 const TRANSACTION_SEND_OVERHEAD_SECONDS = 4
@@ -125,7 +125,7 @@ function buildMessage(
 	const { availablePreset, entryCount, srcBalance, quote } = args
 
 	const config = resolveConfig(availablePreset)
-	const srcChainName = chainToName(srcBalance.currency.chainAddress.chain)
+	const srcChainName = currencyToChainName(srcBalance.currency)
 
 	const lines: Line[] = [
 		enterBreadcrumb(configName(config)),
@@ -205,7 +205,7 @@ function insufficientCurrencyBlock(
 	allExpenses: Expense[],
 ): Line[] {
 	const { currency } = balance
-	const chainName = chainToName(currency.chainAddress.chain)
+	const chainName = currencyToChainName(currency)
 
 	const required = allExpenses.reduce((sum, { amount }) => {
 		if (amount.currency.id !== currency.id) return sum
@@ -237,7 +237,7 @@ function buildKeyboard(
 	} else {
 		for (const balance of insufficientAmounts) {
 			const { currency } = balance
-			const chainName = chainToName(currency.chainAddress.chain)
+			const chainName = currencyToChainName(currency)
 
 			// TODO: deposit back-nav should return to this checkout,
 			// not the deposit flow's choose-token step.

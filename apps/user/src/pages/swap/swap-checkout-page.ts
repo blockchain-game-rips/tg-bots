@@ -22,7 +22,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const SwapCheckoutPage = {
@@ -71,8 +71,8 @@ function buildMessage(
 ): FormattedString {
 	const { srcBalance, dstCurrency, amountIn, quote } = args
 
-	const srcChainName = chainToName(srcBalance.currency.chainAddress.chain)
-	const dstChainName = chainToName(dstCurrency.chainAddress.chain)
+	const srcChainName = currencyToChainName(srcBalance.currency)
+	const dstChainName = currencyToChainName(dstCurrency)
 
 	const lines: Line[] = [
 		swapBreadcrumb(),
@@ -188,7 +188,7 @@ function feeLines(quote: SwapQuote): string[] {
 }
 
 function currencyLabel(currency: CurrencyDto): string {
-	return `${chainToName(currency.chainAddress.chain)} ${currency.symbol}`
+	return `${currencyToChainName(currency)} ${currency.symbol}`
 }
 
 function formatAmount(amount: CurrencyAmountDto): string {

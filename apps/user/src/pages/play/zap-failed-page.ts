@@ -3,7 +3,7 @@ import { joinLines } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const ZapFailedPage = {
@@ -17,7 +17,7 @@ export const ZapFailedPage = {
 
 		const config = resolveConfig(availablePreset)
 		const { currency } = amountIn
-		const chain = currency.chainAddress.chain
+		const chain = currencyToChain(currency)
 
 		const lines = [
 			enterBreadcrumb(

@@ -4,12 +4,12 @@ import { formatAmountWithUsd, formatUnits } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { chainToName, currencyToChain } from '../../utils/chain'
 
 export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDto): PageContent {
 		const { currency } = balance
-		const chain = currency.chainAddress.chain
+		const chain = currencyToChain(currency)
 
 		const maxAmount = formatUnits(BigInt(balance.amount), currency.decimals)
 

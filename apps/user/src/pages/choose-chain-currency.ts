@@ -3,7 +3,7 @@ import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
 import { ActionId, Chain, NavIds, PageContent } from '../types'
-import { chainToName } from '../utils/chain'
+import { chainToName, currencyToChainName } from '../utils/chain'
 
 interface ChooseChainParams<T> {
 	lines: Line[]
@@ -123,5 +123,5 @@ export function chainBreadcrumbSegment(currencies: CurrencyDto[]): string {
 
 	if (first === undefined) throw new Error('No currencies provided')
 
-	return chainToName(first.chainAddress.chain)
+	return currencyToChainName(first)
 }

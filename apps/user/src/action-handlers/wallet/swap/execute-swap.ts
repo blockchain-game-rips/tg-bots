@@ -14,6 +14,7 @@ import { ActionDef, noPayload } from '../../../action-def'
 import { Flow, toHold, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
 import { Chain, EffectType, HandlerResult } from '../../../types'
+import { currencyToChain } from '../../../utils/chain'
 
 const SWAP_POLL_INTERVAL_MS = 2000
 const SWAP_POLL_TIMEOUT_MS = 60000
@@ -51,8 +52,8 @@ async function executeSwapRequest(
 	const body = toSwapBody(amountIn, dstCurrency)
 
 	const page = isSameChain(
-		amountIn.currency.chainAddress.chain,
-		dstCurrency.chainAddress.chain,
+		currencyToChain(amountIn.currency),
+		currencyToChain(dstCurrency),
 	)
 		? await swapSamechain(headers, body)
 		: await swapCrosschain(headers, body)

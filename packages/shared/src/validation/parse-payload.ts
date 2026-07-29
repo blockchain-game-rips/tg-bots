@@ -1,5 +1,10 @@
 import { ErrorToRender } from '@rips/grammy-kit'
-import { ZodType } from 'zod'
+import z, { ZodType } from 'zod'
+
+export const numericIdSchema = z
+	.string()
+	.transform(Number)
+	.pipe(z.number().int().positive())
 
 export function parsePayload<T>(
 	payload: string | undefined,

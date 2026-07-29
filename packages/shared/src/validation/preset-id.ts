@@ -1,11 +1,5 @@
-import z from 'zod'
-import { parsePayload } from './parse-payload'
-
-const presetIdSchema = z
-	.string()
-	.transform(Number)
-	.pipe(z.number().int().positive())
+import { numericIdSchema, parsePayload } from './parse-payload'
 
 export function parsePresetId(payload: string | undefined): number {
-	return parsePayload(payload, presetIdSchema, 'No preset selected')
+	return parsePayload(payload, numericIdSchema, 'No preset selected')
 }

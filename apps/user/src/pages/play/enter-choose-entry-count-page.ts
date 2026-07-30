@@ -8,6 +8,7 @@ import {
 import {
 	currencyAmountDisplayParts,
 	resolveConfig,
+	secondsUntilRipClose,
 	toShortDurationFormat,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -55,25 +56,9 @@ function fillStatusLine(
 	if (!fillingRip)
 		return `Fill window: ${toShortDurationFormat(config.durationSeconds)}`
 
-	const timeLeft = toShortDurationFormat(secondsUntilClose(fillingRip))
+	const timeLeft = toShortDurationFormat(secondsUntilRipClose(fillingRip))
 
 	return `Closes in ${timeLeft} — ${REFUND_WARNING}`
-}
-
-type FillingRip = NonNullable<AvailablePresetDto['fillingRip']>
-
-const MILLISECONDS_PER_SECOND = 1000
-
-function secondsUntilClose(fillingRip: FillingRip): number {
-	const closesAt =
-		new Date(fillingRip.startTime).getTime() +
-		fillingRip.config.durationSeconds * MILLISECONDS_PER_SECOND
-
-	const secondsLeft = Math.floor(
-		(closesAt - Date.now()) / MILLISECONDS_PER_SECOND,
-	)
-
-	return Math.max(0, secondsLeft)
 }
 
 const RIP_ID_PREFIX = '#'

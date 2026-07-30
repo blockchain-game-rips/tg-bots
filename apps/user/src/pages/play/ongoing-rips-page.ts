@@ -4,6 +4,7 @@ import {
 	configName,
 	groupRipStatus,
 	resolveConfig,
+	secondsUntilRipClose,
 	toShortDurationFormat,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -23,11 +24,7 @@ function ripLine(rip: RipDto): string {
 	)
 	const remainingEntries = rip.config.entryCap - Number(soldEntries)
 
-	const expiresAt =
-		new Date(rip.startTime).getTime() + rip.config.durationSeconds * 1000
-
-	const remainingMs = expiresAt - Date.now()
-	const remaining = Math.floor(remainingMs / 1000)
+	const remaining = secondsUntilRipClose(rip)
 
 	return (
 		`  Rip #${rip.id.toString()} — ${status}` +

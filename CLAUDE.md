@@ -13,6 +13,10 @@ Below are the current scripts, imported directly from each package.json so they 
 - grammy-kit: @packages/grammy-kit/package.json
 - shared: @packages/shared/package.json
 
+## api-client
+
+Apps call `initApiClient(baseUrl)` once at startup. After that the client throws `ApiError` on any non-2xx response, so generated functions return present `data` with no `error` field. Never pass `throwOnError` at a call site — it is already the configured default.
+
 ## Agent skills
 
 ### Issue tracker

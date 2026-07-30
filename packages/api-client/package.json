@@ -7,6 +7,7 @@
 	"scripts": {
 		"generate": "openapi-ts",
 		"build": "yarn generate && tsc -p tsconfig.build.json",
+		"test": "vitest run --project packages/api-client --passWithNoTests",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -14,6 +15,7 @@
 		"ky": "^2.0.2"
 	},
 	"devDependencies": {
+		"@types/node": "^25.3.1",
 		"typescript": "^6.0.2"
 	}
 }

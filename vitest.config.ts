@@ -23,6 +23,7 @@ export default defineConfig({
 		projects: [
 			project('apps/admin'),
 			project('apps/user'),
+			project('packages/api-client'),
 			project('packages/shared'),
 			project('packages/grammy-kit'),
 		],

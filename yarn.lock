@@ -568,6 +568,7 @@ __metadata:
   resolution: "@rips/api-client@workspace:packages/api-client"
   dependencies:
     "@hey-api/openapi-ts": "npm:0.96.1"
+    "@types/node": "npm:^25.3.1"
     ky: "npm:^2.0.2"
     typescript: "npm:^6.0.2"
   languageName: unknown

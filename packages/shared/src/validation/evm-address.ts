@@ -10,3 +10,7 @@ const evmAddressSchema = z
 export function parseEvmAddress(payload: string | undefined): string {
 	return parsePayload(payload, evmAddressSchema, 'Invalid address format')
 }
+
+export function sameEvmAddress(a: string, b: string): boolean {
+	return a.toLowerCase() === b.toLowerCase()
+}

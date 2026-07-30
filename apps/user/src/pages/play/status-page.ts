@@ -7,6 +7,7 @@ import {
 	joinLines,
 	Line,
 } from '@rips/grammy-kit'
+import { sameEvmAddress } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -14,10 +15,8 @@ import { PageContent } from '../../types'
 export const StatusPage = {
 	render(ongoingRips: RipDto[], userEvmAddress: string): PageContent {
 		const userRips = ongoingRips.filter((r) =>
-			r.actions.purchases.some(
-				(p) =>
-					p.userAddress.toLowerCase() ===
-					userEvmAddress.toLowerCase(),
+			r.actions.purchases.some((p) =>
+				sameEvmAddress(p.userAddress, userEvmAddress),
 			),
 		)
 
@@ -33,10 +32,8 @@ export const StatusPage = {
 
 			for (const rip of userRips) {
 				const userEntries = rip.actions.purchases
-					.filter(
-						(p) =>
-							p.userAddress.toLowerCase() ===
-							userEvmAddress.toLowerCase(),
+					.filter((p) =>
+						sameEvmAddress(p.userAddress, userEvmAddress),
 					)
 					.reduce(
 						(sum, purchase) => sum + Number(purchase.entryCount),

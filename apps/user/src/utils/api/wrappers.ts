@@ -98,6 +98,29 @@ export async function fetchRips(
 	return data.rips
 }
 
+export async function fetchRip(
+	id: number,
+): Promise<RipsControllerGetRipsResponse['rips'][number]> {
+	const rips = await fetchRips([id])
+
+	const rip = rips.find((r) => r.id === id)
+
+	if (rip === undefined) {
+		throw new Error(`Rip with id ${id.toString()} not found`)
+	}
+
+	return rip
+}
+
+export async function fetchRipPayouts(telegramId: string, ripId: number) {
+	const { data } = await ripsControllerGetPayouts({
+		headers: { 'x-telegram-id': telegramId },
+		query: { ripId },
+	})
+
+	return data.payouts
+}
+
 export async function fetchPresets(): Promise<
 	RipsControllerGetPresetsResponse['availablePresets']
 > {

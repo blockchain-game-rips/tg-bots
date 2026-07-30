@@ -25,6 +25,7 @@ import { openRevealPayouts } from './action-handlers/play/open-reveal-payouts'
 import { openRevealSingle } from './action-handlers/play/open-reveal-single'
 import { openRipStatus } from './action-handlers/play/open-rip-status'
 import { openStatus } from './action-handlers/play/open-status'
+import { openViewPulls } from './action-handlers/play/open-view-pulls'
 import { openZapChooseChain } from './action-handlers/play/open-zap-choose-chain'
 import { openZapChooseToken } from './action-handlers/play/open-zap-choose-token'
 import {
@@ -99,6 +100,7 @@ export const actionRegistry = {
 	openRevealAll,
 	openStatus,
 	openRipStatus,
+	openViewPulls,
 	openOngoingRips,
 	openCompletedRips,
 

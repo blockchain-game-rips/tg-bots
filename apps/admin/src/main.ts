@@ -1,6 +1,6 @@
 import { autoRetry } from '@grammyjs/auto-retry'
 import { run } from '@grammyjs/runner'
-import { ApiError, client } from '@rips/api-client'
+import { initApiClient } from '@rips/api-client'
 import {
 	createButtonHandler,
 	createMessageHandler,
@@ -16,14 +16,7 @@ import { Flow } from './flows'
 import { Context, PageContent, SessionData } from './types'
 import { getAllowedUserIds } from './utils/common'
 
-client.setConfig({
-	baseUrl: getEnvSafe('BACKEND_URL'),
-	kyOptions: { throwHttpErrors: false },
-})
-
-client.interceptors.error.use((error, response) => {
-	return new ApiError(response.status, error)
-})
+initApiClient(getEnvSafe('BACKEND_URL'))
 
 startMetricsServer()
 

@@ -22,7 +22,6 @@ export const openRipStatus: ActionDef<number> = withPayload(
 			fetchRip(ripId),
 			usersControllerGetUser({
 				path: { telegramId },
-				throwOnError: true,
 			}),
 		])
 

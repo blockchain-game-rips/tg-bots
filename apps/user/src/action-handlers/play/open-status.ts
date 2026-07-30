@@ -13,7 +13,7 @@ export const openStatus: ActionDef<void> = noPayload(async (session) => {
 
 	const [{ data: ripsData }, { data: user }] = await Promise.all([
 		ripsControllerGetOngoingRips(),
-		usersControllerGetUser({ path: { telegramId }, throwOnError: true }),
+		usersControllerGetUser({ path: { telegramId } }),
 	])
 
 	return {

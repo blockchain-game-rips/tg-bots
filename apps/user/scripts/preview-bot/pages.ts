@@ -1,4 +1,6 @@
+import { RipDto } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
+import { RipStatusGroup } from '@rips/shared'
 import { SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { AboutPage } from '../../src/pages/about/about-page'
@@ -14,6 +16,10 @@ import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
 import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
 import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
 import { RevealPayoutsPage } from '../../src/pages/play/reveal-payouts-page'
+import {
+	RipDetailPage,
+	RipDetailVariant,
+} from '../../src/pages/play/rip-detail-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { StatusPage } from '../../src/pages/play/status-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
@@ -103,6 +109,101 @@ if (mockAvailablePreset0 === undefined)
 	throw new Error('mockAvailablePresets[0] is missing')
 if (mockRevealedPayout0 === undefined)
 	throw new Error('mockRevealedPayouts[0] is missing')
+
+const OTHER_USER_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12'
+
+function purchase(
+	userAddress: string,
+	entryCount: number,
+	startEntryIndex: number,
+) {
+	return { userAddress, entryCount, startEntryIndex }
+}
+
+function mockRipWith(overrides: Partial<RipDto>): RipDto {
+	return { ...mockRip, ...overrides }
+}
+
+function mockRipDetailVariant(variant: string): RipDetailVariant {
+	const userAddress = mockUserEvmAddress
+
+	switch (variant) {
+		case 'finalizing':
+			return {
+				group: RipStatusGroup.FINALIZING,
+				userAddress,
+				rip: mockRipWith({
+					status: 'VRF_REQUESTED',
+					actions: {
+						purchases: [purchase(userAddress, 8, 0)],
+						claims: [],
+						refunds: [],
+					},
+				}),
+			}
+
+		case 'finalized':
+			return {
+				group: RipStatusGroup.FINALIZED,
+				userAddress,
+				payouts: mockRevealedPayouts,
+				rip: mockRipWith({
+					status: 'CLAIMED',
+					actions: {
+						purchases: [purchase(userAddress, 8, 0)],
+						claims: [],
+						refunds: [],
+					},
+				}),
+			}
+
+		case 'refunding':
+			return {
+				group: RipStatusGroup.REFUNDING,
+				userAddress,
+				rip: mockRipWith({
+					status: 'REFUNDING',
+					actions: {
+						purchases: [
+							purchase(userAddress, 3, 0),
+							purchase(OTHER_USER_ADDRESS, 2, 3),
+						],
+						claims: [],
+						refunds: [],
+					},
+				}),
+			}
+
+		case 'refunded':
+			return {
+				group: RipStatusGroup.REFUNDED,
+				userAddress,
+				rip: mockRipWith({
+					status: 'REFUNDED',
+					actions: {
+						purchases: [purchase(userAddress, 3, 0)],
+						claims: [],
+						refunds: [{ userAddress, amount: '15000000000000000' }],
+					},
+				}),
+			}
+
+		default:
+			return {
+				group: RipStatusGroup.FILLING,
+				userAddress,
+				rip: mockRipWith({
+					status: 'FILLING',
+					startTime: new Date().toISOString(),
+					actions: {
+						purchases: [purchase(userAddress, 5, 0)],
+						claims: [],
+						refunds: [],
+					},
+				}),
+			}
+	}
+}
 
 export const pages: Record<string, PageEntry> = {
 	home: {
@@ -306,6 +407,22 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Overview of the user's activity — shows their entries in ongoing rips, with navigation to Ongoing Rips and Completed Rips lists.",
 		render: () => StatusPage.render([mockRip], mockUserEvmAddress),
+	},
+	'rip-detail': {
+		description:
+			'Individual rip detail — one page, five variants by RipStatusGroup. All variants share Status, Entry level, Your entries and Total entries. FILLING adds time left and an Enter Rip button. FINALIZING shows a "pulls being prepared" notice. FINALIZED adds your pulls, total credited and best pull, with View Pulls and Enter Again. REFUNDING shows the expected refund as in progress; REFUNDED shows the returned amount and offers Enter Again.',
+		variants: [
+			'filling',
+			'finalizing',
+			'finalized',
+			'refunding',
+			'refunded',
+		],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			return RipDetailPage.render(mockRipDetailVariant(resolvedVariant))
+		},
 	},
 	'ongoing-rips': {
 		description:

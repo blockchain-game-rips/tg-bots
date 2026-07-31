@@ -35,10 +35,7 @@ export const StatusPage = {
 					.filter((p) =>
 						sameEvmAddress(p.userAddress, userEvmAddress),
 					)
-					.reduce(
-						(sum, purchase) => sum + Number(purchase.entryCount),
-						0,
-					)
+					.reduce((sum, purchase) => sum + purchase.entryCount, 0)
 
 				const entryLabel = userEntries === 1 ? 'entry' : 'entries'
 				lines.push(

@@ -74,7 +74,7 @@ function renderPreset(entry: PresetEntry): Line[] {
 
 	if (fillingRip && ripConfig) {
 		const entriesSold = fillingRip.actions.purchases.reduce(
-			(sum, p) => sum + Number(p.entryCount),
+			(sum, p) => sum + p.entryCount,
 			0,
 		)
 		lines.push(`Rip #${String(fillingRip.id)} [${fillingRip.status}]`)

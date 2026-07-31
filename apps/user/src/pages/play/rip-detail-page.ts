@@ -16,7 +16,8 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { tierByIndex } from '../../utils/tiers'
+import { bestPull, bestPullLabel } from '../../utils/best-pull'
+import { row } from '../../utils/page-row'
 
 const STATUS_LABEL: Record<RipStatusGroup, string> = {
 	[RipStatusGroup.FILLING]: '🟢 Filling',
@@ -170,22 +171,6 @@ function refundedLines(variant: BaseVariant): Line[] {
 	return row('Refund', formatted)
 }
 
-function bestPull(payouts: PayoutDto[]): PayoutDto | undefined {
-	return payouts.reduce<PayoutDto | undefined>((best, payout) => {
-		if (best === undefined) return payout
-
-		return BigInt(payout.payoutAmount) > BigInt(best.payoutAmount)
-			? payout
-			: best
-	}, undefined)
-}
-
-function bestPullLabel(payout: PayoutDto): string {
-	const emoji = tierByIndex(payout.card.tier)?.emoji ?? ''
-
-	return `${emoji} ${payout.card.name}`
-}
-
 function userEntries(variant: BaseVariant): number {
 	return variant.rip.actions.purchases
 		.filter((p) => sameEvmAddress(p.userAddress, variant.userAddress))
@@ -194,10 +179,6 @@ function userEntries(variant: BaseVariant): number {
 
 function soldEntries(rip: RipDto): number {
 	return rip.actions.purchases.reduce((sum, p) => sum + p.entryCount, 0)
-}
-
-function row(label: string, value: Line): Line[] {
-	return ['', FormattedString.b(`${label}:`), value]
 }
 
 function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {

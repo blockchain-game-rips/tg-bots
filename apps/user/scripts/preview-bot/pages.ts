@@ -1,4 +1,4 @@
-import { RipDto } from '@rips/api-client'
+import { PayoutDto, RipDto } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { RipStatusGroup } from '@rips/shared'
 import { SUPPORTED_CHAINS } from '../../src/constants'
@@ -21,6 +21,7 @@ import {
 	RipDetailVariant,
 } from '../../src/pages/play/rip-detail-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
+import { ViewPullsPage } from '../../src/pages/play/view-pulls-page'
 import { StatusPage } from '../../src/pages/play/status-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
@@ -81,6 +82,8 @@ import {
 	mockUsdcArbWithdrawAmountInsufficient,
 	mockUsdcOnBase,
 	mockUserEvmAddress,
+	mockViewPullsAllOpened,
+	mockViewPullsPayouts,
 	mockWalletBalances,
 	mockWithdrawAmount,
 	mockWithdrawRewardResponse,
@@ -202,6 +205,19 @@ function mockRipDetailVariant(variant: string): RipDetailVariant {
 					},
 				}),
 			}
+	}
+}
+
+function viewPullsPayoutsFor(variant: string): PayoutDto[] {
+	switch (variant) {
+		case 'all-opened':
+			return mockViewPullsAllOpened
+
+		case 'empty':
+			return []
+
+		default:
+			return mockViewPullsPayouts
 	}
 }
 
@@ -422,6 +438,19 @@ export const pages: Record<string, PageEntry> = {
 			const resolvedVariant = resolveVariant(this, variant)
 
 			return RipDetailPage.render(mockRipDetailVariant(resolvedVariant))
+		},
+	},
+	'view-pulls': {
+		description:
+			'History of what the user got out of one finalized rip, opened from rip detail. Lists every pull they bought: opened ones show the card name linked to its image, its tier emoji and payout; unopened ones show only a locked row. Opened counts revealed against total, Total credited sums every payout whether opened or not, and Best pull names the largest opened payout. Revealed pulls sort by tier then payout, locked pulls last. Open Pulls appears only while something is unopened; Back returns to the rip.',
+		variants: ['partially-opened', 'all-opened', 'empty'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			return ViewPullsPage.render({
+				rip: mockRip,
+				payouts: viewPullsPayoutsFor(resolvedVariant),
+			})
 		},
 	},
 	'ongoing-rips': {

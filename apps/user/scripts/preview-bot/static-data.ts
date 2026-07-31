@@ -1584,6 +1584,64 @@ export const mockUnrevealedPayouts: PayoutDto[] = [
 	},
 ]
 
+const CARD_IMAGE_URL =
+	'https://cardgamer.com/wp-content/uploads/2024/11/Popular-Common-Cards.png'
+
+function mockPayout(
+	entryNumber: number,
+	payoutAmount: string,
+	revealed: boolean,
+	card: { id: number; name: string; tier: number },
+): PayoutDto {
+	return {
+		ripId: 1,
+		entryNumber,
+		payoutAmount,
+		revealed,
+		card: { ...card, imageUrl: CARD_IMAGE_URL },
+	}
+}
+
+// Deliberately out of display order — the page sorts by tier, then amount,
+// with unopened pulls last.
+export const mockViewPullsPayouts: PayoutDto[] = [
+	mockPayout(1, '110000000000000', true, {
+		id: 15,
+		name: 'Common Card 15',
+		tier: 1,
+	}),
+	mockPayout(2, '1800000000000000', true, {
+		id: 3,
+		name: 'Epic Card 3',
+		tier: 4,
+	}),
+	mockPayout(3, '0', false, { id: 20, name: 'Sealed Card 20', tier: 6 }),
+	mockPayout(4, '700000000000000', true, {
+		id: 6,
+		name: 'Rare Card 6',
+		tier: 3,
+	}),
+	mockPayout(5, '110000000000000', true, {
+		id: 15,
+		name: 'Common Card 15',
+		tier: 1,
+	}),
+	mockPayout(6, '0', false, { id: 21, name: 'Sealed Card 21', tier: 5 }),
+]
+
+export const mockViewPullsAllOpened: PayoutDto[] = [
+	mockPayout(1, '1800000000000000', true, {
+		id: 3,
+		name: 'Epic Card 3',
+		tier: 4,
+	}),
+	mockPayout(2, '700000000000000', true, {
+		id: 6,
+		name: 'Rare Card 6',
+		tier: 3,
+	}),
+]
+
 const mockRipConfig = {
 	entryCap: 8,
 	feeBps: 500,

@@ -5,7 +5,7 @@
 	"main": "./dist/src/index.js",
 	"types": "./dist/src/index.d.ts",
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "tsc -p tsconfig.build.json",
 		"test": "vitest run --project packages/shared --passWithNoTests",
 		"typecheck": "tsc --noEmit"
 	},

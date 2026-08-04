@@ -13,7 +13,7 @@ export const WithdrawChooseCurrencyPage = {
 			lines: [
 				withdrawBreadcrumb(chainBreadcrumbSegment(currencies)),
 				'',
-				'Select a token:',
+				'Choose token to withdraw',
 			],
 			currencies,
 			currencyActionId: actionIds.openWithdraw,

@@ -1354,11 +1354,11 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 			fee: 1000,
 			period: {
 				startTime: '2026-04-22T00:00:00.000Z',
-				volume: '0.6',
+				volume: '600000000000000000',
 			},
 			rewards: {
-				available: '0.012',
-				withdrawn: '0.03',
+				available: '12000000000000000', // 0.012 ETH
+				withdrawn: '30000000000000000', // 0.03 ETH
 			},
 		},
 	],

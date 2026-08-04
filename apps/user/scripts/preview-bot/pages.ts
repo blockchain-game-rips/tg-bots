@@ -12,7 +12,7 @@ import { EnterChoosePresetPage } from '../../src/pages/play/enter-choose-preset-
 import { EnterSuccessPage } from '../../src/pages/play/enter-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
 import { CardCollectionTierPage } from '../../src/pages/play/card-collection-tier'
-import { FinishedRipsPage } from '../../src/pages/play/finished-rips-page'
+import { FinalizedRipsPage } from '../../src/pages/play/finalized-rips-page'
 import { OngoingRipsPage } from '../../src/pages/play/ongoing-rips-page'
 import { RevealAllPage } from '../../src/pages/play/reveal-all-page'
 import { RevealPayoutsPage } from '../../src/pages/play/reveal-payouts-page'
@@ -59,7 +59,7 @@ import {
 	mockEthArbBalanceInsufficient,
 	mockEthArbBalanceSufficient,
 	mockEthArbNetworkFee,
-	mockFinishedRips,
+	mockFinalizedRips,
 	mockPaymentWalletBalances,
 	mockPurchase,
 	mockPurchaseQuote,
@@ -465,10 +465,10 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			OngoingRipsPage.render([mockRip, mockRip2], mockAvailablePresets),
 	},
-	'finished-rips': {
+	'finalized-rips': {
 		description:
-			'Global list of all completed rips, showing preset tier, rip number, and status. Back leads to Status.',
-		render: () => FinishedRipsPage.render(mockFinishedRips),
+			'The last 10 finalized rips, each showing entry level, entry cap (completed rips only), and outcome. Defaults to all users’ rips with a "Show Mine" toggle. Each rip has a Details button. Back leads to My Rips.',
+		render: () => FinalizedRipsPage.render(mockFinalizedRips, false),
 	},
 	'reveal-payouts': {
 		description:

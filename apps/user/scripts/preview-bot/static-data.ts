@@ -1719,7 +1719,7 @@ const mockRipConfig3 = {
 	],
 }
 
-export const mockFinishedRips: RipDto[] = [
+export const mockFinalizedRips: RipDto[] = [
 	{
 		id: 2,
 		presetId: 1,

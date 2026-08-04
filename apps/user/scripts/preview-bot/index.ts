@@ -15,7 +15,7 @@ const sections: PageSection[] = [
 			'zap-',
 			'status',
 			'ongoing-rips',
-			'finished-rips',
+			'finalized-rips',
 			'reveal-',
 		],
 	},

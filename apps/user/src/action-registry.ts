@@ -14,7 +14,7 @@ import { openEnterChoosePaymentWallet } from './action-handlers/play/open-enter-
 import { openEnterChoosePreset } from './action-handlers/play/open-enter-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCardCollectionTier } from './action-handlers/play/open-card-collection-tier'
-import { openCompletedRips } from './action-handlers/play/open-completed-rips'
+import { openFinalizedRips } from './action-handlers/play/open-finalized-rips'
 import { openOngoingRips } from './action-handlers/play/open-ongoing-rips'
 import {
 	openOpenPulls,
@@ -102,7 +102,7 @@ export const actionRegistry = {
 	openRipStatus,
 	openViewPulls,
 	openOngoingRips,
-	openCompletedRips,
+	openFinalizedRips,
 
 	// Card collection
 	openCardCollection,

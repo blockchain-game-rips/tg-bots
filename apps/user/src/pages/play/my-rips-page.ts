@@ -44,7 +44,7 @@ export const MyRipsPage = {
 				.row()
 				.text(
 					'🏁 Finalized Rips',
-					buildActionData(actionIds.openCompletedRips, undefined),
+					buildActionData(actionIds.openFinalizedRips, false),
 				),
 			{ home: actionIds.openHome, parent: actionIds.openHome },
 		)

@@ -8,7 +8,7 @@ import { StatusPage } from '../../pages/play/status-page'
 import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'
 
-export const openStatus: ActionDef<void> = noPayload(async (session) => {
+export const openMyRips: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const [{ data: ripsData }, { data: user }] = await Promise.all([

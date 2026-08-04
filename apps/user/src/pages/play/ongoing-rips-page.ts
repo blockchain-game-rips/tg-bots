@@ -75,7 +75,7 @@ export const OngoingRipsPage = {
 			message: joinLines(lines),
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
-				parent: actionIds.openStatus,
+				parent: actionIds.openMyRips,
 			}),
 		}
 	},

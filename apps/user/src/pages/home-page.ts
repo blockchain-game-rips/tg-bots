@@ -79,7 +79,10 @@ export const HomePage = {
 				buildActionData(actionIds.openOpenPulls, undefined),
 			)
 			.row()
-			.text('Status', buildActionData(actionIds.openStatus, undefined))
+			.text(
+				'📊 My Rips',
+				buildActionData(actionIds.openMyRips, undefined),
+			)
 			.row()
 			.text(
 				'Card Collection',

@@ -221,6 +221,6 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 	// TODO: back button — this page can be opened from multiple sources
 	return addNav(keyboard, {
 		home: actionIds.openHome,
-		parent: actionIds.openStatus,
+		parent: actionIds.openMyRips,
 	})
 }

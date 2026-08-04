@@ -22,7 +22,7 @@ export const FinishedRipsPage = {
 			message,
 			keyboard: addNav(new InlineKeyboard(), {
 				home: actionIds.openHome,
-				parent: actionIds.openStatus,
+				parent: actionIds.openMyRips,
 			}),
 		}
 	},

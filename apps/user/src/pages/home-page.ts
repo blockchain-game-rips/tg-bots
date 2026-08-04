@@ -92,7 +92,7 @@ export const HomePage = {
 			.text('Wallet', buildActionData(actionIds.openWallet, undefined))
 			.row()
 			.text(
-				'Referral System',
+				'👥 Referrals',
 				buildActionData(actionIds.openReferral, undefined),
 			)
 			.row()

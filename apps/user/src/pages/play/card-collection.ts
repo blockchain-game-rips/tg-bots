@@ -1,5 +1,4 @@
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -55,7 +54,7 @@ export const CardCollectionPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: addNav(keyboard, {
+			keyboard: keyboard.appendNavButtons({
 				parent: actionIds.openHome,
 				home: actionIds.openHome,
 			}),

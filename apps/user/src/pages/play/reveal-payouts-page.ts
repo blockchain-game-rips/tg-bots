@@ -1,6 +1,5 @@
 import { PayoutDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -47,7 +46,7 @@ export const RevealPayoutsPage = {
 	render(unrevealedPayouts: PayoutDto[]): PageContent {
 		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
-		addNav(keyboard, {
+		keyboard.appendNavButtons({
 			home: actionIds.openHome,
 			parent: actionIds.openHome,
 		})

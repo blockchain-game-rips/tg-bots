@@ -1,6 +1,5 @@
 import { AvailablePresetDto, CurrencyAmountDto, RipDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	fmt,
 	FormattedString,
@@ -168,7 +167,7 @@ function buildKeyboard(entries: Entry[]): InlineKeyboard {
 
 	addRipDetailsButtons(keyboard, rips)
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		home: actionIds.openHome,
 		parent: actionIds.openMyRips,
 	})

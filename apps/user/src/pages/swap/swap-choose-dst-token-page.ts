@@ -1,5 +1,5 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
-import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
+import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -74,7 +74,7 @@ function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
 		actionIds.openSwapChooseAmount,
 	)
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		parent: actionIds.openSwapChooseDstChain,
 		parentPayload: draft.srcBalance.currency.chainAddress,
 		home: actionIds.openHome,
@@ -87,7 +87,7 @@ function buildDraftEditKeyboard(dstCurrencies: CurrencyDto[]): InlineKeyboard {
 		actionIds.openSwapCheckoutFromDst,
 	)
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		parent: actionIds.openSwapCheckout,
 		home: actionIds.openHome,
 	})

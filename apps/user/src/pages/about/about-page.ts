@@ -1,5 +1,5 @@
 import { ConfigDto } from '@rips/api-client'
-import { addNav, fmt, FormattedString, joinLines } from '@rips/grammy-kit'
+import { fmt, FormattedString, joinLines } from '@rips/grammy-kit'
 import { configName, toShortDurationFormat } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -29,7 +29,7 @@ export const AboutPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: addNav(new InlineKeyboard(), {
+			keyboard: new InlineKeyboard().appendNavButtons({
 				home: actionIds.openHome,
 				parent: actionIds.openHome,
 			}),

@@ -1,4 +1,4 @@
-import { addNav, FormattedString, joinLines, Line } from '@rips/grammy-kit'
+import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -15,7 +15,7 @@ export const ExportKeyPage = {
 
 		const keyboard = new InlineKeyboard()
 
-		addNav(keyboard, {
+		keyboard.appendNavButtons({
 			home: actionIds.openHome,
 			parent: actionIds.openWallet,
 		})

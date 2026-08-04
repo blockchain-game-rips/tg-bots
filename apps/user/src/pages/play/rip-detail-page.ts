@@ -1,6 +1,5 @@
 import { PayoutDto, RipDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -209,7 +208,7 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 	}
 
 	// TODO: back button — this page can be opened from multiple sources
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		home: actionIds.openHome,
 		parent: actionIds.openMyRips,
 	})

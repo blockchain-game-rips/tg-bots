@@ -1,6 +1,5 @@
 import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -85,5 +84,5 @@ function buildKeyboard(back: NavIds): InlineKeyboard {
 			buildActionData(actionIds.promptSwapAmount, undefined),
 		)
 
-	return addNav(keyboard, back)
+	return keyboard.appendNavButtons(back)
 }

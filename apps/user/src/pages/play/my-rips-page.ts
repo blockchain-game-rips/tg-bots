@@ -1,5 +1,4 @@
 import {
-	addNav,
 	buildActionData,
 	fmt,
 	FormattedString,
@@ -30,24 +29,25 @@ export const MyRipsPage = {
 			`↩️ Refunded Rips: ${args.refundedRips.toString()}`,
 		]
 
-		const keyboard = addNav(
-			new InlineKeyboard()
-				.text(
-					'🎁 Open Pulls',
-					buildActionData(actionIds.openOpenPulls, undefined),
-				)
-				.row()
-				.text(
-					'⏳ Ongoing Rips',
-					buildActionData(actionIds.openOngoingRips, undefined),
-				)
-				.row()
-				.text(
-					'🏁 Finalized Rips',
-					buildActionData(actionIds.openFinalizedRips, false),
-				),
-			{ home: actionIds.openHome, parent: actionIds.openHome },
-		)
+		const keyboard = new InlineKeyboard()
+			.text(
+				'🎁 Open Pulls',
+				buildActionData(actionIds.openOpenPulls, undefined),
+			)
+			.row()
+			.text(
+				'⏳ Ongoing Rips',
+				buildActionData(actionIds.openOngoingRips, undefined),
+			)
+			.row()
+			.text(
+				'🏁 Finalized Rips',
+				buildActionData(actionIds.openFinalizedRips, false),
+			)
+			.appendNavButtons({
+				home: actionIds.openHome,
+				parent: actionIds.openHome,
+			})
 
 		return { message: joinLines(lines), keyboard }
 	},

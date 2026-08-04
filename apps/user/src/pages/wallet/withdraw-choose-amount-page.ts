@@ -1,5 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
-import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatUnits } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -33,7 +33,7 @@ export const WithdrawChooseAmountPage = {
 			)
 			.row()
 
-		addNav(keyboard, {
+		keyboard.appendNavButtons({
 			parent: actionIds.openWithdrawChooseCurrency,
 			parentPayload: chain,
 			home: actionIds.openHome,

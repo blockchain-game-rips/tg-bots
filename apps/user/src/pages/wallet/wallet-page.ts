@@ -1,6 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -133,7 +132,7 @@ export const WalletPage = {
 			)
 			.row()
 
-		addNav(keyboard, {
+		keyboard.appendNavButtons({
 			home: actionIds.openHome,
 			parent: actionIds.openHome,
 		})

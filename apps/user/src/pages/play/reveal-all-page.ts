@@ -1,5 +1,5 @@
 import { PayoutDto, RipDto } from '@rips/api-client'
-import { addNav, fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -41,7 +41,7 @@ export const RevealAllPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: addNav(new InlineKeyboard(), {
+			keyboard: new InlineKeyboard().appendNavButtons({
 				home: actionIds.openHome,
 				parent: actionIds.openHome,
 			}),

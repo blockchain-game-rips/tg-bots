@@ -1,11 +1,5 @@
 import { AvailablePresetDto } from '@rips/api-client'
-import {
-	addNav,
-	buildActionData,
-	fmt,
-	FormattedString,
-	Line,
-} from '@rips/grammy-kit'
+import { buildActionData, fmt, FormattedString, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -100,7 +94,7 @@ function buildKeyboard(levels: PresetLevel[]): InlineKeyboard {
 			.row()
 	}
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		home: actionIds.openHome,
 		parent: actionIds.openHome,
 	})

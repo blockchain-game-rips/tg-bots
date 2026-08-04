@@ -1,6 +1,5 @@
 import { PayoutDto, RipDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	fmt,
 	FormattedString,
@@ -163,7 +162,7 @@ function buildKeyboard(rip: RipDto, payouts: PayoutDto[]): InlineKeyboard {
 		buildActionData(actionIds.openChoosePreset, undefined),
 	)
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		home: actionIds.openHome,
 		parent: actionIds.openRipStatus,
 		parentPayload: rip.id,

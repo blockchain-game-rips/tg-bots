@@ -1,6 +1,5 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	FormattedString,
 	joinLines,
@@ -65,7 +64,7 @@ export const DepositAddressPage = {
 				buildActionData(refreshAction, currency.chainAddress),
 			)
 
-		addNav(keyboard, {
+		keyboard.appendNavButtons({
 			parent: actionIds.openDepositChooseCurrency,
 			parentPayload: chain,
 			home: actionIds.openHome,

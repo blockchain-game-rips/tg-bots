@@ -1,5 +1,5 @@
 import { ChainAddressDto, CurrencyDto } from '@rips/api-client'
-import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
 import { ActionId, Chain, NavIds, PageContent } from '../types'
@@ -37,7 +37,7 @@ export function buildChooseChainPage<T>(
 			.row()
 	})
 
-	addNav(keyboard, nav)
+	keyboard.appendNavButtons(nav)
 
 	return { message: joinLines(lines), keyboard }
 }
@@ -113,7 +113,7 @@ export function buildChooseCurrencyPage<T>(
 			.row()
 	})
 
-	addNav(keyboard, nav)
+	keyboard.appendNavButtons(nav)
 
 	return { message: joinLines(lines), keyboard }
 }

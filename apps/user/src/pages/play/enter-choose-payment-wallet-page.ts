@@ -1,5 +1,5 @@
 import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
-import { addNav, buildActionData, joinLines, Line } from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -88,7 +88,7 @@ function buildKeyboard(
 		)
 		.row()
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		parent: actionIds.openChooseEntryAmount,
 		parentPayload: availablePreset.preset.id,
 		home: actionIds.openHome,

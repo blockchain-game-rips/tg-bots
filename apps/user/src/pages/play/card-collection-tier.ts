@@ -1,4 +1,4 @@
-import { addNav, fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { TierCollection } from '../../domain/card-collection'
@@ -33,7 +33,7 @@ export const CardCollectionTierPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: addNav(new InlineKeyboard(), {
+			keyboard: new InlineKeyboard().appendNavButtons({
 				parent: actionIds.openCardCollection,
 				home: actionIds.openHome,
 			}),

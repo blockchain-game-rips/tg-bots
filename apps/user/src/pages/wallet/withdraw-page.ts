@@ -45,12 +45,11 @@ export const WithdrawPage = {
 				'Enter recipient',
 				buildActionData(actionIds.promptWithdrawRecipient, undefined),
 			)
-			.row()
-			.text(
-				'Back',
-				buildActionData(actionIds.openWithdrawChooseCurrency, chain),
-			)
-			.appendHomeButton()
+			.appendNavButtons({
+				home: actionIds.openHome,
+				parent: actionIds.openWithdrawChooseCurrency,
+				parentPayload: chain,
+			})
 
 		return { message: joinLines(lines), keyboard }
 	},

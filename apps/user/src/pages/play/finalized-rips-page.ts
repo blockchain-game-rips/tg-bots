@@ -1,6 +1,5 @@
 import { RipDto } from '@rips/api-client'
 import {
-	addNav,
 	buildActionData,
 	fmt,
 	FormattedString,
@@ -51,7 +50,7 @@ function buildKeyboard(rips: RipDto[], mineOnly: boolean): InlineKeyboard {
 		buildActionData(actionIds.openFinalizedRips, !mineOnly),
 	)
 
-	return addNav(keyboard, {
+	return keyboard.appendNavButtons({
 		home: actionIds.openHome,
 		parent: actionIds.openMyRips,
 	})

@@ -1453,6 +1453,7 @@
     },
     "/referral-system/referrers": {
       "get": {
+        "description": "Returns the referral state of the calling user. An address with no on-chain referral activity yet is not an error: the response is a zero state, with empty rewards and period, and the fee falling back to the global default referral fee.",
         "operationId": "ReferralSystemController_getReferrer",
         "parameters": [
           {
@@ -1477,6 +1478,7 @@
             }
           }
         },
+        "summary": "",
         "tags": [
           "ReferralSystem"
         ]
@@ -7202,17 +7204,20 @@
                   "additionalProperties": false
                 },
                 "fee": {
-                  "type": "number"
+                  "type": "number",
+                  "description": "Referral fee in basis points. Falls back to the global default referral fee when the referrer has no tier progress or custom fee yet."
                 },
                 "period": {
                   "type": "object",
                   "properties": {
                     "startTime": {
                       "type": "string",
+                      "description": "Start of the current referral period. Null until the referrer records their first on-chain volume.",
                       "nullable": true
                     },
                     "volume": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Volume referred during the current period, as a base-unit integer string. \"0\" for a referrer with no on-chain activity."
                     }
                   },
                   "required": [
@@ -7225,10 +7230,12 @@
                   "type": "object",
                   "properties": {
                     "available": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Rewards withdrawable now, as a base-unit integer string. \"0\" for a referrer with no on-chain activity."
                     },
                     "withdrawn": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Rewards already withdrawn, as a base-unit integer string. \"0\" for a referrer with no on-chain activity."
                     }
                   },
                   "required": [

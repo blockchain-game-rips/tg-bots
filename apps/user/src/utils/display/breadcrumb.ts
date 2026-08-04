@@ -4,7 +4,7 @@ import { breadcrumb } from '@rips/shared'
 export function withdrawBreadcrumb(
 	...segments: (string | undefined)[]
 ): FormattedString {
-	return breadcrumb('💸 Withdraw', ...segments)
+	return breadcrumb('📤 Withdraw', ...segments)
 }
 
 export function depositBreadcrumb(

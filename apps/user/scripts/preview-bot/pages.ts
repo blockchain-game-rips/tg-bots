@@ -22,7 +22,7 @@ import {
 } from '../../src/pages/play/rip-detail-page'
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { ViewPullsPage } from '../../src/pages/play/view-pulls-page'
-import { StatusPage } from '../../src/pages/play/status-page'
+import { MyRipsPage } from '../../src/pages/play/my-rips-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
@@ -419,10 +419,16 @@ export const pages: Record<string, PageEntry> = {
 				rip: mockRip,
 			}),
 	},
-	status: {
+	'my-rips': {
 		description:
-			"Overview of the user's activity — shows their entries in ongoing rips, with navigation to Ongoing Rips and Completed Rips lists.",
-		render: () => StatusPage.render([mockRip], mockUserEvmAddress),
+			"Summary of the user's activity — ready-to-open pulls, active entries, and finalized rip counts split into completed and refunded, with navigation to Open Pulls, Ongoing Rips and Finalized Rips.",
+		render: () =>
+			MyRipsPage.render({
+				unopenedPulls: 8,
+				activeEntries: 0,
+				completedRips: 3,
+				refundedRips: 1,
+			}),
 	},
 	'rip-detail': {
 		description:

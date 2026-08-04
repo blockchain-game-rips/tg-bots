@@ -15,8 +15,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-
-const DETAILS_BUTTONS_PER_ROW = 2
+import { addRipDetailsButtons } from '../../utils/rip-details-buttons'
 
 const COMPLETED_LABEL = '✅ Completed'
 const REFUNDED_LABEL = '↩️ Refunded'
@@ -45,17 +44,7 @@ function ripLines(rip: RipDto): Line[] {
 function buildKeyboard(rips: RipDto[], mineOnly: boolean): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
-	rips.forEach((rip, index) => {
-		keyboard.text(
-			`Rip #${rip.id.toString()} Details`,
-			buildActionData(actionIds.openRipStatus, rip.id),
-		)
-
-		const isRowEnd = (index + 1) % DETAILS_BUTTONS_PER_ROW === 0
-		const isLast = index === rips.length - 1
-
-		if (isRowEnd || isLast) keyboard.row()
-	})
+	addRipDetailsButtons(keyboard, rips)
 
 	keyboard.text(
 		mineOnly ? 'Show All' : 'Show Mine',

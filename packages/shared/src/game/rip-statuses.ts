@@ -1,6 +1,15 @@
 import { RipDto } from '@rips/api-client'
+import { sameEvmAddress } from '../validation/evm-address'
 
 const MILLISECONDS_PER_SECOND = 1000
+
+export function entryCountFor(rip: RipDto, userEvmAddress: string): number {
+	return rip.actions.purchases
+		.filter((purchase) =>
+			sameEvmAddress(purchase.userAddress, userEvmAddress),
+		)
+		.reduce((sum, purchase) => sum + purchase.entryCount, 0)
+}
 
 export function secondsUntilRipClose(rip: RipDto): number {
 	const closesAt =

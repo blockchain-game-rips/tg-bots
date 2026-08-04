@@ -17,7 +17,7 @@ A description of what the bot should do in response to an action (edit a page, a
 _Avoid_: Command, action result
 
 **Finalized Rip**:
-A rip that has reached a terminal state — it either paid out or returned entry fees. The umbrella over Completed and Refunded; every finalized rip is exactly one of the two. Matches `RipStatusGroup.FINALIZED` in shared and the `/rips/rips/finished` feed.
+A rip that has reached a terminal state — it either paid out or returned entry fees. The umbrella over Completed and Refunded; every finalized rip is exactly one of the two. Spans `RipStatusGroup.COMPLETED` and `RipStatusGroup.REFUNDED` in shared; `isFinalized` tests for it. Backs the `/rips/rips/finished` feed.
 _Avoid_: Finished, settled, closed
 
 **Completed Rip**:

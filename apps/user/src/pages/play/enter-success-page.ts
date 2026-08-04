@@ -96,7 +96,7 @@ function statusLine(
 ): string {
 	const filled = startEntryIndex + entryCount === entryCap
 
-	if (filled) return 'Rip filled — finalizing results.'
+	if (filled) return 'Rip filled — completing results.'
 
 	return 'Waiting for Rip to fill.'
 }

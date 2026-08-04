@@ -22,7 +22,7 @@ const COMPLETED_LABEL = '✅ Completed'
 const REFUNDED_LABEL = '↩️ Refunded'
 
 function isCompleted(rip: RipDto): boolean {
-	return groupRipStatus(rip.status) === RipStatusGroup.FINALIZED
+	return groupRipStatus(rip.status) === RipStatusGroup.COMPLETED
 }
 
 function ripLines(rip: RipDto): Line[] {

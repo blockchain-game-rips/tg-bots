@@ -4,12 +4,12 @@ import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
 
-export const GlobalClaimedRipPage = {
+export const GlobalCompletedRipPage = {
 	render(rip: RipDto): PageContent {
 		const preset = configName(rip.config)
 
 		const lines = [
-			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} Finished!`)}`,
+			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} Completed!`)}`,
 			'',
 			`Preset: ${preset}`,
 		]

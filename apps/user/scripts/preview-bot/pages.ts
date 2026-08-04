@@ -131,9 +131,9 @@ function mockRipDetailVariant(variant: string): RipDetailVariant {
 	const userAddress = mockUserEvmAddress
 
 	switch (variant) {
-		case 'finalizing':
+		case 'completing':
 			return {
-				group: RipStatusGroup.FINALIZING,
+				group: RipStatusGroup.COMPLETING,
 				userAddress,
 				rip: mockRipWith({
 					status: 'VRF_REQUESTED',
@@ -145,9 +145,9 @@ function mockRipDetailVariant(variant: string): RipDetailVariant {
 				}),
 			}
 
-		case 'finalized':
+		case 'completed':
 			return {
-				group: RipStatusGroup.FINALIZED,
+				group: RipStatusGroup.COMPLETED,
 				userAddress,
 				payouts: mockRevealedPayouts,
 				rip: mockRipWith({
@@ -432,11 +432,11 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'rip-detail': {
 		description:
-			'Individual rip detail — one page, five variants by RipStatusGroup. All variants share Status, Entry level, Your entries and Total entries. FILLING adds time left and an Enter Rip button. FINALIZING shows a "pulls being prepared" notice. FINALIZED adds your pulls, total credited and best pull, with View Pulls and Enter Again. REFUNDING shows the expected refund as in progress; REFUNDED shows the returned amount and offers Enter Again.',
+			'Individual rip detail — one page, five variants by RipStatusGroup. All variants share Status, Entry level, Your entries and Total entries. FILLING adds time left and an Enter Rip button. COMPLETING shows a "pulls being prepared" notice. COMPLETED adds your pulls, total credited and best pull, with View Pulls and Enter Again. REFUNDING shows the expected refund as in progress; REFUNDED shows the returned amount and offers Enter Again.',
 		variants: [
 			'filling',
-			'finalizing',
-			'finalized',
+			'completing',
+			'completed',
 			'refunding',
 			'refunded',
 		],

@@ -25,8 +25,8 @@ export function secondsUntilRipClose(rip: RipDto): number {
 
 export enum RipStatusGroup {
 	FILLING = 'FILLING',
-	FINALIZING = 'FINALIZING',
-	FINALIZED = 'FINALIZED',
+	COMPLETING = 'COMPLETING',
+	COMPLETED = 'COMPLETED',
 	REFUNDING = 'REFUNDING',
 	REFUNDED = 'REFUNDED',
 }
@@ -38,12 +38,20 @@ export function groupRipStatus(status: RipDto['status']): RipStatusGroup {
 		case 'SEALED':
 		case 'VRF_REQUESTED':
 		case 'CLAIMING':
-			return RipStatusGroup.FINALIZING
+			return RipStatusGroup.COMPLETING
 		case 'CLAIMED':
-			return RipStatusGroup.FINALIZED
+			return RipStatusGroup.COMPLETED
 		case 'REFUNDING':
 			return RipStatusGroup.REFUNDING
 		case 'REFUNDED':
 			return RipStatusGroup.REFUNDED
 	}
+}
+
+export function isFinalized(status: RipDto['status']): boolean {
+	const group = groupRipStatus(status)
+
+	return (
+		group === RipStatusGroup.COMPLETED || group === RipStatusGroup.REFUNDED
+	)
 }

@@ -46,7 +46,7 @@ async function buildVariant(
 ): Promise<RipDetailVariant> {
 	const group = groupRipStatus(rip.status)
 
-	if (group === RipStatusGroup.FINALIZED) {
+	if (group === RipStatusGroup.COMPLETED) {
 		const payouts = await fetchRipPayouts(telegramId, rip.id)
 
 		return { group, rip, userAddress, payouts }

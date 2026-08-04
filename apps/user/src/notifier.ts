@@ -5,9 +5,9 @@ import {
 } from '@rips/api-client'
 import { logger } from '@rips/grammy-kit'
 import { Bot } from 'grammy'
-import { GlobalClaimedRipPage } from './pages/notifications/global-claimed-page'
+import { GlobalCompletedRipPage } from './pages/notifications/global-completed-page'
 import { GlobalRefundedRipPage } from './pages/notifications/global-refunded-page'
-import { UserClaimedRipPage } from './pages/notifications/user-claimed-page'
+import { UserCompletedRipPage } from './pages/notifications/user-completed-page'
 import { UserRefundedRipPage } from './pages/notifications/user-refunded-page'
 import { Context, PageContent } from './types'
 import { fetchRips } from './utils/api/wrappers'
@@ -28,12 +28,12 @@ function isNotificationType(value: string): value is NotificationType {
 type PageBuilder = (rip: RipDto) => PageContent
 
 const groupPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: (rip) => GlobalClaimedRipPage.render(rip),
+	CLAIMED: (rip) => GlobalCompletedRipPage.render(rip),
 	REFUNDED: (rip) => GlobalRefundedRipPage.render(rip),
 }
 
 const userPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: (rip) => UserClaimedRipPage.render(rip),
+	CLAIMED: (rip) => UserCompletedRipPage.render(rip),
 	REFUNDED: (rip) => UserRefundedRipPage.render(rip),
 }
 

@@ -10,7 +10,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-export const UserClaimedRipPage = {
+export const UserCompletedRipPage = {
 	render(rip: RipDto): PageContent {
 		const preset = configName(rip.config)
 

@@ -21,8 +21,8 @@ import { row } from '../../utils/page-row'
 
 const STATUS_LABEL: Record<RipStatusGroup, string> = {
 	[RipStatusGroup.FILLING]: '🟢 Filling',
-	[RipStatusGroup.FINALIZING]: '⏳ Finalizing',
-	[RipStatusGroup.FINALIZED]: '✅ Finalized',
+	[RipStatusGroup.COMPLETING]: '⏳ Completing',
+	[RipStatusGroup.COMPLETED]: '✅ Completed',
 	[RipStatusGroup.REFUNDING]: '↩️ Refunding',
 	[RipStatusGroup.REFUNDED]: '↩️ Refunded',
 }
@@ -32,16 +32,16 @@ interface BaseVariant {
 	userAddress: string
 }
 
-interface FinalizedVariant extends BaseVariant {
-	group: RipStatusGroup.FINALIZED
+interface CompletedVariant extends BaseVariant {
+	group: RipStatusGroup.COMPLETED
 	payouts: PayoutDto[]
 }
 
 interface OtherVariant extends BaseVariant {
-	group: Exclude<RipStatusGroup, RipStatusGroup.FINALIZED>
+	group: Exclude<RipStatusGroup, RipStatusGroup.COMPLETED>
 }
 
-export type RipDetailVariant = FinalizedVariant | OtherVariant
+export type RipDetailVariant = CompletedVariant | OtherVariant
 
 export const RipDetailPage = {
 	render(variant: RipDetailVariant): PageContent {
@@ -86,7 +86,7 @@ function variantLines(variant: RipDetailVariant): Line[] {
 				toShortDurationFormat(secondsUntilRipClose(variant.rip)),
 			)
 
-		case RipStatusGroup.FINALIZING:
+		case RipStatusGroup.COMPLETING:
 			return [
 				'',
 				FormattedString.i(
@@ -94,8 +94,8 @@ function variantLines(variant: RipDetailVariant): Line[] {
 				),
 			]
 
-		case RipStatusGroup.FINALIZED:
-			return finalizedLines(variant)
+		case RipStatusGroup.COMPLETED:
+			return completedLines(variant)
 
 		case RipStatusGroup.REFUNDING:
 			return refundingLines(variant)
@@ -105,7 +105,7 @@ function variantLines(variant: RipDetailVariant): Line[] {
 	}
 }
 
-function finalizedLines(variant: FinalizedVariant): Line[] {
+function completedLines(variant: CompletedVariant): Line[] {
 	const { rip, payouts } = variant
 
 	const revealed = payouts.filter((p) => p.revealed)
@@ -195,7 +195,7 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 			.row()
 	}
 
-	if (variant.group === RipStatusGroup.FINALIZED) {
+	if (variant.group === RipStatusGroup.COMPLETED) {
 		keyboard
 			.text(
 				'View Pulls',

@@ -60,6 +60,8 @@ import {
 	mockEthArbBalanceSufficient,
 	mockEthArbNetworkFee,
 	mockFinalizedRips,
+	mockOngoingAvailablePresets,
+	mockOngoingRips,
 	mockPaymentWalletBalances,
 	mockPurchase,
 	mockPurchaseQuote,
@@ -67,7 +69,6 @@ import {
 	mockReferrerData,
 	mockRevealedPayouts,
 	mockRip,
-	mockRip2,
 	mockSufficientBalance,
 	mockSwapCrosschainQuote,
 	mockSwapCrosschainResponse,
@@ -461,9 +462,12 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'ongoing-rips': {
 		description:
-			'List of all active rips grouped by preset tier, showing entries remaining and time left per rip. Back leads to Status.',
+			'All rips that have not finalized, plus every preset with no filling rip. Ready presets come first with an Enter button each, then filling rips, then completing and refunding ones. Each rip shows entry level, entries sold against the cap and status, with time left on filling rips only, and a Details button. Back leads to My Rips.',
 		render: () =>
-			OngoingRipsPage.render([mockRip, mockRip2], mockAvailablePresets),
+			OngoingRipsPage.render({
+				availablePresets: mockOngoingAvailablePresets,
+				ongoingRips: mockOngoingRips,
+			}),
 	},
 	'finalized-rips': {
 		description:

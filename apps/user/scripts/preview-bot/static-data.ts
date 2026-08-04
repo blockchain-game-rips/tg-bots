@@ -1841,6 +1841,92 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 	},
 ]
 
+// Ongoing Rips preview. Preset 2 (0.01 ETH) is mid-rip, so it renders its
+// filling rip instead of a Ready block; presets 1 (0.005) and 3 (0.05) are
+// ready. The completing and refunding rips belong to preset 1, which is free
+// to offer a new rip while they settle.
+const mockOngoingFillingRip: RipDto = {
+	id: 6,
+	presetId: 2,
+	currency: mockEth,
+	config: mockRipConfig3,
+	actions: {
+		purchases: [
+			{
+				userAddress: mockUserEvmAddress,
+				entryCount: 2,
+				startEntryIndex: 0,
+			},
+			{
+				userAddress: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+				entryCount: 2,
+				startEntryIndex: 2,
+			},
+		],
+		claims: [],
+		refunds: [],
+	},
+	status: 'FILLING',
+	startTime: fillingRipStartTime,
+}
+
+export const mockOngoingAvailablePresets: AvailablePresetDto[] = [
+	{
+		preset: { id: 1, currentConfig: mockRipConfig },
+		fillingRip: null,
+	},
+	{
+		preset: { id: 2, currentConfig: mockRipConfig3 },
+		fillingRip: mockOngoingFillingRip,
+	},
+	{
+		preset: { id: 3, currentConfig: mockRipConfig2 },
+		fillingRip: null,
+	},
+]
+
+export const mockOngoingRips: RipDto[] = [
+	mockOngoingFillingRip,
+	{
+		id: 7,
+		presetId: 1,
+		currency: mockEth,
+		config: mockRipConfig,
+		actions: {
+			purchases: [
+				{
+					userAddress: mockUserEvmAddress,
+					entryCount: 8,
+					startEntryIndex: 0,
+				},
+			],
+			claims: [],
+			refunds: [],
+		},
+		status: 'VRF_REQUESTED',
+		startTime: '2026-04-24T07:00:00.000Z',
+	},
+	{
+		id: 8,
+		presetId: 1,
+		currency: mockEth,
+		config: mockRipConfig,
+		actions: {
+			purchases: [
+				{
+					userAddress: mockUserEvmAddress,
+					entryCount: 3,
+					startEntryIndex: 0,
+				},
+			],
+			claims: [],
+			refunds: [],
+		},
+		status: 'REFUNDING',
+		startTime: '2026-04-23T18:00:00.000Z',
+	},
+]
+
 export const mockWalletBalances: CurrencyAmountDto[] = [
 	{ currency: mockEth, amount: '2000000000000000' }, // 0.002 ETH on Base
 	{

@@ -8,9 +8,11 @@ import {
 } from '@rips/grammy-kit'
 import {
 	formatAmountWithUsd,
+	RIP_STATUS_LABEL,
 	RipStatusGroup,
 	sameEvmAddress,
 	secondsUntilRipClose,
+	soldEntriesFor,
 	toShortDurationFormat,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -18,14 +20,6 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { bestPull, bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
-
-const STATUS_LABEL: Record<RipStatusGroup, string> = {
-	[RipStatusGroup.FILLING]: '🟢 Filling',
-	[RipStatusGroup.COMPLETING]: '⏳ Completing',
-	[RipStatusGroup.COMPLETED]: '✅ Completed',
-	[RipStatusGroup.REFUNDING]: '↩️ Refunding',
-	[RipStatusGroup.REFUNDED]: '↩️ Refunded',
-}
 
 interface BaseVariant {
 	rip: RipDto
@@ -68,12 +62,12 @@ function baseLines(variant: BaseVariant & { group: RipStatusGroup }): Line[] {
 	const { rip } = variant
 
 	return [
-		...row('Status', STATUS_LABEL[variant.group]),
+		...row('Status', RIP_STATUS_LABEL[variant.group]),
 		...row('Entry level', formatAmountWithUsd(rip.config.entryPrice)),
 		...row('Your entries', userEntries(variant).toString()),
 		...row(
 			'Total entries',
-			`${soldEntries(rip).toString()} / ${rip.config.entryCap.toString()}`,
+			`${soldEntriesFor(rip).toString()} / ${rip.config.entryCap.toString()}`,
 		),
 	]
 }
@@ -175,10 +169,6 @@ function userEntries(variant: BaseVariant): number {
 	return variant.rip.actions.purchases
 		.filter((p) => sameEvmAddress(p.userAddress, variant.userAddress))
 		.reduce((sum, p) => sum + p.entryCount, 0)
-}
-
-function soldEntries(rip: RipDto): number {
-	return rip.actions.purchases.reduce((sum, p) => sum + p.entryCount, 0)
 }
 
 function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {

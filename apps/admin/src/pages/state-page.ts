@@ -8,6 +8,7 @@ import {
 	formatAmountWithUsd,
 	formatPercent,
 	formatUnits,
+	soldEntriesFor,
 	toShortDurationFormat,
 } from '@rips/shared'
 import { actionIds } from '../actions'
@@ -73,10 +74,8 @@ function renderPreset(entry: PresetEntry): Line[] {
 	const nextConfig = preset.currentConfig
 
 	if (fillingRip && ripConfig) {
-		const entriesSold = fillingRip.actions.purchases.reduce(
-			(sum, p) => sum + p.entryCount,
-			0,
-		)
+		const entriesSold = soldEntriesFor(fillingRip)
+
 		lines.push(`Rip #${String(fillingRip.id)} [${fillingRip.status}]`)
 		lines.push(`Currency: ${fillingRip.currency.symbol}`)
 		lines.push(`Entries sold: ${String(entriesSold)}`)

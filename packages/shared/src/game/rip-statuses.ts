@@ -11,6 +11,13 @@ export function entryCountFor(rip: RipDto, userEvmAddress: string): number {
 		.reduce((sum, purchase) => sum + purchase.entryCount, 0)
 }
 
+export function soldEntriesFor(rip: RipDto): number {
+	return rip.actions.purchases.reduce(
+		(sum, purchase) => sum + purchase.entryCount,
+		0,
+	)
+}
+
 export function secondsUntilRipClose(rip: RipDto): number {
 	const closesAt =
 		new Date(rip.startTime).getTime() +
@@ -48,6 +55,14 @@ export function groupRipStatus(status: RipDto['status']): RipStatusGroup {
 		case 'REFUNDED':
 			return RipStatusGroup.REFUNDED
 	}
+}
+
+export const RIP_STATUS_LABEL: Record<RipStatusGroup, string> = {
+	[RipStatusGroup.FILLING]: '🟢 Filling',
+	[RipStatusGroup.COMPLETING]: '⏳ Completing',
+	[RipStatusGroup.COMPLETED]: '✅ Completed',
+	[RipStatusGroup.REFUNDING]: '↩️ Refunding',
+	[RipStatusGroup.REFUNDED]: '↩️ Refunded',
 }
 
 export function isFinalized(status: RipDto['status']): boolean {

@@ -38,10 +38,12 @@ export function groupRipStatus(status: RipDto['status']): RipStatusGroup {
 		case 'SEALED':
 		case 'VRF_REQUESTED':
 		case 'CLAIMING':
+		case 'CLAIM_SETTLING':
 			return RipStatusGroup.COMPLETING
 		case 'CLAIMED':
 			return RipStatusGroup.COMPLETED
 		case 'REFUNDING':
+		case 'REFUND_SETTLING':
 			return RipStatusGroup.REFUNDING
 		case 'REFUNDED':
 			return RipStatusGroup.REFUNDED

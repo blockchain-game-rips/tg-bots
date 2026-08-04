@@ -8,7 +8,7 @@ import { PageContent } from '../../types'
 export const WithdrawRewardSuccessPage = {
 	render(response: WithdrawRewardResponseDtoOutput): PageContent {
 		const lines = [
-			'✅ Reward withdrawn successfully!',
+			'✅ Reward claimed successfully!',
 			'',
 			`Amount: ${formatAmountWithUsd(response.amount)}`,
 		]

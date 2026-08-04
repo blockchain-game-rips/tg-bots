@@ -4,7 +4,7 @@ import {
 } from '@rips/api-client'
 import { ActionDef, noPayload } from '../../action-def'
 import { toReset } from '../../flows'
-import { ReferralSystemPage } from '../../pages/referral-system/referral-system'
+import { ReferralSystemPage } from '../../pages/referral-system/referral-system-page'
 import { EffectType } from '../../types'
 import { getEnvSafe } from '../../utils/common'
 

@@ -17,10 +17,10 @@ export const openOngoingRips: ActionDef<void> = noPayload(async () => {
 		flow: toReset(),
 		effect: {
 			type: EffectType.EDIT,
-			page: OngoingRipsPage.render(
-				ripsData.rips,
-				presetsData.availablePresets,
-			),
+			page: OngoingRipsPage.render({
+				availablePresets: presetsData.availablePresets,
+				ongoingRips: ripsData.rips,
+			}),
 		},
 	}
 })

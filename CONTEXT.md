@@ -27,6 +27,10 @@ _Avoid_: Claimed, won, paid out
 **Refunded Rip**:
 A finalized rip that was unwound and returned entry fees, i.e. rip status `REFUNDED`.
 
+**Claim (referral)**:
+The user-facing name for withdrawing referral rewards. The operation is called `withdraw reward` in code and in the API; UI copy always says claim ("Available to claim", "Claim Rewards"). Unrelated to the `CLAIMED` rip status, which is internal state behind Completed Rip.
+_Avoid_: Withdraw (in UI copy), payout
+
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds

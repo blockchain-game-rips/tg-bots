@@ -16,6 +16,17 @@ _Avoid_: HTML string, markup string
 A description of what the bot should do in response to an action (edit a page, ask for input, show loading). Interpreted by the effect executor, which owns all Telegram API calls.
 _Avoid_: Command, action result
 
+**Finalized Rip**:
+A rip that has reached a terminal state — it either paid out or returned entry fees. The umbrella over Completed and Refunded; every finalized rip is exactly one of the two. Matches `RipStatusGroup.FINALIZED` in shared and the `/rips/rips/finished` feed.
+_Avoid_: Finished, settled, closed
+
+**Completed Rip**:
+A finalized rip that ran its course and paid out, i.e. rip status `CLAIMED`. Named for the rip's outcome, not for whether the user has claimed anything — claiming is internal state and never surfaces in UI copy.
+_Avoid_: Claimed, won, paid out
+
+**Refunded Rip**:
+A finalized rip that was unwound and returned entry fees, i.e. rip status `REFUNDED`.
+
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds

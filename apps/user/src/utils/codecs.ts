@@ -1,17 +1,10 @@
 import { ErrorToRender, PayloadCodec } from '@rips/grammy-kit'
 
-export const rawStringCodec: PayloadCodec<string> = {
-	encode: (value) => value,
-	decode: (raw) => raw,
-}
-
-export type SwapAmountPayload =
-	| { kind: 'max' }
-	| { kind: 'exact'; value: number }
+export type AmountPayload = { kind: 'max' } | { kind: 'exact'; value: number }
 
 const MAX_TOKEN = 'max'
 
-export const swapAmountCodec: PayloadCodec<SwapAmountPayload> = {
+export const amountCodec: PayloadCodec<AmountPayload> = {
 	encode: (payload) =>
 		payload.kind === 'max' ? MAX_TOKEN : String(payload.value),
 

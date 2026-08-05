@@ -40,7 +40,6 @@ import { DepositAddressPage } from '../../src/pages/wallet/deposit-address-page'
 import { DepositChooseChainPage } from '../../src/pages/wallet/deposit-choose-chain-page'
 import { DepositChooseCurrencyPage } from '../../src/pages/wallet/deposit-choose-currency-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
-import { WithdrawCheckoutPage } from '../../src/pages/wallet/withdraw-checkout-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
 import { WithdrawChooseChainPage } from '../../src/pages/wallet/withdraw-choose-chain-page'
 import { WithdrawChooseCurrencyPage } from '../../src/pages/wallet/withdraw-choose-currency-page'
@@ -79,6 +78,7 @@ import {
 	mockUnrevealedPayouts,
 	mockUsdcArb,
 	mockUsdcArbBalance,
+	mockUsdcArbBalanceEmpty,
 	mockUsdcArbWithdrawAmount,
 	mockUsdcArbWithdrawAmountInsufficient,
 	mockUsdcOnBase,
@@ -516,16 +516,30 @@ export const pages: Record<string, PageEntry> = {
 	},
 	withdraw: {
 		description:
-			'Withdraw hub. Shows chain, token, balance, and optionally chosen amount and recipient. Buttons to choose amount and enter recipient.',
-		render: () =>
-			WithdrawPage.render(mockBalance, mockWithdrawAmount, undefined),
-	},
-	'withdraw-checkout': {
-		description:
-			'Withdraw checkout. USDC on Arbitrum. Confirm if sufficient, error guidance if not.',
-		variants: ['sufficient', 'insufficient-token', 'insufficient-native'],
+			'Withdraw page. USDC on Arbitrum. One page across the whole withdrawal: collects amount and recipient, then quotes and confirms. Empty fields read "Not set"; the fee line appears only once quoted.',
+		variants: [
+			'incomplete',
+			'zero-balance',
+			'ready',
+			'insufficient-token',
+			'insufficient-native',
+		],
 		render(variant) {
 			const resolvedVariant = resolveVariant(this, variant)
+
+			if (resolvedVariant === 'incomplete') {
+				return WithdrawPage.render({
+					kind: 'pending',
+					currencyBalance: mockUsdcArbBalance,
+				})
+			}
+
+			if (resolvedVariant === 'zero-balance') {
+				return WithdrawPage.render({
+					kind: 'pending',
+					currencyBalance: mockUsdcArbBalanceEmpty,
+				})
+			}
 
 			const currencyAmount =
 				resolvedVariant === 'insufficient-token'
@@ -537,13 +551,13 @@ export const pages: Record<string, PageEntry> = {
 					? mockEthArbBalanceInsufficient
 					: mockEthArbBalance
 
-			return WithdrawCheckoutPage.render({
+			return WithdrawPage.render({
+				kind: 'quoted',
 				currencyBalance: mockUsdcArbBalance,
 				nativeBalance,
-				currencyAmount,
+				amount: BigInt(currencyAmount.amount),
 				withdrawQuote: { blockchainFee: mockEthArbNetworkFee },
 				recipientAddress: mockReceiverAddress,
-				userEvmAddress: mockUserEvmAddress,
 			})
 		},
 	},

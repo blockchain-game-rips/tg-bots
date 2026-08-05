@@ -70,6 +70,11 @@ export const mockUsdcArbBalance: CurrencyAmountDto = {
 	amount: '100000000', // 100 USDC
 }
 
+export const mockUsdcArbBalanceEmpty: CurrencyAmountDto = {
+	currency: mockUsdcArb,
+	amount: '0',
+}
+
 export const mockUsdcArbWithdrawAmount: CurrencyAmountDto = {
 	currency: mockUsdcArb,
 	amount: '25000000', // 25 USDC

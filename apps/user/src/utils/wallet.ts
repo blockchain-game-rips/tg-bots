@@ -1,12 +1,9 @@
 import {
-	CurrencyAmountDto,
 	CurrencyDto,
 	UserDtoOutput,
-	usersControllerGetUser,
 	walletsControllerQuoteWithdraw,
 } from '@rips/api-client'
 import { EIP155_NAMESPACE } from '../constants'
-import { WithdrawCheckoutPage } from '../pages/wallet/withdraw-checkout-page'
 import { WithdrawPage } from '../pages/wallet/withdraw-page'
 import { Effect, EffectType } from '../types'
 import { fetchBalances, getBalance } from './api/wrappers'
@@ -24,10 +21,10 @@ export function evmAddressFromUser(user: UserDtoOutput) {
 export async function resolveWithdrawPage(
 	telegramId: string,
 	currency: CurrencyDto,
-	currencyAmount: CurrencyAmountDto | undefined,
+	amount: bigint | undefined,
 	recipientAddress: string | undefined,
 ): Promise<Effect> {
-	if (currencyAmount === undefined || recipientAddress === undefined) {
+	if (amount === undefined || recipientAddress === undefined) {
 		const balances = await fetchBalances(telegramId, [
 			currency.chainAddress,
 		])
@@ -36,28 +33,26 @@ export async function resolveWithdrawPage(
 
 		return {
 			type: EffectType.EDIT,
-			page: WithdrawPage.render(
+			page: WithdrawPage.render({
+				kind: 'pending',
 				currencyBalance,
-				currencyAmount,
+				amount,
 				recipientAddress,
-			),
+			}),
 		}
 	}
 
-	const [{ data: withdrawQuote }, { data: user }] = await Promise.all([
-		walletsControllerQuoteWithdraw({
-			headers: { 'x-telegram-id': telegramId },
-			body: {
-				amountIn: {
-					currencyChainAddress: currency.chainAddress,
-					amount: currencyAmount.amount,
-				},
-				currencyOutChainAddress: currency.chainAddress,
-				recipientAddress,
+	const { data: withdrawQuote } = await walletsControllerQuoteWithdraw({
+		headers: { 'x-telegram-id': telegramId },
+		body: {
+			amountIn: {
+				currencyChainAddress: currency.chainAddress,
+				amount: amount.toString(),
 			},
-		}),
-		usersControllerGetUser({ path: { telegramId } }),
-	])
+			currencyOutChainAddress: currency.chainAddress,
+			recipientAddress,
+		},
+	})
 
 	const balances = await fetchBalances(telegramId, [
 		currency.chainAddress,
@@ -73,13 +68,13 @@ export async function resolveWithdrawPage(
 
 	return {
 		type: EffectType.EDIT,
-		page: WithdrawCheckoutPage.render({
-			currencyAmount,
+		page: WithdrawPage.render({
+			kind: 'quoted',
+			amount,
 			currencyBalance,
 			nativeBalance,
 			recipientAddress,
 			withdrawQuote,
-			userEvmAddress: evmAddressFromUser(user),
 		}),
 	}
 }

@@ -5,6 +5,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName, currencyToChain } from '../../utils/chain'
+import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDto): PageContent {
@@ -14,8 +15,8 @@ export const WithdrawChooseAmountPage = {
 		const maxAmount = formatUnits(BigInt(balance.amount), currency.decimals)
 
 		const lines: Line[] = [
-			`Chain: ${chainToName(chain)}`,
-			`Token: ${currency.symbol}`,
+			withdrawBreadcrumb(chainToName(chain), currency.symbol),
+			'',
 			`Balance: ${formatAmountWithUsd(balance)}`,
 			'',
 			'Choose amount to withdraw:',

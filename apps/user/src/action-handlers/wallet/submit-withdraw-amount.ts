@@ -15,16 +15,18 @@ export const submitWithdrawAmount: ActionDef<string> = withPayload(
 
 		const amountToWithdraw = parseCurrencyAmount(amountRaw, currency)
 
+		const amount = BigInt(amountToWithdraw.amount)
+
 		const flow = toStep(session.flow, 'currency-chosen', {
 			currency: flowData.currency,
-			amount: BigInt(amountToWithdraw.amount),
+			amount,
 			recipientAddress: flowData.recipientAddress,
 		})
 
 		const effect = await resolveWithdrawPage(
 			session.telegramId,
 			currency,
-			amountToWithdraw,
+			amount,
 			flowData.recipientAddress,
 		)
 

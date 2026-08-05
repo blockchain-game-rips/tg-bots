@@ -2,7 +2,6 @@ import { assertFlow } from '@rips/grammy-kit'
 import { parseEvmAddress } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { toStep } from '../../flows'
-import { toCurrencyAmount } from '../../utils/currency'
 import { resolveWithdrawPage } from '../../utils/wallet'
 
 export const submitWithdrawRecipient: ActionDef<string> = withPayload(
@@ -15,12 +14,6 @@ export const submitWithdrawRecipient: ActionDef<string> = withPayload(
 
 		const flowData = session.flow.data
 		const currency = flowData.currency
-		const amount = flowData.amount
-		const currencyAmount =
-			amount === undefined
-				? undefined
-				: toCurrencyAmount(amount, currency)
-
 		const flow = toStep(session.flow, 'currency-chosen', {
 			currency: flowData.currency,
 			amount: flowData.amount,
@@ -30,7 +23,7 @@ export const submitWithdrawRecipient: ActionDef<string> = withPayload(
 		const effect = await resolveWithdrawPage(
 			session.telegramId,
 			currency,
-			currencyAmount,
+			flowData.amount,
 			recipientAddress,
 		)
 

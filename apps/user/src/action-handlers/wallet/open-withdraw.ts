@@ -5,8 +5,13 @@ import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType } from '../../types'
 import { fetchSingleBalance } from '../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../utils/currency'
+import { noPayload } from '@rips/grammy-kit'
 
-export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(
+export const openWithdraw = noPayload(() => {
+	throw new Error('Not implemented')
+})
+
+export const openWithdrawStale: ActionDef<ChainAddressDto> = withPayload(
 	currencyChainAddressCodec,
 	async (session, currencyChainAddress) => {
 		const currencyBalance = await fetchSingleBalance(
@@ -22,11 +27,10 @@ export const openWithdraw: ActionDef<ChainAddressDto> = withPayload(
 			flow,
 			effect: {
 				type: EffectType.EDIT,
-				page: WithdrawPage.render(
+				page: WithdrawPage.render({
+					kind: 'pending',
 					currencyBalance,
-					undefined,
-					undefined,
-				),
+				}),
 			},
 		}
 	},

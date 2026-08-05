@@ -4,8 +4,10 @@ import {
 	CurrencyDto,
 } from '@rips/api-client'
 import { PayloadCodec } from '@rips/grammy-kit'
-import { parseCurrencyChainAddress } from '@rips/shared'
+import { parseCurrencyChainAddress, parseUnits } from '@rips/shared'
 import { SUPPORTED_CURRENCIES } from '../constants'
+
+export const NATIVE_MAX_MARGIN_USD = 0.1
 
 export function findCurrencyIndex(value: ChainAddressDto): number {
 	return SUPPORTED_CURRENCIES.findIndex(
@@ -56,4 +58,12 @@ export function toCurrencyAmount(
 	currency: CurrencyDto,
 ): CurrencyAmountDto {
 	return { currency, amount: amount.toString() }
+}
+
+export function usdToTokenUnits(usd: number, currency: CurrencyDto): bigint {
+	if (currency.priceUsd <= 0) return 0n
+
+	const tokenAmount = usd / currency.priceUsd
+
+	return parseUnits(tokenAmount.toFixed(currency.decimals), currency.decimals)
 }

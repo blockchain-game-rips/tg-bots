@@ -10,7 +10,6 @@ import {
 import { assertFlow } from '@rips/grammy-kit'
 import {
 	parseCurrencyAmount,
-	parseUnits,
 	rescaleAmount,
 	toCurrencyAmount,
 } from '@rips/shared'
@@ -24,9 +23,13 @@ import {
 	fetchCurrency,
 	getBalance,
 } from '../../../utils/api/wrappers'
-import { SwapAmountPayload, swapAmountCodec } from '../../../utils/codecs'
+import { AmountPayload, amountCodec } from '../../../utils/codecs'
 import { currencyToChain } from '../../../utils/chain'
-import { currencyChainAddressCodec } from '../../../utils/currency'
+import {
+	currencyChainAddressCodec,
+	NATIVE_MAX_MARGIN_USD,
+	usdToTokenUnits,
+} from '../../../utils/currency'
 
 interface CheckoutDraft {
 	srcCurrencyBalance: CurrencyAmountDto
@@ -90,8 +93,9 @@ export const openSwapCheckoutFromDst: ActionDef<ChainAddressDto> = withPayload(
 	},
 )
 
-export const openSwapCheckoutFromAmount: ActionDef<SwapAmountPayload> =
-	withPayload(swapAmountCodec, async (session, amountPayload) => {
+export const openSwapCheckoutFromAmount: ActionDef<AmountPayload> = withPayload(
+	amountCodec,
+	async (session, amountPayload) => {
 		assertFlow(session, 'swap', 'src-dst-chosen', 'src-dst-amount-chosen')
 
 		const { srcCurrencyBalance, nativeCurrencyBalance, dstCurrency } =
@@ -110,11 +114,12 @@ export const openSwapCheckoutFromAmount: ActionDef<SwapAmountPayload> =
 			dstCurrency,
 			amountIn,
 		})
-	})
+	},
+)
 
 async function resolveAmountIn(
 	telegramId: string,
-	amountPayload: SwapAmountPayload,
+	amountPayload: AmountPayload,
 	srcCurrencyBalance: CurrencyAmountDto,
 	dstCurrency: CurrencyDto,
 ): Promise<bigint> {
@@ -133,8 +138,6 @@ async function resolveAmountIn(
 
 	return resolveNativeMaxAmount(telegramId, srcCurrencyBalance, dstCurrency)
 }
-
-const NATIVE_MAX_MARGIN_USD = 0.1
 
 async function resolveNativeMaxAmount(
 	telegramId: string,
@@ -156,14 +159,6 @@ async function resolveNativeMaxAmount(
 	const balance = BigInt(srcCurrencyBalance.amount)
 
 	return balance > reserved ? balance - reserved : 0n
-}
-
-function usdToTokenUnits(usd: number, currency: CurrencyDto): bigint {
-	if (currency.priceUsd <= 0) return 0n
-
-	const tokenAmount = usd / currency.priceUsd
-
-	return parseUnits(tokenAmount.toFixed(currency.decimals), currency.decimals)
 }
 
 function sumNativeFees(quote: SwapQuote, srcCurrency: CurrencyDto): bigint {

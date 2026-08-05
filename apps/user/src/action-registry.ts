@@ -48,15 +48,16 @@ import {
 	openExportKeyWarning,
 } from './action-handlers/wallet/open-export-key'
 import { openWallet } from './action-handlers/wallet/open-wallet'
-import { openWithdraw } from './action-handlers/wallet/open-withdraw'
+import {
+	openWithdrawFromAmount,
+	openWithdrawFromCurrency,
+	openWithdrawFromRecipient,
+} from './action-handlers/wallet/open-withdraw'
 import { openWithdrawChooseAmount } from './action-handlers/wallet/open-withdraw-choose-amount'
 import { openWithdrawChooseChain } from './action-handlers/wallet/open-withdraw-choose-chain'
 import { openWithdrawChooseCurrency } from './action-handlers/wallet/open-withdraw-choose-currency'
 import { promptWithdrawAmount } from './action-handlers/wallet/prompt-withdraw-amount'
 import { promptWithdrawRecipient } from './action-handlers/wallet/prompt-withdraw-recipient'
-import { refreshWithdrawCheckout } from './action-handlers/wallet/refresh-withdraw-checkout'
-import { submitWithdrawAmount } from './action-handlers/wallet/submit-withdraw-amount'
-import { submitWithdrawRecipient } from './action-handlers/wallet/submit-withdraw-recipient'
 import { executeSwap } from './action-handlers/wallet/swap/execute-swap'
 import {
 	openSwapCheckout,
@@ -120,14 +121,13 @@ export const actionRegistry = {
 	// Withdraw
 	openWithdrawChooseChain,
 	openWithdrawChooseCurrency,
-	openWithdraw,
+	openWithdrawFromCurrency,
+	openWithdrawFromAmount,
+	openWithdrawFromRecipient,
 	openWithdrawChooseAmount,
 	executeWithdraw,
 	promptWithdrawRecipient,
-	submitWithdrawRecipient,
-	submitWithdrawAmount,
 	promptWithdrawAmount,
-	refreshWithdrawCheckout,
 
 	// Referral
 	openReferral,

@@ -7,9 +7,11 @@ import { EffectType } from '../../types'
 import { toCurrencyAmount } from '../../utils/currency'
 
 export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
-	assertFlow(session, 'withdraw', 'currency-chosen')
+	assertFlow(session, 'withdraw', 'withdraw-page')
 
-	const { currency, amount, recipientAddress } = session.flow.data
+	const { currencyBalance, amount, recipientAddress } = session.flow.data
+
+	const { currency } = currencyBalance
 
 	if (amount === undefined || recipientAddress === undefined) {
 		throw new Error(

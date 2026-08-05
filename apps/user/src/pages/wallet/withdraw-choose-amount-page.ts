@@ -1,6 +1,6 @@
 import { CurrencyAmountDto } from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
-import { formatAmountWithUsd, formatUnits } from '@rips/shared'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -11,8 +11,6 @@ export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDto): PageContent {
 		const { currency } = balance
 		const chain = currencyToChain(currency)
-
-		const maxAmount = formatUnits(BigInt(balance.amount), currency.decimals)
 
 		const lines: Line[] = [
 			withdrawBreadcrumb(chainToName(chain), currency.symbol),
@@ -25,7 +23,9 @@ export const WithdrawChooseAmountPage = {
 		const keyboard = new InlineKeyboard()
 			.text(
 				'Withdraw Max',
-				buildActionData(actionIds.submitWithdrawAmount, maxAmount),
+				buildActionData(actionIds.openWithdrawFromAmount, {
+					kind: 'max',
+				}),
 			)
 			.row()
 			.text(

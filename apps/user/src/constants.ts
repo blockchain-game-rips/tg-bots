@@ -37,6 +37,9 @@ export const SUPPORTED_CHAINS = [
 
 const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000'
 
+/** Stand-in recipient for quotes taken before the user has entered one. */
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export const NATIVE_ON_BASE: ChainAddressDto = {
 	address: NATIVE_ADDRESS,
 	chain: BASE_CHAIN,

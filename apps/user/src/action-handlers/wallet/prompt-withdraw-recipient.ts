@@ -9,6 +9,6 @@ export const promptWithdrawRecipient: ActionDef<void> = noPayload(() => ({
 	effect: {
 		type: EffectType.ASK,
 		prompt: WithdrawAddressPrompt.render(),
-		onSubmit: actionIds.submitWithdrawRecipient,
+		onSubmit: actionIds.openWithdrawFromRecipient,
 	},
 }))

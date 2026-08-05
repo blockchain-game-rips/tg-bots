@@ -9,6 +9,6 @@ export const promptWithdrawAmount: ActionDef<void> = noPayload(() => ({
 	effect: {
 		type: EffectType.ASK,
 		prompt: CustomWithdrawAmountPrompt.render(),
-		onSubmit: actionIds.submitWithdrawAmount,
+		onSubmit: actionIds.openWithdrawFromAmount,
 	},
 }))

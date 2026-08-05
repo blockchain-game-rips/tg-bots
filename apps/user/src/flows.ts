@@ -24,11 +24,12 @@ export type EnterFlow =
 
 export interface WithdrawFlow {
 	flowType: 'withdraw'
-	step: 'currency-chosen'
+	step: 'withdraw-page'
 	data: {
+		currencyBalance: CurrencyAmountDto
+		nativeBalance: CurrencyAmountDto
 		amount?: bigint
 		recipientAddress?: string
-		currency: CurrencyDto
 	}
 }
 

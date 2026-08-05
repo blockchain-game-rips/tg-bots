@@ -31,6 +31,10 @@ A finalized rip that was unwound and returned entry fees, i.e. rip status `REFUN
 The user-facing name for withdrawing referral rewards. The operation is called `withdraw reward` in code and in the API; UI copy always says claim ("Available to claim", "Claim Rewards"). Unrelated to the `CLAIMED` rip status, which is internal state behind Completed Rip.
 _Avoid_: Withdraw (in UI copy), payout
 
+**Withdraw page**:
+The single page where a withdrawal is assembled and sent — amount, recipient, and confirmation in one screen whose content varies by how much of the form is filled and whether funds suffice, not a form page plus a separate checkout. Reached after the chain and currency are chosen.
+_Avoid_: Withdraw checkout, withdraw form
+
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds

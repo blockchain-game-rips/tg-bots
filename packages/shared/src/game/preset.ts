@@ -1,7 +1,9 @@
 import { AvailablePresetDtoOutput, ConfigDtoOutput } from '@rips/api-client'
-import { formatUnits } from '../format/units'
+import { formatAmountWithUsd } from '../currency'
 
-export function resolveConfig(availablePreset: AvailablePresetDtoOutput) {
+export function resolveConfig(
+	availablePreset: AvailablePresetDtoOutput,
+): ConfigDtoOutput {
 	if (availablePreset.availability === 'LIVE')
 		return availablePreset.fillingRip.config
 
@@ -9,14 +11,47 @@ export function resolveConfig(availablePreset: AvailablePresetDtoOutput) {
 }
 
 export function configName(config: ConfigDtoOutput): string {
-	const { decimals, symbol } = config.entryPrice.currency
+	return formatAmountWithUsd(config.entryPrice)
+}
 
-	const formattedAmount = formatUnits(
-		BigInt(config.entryPrice.amount),
-		decimals,
-	)
+export interface EntryLevel {
+	presetId: number
+	emoji: string
+	name: string
+	config: ConfigDtoOutput
+}
 
-	const usd = Number(formattedAmount) * config.entryPrice.currency.priceUsd
+const LEVEL_NAMES = [
+	{ emoji: '🎮', name: 'Small Rip' },
+	{ emoji: '🎮', name: 'Medium Rip' },
+	{ emoji: '🔥', name: 'Standard Rip' },
+]
 
-	return `${formattedAmount} ${symbol} $${usd.toFixed(2)}`
+const FALLBACK_LEVEL_NAME = { emoji: '🔥', name: 'Rip' }
+
+function byEntryPrice(
+	a: AvailablePresetDtoOutput,
+	b: AvailablePresetDtoOutput,
+): number {
+	const amountA = BigInt(resolveConfig(a).entryPrice.amount)
+	const amountB = BigInt(resolveConfig(b).entryPrice.amount)
+
+	return amountA < amountB ? -1 : amountA > amountB ? 1 : 0
+}
+
+export function toEntryLevels(
+	availablePresets: AvailablePresetDtoOutput[],
+): EntryLevel[] {
+	return [...availablePresets]
+		.sort(byEntryPrice)
+		.map((availablePreset, index) => {
+			const { emoji, name } = LEVEL_NAMES[index] ?? FALLBACK_LEVEL_NAME
+
+			return {
+				presetId: availablePreset.preset.id,
+				emoji,
+				name,
+				config: resolveConfig(availablePreset),
+			}
+		})
 }

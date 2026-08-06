@@ -28,7 +28,7 @@ import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
 import { ClaimRewardPage } from '../../src/pages/referral-system/claim-reward-page'
-import { ReferralTiersPage } from '../../src/pages/referral-system/referral-about-page'
+import { ReferralTiersPage } from '../../src/pages/referral-system/referral-tiers-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system-page'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
 import { SwapCheckoutPage } from '../../src/pages/swap/swap-checkout-page'
@@ -55,7 +55,6 @@ import {
 	mockBalance,
 	mockCardCollection,
 	mockCardDefinitions,
-	mockConfigs,
 	mockEntryCost,
 	mockEthArbBalance,
 	mockEthArbBalanceInsufficient,
@@ -818,7 +817,7 @@ export const pages: Record<string, PageEntry> = {
 	},
 	about: {
 		description:
-			'Explains how the game works and lists all available preset tiers. Each tier shows the entry price (with USD equivalent), rip duration, and entry cap.',
-		render: () => AboutPage.render(mockConfigs),
+			'Explains how the game works and lists every entry level. Each level shows its name, entry price (with USD equivalent), fill window, and entries to fill. Closes with the card/payout nature and the referral compliance notice.',
+		render: () => AboutPage.render(mockAvailablePresets),
 	},
 }

@@ -1344,9 +1344,11 @@ export const mockTierTables: GetTierTablesResponseDtoOutput = {
 			currency: mockEth,
 			defaultFeeBps: 500,
 			tiers: [
+				// Matches the default fee, so it is not reachable and not shown.
 				{ minVolume: '100000000000000000', feeBps: 500 }, // ≥0.1 ETH → 5%
 				{ minVolume: '500000000000000000', feeBps: 1000 }, // ≥0.5 ETH → 10%
 				{ minVolume: '1000000000000000000', feeBps: 1500 }, // ≥1 ETH → 15%
+				{ minVolume: '5000000000000000000', feeBps: 2000 }, // ≥5 ETH → 20%
 			],
 		},
 	],

@@ -28,5 +28,5 @@ export function referralBreadcrumb(
 export function enterBreadcrumb(
 	...segments: (string | undefined)[]
 ): FormattedString {
-	return breadcrumb('🎮 Enter Rip', ...segments)
+	return breadcrumb('🎮 Enter Rips', ...segments)
 }

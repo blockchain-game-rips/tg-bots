@@ -70,7 +70,7 @@ export const HomePage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'🎮 Enter Rip',
+				'🎮 Enter Rips',
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()

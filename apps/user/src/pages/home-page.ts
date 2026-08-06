@@ -96,7 +96,7 @@ export const HomePage = {
 				buildActionData(actionIds.openReferral, undefined),
 			)
 			.row()
-			.text('About', buildActionData(actionIds.openAbout, undefined))
+			.text('ℹ️ About', buildActionData(actionIds.openAbout, undefined))
 
 		return { message: joinLines(lines), keyboard }
 	},

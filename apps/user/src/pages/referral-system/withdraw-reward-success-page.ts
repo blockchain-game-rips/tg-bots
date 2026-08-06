@@ -1,13 +1,15 @@
 import { WithdrawRewardResponseDtoOutput } from '@rips/api-client'
-import { joinLines } from '@rips/grammy-kit'
+import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { claimBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawRewardSuccessPage = {
 	render(response: WithdrawRewardResponseDtoOutput): PageContent {
-		const lines = [
+		const lines: Line[] = [
+			claimBreadcrumb(),
+			'',
 			'✅ Reward claimed successfully!',
 			'',
 			`Amount: ${formatAmountWithUsd(response.amount)}`,
@@ -15,16 +17,18 @@ export const WithdrawRewardSuccessPage = {
 
 		if (response.transaction.cost !== undefined) {
 			lines.push(
-				`Network fee: ${formatAmountWithUsd(response.transaction.cost)}`,
+				`Blockchain fee: ${formatAmountWithUsd(response.transaction.cost)}`,
 			)
 		}
 
+		lines.push(
+			'',
+			fmt`Transaction: ${FormattedString.code(response.transaction.id)}`,
+		)
+
 		return {
 			message: joinLines(lines),
-			keyboard: new InlineKeyboard().appendNavButtons({
-				parent: actionIds.openReferral,
-				home: actionIds.openHome,
-			}),
+			keyboard: new InlineKeyboard().appendHomeButton(),
 		}
 	},
 }

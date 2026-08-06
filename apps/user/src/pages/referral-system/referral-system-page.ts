@@ -1,5 +1,4 @@
 import {
-	ChainAddressDto,
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
@@ -13,9 +12,11 @@ import {
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { NATIVE_ON_BASE } from '../../constants'
+import {
+	findNativeOnBase,
+	hasClaimableReward,
+} from '../../domain/referral-reward'
 import { PageContent } from '../../types'
-import { isSameChainAddress } from '../../utils/currency'
 
 const INTRO =
 	'Invite friends and earn a share of Rips fees from referred activity.'
@@ -66,26 +67,9 @@ export const ReferralSystemPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: buildKeyboard(referralLink),
+			keyboard: buildKeyboard(referralLink, hasClaimableReward(state)),
 		}
 	},
-}
-
-// The referral system only ever pays out in native currency on Base, so the
-// page reads that entry rather than whichever one happens to come first.
-// A missing entry is a broken API contract, not a state a user can reach.
-function findNativeOnBase<
-	T extends { currency: { chainAddress: ChainAddressDto } },
->(candidates: T[], description: string): T {
-	const match = candidates.find((candidate) =>
-		isSameChainAddress(candidate.currency.chainAddress, NATIVE_ON_BASE),
-	)
-
-	if (match === undefined) {
-		throw new Error(`No ${description} for native currency on Base`)
-	}
-
-	return match
 }
 
 function nextTierText(state: State, tierTable: TierTable): string {
@@ -107,19 +91,31 @@ function nextTierText(state: State, tierTable: TierTable): string {
 	return `Reach ${minVolume} monthly volume to unlock ${formatPercent(nextTier.feeBps)}`
 }
 
-function buildKeyboard(referralLink: string): InlineKeyboard {
+function buildKeyboard(
+	referralLink: string,
+	isClaimable: boolean,
+): InlineKeyboard {
 	const shareUrl = `${TELEGRAM_SHARE_URL}?url=${encodeURIComponent(referralLink)}`
 
-	return new InlineKeyboard()
+	const keyboard = new InlineKeyboard()
 		.copyText('Copy Referral Link', referralLink)
 		.row()
 		.url('Share Referral Link', shareUrl)
 		.row()
-		.text(
-			'Claim Rewards',
-			buildActionData(actionIds.openReferralWithdrawReward, undefined),
-		)
-		.row()
+
+	if (isClaimable) {
+		keyboard
+			.text(
+				'Claim Rewards',
+				buildActionData(
+					actionIds.openReferralWithdrawReward,
+					undefined,
+				),
+			)
+			.row()
+	}
+
+	return keyboard
 		.text(
 			'Referral Tiers',
 			buildActionData(actionIds.openReferralAbout, undefined),

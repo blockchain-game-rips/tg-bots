@@ -35,6 +35,10 @@ _Avoid_: Withdraw (in UI copy), payout
 The single page where a withdrawal is assembled and sent — amount, recipient, and confirmation in one screen whose content varies by how much of the form is filled and whether funds suffice, not a form page plus a separate checkout. Reached after the chain and currency are chosen.
 _Avoid_: Withdraw checkout, withdraw form
 
+**Claim page**:
+The confirmation screen for claiming referral rewards. Unlike the Withdraw page it assembles nothing — the amount is always the full available reward and the recipient is the user's own wallet — so it only ever confirms: reward, blockchain fee, and native balance, offering either the claim or a deposit when the balance cannot cover the fee.
+_Avoid_: Claim checkout, withdraw reward page
+
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds

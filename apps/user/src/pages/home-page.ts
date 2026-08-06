@@ -89,7 +89,7 @@ export const HomePage = {
 				buildActionData(actionIds.openCardCollection, undefined),
 			)
 			.row()
-			.text('Wallet', buildActionData(actionIds.openWallet, undefined))
+			.text('💼 Wallet', buildActionData(actionIds.openWallet, undefined))
 			.row()
 			.text(
 				'👥 Referrals',

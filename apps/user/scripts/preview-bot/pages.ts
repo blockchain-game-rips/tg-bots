@@ -5,6 +5,7 @@ import { SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
+import { WelcomePage } from '../../src/pages/onboarding/welcome-page'
 import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
 import { EnterChoosePaymentWalletPage } from '../../src/pages/play/enter-choose-payment-wallet-page'
@@ -809,6 +810,11 @@ export const pages: Record<string, PageEntry> = {
 			'Confirms a successful reward claim — shows amount, blockchain fee, and the transaction id. Home is the only navigation.',
 		render: () =>
 			WithdrawRewardSuccessPage.render(mockWithdrawRewardResponse),
+	},
+	'onboarding-welcome': {
+		description:
+			'First page a new user sees instead of Home. Offers a permanent choice between generating a fresh wallet and importing a private key.',
+		render: () => WelcomePage.render(),
 	},
 	about: {
 		description:

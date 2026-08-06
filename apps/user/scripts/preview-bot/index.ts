@@ -5,6 +5,7 @@ import { pages } from './pages'
 installKeyboardExtensions()
 
 const sections: PageSection[] = [
+	{ title: '👋 Onboarding', prefixes: ['onboarding-'] },
 	{ title: '🏠 Home', prefixes: ['home', 'about'] },
 	{ title: '🃏 Card collection', prefixes: ['card-collection'] },
 	{

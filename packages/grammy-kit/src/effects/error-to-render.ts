@@ -3,6 +3,15 @@ import { PageContent } from '../types'
 
 const errorPrefixToRender = '❌ Error:'
 
+const ERROR_BLOCK_MARKER = '\u200B'
+
+const GENERIC_ERROR_MESSAGE =
+	'❌ Something went wrong. Please try again or send /start for a fresh menu.'
+
+const ERROR_ID_ALPHABET = 'ABCDEFGHJKMNPQRSTVWXYZ23456789'
+
+const ERROR_ID_LENGTH = 6
+
 export class ErrorToRender extends Error {
 	messageToRender: FormattedString
 
@@ -13,38 +22,54 @@ export class ErrorToRender extends Error {
 	}
 }
 
+export function generateErrorId(): string {
+	let errorId = ''
+
+	for (let index = 0; index < ERROR_ID_LENGTH; index++) {
+		const position = Math.floor(Math.random() * ERROR_ID_ALPHABET.length)
+
+		errorId += ERROR_ID_ALPHABET.charAt(position)
+	}
+
+	return errorId
+}
+
 export function composePageContentWithError(
 	currentPageContent: PageContent,
 	error: unknown,
+	errorId?: string,
 ): PageContent {
-	const errorMessage = getErrorMessageToRender(error)
+	const errorMessage = getErrorMessageToRender(error, errorId)
 
 	const baseMessage = stripExistingError(currentPageContent.message)
 
-	const message = fmt`${baseMessage}\n\n${errorMessage}`
+	const message = fmt`${baseMessage}\n\n${ERROR_BLOCK_MARKER}${errorMessage}`
 
 	return { ...currentPageContent, message }
 }
 
 function stripExistingError(message: FormattedString): FormattedString {
-	const errorIndex = message.text.indexOf(errorPrefixToRender)
+	const markerIndex = message.text.indexOf(ERROR_BLOCK_MARKER)
 
-	if (errorIndex === -1) return message
+	if (markerIndex === -1) return message
 
-	const beforeError = message.text.slice(0, errorIndex)
+	const beforeError = message.text.slice(0, markerIndex)
 	const trimmedEnd = beforeError.trimEnd().length
 
 	return message.slice(0, trimmedEnd)
 }
 
-function getErrorMessageToRender(error: unknown): FormattedString {
+function getErrorMessageToRender(
+	error: unknown,
+	errorId: string | undefined,
+): FormattedString {
 	if (error instanceof ErrorToRender) {
 		return error.messageToRender
 	}
 
-	return errorMessageToRender(
-		'Internal server error, try again or summon a new menu',
-	)
+	if (errorId === undefined) return fmt`${GENERIC_ERROR_MESSAGE}`
+
+	return fmt`${GENERIC_ERROR_MESSAGE}\nError ID: ${errorId}`
 }
 
 function errorMessageToRender(rawErrorMessage: string): FormattedString {

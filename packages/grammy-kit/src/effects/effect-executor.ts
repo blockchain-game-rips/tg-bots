@@ -11,7 +11,11 @@ import {
 	SessionData,
 } from '../types'
 import { fireAndForget } from '../utils/common'
-import { composePageContentWithError, ErrorToRender } from './error-to-render'
+import {
+	composePageContentWithError,
+	ErrorToRender,
+	generateErrorId,
+} from './error-to-render'
 
 const MESSAGE_NOT_MODIFIED = 'message is not modified'
 
@@ -151,13 +155,17 @@ export async function executeEffectOrDisplayError(
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 
-		if (!(error instanceof ErrorToRender)) {
-			logger.error(error)
+		const isUnexpected = !(error instanceof ErrorToRender)
+		const errorId = isUnexpected ? generateErrorId() : undefined
+
+		if (isUnexpected) {
+			logger.error({ err: error, errorId })
 		}
 
 		const errorPage = composePageContentWithError(
 			session.lastPage ?? messageToEdit.pageContent,
 			error,
+			errorId,
 		)
 
 		fireAndForget(renderPage(api, chatId, messageToEdit, errorPage))

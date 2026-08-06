@@ -4,6 +4,7 @@ import { currencyAmountDisplayParts, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface PresetLevel {
 	presetId: number
@@ -64,11 +65,7 @@ function toPresetLevel(
 }
 
 function buildMessage(levels: PresetLevel[]): FormattedString {
-	const header: Line[] = [
-		FormattedString.b('🎮 Enter Rip'),
-		'',
-		'Choose your entry level:',
-	]
+	const header: Line[] = [enterBreadcrumb(), '', 'Choose your entry level:']
 
 	const levelLines = levels.flatMap((level): Line[] => [
 		'',

@@ -11,7 +11,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
-import { claimBreadcrumb } from '../../utils/display/breadcrumb'
+import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
 export interface ClaimRewardArgs {
 	reward: CurrencyAmountDto
@@ -43,7 +43,7 @@ function buildMessage(
 	const { reward, nativeBalance, blockchainFee } = args
 
 	const lines: Line[] = [
-		claimBreadcrumb(),
+		referralBreadcrumb('Claim'),
 		'',
 		'You are about to claim:',
 		formatAmountWithUsd(reward),

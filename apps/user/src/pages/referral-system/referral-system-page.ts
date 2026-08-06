@@ -17,6 +17,7 @@ import {
 	hasClaimableReward,
 } from '../../domain/referral-reward'
 import { PageContent } from '../../types'
+import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
 const INTRO =
 	'Invite friends and earn a share of Rips fees from referred activity.'
@@ -45,7 +46,7 @@ export const ReferralSystemPage = {
 		})
 
 		const lines: Line[] = [
-			fmt`👥 ${FormattedString.b('Referrals')}`,
+			referralBreadcrumb(),
 			'',
 			INTRO,
 			'',

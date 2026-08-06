@@ -3,12 +3,12 @@ import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { claimBreadcrumb } from '../../utils/display/breadcrumb'
+import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawRewardSuccessPage = {
 	render(response: WithdrawRewardResponseDtoOutput): PageContent {
 		const lines: Line[] = [
-			claimBreadcrumb(),
+			referralBreadcrumb('Claim'),
 			'',
 			'✅ Reward claimed successfully!',
 			'',

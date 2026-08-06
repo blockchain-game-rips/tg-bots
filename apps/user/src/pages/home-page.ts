@@ -85,7 +85,7 @@ export const HomePage = {
 			)
 			.row()
 			.text(
-				'Card Collection',
+				'🃏 Collection',
 				buildActionData(actionIds.openCardCollection, undefined),
 			)
 			.row()

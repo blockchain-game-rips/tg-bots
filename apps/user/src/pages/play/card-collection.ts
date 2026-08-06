@@ -9,7 +9,7 @@ import { actionIds } from '../../actions'
 import { CardCollection } from '../../domain/card-collection'
 import { PageContent } from '../../types'
 
-const TITLE = '🃏 Card Collection'
+const TITLE = '🃏 Collection'
 
 function progressLine(collected: number, total: number): string {
 	return `${collected.toString()} / ${total.toString()}`

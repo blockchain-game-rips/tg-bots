@@ -19,6 +19,12 @@ export function swapBreadcrumb(
 	return breadcrumb('🌉 Bridge / Swap', ...segments)
 }
 
+export function claimBreadcrumb(
+	...segments: (string | undefined)[]
+): FormattedString {
+	return breadcrumb('👥 Referrals', 'Claim', ...segments)
+}
+
 export function enterBreadcrumb(
 	...segments: (string | undefined)[]
 ): FormattedString {

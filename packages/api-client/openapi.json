@@ -1546,6 +1546,49 @@
         ]
       }
     },
+    "/referral-system/rewards/quote": {
+      "post": {
+        "description": "Estimates the blockchain fee for withdrawing a referral reward in the given currency. The estimate does not depend on whether a withdrawable reward currently exists.",
+        "operationId": "ReferralSystemController_quoteWithdrawReward",
+        "parameters": [
+          {
+            "name": "x-telegram-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "pattern": "^\\d+$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteWithdrawRewardBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteWithdrawRewardResponseDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "ReferralSystem"
+        ]
+      }
+    },
     "/notifications": {
       "get": {
         "operationId": "NotificationsController_getNotifications",
@@ -7537,6 +7580,98 @@
         "required": [
           "transaction",
           "amount"
+        ],
+        "additionalProperties": false
+      },
+      "QuoteWithdrawRewardBodyDto": {
+        "type": "object",
+        "properties": {
+          "currencyAddress": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$"
+          }
+        },
+        "required": [
+          "currencyAddress"
+        ]
+      },
+      "QuoteWithdrawRewardResponseDto_Output": {
+        "type": "object",
+        "properties": {
+          "blockchainFee": {
+            "type": "object",
+            "properties": {
+              "currency": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "priceUsd": {
+                    "type": "number"
+                  },
+                  "chainAddress": {
+                    "type": "object",
+                    "properties": {
+                      "address": {
+                        "type": "string"
+                      },
+                      "chain": {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string"
+                          },
+                          "namespace": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "reference",
+                          "namespace"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "address",
+                      "chain"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "decimals": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "priceUsd",
+                  "chainAddress",
+                  "symbol",
+                  "name",
+                  "decimals"
+                ],
+                "additionalProperties": false
+              },
+              "amount": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "currency",
+              "amount"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "blockchainFee"
         ],
         "additionalProperties": false
       },

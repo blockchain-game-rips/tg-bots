@@ -26,6 +26,7 @@ import { MyRipsPage } from '../../src/pages/play/my-rips-page'
 import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
+import { ClaimRewardPage } from '../../src/pages/referral-system/claim-reward-page'
 import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system-page'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
@@ -49,6 +50,7 @@ import { addressQrInputFile } from '../../src/utils/qr'
 import {
 	mockAvailablePresetNoRip,
 	mockAvailablePresets,
+	mockAvailableReward,
 	mockBalance,
 	mockCardCollection,
 	mockCardDefinitions,
@@ -58,6 +60,8 @@ import {
 	mockEthArbBalanceInsufficient,
 	mockEthArbBalanceSufficient,
 	mockEthArbNetworkFee,
+	mockEthBalanceBelowRewardFee,
+	mockEthBalanceCoveringRewardFee,
 	mockFinalizedRips,
 	mockOngoingAvailablePresets,
 	mockOngoingRips,
@@ -87,6 +91,7 @@ import {
 	mockViewPullsPayouts,
 	mockWalletBalances,
 	mockWithdrawAmount,
+	mockWithdrawRewardQuote,
 	mockWithdrawRewardResponse,
 	mockWithdrawTransaction,
 	mockZapCurrencyInBalance,
@@ -780,9 +785,28 @@ export const pages: Record<string, PageEntry> = {
 			'Explains how the referral system works: fee share tiers based on 30-day volume, custom percent override. Back leads to referral-system.',
 		render: () => ReferralAboutPage.render(mockTierTables),
 	},
+	'referral-claim': {
+		description:
+			'Claim page. Confirms claiming referral rewards — always shows the available reward, the blockchain fee and the Base ETH balance. The amount is never chosen: the whole available reward goes to the user\'s own wallet. "sufficient" offers Claim; "insufficient-native" replaces it with a Deposit button and warns that Base ETH cannot cover the fee. Back leads to referral-system.',
+		variants: ['sufficient', 'insufficient-native'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const nativeBalance =
+				resolvedVariant === 'insufficient-native'
+					? mockEthBalanceBelowRewardFee
+					: mockEthBalanceCoveringRewardFee
+
+			return ClaimRewardPage.render({
+				reward: mockAvailableReward,
+				nativeBalance,
+				blockchainFee: mockWithdrawRewardQuote.blockchainFee,
+			})
+		},
+	},
 	'referral-withdraw-success': {
 		description:
-			'Confirms a successful reward withdrawal — shows amount and network fee. Back leads to referral-system.',
+			'Confirms a successful reward claim — shows amount, blockchain fee, and the transaction id. Home is the only navigation.',
 		render: () =>
 			WithdrawRewardSuccessPage.render(mockWithdrawRewardResponse),
 	},

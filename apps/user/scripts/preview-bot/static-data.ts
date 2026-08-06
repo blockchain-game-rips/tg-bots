@@ -14,6 +14,7 @@ import {
 	QuotePurchaseResponseDtoOutput,
 	QuoteSwapResponseDtoOutput,
 	QuoteSwapSamechainResponseDtoOutput,
+	QuoteWithdrawRewardResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	QuoteZapSamechainResponseDtoOutput,
 	RipDto,
@@ -1367,6 +1368,25 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 			},
 		},
 	],
+}
+
+export const mockAvailableReward: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '12000000000000000', // 0.012 ETH, matches mockReferrerData
+}
+
+export const mockWithdrawRewardQuote: QuoteWithdrawRewardResponseDtoOutput = {
+	blockchainFee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
+}
+
+export const mockEthBalanceCoveringRewardFee: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '5000000000000000', // 0.005 ETH, covers the claim fee
+}
+
+export const mockEthBalanceBelowRewardFee: CurrencyAmountDto = {
+	currency: mockEth,
+	amount: '10000000000000', // 0.00001 ETH, short of the claim fee
 }
 
 export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {

@@ -39,6 +39,10 @@ _Avoid_: Withdraw checkout, withdraw form
 The confirmation screen for claiming referral rewards. Unlike the Withdraw page it assembles nothing — the amount is always the full available reward and the recipient is the user's own wallet — so it only ever confirms: reward, blockchain fee, and native balance, offering either the claim or a deposit when the balance cannot cover the fee.
 _Avoid_: Claim checkout, withdraw reward page
 
+**Variant**:
+A named version of one page in the preview bot — the same page rendered from different state, such as whether funds suffice or how much of a form is filled. A page with several states is registered once with a list of variants (`/r <page> [variant]`), never as several separate preview pages; separate entries are only for genuinely separate pages.
+_Avoid_: Case, mode, state (as a preview name)
+
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds

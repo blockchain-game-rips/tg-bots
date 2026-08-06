@@ -33,6 +33,7 @@ import {
 	refreshZapCheckout,
 } from './action-handlers/play/open-zap-confirm'
 import { promptEntryCount } from './action-handlers/play/prompt-entry-count'
+import { executeReferralWithdrawReward } from './action-handlers/referral-system/execute-referral-withdraw-reward'
 import { openReferral } from './action-handlers/referral-system/open-referral'
 import { openReferralTiers } from './action-handlers/referral-system/open-referral-about'
 import { openReferralWithdrawReward } from './action-handlers/referral-system/open-referral-withdraw-reward'
@@ -133,6 +134,7 @@ export const actionRegistry = {
 	openReferral,
 	openReferralTiers,
 	openReferralWithdrawReward,
+	executeReferralWithdrawReward,
 
 	// Zap
 	openZapChooseChain,

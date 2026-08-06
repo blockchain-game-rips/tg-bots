@@ -27,6 +27,18 @@ _Avoid_: Claimed, won, paid out
 **Refunded Rip**:
 A finalized rip that was unwound and returned entry fees, i.e. rip status `REFUNDED`.
 
+**Entry level**:
+One of the tiers a user can enter a rip at, named by its position in the price-sorted list of presets (Small Rip, Medium Rip, Standard Rip). The name is a product label, not API data — the backend exposes presets and configs, and `toEntryLevels` in shared is the single place that decides which preset is which level.
+_Avoid_: Preset (in UI copy), tier, package
+
+**Fill window**:
+How long a rip stays open for entries, i.e. `durationSeconds` on the config. Named for the deadline it imposes rather than the span it measures.
+_Avoid_: Duration, timer
+
+**Entries to fill**:
+How many entries a rip needs before it finalizes, i.e. `entryCap` on the config. Named for the target the rip is filling toward, not the ceiling it cannot exceed.
+_Avoid_: Entry cap, entries per rip, capacity
+
 **Claim (referral)**:
 The user-facing name for withdrawing referral rewards. The operation is called `withdraw reward` in code and in the API; UI copy always says claim ("Available to claim", "Claim Rewards"). Unrelated to the `CLAIMED` rip status, which is internal state behind Completed Rip.
 _Avoid_: Withdraw (in UI copy), payout

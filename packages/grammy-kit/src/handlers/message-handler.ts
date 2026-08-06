@@ -1,10 +1,22 @@
+import { FormattedString } from '@grammyjs/parse-mode'
 import { User } from '@grammyjs/types'
-import { Api, Filter, Context as GrammyContext, SessionFlavor } from 'grammy'
+import {
+	Api,
+	Filter,
+	Context as GrammyContext,
+	InlineKeyboard,
+	SessionFlavor,
+} from 'grammy'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
 import { FlowBase } from '../session/session-utils'
-import { ActionId, MessageToEdit, SessionData } from '../types'
+import { ActionId, Message, PageContent, SessionData } from '../types'
+
+const EMPTY_PAGE: PageContent = {
+	message: new FormattedString('', []),
+	keyboard: new InlineKeyboard(),
+}
 
 type BaseContext = GrammyContext &
 	SessionFlavor<SessionData<FlowBase | null>> & { from: User }
@@ -39,11 +51,11 @@ export function createMessageHandler(
 
 		await executeEffectOrDisplayError(
 			bot.api,
-			ctx.chatId,
-			ask.pageToEdit,
+			ask.messageToEdit,
 			ctx.session,
 			boundAction,
 			submit.message,
+			EMPTY_PAGE,
 			messagesToDelete,
 		)
 	}
@@ -53,7 +65,7 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 	ask: {
 		messageId: number
 		onSubmit: ActionId<unknown>
-		pageToEdit: MessageToEdit
+		messageToEdit: Message
 	}
 	submit: {
 		message: string
@@ -72,7 +84,7 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 		ask: {
 			messageId: repliedTo.message_id,
 			onSubmit: lastAsk.onSubmit,
-			pageToEdit: lastAsk.pageToEdit,
+			messageToEdit: lastAsk.messageToEdit,
 		},
 		submit: {
 			message: ctx.message.text,

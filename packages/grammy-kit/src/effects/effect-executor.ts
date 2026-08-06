@@ -1,15 +1,10 @@
-import { FormattedString } from '@grammyjs/parse-mode'
-import { Api, GrammyError, InputMediaBuilder } from 'grammy'
+import { Api, GrammyError, InlineKeyboard } from 'grammy'
 import { resolveEffect } from '../action/action-def'
 import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
-import {
-	Effect,
-	EffectType,
-	MessageToEdit,
-	PageContent,
-	SessionData,
-} from '../types'
+import { replacePage } from '../messaging/page-delivery'
+import { sendPrompt } from '../messaging/prompt-delivery'
+import { Effect, EffectType, Message, PageContent, SessionData } from '../types'
 import { fireAndForget } from '../utils/common'
 import {
 	composePageContentWithError,
@@ -19,13 +14,6 @@ import {
 
 const MESSAGE_NOT_MODIFIED = 'message is not modified'
 
-function captionArgs(message: FormattedString) {
-	return {
-		caption: message.caption,
-		caption_entities: message.caption_entities,
-	}
-}
-
 function isMessageNotModifiedError(error: unknown): boolean {
 	return (
 		error instanceof GrammyError &&
@@ -34,115 +22,59 @@ function isMessageNotModifiedError(error: unknown): boolean {
 	)
 }
 
-async function renderPage(
-	api: Api,
-	chatId: number,
-	messageToEdit: MessageToEdit,
-	page: PageContent,
-): Promise<void> {
-	const currentlyPhoto = messageToEdit.hasPhoto
-	const targetPhoto = page.photo !== undefined
-
-	if (currentlyPhoto === targetPhoto) {
-		if (targetPhoto && page.photo !== undefined) {
-			await api.editMessageMedia(
-				chatId,
-				messageToEdit.messageId,
-				InputMediaBuilder.photo(page.photo, captionArgs(page.message)),
-				{ reply_markup: page.keyboard },
-			)
-
-			return
-		}
-
-		await api.editMessageText(
-			chatId,
-			messageToEdit.messageId,
-			page.message.text,
-			{
-				reply_markup: page.keyboard,
-				entities: page.message.entities,
-			},
-		)
-
-		return
-	}
-
-	await api.deleteMessage(chatId, messageToEdit.messageId)
-
-	if (targetPhoto && page.photo !== undefined) {
-		await api.sendPhoto(chatId, page.photo, {
-			...captionArgs(page.message),
-			reply_markup: page.keyboard,
-		})
-
-		return
-	}
-
-	await api.sendMessage(chatId, page.message.text, {
-		reply_markup: page.keyboard,
-		entities: page.message.entities,
-	})
-}
-
 async function executeEffect(
 	effect: Effect,
 	api: Api,
-	chatId: number,
-	messageToEdit: MessageToEdit,
+	messageToEdit: Message,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	session: SessionData<any>,
 ): Promise<void> {
 	switch (effect.type) {
 		case EffectType.EDIT:
-			await renderPage(api, chatId, messageToEdit, effect.page)
+			await replacePage(api, messageToEdit, effect.page)
 
 			session.lastPage = effect.page
 			break
 
 		case EffectType.ASK:
-			await api.sendMessage(chatId, effect.prompt.message.text, {
-				reply_markup: {
-					force_reply: true,
-					input_field_placeholder: effect.prompt.placeholder,
-				},
-				entities: effect.prompt.message.entities,
-			})
+			const promptMessageId = await sendPrompt(
+				api,
+				messageToEdit.chatId,
+				effect.prompt,
+			)
+
 			session.lastAsk = {
 				onSubmit: effect.onSubmit,
-				pageToEdit: messageToEdit,
+				messageToEdit,
+				promptMessageId,
 			}
 			break
 
-		case EffectType.SEND_LOADING:
-			await api.editMessageText(
-				chatId,
-				messageToEdit.messageId,
-				effect.message.text,
-				{
-					entities: effect.message.entities,
-				},
-			)
+		case EffectType.SEND_LOADING: {
+			const loadingMessage = await replacePage(api, messageToEdit, {
+				message: effect.message,
+				keyboard: new InlineKeyboard(),
+			})
 
 			await executeEffect(
 				resolveEffect(session, await effect.next()),
 				api,
-				chatId,
-				messageToEdit,
+				loadingMessage,
 				session,
 			)
 			break
+		}
 	}
 }
 
 export async function executeEffectOrDisplayError(
 	api: Api,
-	chatId: number,
-	messageToEdit: MessageToEdit,
+	messageToEdit: Message,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	session: SessionData<any>,
 	boundAction: BoundAction,
 	rawPayload: string | undefined,
+	fallbackPage: PageContent,
 	messagesToDelete: number[] = [],
 ): Promise<void> {
 	try {
@@ -151,7 +83,7 @@ export async function executeEffectOrDisplayError(
 				? boundAction.decode(rawPayload)
 				: undefined
 		const effect = await boundAction.handler(session, payload)
-		await executeEffect(effect, api, chatId, messageToEdit, session)
+		await executeEffect(effect, api, messageToEdit, session)
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 
@@ -163,15 +95,17 @@ export async function executeEffectOrDisplayError(
 		}
 
 		const errorPage = composePageContentWithError(
-			session.lastPage ?? messageToEdit.pageContent,
+			session.lastPage ?? fallbackPage,
 			error,
 			errorId,
 		)
 
-		fireAndForget(renderPage(api, chatId, messageToEdit, errorPage))
+		fireAndForget(replacePage(api, messageToEdit, errorPage))
 	} finally {
 		if (messagesToDelete.length !== 0) {
-			fireAndForget(api.deleteMessages(chatId, messagesToDelete))
+			fireAndForget(
+				api.deleteMessages(messageToEdit.chatId, messagesToDelete),
+			)
 		}
 	}
 }

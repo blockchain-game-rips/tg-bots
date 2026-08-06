@@ -10,7 +10,6 @@ export {
 	EffectEdit,
 	EffectType,
 	HandlerResult,
-	MessageToEdit,
 	PageContent,
 	PromptContent,
 	SessionData,

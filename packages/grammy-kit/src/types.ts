@@ -4,17 +4,12 @@ import { FlowBase, FlowTransition } from './session/session-utils'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
 
-export interface MessageToEdit {
-	pageContent: PageContent
-	messageId: number
-	hasPhoto: boolean
-}
-
 export interface SessionData<F extends FlowBase | null> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
-		pageToEdit: MessageToEdit
+		messageToEdit: Message
+		promptMessageId: number
 	} | null
 	flow: F
 	lastPage: PageContent | null
@@ -52,11 +47,20 @@ export interface HandlerResult<F extends FlowBase | null> {
 
 export type Line = string | FormattedString
 
-export interface PageContent {
+interface PageContentBase {
 	message: FormattedString
 	keyboard: InlineKeyboard
-	photo?: InputFile
 }
+
+export interface PhotoPage extends PageContentBase {
+	photo: InputFile
+}
+
+export interface TextPage extends PageContentBase {
+	photo?: never
+}
+
+export type PageContent = PhotoPage | TextPage
 
 export type NavIds =
 	| { home: ActionId; parent: ActionId }
@@ -69,6 +73,15 @@ export type NavIds =
 export interface PromptContent {
 	message: FormattedString
 	placeholder: string
+}
+
+export type MessageRef = {
+	chatId: number
+	messageId: number
+}
+
+export type Message = MessageRef & {
+	hasPhoto: boolean
 }
 
 //TODO: move from this package, it shouldn't be here

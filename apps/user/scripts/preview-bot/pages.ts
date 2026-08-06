@@ -27,7 +27,7 @@ import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
 import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
 import { ClaimRewardPage } from '../../src/pages/referral-system/claim-reward-page'
-import { ReferralAboutPage } from '../../src/pages/referral-system/referral-about-page'
+import { ReferralTiersPage } from '../../src/pages/referral-system/referral-about-page'
 import { ReferralSystemPage } from '../../src/pages/referral-system/referral-system-page'
 import { WithdrawRewardSuccessPage } from '../../src/pages/referral-system/withdraw-reward-success-page'
 import { SwapCheckoutPage } from '../../src/pages/swap/swap-checkout-page'
@@ -780,10 +780,10 @@ export const pages: Record<string, PageEntry> = {
 				referralLink: 'https://t.me/rips_bot?start=ref_abc123',
 			}),
 	},
-	'referral-about': {
+	'referral-tiers': {
 		description:
 			'Explains how the referral system works: fee share tiers based on 30-day volume, custom percent override. Back leads to referral-system.',
-		render: () => ReferralAboutPage.render(mockTierTables),
+		render: () => ReferralTiersPage.render(mockTierTables),
 	},
 	'referral-claim': {
 		description:

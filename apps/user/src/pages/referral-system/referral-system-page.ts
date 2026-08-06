@@ -2,13 +2,7 @@ import {
 	GetReferrerResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 } from '@rips/api-client'
-import {
-	buildActionData,
-	fmt,
-	FormattedString,
-	joinLines,
-	Line,
-} from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
@@ -119,7 +113,7 @@ function buildKeyboard(
 	return keyboard
 		.text(
 			'Referral Tiers',
-			buildActionData(actionIds.openReferralAbout, undefined),
+			buildActionData(actionIds.openReferralTiers, undefined),
 		)
 		.appendNavButtons({
 			parent: actionIds.openHome,

@@ -69,7 +69,7 @@ function tierTableLines(tierTable: TierTable): Line[] {
 	]
 }
 
-export const ReferralAboutPage = {
+export const ReferralTiersPage = {
 	render(tierTables: GetTierTablesResponseDtoOutput): PageContent {
 		const lines: Line[] = [
 			referralBreadcrumb('Tiers'),

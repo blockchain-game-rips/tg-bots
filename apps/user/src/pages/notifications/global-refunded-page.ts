@@ -1,11 +1,11 @@
-import { RipDto } from '@rips/api-client'
+import { RipDtoOutput } from '@rips/api-client'
 import { fmt, FormattedString, joinLines } from '@rips/grammy-kit'
 import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
 
 export const GlobalRefundedRipPage = {
-	render(rip: RipDto): PageContent {
+	render(rip: RipDtoOutput): PageContent {
 		const preset = configName(rip.config)
 
 		const lines = [

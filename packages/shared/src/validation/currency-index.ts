@@ -1,4 +1,4 @@
-import { ChainAddressDto } from '@rips/api-client'
+import { ChainAddressDtoOutput } from '@rips/api-client'
 import z from 'zod'
 import { parsePayload } from './parse-payload'
 
@@ -17,8 +17,8 @@ function currencyIndexSchema(maxIndex: number) {
 
 export function parseCurrencyChainAddress(
 	payload: string | undefined,
-	supportedCurrencies: readonly ChainAddressDto[],
-): ChainAddressDto {
+	supportedCurrencies: readonly ChainAddressDtoOutput[],
+): ChainAddressDtoOutput {
 	const maxIndex = supportedCurrencies.length - 1
 
 	const index = parsePayload(

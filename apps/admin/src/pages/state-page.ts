@@ -67,20 +67,22 @@ function renderConfig(config: PresetConfig): string[] {
 }
 
 function renderPreset(entry: PresetEntry): Line[] {
-	const { preset, fillingRip } = entry
+	const { preset } = entry
 	const lines: Line[] = [FormattedString.b(`Preset #${String(preset.id)}`)]
 
-	const ripConfig = fillingRip?.config ?? null
 	const nextConfig = preset.currentConfig
+	const ripConfig =
+		entry.availability === 'LIVE' ? entry.fillingRip.config : null
 
-	if (fillingRip && ripConfig) {
+	if (entry.availability === 'LIVE') {
+		const { fillingRip } = entry
 		const entriesSold = soldEntriesFor(fillingRip)
 
 		lines.push(`Rip #${String(fillingRip.id)} [${fillingRip.status}]`)
 		lines.push(`Currency: ${fillingRip.currency.symbol}`)
 		lines.push(`Entries sold: ${String(entriesSold)}`)
 		lines.push(`Active config:`)
-		lines.push(...renderConfig(ripConfig))
+		lines.push(...renderConfig(fillingRip.config))
 	} else {
 		lines.push(`No active rip`)
 	}

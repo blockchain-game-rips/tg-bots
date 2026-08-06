@@ -1,26 +1,26 @@
 import {
-	AvailablePresetDto,
+	AvailablePresetDtoOutput,
 	BuyEntriesPurchaseResponseDtoOutput,
 	BuyEntriesZapResponseDtoOutput,
-	ConfigDto,
-	CurrencyAmountDto,
+	ConfigDtoOutput,
+	CurrencyAmountDtoOutput,
 	GetCardCollectionResponseDtoOutput,
 	GetCardDefinitionsResponseDtoOutput,
 	GetReferrerResponseDtoOutput,
 	GetSwapResultResponseDtoOutput,
 	GetTierTablesResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
-	PayoutDto,
+	PayoutDtoOutput,
 	QuotePurchaseResponseDtoOutput,
 	QuoteSwapResponseDtoOutput,
 	QuoteSwapSamechainResponseDtoOutput,
 	QuoteWithdrawRewardResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	QuoteZapSamechainResponseDtoOutput,
-	RipDto,
+	RipDtoOutput,
 	SwapResponseDtoOutput,
 	SwapSamechainResponseDtoOutput,
-	TransactionDto,
+	TransactionDtoOutput,
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
 
@@ -29,7 +29,7 @@ const mockChainAddress = {
 	chain: { reference: '8453', namespace: 'eip155' },
 }
 
-const mockEth: ConfigDto['entryPrice']['currency'] = {
+const mockEth: ConfigDtoOutput['entryPrice']['currency'] = {
 	id: 'eip155:8453:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockChainAddress,
@@ -48,7 +48,7 @@ const mockArbNativeChainAddress = {
 	chain: { reference: '42161', namespace: 'eip155' },
 }
 
-export const mockUsdcArb: ConfigDto['entryPrice']['currency'] = {
+export const mockUsdcArb: ConfigDtoOutput['entryPrice']['currency'] = {
 	id: 'eip155:42161:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 	priceUsd: 1,
 	chainAddress: mockArbChainAddress,
@@ -57,7 +57,7 @@ export const mockUsdcArb: ConfigDto['entryPrice']['currency'] = {
 	decimals: 6,
 }
 
-export const mockEthArb: ConfigDto['entryPrice']['currency'] = {
+export const mockEthArb: ConfigDtoOutput['entryPrice']['currency'] = {
 	id: 'eip155:42161:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockArbNativeChainAddress,
@@ -66,42 +66,42 @@ export const mockEthArb: ConfigDto['entryPrice']['currency'] = {
 	decimals: 18,
 }
 
-export const mockUsdcArbBalance: CurrencyAmountDto = {
+export const mockUsdcArbBalance: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '100000000', // 100 USDC
 }
 
-export const mockUsdcArbBalanceEmpty: CurrencyAmountDto = {
+export const mockUsdcArbBalanceEmpty: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '0',
 }
 
-export const mockUsdcArbWithdrawAmount: CurrencyAmountDto = {
+export const mockUsdcArbWithdrawAmount: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '25000000', // 25 USDC
 }
 
-export const mockUsdcArbWithdrawAmountInsufficient: CurrencyAmountDto = {
+export const mockUsdcArbWithdrawAmountInsufficient: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '200000000', // 200 USDC (exceeds balance)
 }
 
-export const mockEthArbBalance: CurrencyAmountDto = {
+export const mockEthArbBalance: CurrencyAmountDtoOutput = {
 	currency: mockEthArb,
 	amount: '1000000000000000', // 0.001 ETH
 }
 
-export const mockEthArbBalanceInsufficient: CurrencyAmountDto = {
+export const mockEthArbBalanceInsufficient: CurrencyAmountDtoOutput = {
 	currency: mockEthArb,
 	amount: '0', // no ETH for gas
 }
 
-export const mockEthArbBalanceSufficient: CurrencyAmountDto = {
+export const mockEthArbBalanceSufficient: CurrencyAmountDtoOutput = {
 	currency: mockEthArb,
 	amount: '100000000000000000', // 0.1 ETH, covers bridge + network fee
 }
 
-export const mockEthArbNetworkFee: CurrencyAmountDto = {
+export const mockEthArbNetworkFee: CurrencyAmountDtoOutput = {
 	currency: mockEthArb,
 	amount: '210000000000000', // ~0.00021 ETH
 }
@@ -111,7 +111,7 @@ const mockOptimismNativeChainAddress = {
 	chain: { reference: '10', namespace: 'eip155' },
 }
 
-export const mockEthOptimism: ConfigDto['entryPrice']['currency'] = {
+export const mockEthOptimism: ConfigDtoOutput['entryPrice']['currency'] = {
 	id: 'eip155:10:0x0000000000000000000000000000000000000000',
 	priceUsd: 2500,
 	chainAddress: mockOptimismNativeChainAddress,
@@ -120,7 +120,7 @@ export const mockEthOptimism: ConfigDto['entryPrice']['currency'] = {
 	decimals: 18,
 }
 
-export const mockEthOptimismBalance: CurrencyAmountDto = {
+export const mockEthOptimismBalance: CurrencyAmountDtoOutput = {
 	currency: mockEthOptimism,
 	amount: '100000000000000000', // 0.1 ETH
 }
@@ -1274,12 +1274,12 @@ export const mockUsdcOnBase = {
 	decimals: 6,
 }
 
-const mockSwapAmountOut: CurrencyAmountDto = {
+const mockSwapAmountOut: CurrencyAmountDtoOutput = {
 	currency: mockUsdcOnBase,
 	amount: '24900000', // ~24.9 USDC on Base
 }
 
-const mockSwapBridgeFee: CurrencyAmountDto = {
+const mockSwapBridgeFee: CurrencyAmountDtoOutput = {
 	currency: mockEthArb,
 	amount: '1000000000000000', // 0.001 ETH
 }
@@ -1321,18 +1321,18 @@ export const mockSwapCrosschainSuccessResult: NonNullable<
 	amountOut: mockSwapAmountOut,
 }
 
-export const mockWithdrawTransaction: TransactionDto = {
+export const mockWithdrawTransaction: TransactionDtoOutput = {
 	id: '0xjkl012',
 	cost: { currency: mockEth, amount: '210000000000000' },
 }
 
 export const mockWithdrawChainIndex = 0 // Arbitrum
 export const mockWithdrawCurrencyIndex = 1 // ETH on Arbitrum
-export const mockWithdrawAmount: CurrencyAmountDto = {
+export const mockWithdrawAmount: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '5000000000000000', // 0.005 ETH
 }
-export const mockWithdrawNetworkFee: CurrencyAmountDto = {
+export const mockWithdrawNetworkFee: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '210000000000000', // ~0.00021 ETH
 }
@@ -1372,7 +1372,7 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 	],
 }
 
-export const mockAvailableReward: CurrencyAmountDto = {
+export const mockAvailableReward: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '12000000000000000', // 0.012 ETH, matches mockReferrerData
 }
@@ -1381,12 +1381,12 @@ export const mockWithdrawRewardQuote: QuoteWithdrawRewardResponseDtoOutput = {
 	blockchainFee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH
 }
 
-export const mockEthBalanceCoveringRewardFee: CurrencyAmountDto = {
+export const mockEthBalanceCoveringRewardFee: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '5000000000000000', // 0.005 ETH, covers the claim fee
 }
 
-export const mockEthBalanceBelowRewardFee: CurrencyAmountDto = {
+export const mockEthBalanceBelowRewardFee: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '10000000000000', // 0.00001 ETH, short of the claim fee
 }
@@ -1429,27 +1429,27 @@ export const mockZapSamechainQuote: QuoteZapSamechainResponseDtoOutput = {
 	},
 }
 
-export const mockZapSamechainSrcBalance: CurrencyAmountDto = {
+export const mockZapSamechainSrcBalance: CurrencyAmountDtoOutput = {
 	currency: mockUsdcOnBase,
 	amount: '100000000', // 100 USDC — covers the entry total
 }
 
-export const mockZapSamechainNativeBalance: CurrencyAmountDto = {
+export const mockZapSamechainNativeBalance: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '100000000000000000', // 0.1 ETH — covers the network fee
 }
 
-export const mockZapSrcBalanceSufficient: CurrencyAmountDto = {
+export const mockZapSrcBalanceSufficient: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '100000000', // 100 USDC — covers the entry total
 }
 
-export const mockZapSrcBalanceInsufficient: CurrencyAmountDto = {
+export const mockZapSrcBalanceInsufficient: CurrencyAmountDtoOutput = {
 	currency: mockUsdcArb,
 	amount: '8000000', // 8 USDC — below the 13.5 USDC entry total
 }
 
-export const mockZapCurrencyInBalance: CurrencyAmountDto =
+export const mockZapCurrencyInBalance: CurrencyAmountDtoOutput =
 	mockZapSrcBalanceInsufficient
 
 export const mockZapSuccessResult: NonNullable<
@@ -1481,29 +1481,29 @@ export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {
 }
 
 // 3 entries × 0.005 ETH = 0.015 ETH
-export const mockEntryCost: CurrencyAmountDto = {
+export const mockEntryCost: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '15000000000000000',
 }
 
-export const mockBalance: CurrencyAmountDto = {
+export const mockBalance: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '2000000000000000', // 0.002 ETH — intentionally low for insufficient-funds preview
 }
 
-export const mockZeroBalance: CurrencyAmountDto = {
+export const mockZeroBalance: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '0',
 }
 
-export const mockSufficientBalance: CurrencyAmountDto = {
+export const mockSufficientBalance: CurrencyAmountDtoOutput = {
 	currency: mockEth,
 	amount: '100000000000000000', // 0.1 ETH
 }
 
 // Base ETH (native base), Arbitrum USDC (non-native non-base),
 // Optimism ETH (native non-base).
-export const mockPaymentWalletBalances: CurrencyAmountDto[] = [
+export const mockPaymentWalletBalances: CurrencyAmountDtoOutput[] = [
 	mockSufficientBalance,
 	mockUsdcArbBalance,
 	mockEthOptimismBalance,
@@ -1511,7 +1511,7 @@ export const mockPaymentWalletBalances: CurrencyAmountDto[] = [
 
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
 
-export const mockRip: RipDto = {
+export const mockRip: RipDtoOutput = {
 	id: 1,
 	presetId: 1,
 	currency: mockEth,
@@ -1553,7 +1553,7 @@ export const mockRip: RipDto = {
 	startTime: '2026-04-24T10:00:00.000Z',
 }
 
-export const mockRevealedPayouts: PayoutDto[] = [
+export const mockRevealedPayouts: PayoutDtoOutput[] = [
 	{
 		ripId: 1,
 		entryNumber: 3,
@@ -1582,7 +1582,7 @@ export const mockRevealedPayouts: PayoutDto[] = [
 	},
 ]
 
-export const mockUnrevealedPayouts: PayoutDto[] = [
+export const mockUnrevealedPayouts: PayoutDtoOutput[] = [
 	{
 		ripId: 1,
 		entryNumber: 1,
@@ -1619,7 +1619,7 @@ function mockPayout(
 	payoutAmount: string,
 	revealed: boolean,
 	card: { id: number; name: string; tier: number },
-): PayoutDto {
+): PayoutDtoOutput {
 	return {
 		ripId: 1,
 		entryNumber,
@@ -1631,7 +1631,7 @@ function mockPayout(
 
 // Deliberately out of display order — the page sorts by tier, then amount,
 // with unopened pulls last.
-export const mockViewPullsPayouts: PayoutDto[] = [
+export const mockViewPullsPayouts: PayoutDtoOutput[] = [
 	mockPayout(1, '110000000000000', true, {
 		id: 15,
 		name: 'Common Card 15',
@@ -1656,7 +1656,7 @@ export const mockViewPullsPayouts: PayoutDto[] = [
 	mockPayout(6, '0', false, { id: 21, name: 'Sealed Card 21', tier: 5 }),
 ]
 
-export const mockViewPullsAllOpened: PayoutDto[] = [
+export const mockViewPullsAllOpened: PayoutDtoOutput[] = [
 	mockPayout(1, '1800000000000000', true, {
 		id: 3,
 		name: 'Epic Card 3',
@@ -1746,7 +1746,7 @@ const mockRipConfig3 = {
 	],
 }
 
-export const mockFinalizedRips: RipDto[] = [
+export const mockFinalizedRips: RipDtoOutput[] = [
 	{
 		id: 2,
 		presetId: 1,
@@ -1792,7 +1792,7 @@ export const mockFinalizedRips: RipDto[] = [
 	},
 ]
 
-export const mockRip2: RipDto = {
+export const mockRip2: RipDtoOutput = {
 	id: 4,
 	presetId: 2,
 	currency: mockEth,
@@ -1817,7 +1817,7 @@ export const mockRip2: RipDto = {
 	startTime: '2026-04-24T09:00:00.000Z',
 }
 
-export const mockRip3: RipDto = {
+export const mockRip3: RipDtoOutput = {
 	id: 5,
 	presetId: 3,
 	currency: mockEth,
@@ -1837,7 +1837,8 @@ export const mockRip3: RipDto = {
 	startTime: '2026-04-24T12:00:00.000Z',
 }
 
-export const mockAvailablePresetNoRip: AvailablePresetDto = {
+export const mockAvailablePresetNoRip: AvailablePresetDtoOutput = {
+	availability: 'READY',
 	preset: { id: 1, currentConfig: mockRipConfig },
 	fillingRip: null,
 }
@@ -1849,8 +1850,9 @@ const fillingRipStartTime = new Date(
 	Date.now() - FILLING_RIP_STARTED_MINUTES_AGO * MILLISECONDS_PER_MINUTE,
 ).toISOString()
 
-export const mockAvailablePresets: AvailablePresetDto[] = [
+export const mockAvailablePresets: AvailablePresetDtoOutput[] = [
 	{
+		availability: 'LIVE',
 		preset: { id: 1, currentConfig: mockRipConfig },
 		fillingRip: {
 			...mockRip,
@@ -1859,10 +1861,12 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 		},
 	},
 	{
+		availability: 'LIVE',
 		preset: { id: 2, currentConfig: mockRipConfig2 },
 		fillingRip: mockRip2,
 	},
 	{
+		availability: 'LIVE',
 		preset: { id: 3, currentConfig: mockRipConfig3 },
 		fillingRip: mockRip3,
 	},
@@ -1872,7 +1876,7 @@ export const mockAvailablePresets: AvailablePresetDto[] = [
 // filling rip instead of a Ready block; presets 1 (0.005) and 3 (0.05) are
 // ready. The completing and refunding rips belong to preset 1, which is free
 // to offer a new rip while they settle.
-const mockOngoingFillingRip: RipDto = {
+const mockOngoingFillingRip: RipDtoOutput = {
 	id: 6,
 	presetId: 2,
 	currency: mockEth,
@@ -1897,22 +1901,25 @@ const mockOngoingFillingRip: RipDto = {
 	startTime: fillingRipStartTime,
 }
 
-export const mockOngoingAvailablePresets: AvailablePresetDto[] = [
+export const mockOngoingAvailablePresets: AvailablePresetDtoOutput[] = [
 	{
+		availability: 'READY',
 		preset: { id: 1, currentConfig: mockRipConfig },
 		fillingRip: null,
 	},
 	{
+		availability: 'LIVE',
 		preset: { id: 2, currentConfig: mockRipConfig3 },
 		fillingRip: mockOngoingFillingRip,
 	},
 	{
+		availability: 'READY',
 		preset: { id: 3, currentConfig: mockRipConfig2 },
 		fillingRip: null,
 	},
 ]
 
-export const mockOngoingRips: RipDto[] = [
+export const mockOngoingRips: RipDtoOutput[] = [
 	mockOngoingFillingRip,
 	{
 		id: 7,
@@ -1954,7 +1961,7 @@ export const mockOngoingRips: RipDto[] = [
 	},
 ]
 
-export const mockWalletBalances: CurrencyAmountDto[] = [
+export const mockWalletBalances: CurrencyAmountDtoOutput[] = [
 	{ currency: mockEth, amount: '2000000000000000' }, // 0.002 ETH on Base
 	{
 		currency: mockUsdcOnBase,
@@ -1964,7 +1971,7 @@ export const mockWalletBalances: CurrencyAmountDto[] = [
 	{ currency: mockUsdcArb, amount: '100000000' }, // 100 USDC on Arbitrum
 ]
 
-export const mockConfigs: ConfigDto[] = [
+export const mockConfigs: ConfigDtoOutput[] = [
 	{
 		entryCap: 8,
 		feeBps: 500,

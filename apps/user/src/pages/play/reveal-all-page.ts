@@ -1,4 +1,4 @@
-import { PayoutDto, RipDto } from '@rips/api-client'
+import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,9 +8,9 @@ import { tierName } from '../../utils/tiers'
 
 export const RevealAllPage = {
 	render(
-		rips: RipDto[],
-		revealedPayouts: PayoutDto[],
-		unrevealedPayouts: PayoutDto[],
+		rips: RipDtoOutput[],
+		revealedPayouts: PayoutDtoOutput[],
+		unrevealedPayouts: PayoutDtoOutput[],
 	): PageContent {
 		const lines: Line[] = [
 			FormattedString.b('Open Rips'),

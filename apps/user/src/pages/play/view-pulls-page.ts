@@ -1,4 +1,4 @@
-import { PayoutDto, RipDto } from '@rips/api-client'
+import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -17,8 +17,8 @@ import { tierByIndex } from '../../utils/tiers'
 const LOCKED_ROW = '🔒 Not opened yet'
 
 export interface ViewPullsVariant {
-	rip: RipDto
-	payouts: PayoutDto[]
+	rip: RipDtoOutput
+	payouts: PayoutDtoOutput[]
 }
 
 export const ViewPullsPage = {
@@ -58,9 +58,9 @@ function bodyLines(variant: ViewPullsVariant): Line[] {
 }
 
 function summaryLines(
-	rip: RipDto,
-	payouts: PayoutDto[],
-	revealed: PayoutDto[],
+	rip: RipDtoOutput,
+	payouts: PayoutDtoOutput[],
+	revealed: PayoutDtoOutput[],
 ): Line[] {
 	const totalCredited = payouts.reduce(
 		(sum, payout) => sum + BigInt(payout.payoutAmount),
@@ -95,7 +95,7 @@ function summaryLines(
 	return lines
 }
 
-function pullLines(rip: RipDto, payouts: PayoutDto[]): Line[] {
+function pullLines(rip: RipDtoOutput, payouts: PayoutDtoOutput[]): Line[] {
 	return sortForDisplay(payouts).flatMap((payout, index) => {
 		const separator: Line[] = index === 0 ? [] : ['']
 
@@ -103,7 +103,7 @@ function pullLines(rip: RipDto, payouts: PayoutDto[]): Line[] {
 	})
 }
 
-function pullRow(rip: RipDto, payout: PayoutDto): Line[] {
+function pullRow(rip: RipDtoOutput, payout: PayoutDtoOutput): Line[] {
 	if (!payout.revealed) return [LOCKED_ROW]
 
 	const emoji = tierByIndex(payout.card.tier)?.emoji ?? ''
@@ -112,7 +112,7 @@ function pullRow(rip: RipDto, payout: PayoutDto): Line[] {
 	return [fmt`${emoji} ${name}`, payoutAmount(rip, payout)]
 }
 
-function sortForDisplay(payouts: PayoutDto[]): PayoutDto[] {
+function sortForDisplay(payouts: PayoutDtoOutput[]): PayoutDtoOutput[] {
 	return [...payouts].sort((left, right) => {
 		if (left.revealed !== right.revealed) return left.revealed ? -1 : 1
 
@@ -134,14 +134,17 @@ function compareAmountsDescending(left: string, right: string): number {
 	return 0
 }
 
-function payoutAmount(rip: RipDto, payout: PayoutDto): string {
+function payoutAmount(rip: RipDtoOutput, payout: PayoutDtoOutput): string {
 	return formatAmountWithUsd({
 		amount: payout.payoutAmount,
 		currency: rip.currency,
 	})
 }
 
-function buildKeyboard(rip: RipDto, payouts: PayoutDto[]): InlineKeyboard {
+function buildKeyboard(
+	rip: RipDtoOutput,
+	payouts: PayoutDtoOutput[],
+): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	const hasUnopenedPulls = payouts.some((payout) => !payout.revealed)

@@ -1,4 +1,7 @@
-import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
+import {
+	AvailablePresetDtoOutput,
+	CurrencyAmountDtoOutput,
+} from '@rips/api-client'
 import { joinLines } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,10 +11,10 @@ import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const ZapFailedPage = {
 	render(args: {
-		availablePreset: AvailablePresetDto
+		availablePreset: AvailablePresetDtoOutput
 		entryCount: number
-		amountIn: CurrencyAmountDto
-		refund: CurrencyAmountDto
+		amountIn: CurrencyAmountDtoOutput
+		refund: CurrencyAmountDtoOutput
 	}): PageContent {
 		const { availablePreset, entryCount, amountIn, refund } = args
 

@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, TransactionDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, TransactionDtoOutput } from '@rips/api-client'
 import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,9 +8,9 @@ import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawSuccessPage = {
 	render(args: {
-		transaction: TransactionDto
-		currencyAmount: CurrencyAmountDto
-		blockchainFee?: CurrencyAmountDto
+		transaction: TransactionDtoOutput
+		currencyAmount: CurrencyAmountDtoOutput
+		blockchainFee?: CurrencyAmountDtoOutput
 		recipientAddress: string
 	}): PageContent {
 		const { transaction, currencyAmount, blockchainFee, recipientAddress } =

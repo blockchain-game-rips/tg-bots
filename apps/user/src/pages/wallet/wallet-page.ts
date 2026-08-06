@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -12,7 +12,7 @@ import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
 import { Chain, PageContent } from '../../types'
 import { chainToEmoji, chainToName, currencyToChain } from '../../utils/chain'
 
-function isZeroAmount(balance: CurrencyAmountDto): boolean {
+function isZeroAmount(balance: CurrencyAmountDtoOutput): boolean {
 	return BigInt(balance.amount) === 0n
 }
 
@@ -24,9 +24,9 @@ function isBaseChain(chain: Chain): boolean {
 }
 
 function groupBalancesByChain(
-	balances: CurrencyAmountDto[],
-): Map<string, CurrencyAmountDto[]> {
-	const groups = new Map<string, CurrencyAmountDto[]>()
+	balances: CurrencyAmountDtoOutput[],
+): Map<string, CurrencyAmountDtoOutput[]> {
+	const groups = new Map<string, CurrencyAmountDtoOutput[]>()
 
 	for (const balance of balances) {
 		const { namespace, reference } = currencyToChain(balance.currency)
@@ -40,7 +40,7 @@ function groupBalancesByChain(
 	return groups
 }
 
-function nativeLine(nativeBalance: CurrencyAmountDto): string {
+function nativeLine(nativeBalance: CurrencyAmountDtoOutput): string {
 	if (isZeroAmount(nativeBalance)) {
 		return `0 ${nativeBalance.currency.symbol}`
 	}
@@ -48,7 +48,7 @@ function nativeLine(nativeBalance: CurrencyAmountDto): string {
 	return formatAmountWithUsd(nativeBalance)
 }
 
-function chainBalanceLines(chainBalances: CurrencyAmountDto[]): string[] {
+function chainBalanceLines(chainBalances: CurrencyAmountDtoOutput[]): string[] {
 	const nativeBalance = chainBalances.find((balance) =>
 		isNativeChainAddress(balance.currency.chainAddress),
 	)
@@ -76,7 +76,7 @@ function chainBalanceLines(chainBalances: CurrencyAmountDto[]): string[] {
 }
 
 export const WalletPage = {
-	render(balances: CurrencyAmountDto[]): PageContent {
+	render(balances: CurrencyAmountDtoOutput[]): PageContent {
 		const settlementHeader = `${chainToEmoji(BASE_CHAIN)} ${chainToName(BASE_CHAIN)}`
 
 		const groups = [...groupBalancesByChain(balances).values()]

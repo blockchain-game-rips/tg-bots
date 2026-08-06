@@ -1,6 +1,6 @@
 import {
-	CurrencyAmountDto,
-	CurrencyDto,
+	CurrencyAmountDtoOutput,
+	CurrencyDtoOutput,
 	QuoteSwapResponseDtoOutput,
 	QuoteSwapSamechainResponseDtoOutput,
 } from '@rips/api-client'
@@ -54,20 +54,20 @@ interface SamechainQuote {
 type SwapQuote = CrosschainQuote | SamechainQuote
 
 interface CheckoutArgs {
-	srcBalance: CurrencyAmountDto
-	nativeBalance: CurrencyAmountDto
-	dstCurrency: CurrencyDto
+	srcBalance: CurrencyAmountDtoOutput
+	nativeBalance: CurrencyAmountDtoOutput
+	dstCurrency: CurrencyDtoOutput
 	amountIn: bigint
 	quote: SwapQuote
 }
 
 type ResolvedArgs = Omit<CheckoutArgs, 'amountIn'> & {
-	amountIn: CurrencyAmountDto
+	amountIn: CurrencyAmountDtoOutput
 }
 
 function buildMessage(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): FormattedString {
 	const { srcBalance, dstCurrency, amountIn, quote } = args
 
@@ -94,7 +94,9 @@ function buildMessage(
 	return joinLines(lines)
 }
 
-function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
+function findInsufficientBalances(
+	args: ResolvedArgs,
+): CurrencyAmountDtoOutput[] {
 	const { srcBalance, nativeBalance, amountIn, quote } = args
 
 	const expenses: Expense[] = [
@@ -110,7 +112,7 @@ function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
 	return insufficientAmounts
 }
 
-function isSufficientAmounts(insufficientAmounts: CurrencyAmountDto[]) {
+function isSufficientAmounts(insufficientAmounts: CurrencyAmountDtoOutput[]) {
 	return insufficientAmounts.length === 0
 }
 
@@ -132,7 +134,7 @@ function feeExpenses(quote: SwapQuote): Expense[] {
 
 function insufficientLines(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): Line[] {
 	if (isSufficientAmounts(insufficientAmounts)) return []
 
@@ -187,11 +189,11 @@ function feeLines(quote: SwapQuote): string[] {
 	return ['Fees:', bridgeFeeLine, networkFeeLine, '']
 }
 
-function currencyLabel(currency: CurrencyDto): string {
+function currencyLabel(currency: CurrencyDtoOutput): string {
 	return `${currencyToChainName(currency)} ${currency.symbol}`
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`
@@ -199,7 +201,7 @@ function formatAmount(amount: CurrencyAmountDto): string {
 
 function buildKeyboard(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const { srcBalance, dstCurrency } = args
 

@@ -1,4 +1,4 @@
-import { CurrencyDto } from '@rips/api-client'
+import { CurrencyDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -11,7 +11,7 @@ import { buildCurrencyKeyboard } from '../choose-chain-currency'
 export const SwapChooseSrcTokenPage = {
 	renderFreshDraft(args: {
 		srcChain: Chain
-		currencies: CurrencyDto[]
+		currencies: CurrencyDtoOutput[]
 	}): PageContent {
 		const { srcChain, currencies } = args
 
@@ -23,9 +23,9 @@ export const SwapChooseSrcTokenPage = {
 
 	renderDraftEdit(args: {
 		srcChain: Chain
-		currencies: CurrencyDto[]
-		srcCurrency: CurrencyDto
-		dstCurrency: CurrencyDto
+		currencies: CurrencyDtoOutput[]
+		srcCurrency: CurrencyDtoOutput
+		dstCurrency: CurrencyDtoOutput
 		amountIn: bigint
 	}): PageContent {
 		const { srcChain, currencies, srcCurrency, dstCurrency, amountIn } =
@@ -54,8 +54,8 @@ function buildMessage(contextLines: string[]): FormattedString {
 
 function draftLines(
 	srcChain: Chain,
-	srcCurrency: CurrencyDto,
-	dstCurrency: CurrencyDto,
+	srcCurrency: CurrencyDtoOutput,
+	dstCurrency: CurrencyDtoOutput,
 	amountIn: bigint,
 ): string[] {
 	const amount = toCurrencyAmount(amountIn, srcCurrency)
@@ -69,7 +69,9 @@ function draftLines(
 	]
 }
 
-function buildFreshDraftKeyboard(currencies: CurrencyDto[]): InlineKeyboard {
+function buildFreshDraftKeyboard(
+	currencies: CurrencyDtoOutput[],
+): InlineKeyboard {
 	const keyboard = buildCurrencyKeyboard(
 		currencies,
 		actionIds.openSwapChooseDstChain,
@@ -81,7 +83,9 @@ function buildFreshDraftKeyboard(currencies: CurrencyDto[]): InlineKeyboard {
 	})
 }
 
-function buildDraftEditKeyboard(currencies: CurrencyDto[]): InlineKeyboard {
+function buildDraftEditKeyboard(
+	currencies: CurrencyDtoOutput[],
+): InlineKeyboard {
 	const keyboard = buildCurrencyKeyboard(
 		currencies,
 		actionIds.openSwapCheckoutFromSrc,

@@ -1,4 +1,4 @@
-import { PayoutDto, RipDto } from '@rips/api-client'
+import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { RipStatusGroup } from '@rips/shared'
 import { SUPPORTED_CHAINS } from '../../src/constants'
@@ -130,7 +130,7 @@ function purchase(
 	return { userAddress, entryCount, startEntryIndex }
 }
 
-function mockRipWith(overrides: Partial<RipDto>): RipDto {
+function mockRipWith(overrides: Partial<RipDtoOutput>): RipDtoOutput {
 	return { ...mockRip, ...overrides }
 }
 
@@ -215,7 +215,7 @@ function mockRipDetailVariant(variant: string): RipDetailVariant {
 	}
 }
 
-function viewPullsPayoutsFor(variant: string): PayoutDto[] {
+function viewPullsPayoutsFor(variant: string): PayoutDtoOutput[] {
 	switch (variant) {
 		case 'all-opened':
 			return mockViewPullsAllOpened

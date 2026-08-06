@@ -1,7 +1,7 @@
 import {
-	ChainAddressDto,
-	CurrencyAmountDto,
-	CurrencyDto,
+	ChainAddressDtoOutput,
+	CurrencyAmountDtoOutput,
+	CurrencyDtoOutput,
 } from '@rips/api-client'
 import { fmt, FormattedString } from '@rips/grammy-kit'
 
@@ -15,14 +15,16 @@ const FEE_BASIS = 10000
 
 export interface Expense {
 	label: string
-	amount: CurrencyAmountDto
+	amount: CurrencyAmountDtoOutput
 }
 
 export interface FundsBreakdownResult {
-	insufficientAmounts: CurrencyAmountDto[]
+	insufficientAmounts: CurrencyAmountDtoOutput[]
 }
 
-export function toCurrencyId(currencyChainAddress: ChainAddressDto): string {
+export function toCurrencyId(
+	currencyChainAddress: ChainAddressDtoOutput,
+): string {
 	const { address, chain } = currencyChainAddress
 	const { namespace, reference } = chain
 	return `${namespace}:${reference}:${address}`
@@ -41,25 +43,25 @@ export function rescaleAmount(
 
 export function toCurrencyAmount(
 	amount: bigint,
-	currency: CurrencyDto,
-): CurrencyAmountDto {
+	currency: CurrencyDtoOutput,
+): CurrencyAmountDtoOutput {
 	return { currency, amount: amount.toString() }
 }
 
 // Two variants are provided because callers differ in what they have available:
 // findCurrencyIndexById uses a derived string key (more robust across serialization
 // boundaries), while findCurrencyIndexByAddress compares fields directly (useful
-// when a ChainAddressDto is at hand and no toCurrencyId rip-trip is needed).
+// when a ChainAddressDtoOutput is at hand and no toCurrencyId rip-trip is needed).
 export function findCurrencyIndexById(
-	currencies: ChainAddressDto[],
+	currencies: ChainAddressDtoOutput[],
 	currencyId: string,
 ): number {
 	return currencies.findIndex((c) => toCurrencyId(c) === currencyId)
 }
 
 export function findCurrencyIndexByAddress(
-	currencies: ChainAddressDto[],
-	value: ChainAddressDto,
+	currencies: ChainAddressDtoOutput[],
+	value: ChainAddressDtoOutput,
 ): number {
 	return currencies.findIndex(
 		(c) =>
@@ -95,7 +97,9 @@ export function formatTokenAmount(amount: number, priceUsd: number): string {
 	return parseFloat(amount.toFixed(digits)).toString()
 }
 
-export function currencyAmountDisplayParts(currencyAmount: CurrencyAmountDto): {
+export function currencyAmountDisplayParts(
+	currencyAmount: CurrencyAmountDtoOutput,
+): {
 	displayAmount: string
 	symbol: string
 	displayUsdAmount: string
@@ -112,7 +116,9 @@ export function currencyAmountDisplayParts(currencyAmount: CurrencyAmountDto): {
 	}
 }
 
-export function formatAmountWithUsd(currencyAmount: CurrencyAmountDto): string {
+export function formatAmountWithUsd(
+	currencyAmount: CurrencyAmountDtoOutput,
+): string {
 	const { displayAmount, symbol, displayUsdAmount } =
 		currencyAmountDisplayParts(currencyAmount)
 
@@ -124,9 +130,9 @@ export function formatPercent(basisPoints: number): string {
 }
 
 export function insufficientBalanceLines(args: {
-	tokenAmount: CurrencyAmountDto
-	feeAmount: CurrencyAmountDto
-	insufficientAmounts: CurrencyAmountDto[]
+	tokenAmount: CurrencyAmountDtoOutput
+	feeAmount: CurrencyAmountDtoOutput
+	insufficientAmounts: CurrencyAmountDtoOutput[]
 	userEvmAddress: string
 	feeLabel: string
 }): FormattedString[] {
@@ -181,14 +187,14 @@ export function insufficientFundsDepositLines(
 // remains. Re-introduce a rendered breakdown as FormattedString if needed.
 export function fundsBreakdown(
 	expenses: Expense[],
-	balances: CurrencyAmountDto[],
+	balances: CurrencyAmountDtoOutput[],
 ): FundsBreakdownResult {
 	const uniqueBalances = balances.filter(
 		(b, i, arr) =>
 			arr.findIndex((x) => x.currency.id === b.currency.id) === i,
 	)
 
-	const insufficientAmounts: CurrencyAmountDto[] = []
+	const insufficientAmounts: CurrencyAmountDtoOutput[] = []
 
 	for (const balance of uniqueBalances) {
 		const totalRequired = expenses.reduce((sum, { amount }) => {

@@ -1,4 +1,4 @@
-import { ChainAddressDto } from '@rips/api-client'
+import { ChainAddressDtoOutput } from '@rips/api-client'
 
 export const EIP155_NAMESPACE = 'eip155'
 
@@ -40,22 +40,24 @@ const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000'
 /** Stand-in recipient for quotes taken before the user has entered one. */
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-export const NATIVE_ON_BASE: ChainAddressDto = {
+export const NATIVE_ON_BASE: ChainAddressDtoOutput = {
 	address: NATIVE_ADDRESS,
 	chain: BASE_CHAIN,
 }
 
 export function nativeChainAddress(
-	chain: ChainAddressDto['chain'],
-): ChainAddressDto {
+	chain: ChainAddressDtoOutput['chain'],
+): ChainAddressDtoOutput {
 	return { address: NATIVE_ADDRESS, chain }
 }
 
-export function isNativeChainAddress(chainAddress: ChainAddressDto): boolean {
+export function isNativeChainAddress(
+	chainAddress: ChainAddressDtoOutput,
+): boolean {
 	return chainAddress.address.toLowerCase() === NATIVE_ADDRESS
 }
 
-export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
+export const SUPPORTED_CURRENCIES: ChainAddressDtoOutput[] = [
 	// Ethereum
 	{ address: NATIVE_ADDRESS, chain: ETHEREUM_CHAIN },
 	{

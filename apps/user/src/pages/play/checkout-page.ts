@@ -1,6 +1,6 @@
 import {
-	AvailablePresetDto,
-	CurrencyAmountDto,
+	AvailablePresetDtoOutput,
+	CurrencyAmountDtoOutput,
 	QuotePurchaseResponseDtoOutput,
 	QuoteZapResponseDtoOutput,
 	QuoteZapSamechainResponseDtoOutput,
@@ -35,7 +35,7 @@ const RECEIVE_CHAIN_NAME = 'Base'
 // from the preset price, so amountIn is supplied alongside the purchase quote.
 interface DirectQuote {
 	kind: 'direct'
-	amountIn: CurrencyAmountDto
+	amountIn: CurrencyAmountDtoOutput
 	quote: QuotePurchaseResponseDtoOutput
 }
 
@@ -52,10 +52,10 @@ interface CrosschainQuote {
 type CheckoutQuote = DirectQuote | SamechainQuote | CrosschainQuote
 
 interface CheckoutArgs {
-	availablePreset: AvailablePresetDto
+	availablePreset: AvailablePresetDtoOutput
 	entryCount: number
-	srcBalance: CurrencyAmountDto
-	nativeBalance: CurrencyAmountDto
+	srcBalance: CurrencyAmountDtoOutput
+	nativeBalance: CurrencyAmountDtoOutput
 	quote: CheckoutQuote
 }
 
@@ -78,11 +78,11 @@ function isCrosschain(quote: CheckoutQuote): quote is CrosschainQuote {
 	return quote.kind === 'crosschain'
 }
 
-function isSufficient(insufficientAmounts: CurrencyAmountDto[]): boolean {
+function isSufficient(insufficientAmounts: CurrencyAmountDtoOutput[]): boolean {
 	return insufficientAmounts.length === 0
 }
 
-function entryTotalAmount(quote: CheckoutQuote): CurrencyAmountDto {
+function entryTotalAmount(quote: CheckoutQuote): CurrencyAmountDtoOutput {
 	return isDirect(quote) ? quote.amountIn : quote.quote.amountIn
 }
 
@@ -107,7 +107,9 @@ function expenses(quote: CheckoutQuote): Expense[] {
 	return [entryTotal, bridgeSwapCost, networkFee]
 }
 
-function findInsufficientBalances(args: CheckoutArgs): CurrencyAmountDto[] {
+function findInsufficientBalances(
+	args: CheckoutArgs,
+): CurrencyAmountDtoOutput[] {
 	const { srcBalance, nativeBalance, quote } = args
 
 	const { insufficientAmounts } = fundsBreakdown(expenses(quote), [
@@ -120,7 +122,7 @@ function findInsufficientBalances(args: CheckoutArgs): CurrencyAmountDto[] {
 
 function buildMessage(
 	args: CheckoutArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): FormattedString {
 	const { availablePreset, entryCount, srcBalance, quote } = args
 
@@ -187,7 +189,7 @@ function costLines(quote: CheckoutQuote): Line[] {
 
 function insufficientLines(
 	args: CheckoutArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): Line[] {
 	if (isSufficient(insufficientAmounts)) return []
 
@@ -201,7 +203,7 @@ function insufficientLines(
 }
 
 function insufficientCurrencyBlock(
-	balance: CurrencyAmountDto,
+	balance: CurrencyAmountDtoOutput,
 	allExpenses: Expense[],
 ): Line[] {
 	const { currency } = balance
@@ -213,7 +215,7 @@ function insufficientCurrencyBlock(
 		return sum + BigInt(amount.amount)
 	}, 0n)
 
-	const requiredAmount: CurrencyAmountDto = {
+	const requiredAmount: CurrencyAmountDtoOutput = {
 		currency,
 		amount: required.toString(),
 	}
@@ -228,7 +230,7 @@ function insufficientCurrencyBlock(
 
 function buildKeyboard(
 	args: CheckoutArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 

@@ -1,4 +1,4 @@
-import { ChainAddressDto } from '@rips/api-client'
+import { ChainAddressDtoOutput } from '@rips/api-client'
 import { isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
 import { nativeChainAddress, SUPPORTED_CHAINS } from '../../../constants'
@@ -8,14 +8,12 @@ import { EffectType, HandlerResult } from '../../../types'
 import { fetchBalances, getBalance } from '../../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
-export const openSwapChooseDstChain: ActionDef<ChainAddressDto> = withPayload(
-	currencyChainAddressCodec,
-	handler,
-)
+export const openSwapChooseDstChain: ActionDef<ChainAddressDtoOutput> =
+	withPayload(currencyChainAddressCodec, handler)
 
 async function handler(
 	session: SessionData<Flow>,
-	srcChainAddress: ChainAddressDto,
+	srcChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	const dstChains = [...SUPPORTED_CHAINS]
 
@@ -56,7 +54,7 @@ async function handler(
 }
 
 async function getBalances(
-	srcChainAddress: ChainAddressDto,
+	srcChainAddress: ChainAddressDtoOutput,
 	telegramId: string,
 ) {
 	const nativeChainAddressDto = nativeChainAddress(srcChainAddress.chain)

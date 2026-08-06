@@ -1,4 +1,4 @@
-import { ChainAddressDto, CurrencyDto } from '@rips/api-client'
+import { ChainAddressDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
@@ -14,9 +14,9 @@ interface ChooseChainParams<T> {
 
 interface ChooseCurrencyParams<T> {
 	lines: Line[]
-	currencies: CurrencyDto[]
+	currencies: CurrencyDtoOutput[]
 	currencyActionId: ActionId<T>
-	currencyPayload: (currency: CurrencyDto) => T
+	currencyPayload: (currency: CurrencyDtoOutput) => T
 	nav: NavIds
 }
 
@@ -69,8 +69,8 @@ export function appendChainButtonRows(
 }
 
 export function buildCurrencyKeyboard(
-	currencies: CurrencyDto[],
-	onCurrencySelectedActionId: ActionId<ChainAddressDto>,
+	currencies: CurrencyDtoOutput[],
+	onCurrencySelectedActionId: ActionId<ChainAddressDtoOutput>,
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
@@ -81,8 +81,8 @@ export function buildCurrencyKeyboard(
 
 export function appendCurrencyButtonRows(
 	keyboard: InlineKeyboard,
-	currencies: CurrencyDto[],
-	onCurrencySelectedActionId: ActionId<ChainAddressDto>,
+	currencies: CurrencyDtoOutput[],
+	onCurrencySelectedActionId: ActionId<ChainAddressDtoOutput>,
 ) {
 	currencies.forEach((currency) => {
 		keyboard
@@ -118,7 +118,9 @@ export function buildChooseCurrencyPage<T>(
 	return { message: joinLines(lines), keyboard }
 }
 
-export function chainBreadcrumbSegment(currencies: CurrencyDto[]): string {
+export function chainBreadcrumbSegment(
+	currencies: CurrencyDtoOutput[],
+): string {
 	const first = currencies[0]
 
 	if (first === undefined) throw new Error('No currencies provided')

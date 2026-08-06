@@ -3,7 +3,7 @@ import {
 	BuyEntriesZapResponseDtoOutput,
 	BuyEntriesZapSamechainResponseDtoOutput,
 	GetZapResultResponseDtoOutput,
-	RipDto,
+	RipDtoOutput,
 } from '@rips/api-client'
 import { Chain } from '../../types'
 import {
@@ -24,20 +24,20 @@ type ZapSuccess = NonNullable<GetZapResultResponseDtoOutput['success']>
 interface DirectResult {
 	kind: 'direct'
 	result: BuyEntriesPurchaseResponseDtoOutput
-	rip: RipDto
+	rip: RipDtoOutput
 }
 
 interface SamechainResult {
 	kind: 'samechain'
 	result: BuyEntriesZapSamechainResponseDtoOutput
-	rip: RipDto
+	rip: RipDtoOutput
 }
 
 interface CrosschainResult {
 	kind: 'crosschain'
 	submit: BuyEntriesZapResponseDtoOutput
 	result: ZapSuccess
-	rip: RipDto
+	rip: RipDtoOutput
 }
 
 type SingleChainResult = DirectResult | SamechainResult
@@ -76,7 +76,7 @@ export const EnterSuccessPage = {
 	},
 }
 
-function entryTotalLine(rip: RipDto, entryCount: number): string {
+function entryTotalLine(rip: RipDtoOutput, entryCount: number): string {
 	const { entryPrice } = rip.config
 
 	const total = BigInt(entryCount) * BigInt(entryPrice.amount)

@@ -1,6 +1,6 @@
 import {
-	CurrencyAmountDto,
-	CurrencyDto,
+	CurrencyAmountDtoOutput,
+	CurrencyDtoOutput,
 	QuoteWithdrawResponseDtoOutput,
 } from '@rips/api-client'
 import {
@@ -30,15 +30,15 @@ const NOT_SET = 'Not set'
 
 interface PendingArgs {
 	kind: 'pending'
-	currencyBalance: CurrencyAmountDto
+	currencyBalance: CurrencyAmountDtoOutput
 	amount?: bigint
 	recipientAddress?: string
 }
 
 interface QuotedArgs {
 	kind: 'quoted'
-	currencyBalance: CurrencyAmountDto
-	nativeBalance: CurrencyAmountDto
+	currencyBalance: CurrencyAmountDtoOutput
+	nativeBalance: CurrencyAmountDtoOutput
 	amount: bigint
 	recipientAddress: string
 	withdrawQuote: QuoteWithdrawResponseDtoOutput
@@ -47,8 +47,10 @@ interface QuotedArgs {
 export type WithdrawArgs = PendingArgs | QuotedArgs
 
 type ResolvedArgs =
-	| (Omit<PendingArgs, 'amount'> & { currencyAmount?: CurrencyAmountDto })
-	| (Omit<QuotedArgs, 'amount'> & { currencyAmount: CurrencyAmountDto })
+	| (Omit<PendingArgs, 'amount'> & {
+			currencyAmount?: CurrencyAmountDtoOutput
+	  })
+	| (Omit<QuotedArgs, 'amount'> & { currencyAmount: CurrencyAmountDtoOutput })
 
 export const WithdrawPage = {
 	render(args: WithdrawArgs): PageContent {
@@ -85,7 +87,9 @@ function isEmptyBalance(args: ResolvedArgs): boolean {
 	return args.kind === 'pending' && BigInt(args.currencyBalance.amount) === 0n
 }
 
-function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
+function findInsufficientBalances(
+	args: ResolvedArgs,
+): CurrencyAmountDtoOutput[] {
 	if (args.kind === 'pending') return []
 
 	const { currencyBalance, nativeBalance, currencyAmount, withdrawQuote } =
@@ -102,13 +106,13 @@ function findInsufficientBalances(args: ResolvedArgs): CurrencyAmountDto[] {
 	return insufficientAmounts
 }
 
-function isSufficientAmounts(insufficientAmounts: CurrencyAmountDto[]) {
+function isSufficientAmounts(insufficientAmounts: CurrencyAmountDtoOutput[]) {
 	return insufficientAmounts.length === 0
 }
 
 function buildMessage(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): FormattedString {
 	const { currencyBalance, currencyAmount, recipientAddress } = args
 
@@ -155,7 +159,7 @@ function recipientLines(recipientAddress: string | undefined): Line[] {
 
 function tailLines(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): Line[] {
 	if (isEmptyBalance(args)) {
 		const { currency } = args.currencyBalance
@@ -177,7 +181,7 @@ function tailLines(
 
 function insufficientLines(
 	args: Extract<ResolvedArgs, { kind: 'quoted' }>,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): Line[] {
 	const { currencyAmount, nativeBalance } = args
 
@@ -199,19 +203,19 @@ function insufficientLines(
 }
 
 function isAmountInsufficient(
-	currencyAmount: CurrencyAmountDto,
-	insufficientAmounts: CurrencyAmountDto[],
+	currencyAmount: CurrencyAmountDtoOutput,
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): boolean {
 	return insufficientAmounts.some(
 		(balance) => balance.currency.id === currencyAmount.currency.id,
 	)
 }
 
-function currencyLabel(currency: CurrencyDto): string {
+function currencyLabel(currency: CurrencyDtoOutput): string {
 	return `${currencyToChainName(currency)} ${currency.symbol}`
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`
@@ -219,7 +223,7 @@ function formatAmount(amount: CurrencyAmountDto): string {
 
 function buildKeyboard(
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const { currencyBalance } = args
 	const chain = currencyToChain(currencyBalance.currency)
@@ -263,7 +267,7 @@ function buildKeyboard(
 function appendDepositButton(
 	keyboard: InlineKeyboard,
 	args: ResolvedArgs,
-	insufficientAmounts: CurrencyAmountDto[],
+	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): void {
 	if (args.kind === 'pending') return
 	if (isSufficientAmounts(insufficientAmounts)) return

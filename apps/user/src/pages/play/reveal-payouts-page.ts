@@ -1,4 +1,4 @@
-import { PayoutDto } from '@rips/api-client'
+import { PayoutDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -9,7 +9,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-function buildRevealPayoutsContent(unrevealedPayouts: PayoutDto[]): {
+function buildRevealPayoutsContent(unrevealedPayouts: PayoutDtoOutput[]): {
 	lines: Line[]
 	keyboard: InlineKeyboard
 } {
@@ -43,7 +43,7 @@ function buildRevealPayoutsContent(unrevealedPayouts: PayoutDto[]): {
 }
 
 export const RevealPayoutsPage = {
-	render(unrevealedPayouts: PayoutDto[]): PageContent {
+	render(unrevealedPayouts: PayoutDtoOutput[]): PageContent {
 		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
 		keyboard.appendNavButtons({
@@ -56,7 +56,7 @@ export const RevealPayoutsPage = {
 }
 
 export const RevealPayoutsNoBackPage = {
-	render(unrevealedPayouts: PayoutDto[]): PageContent {
+	render(unrevealedPayouts: PayoutDtoOutput[]): PageContent {
 		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
 
 		keyboard.row().appendHomeButton()

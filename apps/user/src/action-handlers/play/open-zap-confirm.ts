@@ -1,4 +1,4 @@
-import { ChainAddressDto } from '@rips/api-client'
+import { ChainAddressDtoOutput } from '@rips/api-client'
 import { assertFlow, HandlerResult } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../action-def'
 import { Flow, toStep } from '../../flows'
@@ -10,7 +10,7 @@ import { ripsControllerQuoteZap } from './zap-api-stub'
 
 async function buildZapCheckout(
 	session: SessionData<Flow>,
-	currencyChainAddress: ChainAddressDto,
+	currencyChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	assertFlow(session, 'enter', 'entry-count-chosen', 'zap-currency-chosen')
 
@@ -68,7 +68,7 @@ async function buildZapCheckout(
 	}
 }
 
-export const openZapCheckout: ActionDef<ChainAddressDto> = withPayload(
+export const openZapCheckout: ActionDef<ChainAddressDtoOutput> = withPayload(
 	currencyChainAddressCodec,
 	(session, currencyChainAddress) =>
 		buildZapCheckout(session, currencyChainAddress),

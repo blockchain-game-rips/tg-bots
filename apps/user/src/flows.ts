@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { createFlowTransitions } from '@rips/grammy-kit'
 
 export type EnterFlow =
@@ -18,7 +18,7 @@ export type EnterFlow =
 			data: {
 				presetId: number
 				entryCount: number
-				currency: CurrencyDto
+				currency: CurrencyDtoOutput
 			}
 	  }
 
@@ -26,8 +26,8 @@ export interface WithdrawFlow {
 	flowType: 'withdraw'
 	step: 'withdraw-page'
 	data: {
-		currencyBalance: CurrencyAmountDto
-		nativeBalance: CurrencyAmountDto
+		currencyBalance: CurrencyAmountDtoOutput
+		nativeBalance: CurrencyAmountDtoOutput
 		amount?: bigint
 		recipientAddress?: string
 	}
@@ -38,26 +38,26 @@ export type SwapFlow =
 			flowType: 'swap'
 			step: 'src-chosen'
 			data: {
-				srcCurrencyBalance: CurrencyAmountDto
-				nativeCurrencyBalance: CurrencyAmountDto
+				srcCurrencyBalance: CurrencyAmountDtoOutput
+				nativeCurrencyBalance: CurrencyAmountDtoOutput
 			}
 	  }
 	| {
 			flowType: 'swap'
 			step: 'src-dst-chosen'
 			data: {
-				srcCurrencyBalance: CurrencyAmountDto
-				nativeCurrencyBalance: CurrencyAmountDto
-				dstCurrency: CurrencyDto
+				srcCurrencyBalance: CurrencyAmountDtoOutput
+				nativeCurrencyBalance: CurrencyAmountDtoOutput
+				dstCurrency: CurrencyDtoOutput
 			}
 	  }
 	| {
 			flowType: 'swap'
 			step: 'src-dst-amount-chosen'
 			data: {
-				srcCurrencyBalance: CurrencyAmountDto
-				nativeCurrencyBalance: CurrencyAmountDto
-				dstCurrency: CurrencyDto
+				srcCurrencyBalance: CurrencyAmountDtoOutput
+				nativeCurrencyBalance: CurrencyAmountDtoOutput
+				dstCurrency: CurrencyDtoOutput
 				amountIn: bigint
 			}
 	  }

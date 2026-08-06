@@ -1,4 +1,4 @@
-import { AvailablePresetDto, CurrencyDto } from '@rips/api-client'
+import { AvailablePresetDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -8,8 +8,8 @@ import { buildChooseCurrencyPage } from '../choose-chain-currency'
 
 export const ZapChooseTokenPage = {
 	render(args: {
-		availablePreset: AvailablePresetDto
-		currencies: CurrencyDto[]
+		availablePreset: AvailablePresetDtoOutput
+		currencies: CurrencyDtoOutput[]
 	}): PageContent {
 		const { availablePreset, currencies } = args
 		const config = resolveConfig(availablePreset)

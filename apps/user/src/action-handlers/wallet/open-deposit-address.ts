@@ -1,4 +1,4 @@
-import { ChainAddressDto, usersControllerGetUser } from '@rips/api-client'
+import { ChainAddressDtoOutput, usersControllerGetUser } from '@rips/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { Flow, toHold } from '../../flows'
 import { DepositAddressPage } from '../../pages/wallet/deposit-address-page'
@@ -10,7 +10,7 @@ import { evmAddressFromUser } from '../../utils/wallet'
 
 async function renderDepositAddress(
 	telegramId: string,
-	currencyChainAddress: ChainAddressDto,
+	currencyChainAddress: ChainAddressDtoOutput,
 	showQr: boolean,
 ): Promise<HandlerResult<Flow>> {
 	const [balance, { data: user }] = await Promise.all([
@@ -31,14 +31,13 @@ async function renderDepositAddress(
 	}
 }
 
-export const openDepositAddress: ActionDef<ChainAddressDto> = withPayload(
+export const openDepositAddress: ActionDef<ChainAddressDtoOutput> = withPayload(
 	currencyChainAddressCodec,
 	(session, currencyChainAddress) =>
 		renderDepositAddress(session.telegramId, currencyChainAddress, false),
 )
 
-export const openDepositAddressQr: ActionDef<ChainAddressDto> = withPayload(
-	currencyChainAddressCodec,
-	(session, currencyChainAddress) =>
+export const openDepositAddressQr: ActionDef<ChainAddressDtoOutput> =
+	withPayload(currencyChainAddressCodec, (session, currencyChainAddress) =>
 		renderDepositAddress(session.telegramId, currencyChainAddress, true),
-)
+	)

@@ -1,5 +1,5 @@
 import { groupRipStatus, parseRipId, RipStatusGroup } from '@rips/shared'
-import { RipDto, usersControllerGetUser } from '@rips/api-client'
+import { RipDtoOutput, usersControllerGetUser } from '@rips/api-client'
 import { ActionDef, withPayload } from '../../action-def'
 import { toReset } from '../../flows'
 import {
@@ -40,7 +40,7 @@ export const openRipStatus: ActionDef<number> = withPayload(
 )
 
 async function buildVariant(
-	rip: RipDto,
+	rip: RipDtoOutput,
 	userAddress: string,
 	telegramId: string,
 ): Promise<RipDetailVariant> {

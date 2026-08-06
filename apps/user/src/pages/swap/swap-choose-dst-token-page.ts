@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -9,9 +9,9 @@ import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildCurrencyKeyboard } from '../choose-chain-currency'
 
 interface Draft {
-	srcBalance: CurrencyAmountDto
+	srcBalance: CurrencyAmountDtoOutput
 	dstChain: Chain
-	dstCurrencies: CurrencyDto[]
+	dstCurrencies: CurrencyDtoOutput[]
 }
 
 export const SwapChooseDstTokenPage = {
@@ -56,13 +56,13 @@ function buildMessage(draft: Draft, amountIn?: bigint): FormattedString {
 	return joinLines(lines)
 }
 
-function amountLine(amount?: CurrencyAmountDto): string[] {
+function amountLine(amount?: CurrencyAmountDtoOutput): string[] {
 	if (amount === undefined) return []
 
 	return [`Amount: ${formatAmount(amount)}`]
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`
@@ -81,7 +81,9 @@ function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
 	})
 }
 
-function buildDraftEditKeyboard(dstCurrencies: CurrencyDto[]): InlineKeyboard {
+function buildDraftEditKeyboard(
+	dstCurrencies: CurrencyDtoOutput[],
+): InlineKeyboard {
 	const keyboard = buildCurrencyKeyboard(
 		dstCurrencies,
 		actionIds.openSwapCheckoutFromDst,

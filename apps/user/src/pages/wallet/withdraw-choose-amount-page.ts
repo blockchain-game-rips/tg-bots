@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -8,7 +8,7 @@ import { chainToName, currencyToChain } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawChooseAmountPage = {
-	render(balance: CurrencyAmountDto): PageContent {
+	render(balance: CurrencyAmountDtoOutput): PageContent {
 		const { currency } = balance
 		const chain = currencyToChain(currency)
 

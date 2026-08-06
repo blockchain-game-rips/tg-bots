@@ -1,4 +1,8 @@
-import { AvailablePresetDto, CurrencyAmountDto, RipDto } from '@rips/api-client'
+import {
+	AvailablePresetDtoOutput,
+	CurrencyAmountDtoOutput,
+	RipDtoOutput,
+} from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -28,20 +32,20 @@ const READY_HINT = 'Starts when first entry is made'
 interface ReadyEntry {
 	kind: 'ready'
 	presetId: number
-	entryPrice: CurrencyAmountDto
+	entryPrice: CurrencyAmountDtoOutput
 }
 
 interface RipEntry {
 	kind: 'rip'
-	rip: RipDto
-	entryPrice: CurrencyAmountDto
+	rip: RipDtoOutput
+	entryPrice: CurrencyAmountDtoOutput
 }
 
 type Entry = ReadyEntry | RipEntry
 
 export interface OngoingRipsPageArgs {
-	availablePresets: AvailablePresetDto[]
-	ongoingRips: RipDto[]
+	availablePresets: AvailablePresetDtoOutput[]
+	ongoingRips: RipDtoOutput[]
 }
 
 export const OngoingRipsPage = {
@@ -83,10 +87,10 @@ function toEntries(args: OngoingRipsPageArgs): Entry[] {
 	return [...presetEntries, ...settlingEntries]
 }
 
-function toPresetEntry(availablePreset: AvailablePresetDto): Entry {
-	const { fillingRip } = availablePreset
+function toPresetEntry(availablePreset: AvailablePresetDtoOutput): Entry {
+	if (availablePreset.availability === 'LIVE') {
+		const { fillingRip } = availablePreset
 
-	if (fillingRip) {
 		return {
 			kind: 'rip',
 			rip: fillingRip,
@@ -122,7 +126,7 @@ function readyLines(entry: ReadyEntry): Line[] {
 	]
 }
 
-function ripLines(rip: RipDto): Line[] {
+function ripLines(rip: RipDtoOutput): Line[] {
 	const group = groupRipStatus(rip.status)
 
 	const lines: Line[] = [

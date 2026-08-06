@@ -1,4 +1,4 @@
-import { PayoutDto, RipDto } from '@rips/api-client'
+import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -14,9 +14,9 @@ import { tierName } from '../../utils/tiers'
 
 export const RevealSinglePage = {
 	render(
-		rip: RipDto,
-		revealedPayout: PayoutDto,
-		unrevealedPayouts: PayoutDto[],
+		rip: RipDtoOutput,
+		revealedPayout: PayoutDtoOutput,
+		unrevealedPayouts: PayoutDtoOutput[],
 	): PageContent {
 		const payoutCurrencyAmount = {
 			amount: revealedPayout.payoutAmount,

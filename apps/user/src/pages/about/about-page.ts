@@ -1,11 +1,11 @@
-import { ConfigDto } from '@rips/api-client'
+import { ConfigDtoOutput } from '@rips/api-client'
 import { fmt, FormattedString, joinLines } from '@rips/grammy-kit'
 import { configName, toShortDurationFormat } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-function renderConfig(config: ConfigDto): FormattedString {
+function renderConfig(config: ConfigDtoOutput): FormattedString {
 	return joinLines([
 		fmt`🎮 ${FormattedString.b(configName(config))}`,
 		`⏱ Duration: ${toShortDurationFormat(config.durationSeconds)}`,
@@ -14,7 +14,7 @@ function renderConfig(config: ConfigDto): FormattedString {
 }
 
 export const AboutPage = {
-	render(configs: ConfigDto[]): PageContent {
+	render(configs: ConfigDtoOutput[]): PageContent {
 		const sections = configs.map((config) => renderConfig(config))
 
 		const lines = [

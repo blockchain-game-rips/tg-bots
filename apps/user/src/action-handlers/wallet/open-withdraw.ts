@@ -1,6 +1,6 @@
 import {
-	ChainAddressDto,
-	CurrencyAmountDto,
+	ChainAddressDtoOutput,
+	CurrencyAmountDtoOutput,
 	walletsControllerQuoteWithdraw,
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
@@ -24,15 +24,14 @@ import {
 import { isFlow } from '@rips/grammy-kit'
 
 interface WithdrawDraft {
-	currencyBalance: CurrencyAmountDto
-	nativeBalance: CurrencyAmountDto
+	currencyBalance: CurrencyAmountDtoOutput
+	nativeBalance: CurrencyAmountDtoOutput
 	amount?: bigint
 	recipientAddress?: string
 }
 
-export const openWithdrawFromCurrency: ActionDef<ChainAddressDto> = withPayload(
-	currencyChainAddressCodec,
-	async (session, chainAddress) => {
+export const openWithdrawFromCurrency: ActionDef<ChainAddressDtoOutput> =
+	withPayload(currencyChainAddressCodec, async (session, chainAddress) => {
 		const balances = await fetchCurrencyAndNativeBalances(
 			session.telegramId,
 			chainAddress,
@@ -45,8 +44,7 @@ export const openWithdrawFromCurrency: ActionDef<ChainAddressDto> = withPayload(
 		}
 
 		return renderWithdraw(session.telegramId, { ...balances })
-	},
-)
+	})
 
 export const openWithdrawFromAmount: ActionDef<AmountPayload> = withPayload(
 	amountCodec,
@@ -86,7 +84,7 @@ export const openWithdrawFromRecipient: ActionDef<string> = withPayload(
 async function resolveAmount(
 	telegramId: string,
 	amountPayload: AmountPayload,
-	currencyBalance: CurrencyAmountDto,
+	currencyBalance: CurrencyAmountDtoOutput,
 	recipientAddress: string | undefined,
 ): Promise<bigint> {
 	const { currency } = currencyBalance
@@ -106,7 +104,7 @@ async function resolveAmount(
 
 async function resolveNativeMaxAmount(
 	telegramId: string,
-	currencyBalance: CurrencyAmountDto,
+	currencyBalance: CurrencyAmountDtoOutput,
 	recipientAddress: string | undefined,
 ): Promise<bigint> {
 	const balance = BigInt(currencyBalance.amount)
@@ -174,7 +172,7 @@ async function renderWithdraw(
 
 async function quoteWithdraw(
 	telegramId: string,
-	amountIn: CurrencyAmountDto,
+	amountIn: CurrencyAmountDtoOutput,
 	recipientAddress: string,
 ) {
 	const { data } = await walletsControllerQuoteWithdraw({
@@ -194,7 +192,7 @@ async function quoteWithdraw(
 
 async function fetchCurrencyAndNativeBalances(
 	telegramId: string,
-	chainAddress: ChainAddressDto,
+	chainAddress: ChainAddressDtoOutput,
 ): Promise<WithdrawDraft> {
 	const nativeChainAddressDto = nativeChainAddress(chainAddress.chain)
 

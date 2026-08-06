@@ -1,4 +1,4 @@
-import { CurrencyDto } from '@rips/api-client'
+import { CurrencyDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -18,8 +18,8 @@ export const SwapChooseSrcChainPage = {
 
 	renderDraftEdit(args: {
 		chains: Chain[]
-		srcCurrency: CurrencyDto
-		dstCurrency: CurrencyDto
+		srcCurrency: CurrencyDtoOutput
+		dstCurrency: CurrencyDtoOutput
 		amountIn: bigint
 	}): PageContent {
 		const { chains, srcCurrency, dstCurrency, amountIn } = args
@@ -46,8 +46,8 @@ function buildMessage(contextLines: string[]): FormattedString {
 }
 
 function draftLines(
-	srcCurrency: CurrencyDto,
-	dstCurrency: CurrencyDto,
+	srcCurrency: CurrencyDtoOutput,
+	dstCurrency: CurrencyDtoOutput,
 	amountIn: bigint,
 ): string[] {
 	const amount = toCurrencyAmount(amountIn, srcCurrency)

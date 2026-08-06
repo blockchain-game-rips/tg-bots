@@ -1,4 +1,4 @@
-import { RipDto } from '@rips/api-client'
+import { RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -19,11 +19,11 @@ import { addRipDetailsButtons } from '../../utils/rip-details-buttons'
 const COMPLETED_LABEL = '✅ Completed'
 const REFUNDED_LABEL = '↩️ Refunded'
 
-function isCompleted(rip: RipDto): boolean {
+function isCompleted(rip: RipDtoOutput): boolean {
 	return groupRipStatus(rip.status) === RipStatusGroup.COMPLETED
 }
 
-function ripLines(rip: RipDto): Line[] {
+function ripLines(rip: RipDtoOutput): Line[] {
 	const lines: Line[] = [
 		fmt`🎮 ${FormattedString.b(`Rip #${rip.id.toString()}`)}`,
 		`Entry level: ${formatAmountWithUsd(rip.config.entryPrice)}`,
@@ -40,7 +40,10 @@ function ripLines(rip: RipDto): Line[] {
 	return lines
 }
 
-function buildKeyboard(rips: RipDto[], mineOnly: boolean): InlineKeyboard {
+function buildKeyboard(
+	rips: RipDtoOutput[],
+	mineOnly: boolean,
+): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	addRipDetailsButtons(keyboard, rips)
@@ -57,7 +60,7 @@ function buildKeyboard(rips: RipDto[], mineOnly: boolean): InlineKeyboard {
 }
 
 export const FinalizedRipsPage = {
-	render(rips: RipDto[], mineOnly: boolean): PageContent {
+	render(rips: RipDtoOutput[], mineOnly: boolean): PageContent {
 		const lines: Line[] = [
 			fmt`🏁 ${FormattedString.b('Last Finalized Rips')}`,
 		]

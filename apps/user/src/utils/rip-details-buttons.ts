@@ -1,4 +1,4 @@
-import { RipDto } from '@rips/api-client'
+import { RipDtoOutput } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
@@ -7,7 +7,7 @@ const DETAILS_BUTTONS_PER_ROW = 2
 
 export function addRipDetailsButtons(
 	keyboard: InlineKeyboard,
-	rips: RipDto[],
+	rips: RipDtoOutput[],
 ): InlineKeyboard {
 	rips.forEach((rip, index) => {
 		keyboard.text(

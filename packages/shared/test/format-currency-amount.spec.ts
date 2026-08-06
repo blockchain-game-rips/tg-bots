@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import { currencyAmountDisplayParts } from '@rips/shared'
 
 function makeCurrencyAmount(
@@ -6,14 +6,14 @@ function makeCurrencyAmount(
 	decimals: number,
 	priceUsd: number,
 	symbol: string,
-): CurrencyAmountDto {
+): CurrencyAmountDtoOutput {
 	return {
 		amount,
 		currency: {
 			decimals,
 			priceUsd,
 			symbol,
-		} as CurrencyAmountDto['currency'],
+		} as CurrencyAmountDtoOutput['currency'],
 	}
 }
 

@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line, NavIds } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -10,7 +10,7 @@ import { buildChainKeyboard } from '../choose-chain-currency'
 
 export const SwapChooseDstChainPage = {
 	renderFreshDraft(args: {
-		srcBalance: CurrencyAmountDto
+		srcBalance: CurrencyAmountDtoOutput
 		dstChains: Chain[]
 	}): PageContent {
 		const { srcBalance, dstChains } = args
@@ -28,7 +28,7 @@ export const SwapChooseDstChainPage = {
 	},
 
 	renderDraftEdit(args: {
-		srcBalance: CurrencyAmountDto
+		srcBalance: CurrencyAmountDtoOutput
 		dstChains: Chain[]
 		amountIn: bigint
 	}): PageContent {
@@ -47,7 +47,7 @@ export const SwapChooseDstChainPage = {
 }
 
 function buildMessage(
-	srcBalance: CurrencyAmountDto,
+	srcBalance: CurrencyAmountDtoOutput,
 	amountIn?: bigint,
 ): FormattedString {
 	const srcCurrency = srcBalance.currency
@@ -75,7 +75,7 @@ function buildMessage(
 	return joinLines(lines)
 }
 
-function amountLines(amount?: CurrencyAmountDto): string[] {
+function amountLines(amount?: CurrencyAmountDtoOutput): string[] {
 	if (amount === undefined) return []
 
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)

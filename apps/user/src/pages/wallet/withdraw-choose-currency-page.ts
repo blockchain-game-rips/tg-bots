@@ -1,4 +1,4 @@
-import { CurrencyDto } from '@rips/api-client'
+import { CurrencyDtoOutput } from '@rips/api-client'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
@@ -8,7 +8,7 @@ import {
 } from '../choose-chain-currency'
 
 export const WithdrawChooseCurrencyPage = {
-	render(currencies: CurrencyDto[]): PageContent {
+	render(currencies: CurrencyDtoOutput[]): PageContent {
 		return buildChooseCurrencyPage({
 			lines: [
 				withdrawBreadcrumb(chainBreadcrumbSegment(currencies)),

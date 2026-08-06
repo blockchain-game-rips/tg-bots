@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -14,9 +14,9 @@ import { currencyToChainName } from '../../utils/chain'
 import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
 export interface ClaimRewardArgs {
-	reward: CurrencyAmountDto
-	nativeBalance: CurrencyAmountDto
-	blockchainFee: CurrencyAmountDto
+	reward: CurrencyAmountDtoOutput
+	nativeBalance: CurrencyAmountDtoOutput
+	blockchainFee: CurrencyAmountDtoOutput
 }
 
 export const ClaimRewardPage = {
@@ -63,11 +63,11 @@ function buildMessage(
 	return joinLines(lines)
 }
 
-function currencyLabel(currency: CurrencyDto): string {
+function currencyLabel(currency: CurrencyDtoOutput): string {
 	return `${currencyToChainName(currency)} ${currency.symbol}`
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`

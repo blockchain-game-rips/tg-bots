@@ -1,3 +1,4 @@
+import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../action-def'
 import { toReset } from '../flows'
 import { AboutPage } from '../pages/about/about-page'
@@ -7,9 +8,7 @@ import { fetchPresets } from '../utils/api/wrappers'
 export const openAbout: ActionDef<void> = noPayload(async () => {
 	const availablePresets = await fetchPresets()
 
-	const configs = availablePresets
-		.map((s) => s.fillingRip?.config ?? s.preset.currentConfig)
-		.filter((config) => config !== null)
+	const configs = availablePresets.map(resolveConfig)
 
 	return {
 		flow: toReset(),

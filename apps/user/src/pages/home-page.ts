@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -15,7 +15,7 @@ const WELCOME_HEADER = fmt`👋 ${FormattedString.b('Welcome to Rips')}`
 
 interface HomePageArgs {
 	unopenedPulls: number
-	baseBalance: CurrencyAmountDto
+	baseBalance: CurrencyAmountDtoOutput
 	referralFee: number
 }
 

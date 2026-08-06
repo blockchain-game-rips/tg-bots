@@ -1,4 +1,7 @@
-import { ChainAddressDto, GetReferrerResponseDtoOutput } from '@rips/api-client'
+import {
+	ChainAddressDtoOutput,
+	GetReferrerResponseDtoOutput,
+} from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../constants'
 import { isSameChainAddress } from '../utils/currency'
 
@@ -6,7 +9,7 @@ type ReferrerState = GetReferrerResponseDtoOutput['states'][number]
 
 // A missing entry is a broken API contract, not a state a user can reach.
 export function findNativeOnBase<
-	T extends { currency: { chainAddress: ChainAddressDto } },
+	T extends { currency: { chainAddress: ChainAddressDtoOutput } },
 >(candidates: T[], description: string): T {
 	const match = candidates.find((candidate) =>
 		isSameChainAddress(candidate.currency.chainAddress, NATIVE_ON_BASE),

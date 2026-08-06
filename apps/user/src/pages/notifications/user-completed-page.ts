@@ -1,4 +1,4 @@
-import { RipDto } from '@rips/api-client'
+import { RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	fmt,
@@ -11,7 +11,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
 export const UserCompletedRipPage = {
-	render(rip: RipDto): PageContent {
+	render(rip: RipDtoOutput): PageContent {
 		const preset = configName(rip.config)
 
 		const lines = [

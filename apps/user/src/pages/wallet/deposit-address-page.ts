@@ -1,4 +1,4 @@
-import { CurrencyAmountDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -13,7 +13,7 @@ import { chainToName, currencyToChain } from '../../utils/chain'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface RenderArgs {
-	balance: CurrencyAmountDto
+	balance: CurrencyAmountDtoOutput
 	depositAddress: string
 	qr?: InputFile
 }

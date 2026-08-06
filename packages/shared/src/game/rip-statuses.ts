@@ -1,9 +1,12 @@
-import { RipDto } from '@rips/api-client'
+import { RipDtoOutput } from '@rips/api-client'
 import { sameEvmAddress } from '../validation/evm-address'
 
 const MILLISECONDS_PER_SECOND = 1000
 
-export function entryCountFor(rip: RipDto, userEvmAddress: string): number {
+export function entryCountFor(
+	rip: RipDtoOutput,
+	userEvmAddress: string,
+): number {
 	return rip.actions.purchases
 		.filter((purchase) =>
 			sameEvmAddress(purchase.userAddress, userEvmAddress),
@@ -11,14 +14,14 @@ export function entryCountFor(rip: RipDto, userEvmAddress: string): number {
 		.reduce((sum, purchase) => sum + purchase.entryCount, 0)
 }
 
-export function soldEntriesFor(rip: RipDto): number {
+export function soldEntriesFor(rip: RipDtoOutput): number {
 	return rip.actions.purchases.reduce(
 		(sum, purchase) => sum + purchase.entryCount,
 		0,
 	)
 }
 
-export function secondsUntilRipClose(rip: RipDto): number {
+export function secondsUntilRipClose(rip: RipDtoOutput): number {
 	const closesAt =
 		new Date(rip.startTime).getTime() +
 		rip.config.durationSeconds * MILLISECONDS_PER_SECOND
@@ -38,7 +41,7 @@ export enum RipStatusGroup {
 	REFUNDED = 'REFUNDED',
 }
 
-export function groupRipStatus(status: RipDto['status']): RipStatusGroup {
+export function groupRipStatus(status: RipDtoOutput['status']): RipStatusGroup {
 	switch (status) {
 		case 'FILLING':
 			return RipStatusGroup.FILLING
@@ -65,7 +68,7 @@ export const RIP_STATUS_LABEL: Record<RipStatusGroup, string> = {
 	[RipStatusGroup.REFUNDED]: '↩️ Refunded',
 }
 
-export function isFinalized(status: RipDto['status']): boolean {
+export function isFinalized(status: RipDtoOutput['status']): boolean {
 	const group = groupRipStatus(status)
 
 	return (

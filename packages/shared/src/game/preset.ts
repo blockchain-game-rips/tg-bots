@@ -1,15 +1,14 @@
-import { AvailablePresetDto, ConfigDto } from '@rips/api-client'
+import { AvailablePresetDtoOutput, ConfigDtoOutput } from '@rips/api-client'
 import { formatUnits } from '../format/units'
 
-export function resolveConfig(availablePreset: AvailablePresetDto) {
-	if (availablePreset.fillingRip) return availablePreset.fillingRip.config
-	if (availablePreset.preset.currentConfig)
-		return availablePreset.preset.currentConfig
+export function resolveConfig(availablePreset: AvailablePresetDtoOutput) {
+	if (availablePreset.availability === 'LIVE')
+		return availablePreset.fillingRip.config
 
-	throw new Error('Config should be in fillingRip or preset.currentConfig')
+	return availablePreset.preset.currentConfig
 }
 
-export function configName(config: ConfigDto): string {
+export function configName(config: ConfigDtoOutput): string {
 	const { decimals, symbol } = config.entryPrice.currency
 
 	const formattedAmount = formatUnits(

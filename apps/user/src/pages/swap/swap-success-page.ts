@@ -1,5 +1,5 @@
 import {
-	CurrencyAmountDto,
+	CurrencyAmountDtoOutput,
 	GetSwapResultResponseDtoOutput,
 	SwapResponseDtoOutput,
 	SwapSamechainResponseDtoOutput,
@@ -42,11 +42,13 @@ export const SwapSuccessPage = {
 	},
 }
 
-function amountOut(result: SwapSuccessResult): CurrencyAmountDto {
+function amountOut(result: SwapSuccessResult): CurrencyAmountDtoOutput {
 	return result.result.amountOut
 }
 
-function networkFee(result: SwapSuccessResult): CurrencyAmountDto | undefined {
+function networkFee(
+	result: SwapSuccessResult,
+): CurrencyAmountDtoOutput | undefined {
 	if (result.kind === 'samechain') return result.result.transaction.cost
 
 	return result.result.dstTransaction.cost
@@ -60,7 +62,7 @@ function networkFeeLines(result: SwapSuccessResult): string[] {
 	return ['Network fee:', formatAmount(cost), '']
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol, displayUsdAmount } =
 		currencyAmountDisplayParts(amount)
 

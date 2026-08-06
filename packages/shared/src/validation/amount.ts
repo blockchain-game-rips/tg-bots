@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { ErrorToRender } from '@rips/grammy-kit'
 import { z } from 'zod'
 import { parseUnits } from '../format/units'
@@ -10,8 +10,8 @@ const amountSchema = z
 
 export function parseCurrencyAmount(
 	payload: string | undefined,
-	currency: CurrencyDto,
-): CurrencyAmountDto {
+	currency: CurrencyDtoOutput,
+): CurrencyAmountDtoOutput {
 	const amountString = parsePayload(payload, amountSchema, 'Invalid amount')
 
 	let amount: string

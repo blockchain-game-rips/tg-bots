@@ -1,4 +1,4 @@
-import { CurrencyAmountDto, CurrencyDto } from '@rips/api-client'
+import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -14,8 +14,8 @@ import { currencyToChain, currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface Draft {
-	srcBalance: CurrencyAmountDto
-	dstCurrency: CurrencyDto
+	srcBalance: CurrencyAmountDtoOutput
+	dstCurrency: CurrencyDtoOutput
 }
 
 export const SwapChooseAmountPage = {
@@ -64,7 +64,7 @@ function buildMessage(draft: Draft): FormattedString {
 	return joinLines(lines)
 }
 
-function formatAmount(amount: CurrencyAmountDto): string {
+function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`

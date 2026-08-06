@@ -1,4 +1,4 @@
-import { AvailablePresetDto } from '@rips/api-client'
+import { AvailablePresetDtoOutput } from '@rips/api-client'
 import { buildActionData, fmt, FormattedString, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -16,7 +16,7 @@ interface PresetLevel {
 }
 
 export const EnterChoosePresetPage = {
-	render(availablePresets: AvailablePresetDto[]): PageContent {
+	render(availablePresets: AvailablePresetDtoOutput[]): PageContent {
 		const levels = toLevels(availablePresets)
 
 		return {
@@ -26,11 +26,14 @@ export const EnterChoosePresetPage = {
 	},
 }
 
-function toLevels(availablePresets: AvailablePresetDto[]): PresetLevel[] {
+function toLevels(availablePresets: AvailablePresetDtoOutput[]): PresetLevel[] {
 	return [...availablePresets].sort(byEntryPrice).map(toPresetLevel)
 }
 
-function byEntryPrice(a: AvailablePresetDto, b: AvailablePresetDto): number {
+function byEntryPrice(
+	a: AvailablePresetDtoOutput,
+	b: AvailablePresetDtoOutput,
+): number {
 	const amountA = BigInt(resolveConfig(a).entryPrice.amount)
 	const amountB = BigInt(resolveConfig(b).entryPrice.amount)
 
@@ -46,7 +49,7 @@ const LEVELS = [
 const DEFAULT_LEVEL = { emoji: '🔥', name: 'Rip' }
 
 function toPresetLevel(
-	availablePreset: AvailablePresetDto,
+	availablePreset: AvailablePresetDtoOutput,
 	index: number,
 ): PresetLevel {
 	const { emoji, name } = LEVELS[index] ?? DEFAULT_LEVEL

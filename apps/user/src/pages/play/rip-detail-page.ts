@@ -1,4 +1,4 @@
-import { PayoutDto, RipDto } from '@rips/api-client'
+import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -21,13 +21,13 @@ import { bestPull, bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
 
 interface BaseVariant {
-	rip: RipDto
+	rip: RipDtoOutput
 	userAddress: string
 }
 
 interface CompletedVariant extends BaseVariant {
 	group: RipStatusGroup.COMPLETED
-	payouts: PayoutDto[]
+	payouts: PayoutDtoOutput[]
 }
 
 interface OtherVariant extends BaseVariant {
@@ -53,7 +53,7 @@ export const RipDetailPage = {
 	},
 }
 
-function fmtHeader(rip: RipDto): FormattedString {
+function fmtHeader(rip: RipDtoOutput): FormattedString {
 	return FormattedString.b(`🎮 Rip #${rip.id.toString()}`)
 }
 

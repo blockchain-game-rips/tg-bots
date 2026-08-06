@@ -1,4 +1,7 @@
-import { AvailablePresetDto, CurrencyAmountDto } from '@rips/api-client'
+import {
+	AvailablePresetDtoOutput,
+	CurrencyAmountDtoOutput,
+} from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -11,9 +14,9 @@ import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const EnterChoosePaymentWalletPage = {
 	render(args: {
-		availablePreset: AvailablePresetDto
+		availablePreset: AvailablePresetDtoOutput
 		entryCount: number
-		balances: CurrencyAmountDto[]
+		balances: CurrencyAmountDtoOutput[]
 	}): PageContent {
 		const { availablePreset, entryCount, balances } = args
 
@@ -43,8 +46,8 @@ const WALLET_TITLE = '💳 Choose payment wallet'
 function buildMessage(
 	config: ReturnType<typeof resolveConfig>,
 	entryCount: number,
-	entryTotal: CurrencyAmountDto,
-	payableBalances: CurrencyAmountDto[],
+	entryTotal: CurrencyAmountDtoOutput,
+	payableBalances: CurrencyAmountDtoOutput[],
 ): ReturnType<typeof joinLines> {
 	const lines: Line[] = [
 		enterBreadcrumb(configName(config)),
@@ -69,9 +72,9 @@ function buildMessage(
 }
 
 function buildKeyboard(
-	availablePreset: AvailablePresetDto,
+	availablePreset: AvailablePresetDtoOutput,
 	entryCount: number,
-	payableBalances: CurrencyAmountDto[],
+	payableBalances: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
@@ -95,13 +98,16 @@ function buildKeyboard(
 	})
 }
 
-function payLabel(balance: CurrencyAmountDto): string {
+function payLabel(balance: CurrencyAmountDtoOutput): string {
 	const { chainAddress, symbol } = balance.currency
 
 	return `Pay with ${chainToName(chainAddress.chain)} ${symbol}`
 }
 
-function payActionData(balance: CurrencyAmountDto, entryCount: number): string {
+function payActionData(
+	balance: CurrencyAmountDtoOutput,
+	entryCount: number,
+): string {
 	if (isBaseNative(balance)) {
 		return buildActionData(actionIds.openEnterCheckout, entryCount)
 	}
@@ -112,18 +118,18 @@ function payActionData(balance: CurrencyAmountDto, entryCount: number): string {
 	)
 }
 
-function isPayable(balance: CurrencyAmountDto): boolean {
+function isPayable(balance: CurrencyAmountDtoOutput): boolean {
 	return isBaseNative(balance) || BigInt(balance.amount) > 0n
 }
 
-function isBaseNative(balance: CurrencyAmountDto): boolean {
+function isBaseNative(balance: CurrencyAmountDtoOutput): boolean {
 	return isSameChainAddress(balance.currency.chainAddress, NATIVE_ON_BASE)
 }
 
 function entryTotalAmount(
-	entryPrice: CurrencyAmountDto,
+	entryPrice: CurrencyAmountDtoOutput,
 	entryCount: number,
-): CurrencyAmountDto {
+): CurrencyAmountDtoOutput {
 	const total = BigInt(entryPrice.amount) * BigInt(entryCount)
 
 	return {

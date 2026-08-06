@@ -1,6 +1,6 @@
 import {
-	CurrencyAmountDto,
-	CurrencyDto,
+	CurrencyAmountDtoOutput,
+	CurrencyDtoOutput,
 	GetSwapResultResponseDtoOutput,
 	SwapBodyDto,
 	TelegramIdHeaderDto,
@@ -45,8 +45,8 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 
 async function executeSwapRequest(
 	telegramId: string,
-	amountIn: CurrencyAmountDto,
-	dstCurrency: CurrencyDto,
+	amountIn: CurrencyAmountDtoOutput,
+	dstCurrency: CurrencyDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	const headers = { 'x-telegram-id': telegramId }
 	const body = toSwapBody(amountIn, dstCurrency)
@@ -68,8 +68,8 @@ async function executeSwapRequest(
 }
 
 function toSwapBody(
-	amountIn: CurrencyAmountDto,
-	dstCurrency: CurrencyDto,
+	amountIn: CurrencyAmountDtoOutput,
+	dstCurrency: CurrencyDtoOutput,
 ): SwapBodyDto {
 	return {
 		currencyInChainAddress: amountIn.currency.chainAddress,

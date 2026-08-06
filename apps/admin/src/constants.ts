@@ -1,8 +1,8 @@
-import { ChainAddressDto } from '@rips/api-client'
+import { ChainAddressDtoOutput } from '@rips/api-client'
 
 export const EIP155_NAMESPACE = 'eip155'
 
-export const NATIVE_ON_BASE: ChainAddressDto = {
+export const NATIVE_ON_BASE: ChainAddressDtoOutput = {
 	address: '0x0000000000000000000000000000000000000000',
 	chain: {
 		namespace: EIP155_NAMESPACE,
@@ -15,7 +15,7 @@ const BASE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '8453' }
 
 export const SUPPORTED_CHAINS = [ARBITRUM_CHAIN, BASE_CHAIN]
 
-export const SUPPORTED_CURRENCIES: ChainAddressDto[] = [
+export const SUPPORTED_CURRENCIES: ChainAddressDtoOutput[] = [
 	{
 		address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 		chain: ARBITRUM_CHAIN,

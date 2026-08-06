@@ -1,4 +1,4 @@
-import { AvailablePresetDto } from '@rips/api-client'
+import { AvailablePresetDtoOutput } from '@rips/api-client'
 import { configName, resolveConfig } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
@@ -6,7 +6,7 @@ import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChooseChainPage } from '../choose-chain-currency'
 
 export const ZapChooseChainPage = {
-	render(args: { availablePreset: AvailablePresetDto }): PageContent {
+	render(args: { availablePreset: AvailablePresetDtoOutput }): PageContent {
 		const { availablePreset } = args
 		const config = resolveConfig(availablePreset)
 

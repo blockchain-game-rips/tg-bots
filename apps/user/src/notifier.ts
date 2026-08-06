@@ -1,7 +1,7 @@
 import {
 	notificationsControllerGetNotifications,
 	notificationsControllerMarkNotified,
-	RipDto,
+	RipDtoOutput,
 } from '@rips/api-client'
 import { logger } from '@rips/grammy-kit'
 import { Bot } from 'grammy'
@@ -25,7 +25,7 @@ function isNotificationType(value: string): value is NotificationType {
 	return (NOTIFICATION_TYPES as string[]).includes(value)
 }
 
-type PageBuilder = (rip: RipDto) => PageContent
+type PageBuilder = (rip: RipDtoOutput) => PageContent
 
 const groupPages: Record<NotificationType, PageBuilder> = {
 	CLAIMED: (rip) => GlobalCompletedRipPage.render(rip),

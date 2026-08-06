@@ -1,7 +1,7 @@
 import {
-	ChainAddressDto,
+	ChainAddressDtoOutput,
 	createQuerySerializer,
-	CurrencyAmountDto,
+	CurrencyAmountDtoOutput,
 	currencyControllerGetCurrencies,
 	ripsControllerGetCardCollection,
 	ripsControllerGetCardDefinitions,
@@ -25,7 +25,7 @@ const chainAddressQuerySerializer = createQuerySerializer({
 
 export async function fetchBalances(
 	telegramId: string,
-	chainAddresses: ChainAddressDto[],
+	chainAddresses: ChainAddressDtoOutput[],
 ) {
 	const uniqueChainAddresses = chainAddresses.filter(
 		(chainAddress, index) =>
@@ -44,9 +44,9 @@ export async function fetchBalances(
 }
 
 export function getBalance(
-	balances: CurrencyAmountDto[],
-	chainAddress: ChainAddressDto,
-): CurrencyAmountDto {
+	balances: CurrencyAmountDtoOutput[],
+	chainAddress: ChainAddressDtoOutput,
+): CurrencyAmountDtoOutput {
 	const balance = balances.find((b) =>
 		isSameChainAddress(b.currency.chainAddress, chainAddress),
 	)
@@ -67,7 +67,7 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 	return data.currencies
 }
 
-export async function fetchCurrency(chainAddress: ChainAddressDto) {
+export async function fetchCurrency(chainAddress: ChainAddressDtoOutput) {
 	const currencies = await fetchCurrencies([toCurrencyId(chainAddress)])
 
 	const currency = currencies.find((c) =>
@@ -139,7 +139,7 @@ export async function fetchUnrevealedPayouts(telegramId: string) {
 
 export async function fetchSingleBalance(
 	telegramId: string,
-	chainAddress: ChainAddressDto,
+	chainAddress: ChainAddressDtoOutput,
 ) {
 	const balances = await fetchBalances(telegramId, [chainAddress])
 

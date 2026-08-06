@@ -28,12 +28,12 @@ function buildRevealPayoutsContent(unrevealedPayouts: PayoutDto[]): {
 	if (unrevealedPayouts.length > 0) {
 		keyboard
 			.text(
-				'Reveal next',
+				'Reveal Next',
 				buildActionData(actionIds.openRevealSingle, undefined),
 			)
 			.row()
 			.text(
-				'Reveal all',
+				'Reveal All',
 				buildActionData(actionIds.openRevealAll, undefined),
 			)
 			.row()

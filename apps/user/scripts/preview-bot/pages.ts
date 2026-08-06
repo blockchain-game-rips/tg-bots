@@ -482,7 +482,7 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'reveal-payouts': {
 		description:
-			'Entry point for revealing entries ("Open Rips" in the Play menu). Shows unrevealed entry count with "Reveal next" and "Reveal all" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
+			'Entry point for revealing entries ("Open Rips" in the Play menu). Shows unrevealed entry count with "Reveal Next" and "Reveal All" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
 		render: () => RevealPayoutsPage.render(mockUnrevealedPayouts),
 	},
 	'reveal-single': {

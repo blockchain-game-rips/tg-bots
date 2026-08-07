@@ -7,10 +7,19 @@ import {
 	submitImportKey,
 } from './action-handlers/open-home'
 import { executeEnter } from './action-handlers/play/enter/execute-enter'
-import { executeZap } from './action-handlers/play/enter/execute-zap'
-import { openEnterCheckout } from './action-handlers/play/enter/open-enter-checkout'
-import { openEnterChooseEntryCount } from './action-handlers/play/enter/open-enter-choose-entry-count'
-import { openEnterPaymentOptions } from './action-handlers/play/enter/open-enter-payment-options'
+import {
+	openEnterCheckout,
+	openEnterCheckoutFromEntryCount,
+	openEnterCheckoutFromPaymentToken,
+} from './action-handlers/play/enter/open-enter-checkout'
+import {
+	openEnterChooseEntryCount,
+	openEnterChooseEntryCountFromCheckout,
+} from './action-handlers/play/enter/open-enter-choose-entry-count'
+import {
+	openEnterPaymentOptions,
+	openEnterPaymentOptionsFromEntryCount,
+} from './action-handlers/play/enter/open-enter-payment-options'
 import { openEnterChoosePreset } from './action-handlers/play/enter/open-enter-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCardCollectionTier } from './action-handlers/play/open-card-collection-tier'
@@ -30,10 +39,6 @@ import {
 	openEnterChoosePaymentChain,
 	openEnterChoosePaymentToken,
 } from './action-handlers/play/enter/open-enter-choose-payment-chain-token'
-import {
-	openZapCheckout,
-	refreshZapCheckout,
-} from './action-handlers/play/enter/open-zap-confirm'
 import { promptEntryCount } from './action-handlers/play/enter/prompt-entry-count'
 import { executeReferralWithdrawReward } from './action-handlers/referral-system/execute-referral-withdraw-reward'
 import { openReferral } from './action-handlers/referral-system/open-referral'
@@ -91,9 +96,13 @@ export const actionRegistry = {
 	// Play
 	openChoosePreset: openEnterChoosePreset,
 	openChooseEntryAmount: openEnterChooseEntryCount,
+	openEnterChooseEntryCountFromCheckout,
 	openEnterPaymentOptions,
+	openEnterPaymentOptionsFromEntryCount,
 	promptEntryCount,
 	openEnterCheckout,
+	openEnterCheckoutFromPaymentToken,
+	openEnterCheckoutFromEntryCount,
 	executeEnter,
 
 	// Open RIPs / rips
@@ -141,11 +150,6 @@ export const actionRegistry = {
 	// Payment chain / token pickers
 	openEnterChoosePaymentChain,
 	openEnterChoosePaymentToken,
-
-	// Zap
-	openZapConfirm: openZapCheckout,
-	refreshZapConfirm: refreshZapCheckout,
-	executeZap,
 
 	// Swap
 	openSwapChooseSrcChain,

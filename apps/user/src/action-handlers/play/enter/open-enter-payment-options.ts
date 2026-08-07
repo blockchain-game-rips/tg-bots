@@ -1,38 +1,60 @@
+import { AvailablePresetDtoOutput } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
-import { ActionDef, noPayload } from '../../../action-def'
+import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { SUPPORTED_CURRENCIES } from '../../../constants'
-import { toStep } from '../../../flows'
+import { Flow, toFlow } from '../../../flows'
 import { EnterPaymentOptionsPage } from '../../../pages/play/enter-payment-options-page'
-import { EffectType } from '../../../types'
+import { EffectType, HandlerResult } from '../../../types'
 import { fetchBalances } from '../../../utils/api/wrappers'
+import { entryCountCodec } from '../../../utils/codecs'
 
-export const openEnterPaymentOptions: ActionDef<void> = noPayload(
-	async (session) => {
-		assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
+export const openEnterPaymentOptions: ActionDef<void> = noPayload((session) => {
+	assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
-		const { availablePreset, entryCount } = session.flow.data
+	const { availablePreset, entryCount } = session.flow.data
 
-		const balances = await fetchBalances(
-			session.telegramId,
-			SUPPORTED_CURRENCIES,
+	return renderPaymentOptions(session.telegramId, availablePreset, entryCount)
+})
+
+export const openEnterPaymentOptionsFromEntryCount: ActionDef<number> =
+	withPayload(entryCountCodec, (session, entryCount) => {
+		assertFlow(
+			session,
+			'enter',
+			'choosing-entry-count',
+			'choosing-payment-token',
+			'at-checkout',
 		)
 
-		const flow = toStep(session.flow, 'choosing-payment-token', {
+		const { availablePreset } = session.flow.data
+
+		return renderPaymentOptions(
+			session.telegramId,
+			availablePreset,
+			entryCount,
+		)
+	})
+
+async function renderPaymentOptions(
+	telegramId: string,
+	availablePreset: AvailablePresetDtoOutput,
+	entryCount: number,
+): Promise<HandlerResult<Flow>> {
+	const balances = await fetchBalances(telegramId, SUPPORTED_CURRENCIES)
+
+	return {
+		flow: toFlow('enter', 'choosing-payment-token', {
 			availablePreset,
 			entryCount,
 			balances,
-		})
-
-		return {
-			flow,
-			effect: {
-				type: EffectType.EDIT,
-				page: EnterPaymentOptionsPage.render({
-					availablePreset,
-					entryCount,
-					balances,
-				}),
-			},
-		}
-	},
-)
+		}),
+		effect: {
+			type: EffectType.EDIT,
+			page: EnterPaymentOptionsPage.render({
+				availablePreset,
+				entryCount,
+				balances,
+			}),
+		},
+	}
+}

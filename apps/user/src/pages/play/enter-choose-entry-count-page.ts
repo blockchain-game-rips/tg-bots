@@ -1,5 +1,11 @@
 import { AvailablePresetDtoOutput, ConfigDtoOutput } from '@rips/api-client'
-import { buildActionData, FormattedString, joinLines } from '@rips/grammy-kit'
+import {
+	ActionId,
+	buildActionData,
+	FormattedString,
+	joinLines,
+	NavIds,
+} from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
 	resolveConfig,
@@ -12,14 +18,42 @@ import { PageContent } from '../../types'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const EnterChooseEntryCountPage = {
-	render(availablePreset: AvailablePresetDtoOutput): PageContent {
-		const config = resolveConfig(availablePreset)
-
-		return {
-			message: buildMessage(config, availablePreset),
-			keyboard: buildKeyboard(),
-		}
+	renderFreshDraft(availablePreset: AvailablePresetDtoOutput): PageContent {
+		return render(availablePreset, {
+			countActionId: actionIds.openEnterPaymentOptionsFromEntryCount,
+			back: {
+				home: actionIds.openHome,
+				parent: actionIds.openChoosePreset,
+			},
+		})
 	},
+
+	renderDraftEdit(availablePreset: AvailablePresetDtoOutput): PageContent {
+		return render(availablePreset, {
+			countActionId: actionIds.openEnterCheckoutFromEntryCount,
+			back: {
+				home: actionIds.openHome,
+				parent: actionIds.openEnterCheckout,
+			},
+		})
+	},
+}
+
+interface EntryCountMode {
+	countActionId: ActionId<number>
+	back: NavIds
+}
+
+function render(
+	availablePreset: AvailablePresetDtoOutput,
+	mode: EntryCountMode,
+): PageContent {
+	const config = resolveConfig(availablePreset)
+
+	return {
+		message: buildMessage(config, availablePreset),
+		keyboard: buildKeyboard(mode),
+	}
 }
 
 function buildMessage(
@@ -67,14 +101,14 @@ function ripLabel(availablePreset: AvailablePresetDtoOutput): string {
 
 const QUICK_ENTRY_COUNTS = [1, 3, 8]
 
-function buildKeyboard(): InlineKeyboard {
+function buildKeyboard(mode: EntryCountMode): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	for (const count of QUICK_ENTRY_COUNTS)
 		keyboard
 			.text(
 				entryCountLabel(count),
-				buildActionData(actionIds.openEnterCheckout, count),
+				buildActionData(mode.countActionId, count),
 			)
 			.row()
 
@@ -83,10 +117,7 @@ function buildKeyboard(): InlineKeyboard {
 		buildActionData(actionIds.promptEntryCount, undefined),
 	)
 
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openChoosePreset,
-	})
+	return keyboard.appendNavButtons(mode.back)
 }
 
 function entryCountLabel(count: number): string {

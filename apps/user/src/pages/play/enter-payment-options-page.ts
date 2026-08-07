@@ -32,11 +32,7 @@ export const EnterPaymentOptionsPage = {
 				entryTotal,
 				payableBalances,
 			),
-			keyboard: buildKeyboard(
-				availablePreset,
-				entryCount,
-				payableBalances,
-			),
+			keyboard: buildKeyboard(payableBalances),
 		}
 	},
 }
@@ -104,15 +100,19 @@ function groupByChain(balances: CurrencyAmountDtoOutput[]): GroupedLine[] {
 }
 
 function buildKeyboard(
-	availablePreset: AvailablePresetDtoOutput,
-	entryCount: number,
 	payableBalances: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	for (const balance of payableBalances) {
 		keyboard
-			.text(payLabel(balance), payActionData(balance, entryCount))
+			.text(
+				payLabel(balance),
+				buildActionData(
+					actionIds.openEnterCheckoutFromPaymentToken,
+					balance.currency.chainAddress,
+				),
+			)
 			.row()
 	}
 
@@ -124,8 +124,7 @@ function buildKeyboard(
 		.row()
 
 	return keyboard.appendNavButtons({
-		parent: actionIds.openChooseEntryAmount,
-		parentPayload: availablePreset.preset.id,
+		parent: actionIds.openEnterChooseEntryCountFromCheckout,
 		home: actionIds.openHome,
 	})
 }
@@ -134,20 +133,6 @@ function payLabel(balance: CurrencyAmountDtoOutput): string {
 	const { chainAddress, symbol } = balance.currency
 
 	return `${chainToName(chainAddress.chain)} ${symbol}`
-}
-
-function payActionData(
-	balance: CurrencyAmountDtoOutput,
-	entryCount: number,
-): string {
-	if (isBaseNative(balance)) {
-		return buildActionData(actionIds.openEnterCheckout, entryCount)
-	}
-
-	return buildActionData(
-		actionIds.openZapConfirm,
-		balance.currency.chainAddress,
-	)
 }
 
 function isPayable(balance: CurrencyAmountDtoOutput): boolean {

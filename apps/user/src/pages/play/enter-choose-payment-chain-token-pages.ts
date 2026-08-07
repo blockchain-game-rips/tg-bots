@@ -65,7 +65,7 @@ export const EnterChoosePaymentTokenPage = {
 				'Choose a token to pay with:',
 			],
 			currencies,
-			currencyActionId: actionIds.openZapConfirm,
+			currencyActionId: actionIds.openEnterCheckoutFromPaymentToken,
 			currencyPayload: (currency) => currency.chainAddress,
 			nav: {
 				parent: actionIds.openEnterChoosePaymentChain,

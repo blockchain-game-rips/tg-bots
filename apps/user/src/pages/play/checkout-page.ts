@@ -49,7 +49,7 @@ interface CrosschainQuote {
 	quote: QuoteZapResponseDtoOutput
 }
 
-type CheckoutQuote = DirectQuote | SamechainQuote | CrosschainQuote
+export type CheckoutQuote = DirectQuote | SamechainQuote | CrosschainQuote
 
 interface CheckoutArgs {
 	availablePreset: AvailablePresetDtoOutput
@@ -65,7 +65,7 @@ export const CheckoutPage = {
 
 		return {
 			message: buildMessage(args, insufficientAmounts),
-			keyboard: buildKeyboard(args, insufficientAmounts),
+			keyboard: buildKeyboard(insufficientAmounts),
 		}
 	},
 }
@@ -148,13 +148,13 @@ function buildMessage(
 }
 
 function headerLines(quote: CheckoutQuote): Line[] {
-	if (isDirect(quote)) return []
+	if (!isCrosschain(quote)) return []
 
 	return ['🌉 Bridge & Enter', '']
 }
 
 function receiveLine(quote: CheckoutQuote): Line[] {
-	if (isDirect(quote)) return []
+	if (!isCrosschain(quote)) return []
 
 	return [`Receive on: ${RECEIVE_CHAIN_NAME}`]
 }
@@ -199,7 +199,7 @@ function insufficientLines(
 		insufficientCurrencyBlock(balance, allExpenses),
 	)
 
-	return ['', ...blocks, 'Enter from another chain or deposit.']
+	return ['', ...blocks, 'Deposit or pay with another token.']
 }
 
 function insufficientCurrencyBlock(
@@ -229,13 +229,14 @@ function insufficientCurrencyBlock(
 }
 
 function buildKeyboard(
-	args: CheckoutArgs,
 	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	if (isSufficient(insufficientAmounts)) {
-		keyboard.text('Confirm', confirmActionData(args.quote)).row()
+		keyboard
+			.text('Confirm', buildActionData(actionIds.executeEnter, undefined))
+			.row()
 	} else {
 		for (const balance of insufficientAmounts) {
 			const { currency } = balance
@@ -257,6 +258,14 @@ function buildKeyboard(
 
 	keyboard
 		.text(
+			'Change entry count',
+			buildActionData(
+				actionIds.openEnterChooseEntryCountFromCheckout,
+				undefined,
+			),
+		)
+		.row()
+		.text(
 			'Change payment token',
 			buildActionData(actionIds.openEnterPaymentOptions, undefined),
 		)
@@ -264,12 +273,4 @@ function buildKeyboard(
 		.appendHomeButton()
 
 	return keyboard
-}
-
-function confirmActionData(quote: CheckoutQuote): string {
-	if (isDirect(quote)) {
-		return buildActionData(actionIds.executeEnter, undefined)
-	}
-
-	return buildActionData(actionIds.executeZap, undefined)
 }

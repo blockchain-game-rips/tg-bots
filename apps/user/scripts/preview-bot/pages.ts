@@ -286,15 +286,26 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'enter-choose-entry-count': {
 		description:
-			'Second step of entering. Choose how many entries: preset options or custom amount. Opened from choose-preset. The "no-rip" variant has no filling rip yet (entry starts one); the "filling" variant joins an in-progress rip and shows time left with a refund warning.',
-		variants: ['no-rip', 'filling'],
+			'Second step of entering. Choose how many entries: preset options or custom amount. The "fresh-draft" variant is opened from choose-preset and its back leads there; the "draft-edit" variant is opened from checkout via Change entry count and its back leads to checkout. The renderers differ only in that back destination — the "no-rip" variants additionally show a preset with no filling rip yet (entry starts one) rather than one joining an in-progress rip with a refund warning.',
+		variants: [
+			'fresh-draft',
+			'fresh-draft-no-rip',
+			'draft-edit',
+			'draft-edit-no-rip',
+		],
 		render(variant) {
-			const availablePreset =
-				resolveVariant(this, variant) === 'no-rip'
-					? mockAvailablePresetNoRip
-					: mockAvailablePreset0
+			const resolvedVariant = resolveVariant(this, variant)
 
-			return EnterChooseEntryCountPage.render(availablePreset)
+			const availablePreset = resolvedVariant.endsWith('no-rip')
+				? mockAvailablePresetNoRip
+				: mockAvailablePreset0
+
+			if (resolvedVariant.startsWith('fresh-draft'))
+				return EnterChooseEntryCountPage.renderFreshDraft(
+					availablePreset,
+				)
+
+			return EnterChooseEntryCountPage.renderDraftEdit(availablePreset)
 		},
 	},
 	'enter-payment-options': {
@@ -309,7 +320,7 @@ export const pages: Record<string, PageEntry> = {
 	},
 	checkout: {
 		description:
-			'Unified checkout for all payment paths. "direct-*" pays Base ETH straight into the game (no bridge header, no "Receive on" line). "crosschain-*" pays from Arbitrum and bridges to Base (bridge cost + time). "samechain-sufficient" pays a non-native token on Base (network fee only). Confirm when funds cover everything; otherwise per-currency "Not enough" blocks with Deposit buttons replace Confirm. Every variant offers Change payment token. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
+			'Unified checkout for all payment paths. "direct-*" pays Base ETH straight into the game (no bridge header, no "Receive on" line). "crosschain-*" pays from Arbitrum and bridges to Base (bridge cost + time). "samechain-sufficient" pays a non-native token on Base (network fee only). Confirm when funds cover everything; otherwise per-currency "Not enough" blocks with Deposit buttons replace Confirm. Every variant offers Change entry count and Change payment token. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
 		variants: [
 			'direct-sufficient',
 			'direct-insufficient',

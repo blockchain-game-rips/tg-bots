@@ -208,8 +208,12 @@ function buildKeyboard(
 	const keyboard = new InlineKeyboard()
 
 	if (isSufficientAmounts(insufficientAmounts)) {
+		const buttonText = isSamechain(args.quote)
+			? 'Confirm Swap'
+			: 'Confirm Bridge'
+
 		keyboard
-			.text('Confirm', buildActionData(actionIds.executeSwap, undefined))
+			.text(buttonText, buildActionData(actionIds.executeSwap, undefined))
 			.row()
 	}
 

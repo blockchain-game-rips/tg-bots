@@ -3,24 +3,17 @@ import { ActionDef, noPayload } from '../../../action-def'
 import { toHold } from '../../../flows'
 import { ZapChooseChainPage } from '../../../pages/play/zap-choose-chain-page'
 import { EffectType } from '../../../types'
-import { fetchPreset } from '../../../utils/api/wrappers'
 
-export const openZapChooseChain: ActionDef<void> = noPayload(
-	async (session) => {
-		assertFlow(session, 'enter', 'entry-count-chosen')
+export const openZapChooseChain: ActionDef<void> = noPayload((session) => {
+	assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
-		const { presetId } = session.flow.data
+	const { availablePreset } = session.flow.data
 
-		const availablePreset = await fetchPreset(presetId)
-
-		return {
-			flow: toHold(),
-			effect: {
-				type: EffectType.EDIT,
-				page: ZapChooseChainPage.render({
-					availablePreset,
-				}),
-			},
-		}
-	},
-)
+	return {
+		flow: toHold(),
+		effect: {
+			type: EffectType.EDIT,
+			page: ZapChooseChainPage.render({ availablePreset }),
+		},
+	}
+})

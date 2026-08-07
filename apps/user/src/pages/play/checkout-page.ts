@@ -258,10 +258,7 @@ function buildKeyboard(
 	keyboard
 		.text(
 			'Enter from another chain',
-			buildActionData(
-				actionIds.openEnterChoosePaymentWallet,
-				args.availablePreset.preset.id,
-			),
+			buildActionData(actionIds.openEnterChoosePaymentWallet, undefined),
 		)
 		.row()
 		.appendHomeButton()

@@ -3,20 +3,17 @@ import { ActionDef, withPayload } from '../../../action-def'
 import { toHold } from '../../../flows'
 import { ZapChooseTokenPage } from '../../../pages/play/zap-choose-token-page'
 import { Chain, EffectType } from '../../../types'
-import { fetchCurrencies, fetchPreset } from '../../../utils/api/wrappers'
+import { fetchCurrencies } from '../../../utils/api/wrappers'
 import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 
 export const openZapChooseToken: ActionDef<Chain> = withPayload(
 	chainCodec,
 	async (session, chain) => {
-		assertFlow(session, 'enter', 'entry-count-chosen')
+		assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
-		const { presetId } = session.flow.data
+		const { availablePreset } = session.flow.data
 
-		const [availablePreset, currencies] = await Promise.all([
-			fetchPreset(presetId),
-			fetchCurrencies(getCurrenciesForChain(chain)),
-		])
+		const currencies = await fetchCurrencies(getCurrenciesForChain(chain))
 
 		return {
 			flow: toHold(),

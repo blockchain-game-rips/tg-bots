@@ -6,7 +6,7 @@ import { NATIVE_ON_BASE } from '../../../constants'
 import { toStep } from '../../../flows'
 import { CheckoutPage } from '../../../pages/play/checkout-page'
 import { EffectType } from '../../../types'
-import { fetchNativeBalance, fetchPreset } from '../../../utils/api/wrappers'
+import { fetchNativeBalance } from '../../../utils/api/wrappers'
 
 export const openEnterCheckout: ActionDef<number> = withPayload(
 	{
@@ -14,21 +14,27 @@ export const openEnterCheckout: ActionDef<number> = withPayload(
 		decode: (raw) => parseEntryCount(raw),
 	},
 	async (session, entryCount) => {
-		assertFlow(session, 'enter', 'preset-chosen', 'entry-count-chosen')
-		const { presetId } = session.flow.data
+		assertFlow(
+			session,
+			'enter',
+			'choosing-entry-count',
+			'choosing-payment-token',
+			'at-checkout',
+		)
 
-		const [availablePreset, nativeBalance, { data: purchaseQuote }] =
-			await Promise.all([
-				fetchPreset(presetId),
-				fetchNativeBalance(session.telegramId),
-				ripsControllerQuotePurchase({
-					body: {
-						paymentCurrencyChainAddress: NATIVE_ON_BASE,
-						presetId,
-						entryCount,
-					},
-				}),
-			])
+		const { availablePreset } = session.flow.data
+		const presetId = availablePreset.preset.id
+
+		const [nativeBalance, { data: purchaseQuote }] = await Promise.all([
+			fetchNativeBalance(session.telegramId),
+			ripsControllerQuotePurchase({
+				body: {
+					paymentCurrencyChainAddress: NATIVE_ON_BASE,
+					presetId,
+					entryCount,
+				},
+			}),
+		])
 
 		const config = resolveConfig(availablePreset)
 		const totalCost = BigInt(config.entryPrice.amount) * BigInt(entryCount)
@@ -38,9 +44,11 @@ export const openEnterCheckout: ActionDef<number> = withPayload(
 			currency: config.entryPrice.currency,
 		}
 
-		const flow = toStep(session.flow, 'entry-count-chosen', {
-			presetId,
+		const flow = toStep(session.flow, 'at-checkout', {
+			availablePreset,
 			entryCount,
+			balances: [nativeBalance],
+			payCurrencyBalance: nativeBalance,
 		})
 
 		return {

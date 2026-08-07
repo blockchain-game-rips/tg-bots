@@ -4,7 +4,7 @@ import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { Flow, toStep } from '../../../flows'
 import { CheckoutPage } from '../../../pages/play/checkout-page'
 import { EffectType, SessionData } from '../../../types'
-import { fetchBalances, fetchPreset } from '../../../utils/api/wrappers'
+import { fetchBalances, getBalance } from '../../../utils/api/wrappers'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 import { ripsControllerQuoteZap } from './zap-api-stub'
 
@@ -12,42 +12,36 @@ async function buildZapCheckout(
 	session: SessionData<Flow>,
 	currencyChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
-	assertFlow(session, 'enter', 'entry-count-chosen', 'zap-currency-chosen')
+	assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
-	const { presetId, entryCount } = session.flow.data
+	const { availablePreset, entryCount } = session.flow.data
 
-	const [availablePreset, { data: zapQuote }] = await Promise.all([
-		fetchPreset(presetId),
-		ripsControllerQuoteZap({
-			headers: { 'x-telegram-id': session.telegramId },
-			body: {
-				presetId,
-				entryCount,
-				paymentCurrencyChainAddress: currencyChainAddress,
-			},
-		}),
-	])
+	const { data: zapQuote } = await ripsControllerQuoteZap({
+		headers: { 'x-telegram-id': session.telegramId },
+		body: {
+			presetId: availablePreset.preset.id,
+			entryCount,
+			paymentCurrencyChainAddress: currencyChainAddress,
+		},
+	})
 
 	const balances = await fetchBalances(session.telegramId, [
 		currencyChainAddress,
 		zapQuote.blockchainFee.currency.chainAddress,
 	])
 
-	const currencyInBalance = balances.find(
-		(b) => b.currency.chainAddress.address === currencyChainAddress.address,
-	)
-	if (currencyInBalance === undefined)
-		throw new Error('Currency in balance not found')
+	const payCurrencyBalance = getBalance(balances, currencyChainAddress)
 
-	const nativeBalance = balances.find(
-		(b) => b.currency.id === zapQuote.blockchainFee.currency.id,
+	const nativeBalance = getBalance(
+		balances,
+		zapQuote.blockchainFee.currency.chainAddress,
 	)
-	if (nativeBalance === undefined) throw new Error('Native balance not found')
 
-	const flow = toStep(session.flow, 'zap-currency-chosen', {
-		presetId,
+	const flow = toStep(session.flow, 'at-checkout', {
+		availablePreset,
 		entryCount,
-		currency: currencyInBalance.currency,
+		balances,
+		payCurrencyBalance,
 	})
 
 	return {
@@ -60,7 +54,7 @@ async function buildZapCheckout(
 			page: CheckoutPage.render({
 				availablePreset,
 				entryCount,
-				srcBalance: currencyInBalance,
+				srcBalance: payCurrencyBalance,
 				nativeBalance,
 				quote: { kind: 'crosschain', quote: zapQuote },
 			}),
@@ -76,11 +70,11 @@ export const openZapCheckout: ActionDef<ChainAddressDtoOutput> = withPayload(
 
 export const refreshZapCheckout: ActionDef<void> = noPayload(
 	async (session) => {
-		assertFlow(session, 'enter', 'zap-currency-chosen')
+		assertFlow(session, 'enter', 'at-checkout')
 
 		return buildZapCheckout(
 			session,
-			session.flow.data.currency.chainAddress,
+			session.flow.data.payCurrencyBalance.currency.chainAddress,
 		)
 	},
 )

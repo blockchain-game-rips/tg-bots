@@ -1,24 +1,33 @@
-import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
+import {
+	AvailablePresetDtoOutput,
+	CurrencyAmountDtoOutput,
+	CurrencyDtoOutput,
+} from '@rips/api-client'
 import { createFlowTransitions } from '@rips/grammy-kit'
 
 export type EnterFlow =
 	| {
 			flowType: 'enter'
-			step: 'preset-chosen'
-			data: { presetId: number }
+			step: 'choosing-entry-count'
+			data: { availablePreset: AvailablePresetDtoOutput }
 	  }
 	| {
 			flowType: 'enter'
-			step: 'entry-count-chosen'
-			data: { presetId: number; entryCount: number }
-	  }
-	| {
-			flowType: 'enter'
-			step: 'zap-currency-chosen'
+			step: 'choosing-payment-token'
 			data: {
-				presetId: number
+				availablePreset: AvailablePresetDtoOutput
 				entryCount: number
-				currency: CurrencyDtoOutput
+				balances: CurrencyAmountDtoOutput[]
+			}
+	  }
+	| {
+			flowType: 'enter'
+			step: 'at-checkout'
+			data: {
+				availablePreset: AvailablePresetDtoOutput
+				entryCount: number
+				balances: CurrencyAmountDtoOutput[]
+				payCurrencyBalance: CurrencyAmountDtoOutput
 			}
 	  }
 

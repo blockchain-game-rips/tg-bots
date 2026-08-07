@@ -13,7 +13,9 @@ export const openEnterChooseEntryCount: ActionDef<number> = withPayload(
 	async (_session, presetId) => {
 		const availablePreset = await fetchPreset(presetId)
 
-		const flow = toFlow('enter', 'preset-chosen', { presetId })
+		const flow = toFlow('enter', 'choosing-entry-count', {
+			availablePreset,
+		})
 
 		return {
 			flow,

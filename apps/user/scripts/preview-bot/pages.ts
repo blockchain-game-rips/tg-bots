@@ -286,26 +286,15 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'enter-choose-entry-count': {
 		description:
-			'Second step of entering. Choose how many entries: preset options or custom amount. The "fresh-draft" variant is opened from choose-preset and its back leads there; the "draft-edit" variant is opened from checkout via Change entry count and its back leads to checkout. The renderers differ only in that back destination — the "no-rip" variants additionally show a preset with no filling rip yet (entry starts one) rather than one joining an in-progress rip with a refund warning.',
-		variants: [
-			'fresh-draft',
-			'fresh-draft-no-rip',
-			'draft-edit',
-			'draft-edit-no-rip',
-		],
+			'Second step of entering. Choose how many entries: preset options or custom amount. The "no-rip" variant shows a preset with no filling rip yet (entry starts one) rather than one joining an in-progress rip with a refund warning.',
+		variants: ['default', 'no-rip'],
 		render(variant) {
-			const resolvedVariant = resolveVariant(this, variant)
+			const availablePreset =
+				resolveVariant(this, variant) === 'no-rip'
+					? mockAvailablePresetNoRip
+					: mockAvailablePreset0
 
-			const availablePreset = resolvedVariant.endsWith('no-rip')
-				? mockAvailablePresetNoRip
-				: mockAvailablePreset0
-
-			if (resolvedVariant.startsWith('fresh-draft'))
-				return EnterChooseEntryCountPage.renderFreshDraft(
-					availablePreset,
-				)
-
-			return EnterChooseEntryCountPage.renderDraftEdit(availablePreset)
+			return EnterChooseEntryCountPage.renderFreshDraft(availablePreset)
 		},
 	},
 	'enter-payment-options': {

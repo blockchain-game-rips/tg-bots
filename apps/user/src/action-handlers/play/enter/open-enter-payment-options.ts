@@ -1,12 +1,12 @@
 import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../../action-def'
-import { nativeChainAddress, SUPPORTED_CHAINS } from '../../../constants'
+import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { toStep } from '../../../flows'
-import { EnterChoosePaymentWalletPage } from '../../../pages/play/enter-choose-payment-wallet-page'
+import { EnterPaymentOptionsPage } from '../../../pages/play/enter-payment-options-page'
 import { EffectType } from '../../../types'
 import { fetchBalances } from '../../../utils/api/wrappers'
 
-export const openEnterChoosePaymentWallet: ActionDef<void> = noPayload(
+export const openEnterPaymentOptions: ActionDef<void> = noPayload(
 	async (session) => {
 		assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
@@ -14,7 +14,7 @@ export const openEnterChoosePaymentWallet: ActionDef<void> = noPayload(
 
 		const balances = await fetchBalances(
 			session.telegramId,
-			SUPPORTED_CHAINS.map((chain) => nativeChainAddress(chain)),
+			SUPPORTED_CURRENCIES,
 		)
 
 		const flow = toStep(session.flow, 'choosing-payment-token', {
@@ -27,7 +27,7 @@ export const openEnterChoosePaymentWallet: ActionDef<void> = noPayload(
 			flow,
 			effect: {
 				type: EffectType.EDIT,
-				page: EnterChoosePaymentWalletPage.render({
+				page: EnterPaymentOptionsPage.render({
 					availablePreset,
 					entryCount,
 					balances,

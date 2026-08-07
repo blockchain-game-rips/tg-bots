@@ -257,8 +257,8 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Enter from another chain',
-			buildActionData(actionIds.openEnterChoosePaymentWallet, undefined),
+			'Change payment token',
+			buildActionData(actionIds.openEnterPaymentOptions, undefined),
 		)
 		.row()
 		.appendHomeButton()

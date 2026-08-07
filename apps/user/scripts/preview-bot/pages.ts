@@ -8,7 +8,7 @@ import { HomePage } from '../../src/pages/home-page'
 import { WelcomePage } from '../../src/pages/onboarding/welcome-page'
 import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
-import { EnterChoosePaymentWalletPage } from '../../src/pages/play/enter-choose-payment-wallet-page'
+import { EnterPaymentOptionsPage } from '../../src/pages/play/enter-payment-options-page'
 import { EnterChoosePresetPage } from '../../src/pages/play/enter-choose-preset-page'
 import { EnterSuccessPage } from '../../src/pages/play/enter-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
@@ -24,8 +24,10 @@ import {
 import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
 import { ViewPullsPage } from '../../src/pages/play/view-pulls-page'
 import { MyRipsPage } from '../../src/pages/play/my-rips-page'
-import { ZapChooseChainPage } from '../../src/pages/play/zap-choose-chain-page'
-import { ZapChooseTokenPage } from '../../src/pages/play/zap-choose-token-page'
+import {
+	EnterChoosePaymentChainPage,
+	EnterChoosePaymentTokenPage,
+} from '../../src/pages/play/enter-choose-payment-chain-token-pages'
 import { ZapFailedPage } from '../../src/pages/play/zap-failed-page'
 import { ClaimRewardPage } from '../../src/pages/referral-system/claim-reward-page'
 import { ReferralTiersPage } from '../../src/pages/referral-system/referral-tiers-page'
@@ -65,7 +67,7 @@ import {
 	mockFinalizedRips,
 	mockOngoingAvailablePresets,
 	mockOngoingRips,
-	mockPaymentWalletBalances,
+	mockPaymentTokenBalances,
 	mockPurchase,
 	mockPurchaseQuote,
 	mockReceiverAddress,
@@ -295,19 +297,19 @@ export const pages: Record<string, PageEntry> = {
 			return EnterChooseEntryCountPage.render(availablePreset)
 		},
 	},
-	'enter-choose-payment-wallet': {
+	'enter-payment-options': {
 		description:
-			'Between choose-entry-count and checkout. Choose which wallet to pay from. Always shows Base ETH (native base) plus any funded chain — a native non-base balance (Optimism ETH) and a non-native non-base balance (Arbitrum USDC). Base ETH pays directly; other balances route through the zap flow.',
+			'Between choose-entry-count and checkout. Choose which currency to pay with. Base ETH is always offered because it enters the game directly, even at zero balance; every other currency the player holds a non-zero balance in is listed under its chain. "Pay from another chain" reaches funds the shortlist does not cover.',
 		render: () =>
-			EnterChoosePaymentWalletPage.render({
+			EnterPaymentOptionsPage.render({
 				availablePreset: mockAvailablePreset0,
 				entryCount: 8,
-				balances: mockPaymentWalletBalances,
+				balances: mockPaymentTokenBalances,
 			}),
 	},
 	checkout: {
 		description:
-			'Unified checkout for all payment paths. "direct-*" pays Base ETH straight into the game (no bridge header, no "Receive on" line). "crosschain-*" pays from Arbitrum and bridges to Base (bridge cost + time). "samechain-sufficient" pays a non-native token on Base (network fee only). Confirm when funds cover everything; otherwise per-currency "Not enough" blocks with Deposit buttons replace Confirm. Every variant offers Change payment wallet. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
+			'Unified checkout for all payment paths. "direct-*" pays Base ETH straight into the game (no bridge header, no "Receive on" line). "crosschain-*" pays from Arbitrum and bridges to Base (bridge cost + time). "samechain-sufficient" pays a non-native token on Base (network fee only). Confirm when funds cover everything; otherwise per-currency "Not enough" blocks with Deposit buttons replace Confirm. Every variant offers Change payment token. The two crosschain-insufficient variants differ by which balance is short: "amount" (the source token) or "native" (gas for fees).',
 		variants: [
 			'direct-sufficient',
 			'direct-insufficient',
@@ -386,19 +388,19 @@ export const pages: Record<string, PageEntry> = {
 				rip: mockRip,
 			}),
 	},
-	'zap-choose-chain': {
+	'enter-choose-payment-chain': {
 		description:
-			'First step of the zap flow. Entered from enter-insufficient-funds when the user wants to pay from another chain. Shows available source chains.',
+			'Reached from "Pay from another chain" on the payment token page. Choose which chain to pay from; a token picker on that chain follows.',
 		render: () =>
-			ZapChooseChainPage.render({
+			EnterChoosePaymentChainPage.render({
 				availablePreset: mockAvailablePreset0,
 			}),
 	},
-	'zap-choose-token': {
+	'enter-choose-payment-token': {
 		description:
-			'Second step of the zap flow. Choose a token on the selected chain to pay with.',
+			'Second step of paying from another chain. Choose a token on the chosen chain to pay with.',
 		render: () =>
-			ZapChooseTokenPage.render({
+			EnterChoosePaymentTokenPage.render({
 				availablePreset: mockAvailablePreset0,
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),

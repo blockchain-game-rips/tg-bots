@@ -1501,10 +1501,16 @@ export const mockSufficientBalance: CurrencyAmountDtoOutput = {
 	amount: '100000000000000000', // 0.1 ETH
 }
 
-// Base ETH (native base), Arbitrum USDC (non-native non-base),
-// Optimism ETH (native non-base).
-export const mockPaymentWalletBalances: CurrencyAmountDtoOutput[] = [
+const mockUsdcBaseBalance: CurrencyAmountDtoOutput = {
+	currency: mockUsdcOnBase,
+	amount: '250000000', // 250 USDC
+}
+
+// Base ETH (always offered), USDC on Base (non-native, same chain),
+// Arbitrum USDC and Optimism ETH (other chains).
+export const mockPaymentTokenBalances: CurrencyAmountDtoOutput[] = [
 	mockSufficientBalance,
+	mockUsdcBaseBalance,
 	mockUsdcArbBalance,
 	mockEthOptimismBalance,
 ]

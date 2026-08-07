@@ -10,7 +10,7 @@ import { executeEnter } from './action-handlers/play/enter/execute-enter'
 import { executeZap } from './action-handlers/play/enter/execute-zap'
 import { openEnterCheckout } from './action-handlers/play/enter/open-enter-checkout'
 import { openEnterChooseEntryCount } from './action-handlers/play/enter/open-enter-choose-entry-count'
-import { openEnterChoosePaymentWallet } from './action-handlers/play/enter/open-enter-choose-payment-wallet'
+import { openEnterPaymentOptions } from './action-handlers/play/enter/open-enter-payment-options'
 import { openEnterChoosePreset } from './action-handlers/play/enter/open-enter-choose-preset'
 import { openCardCollection } from './action-handlers/play/open-card-collection'
 import { openCardCollectionTier } from './action-handlers/play/open-card-collection-tier'
@@ -26,8 +26,10 @@ import { openRevealSingle } from './action-handlers/play/open-reveal-single'
 import { openRipStatus } from './action-handlers/play/open-rip-status'
 import { openMyRips } from './action-handlers/play/open-my-rips'
 import { openViewPulls } from './action-handlers/play/open-view-pulls'
-import { openZapChooseChain } from './action-handlers/play/enter/open-zap-choose-chain'
-import { openZapChooseToken } from './action-handlers/play/enter/open-zap-choose-token'
+import {
+	openEnterChoosePaymentChain,
+	openEnterChoosePaymentToken,
+} from './action-handlers/play/enter/open-enter-choose-payment-chain-token'
 import {
 	openZapCheckout,
 	refreshZapCheckout,
@@ -89,7 +91,7 @@ export const actionRegistry = {
 	// Play
 	openChoosePreset: openEnterChoosePreset,
 	openChooseEntryAmount: openEnterChooseEntryCount,
-	openEnterChoosePaymentWallet,
+	openEnterPaymentOptions,
 	promptEntryCount,
 	openEnterCheckout,
 	executeEnter,
@@ -136,9 +138,11 @@ export const actionRegistry = {
 	openReferralWithdrawReward,
 	executeReferralWithdrawReward,
 
+	// Payment chain / token pickers
+	openEnterChoosePaymentChain,
+	openEnterChoosePaymentToken,
+
 	// Zap
-	openZapChooseChain,
-	openZapChooseToken,
 	openZapConfirm: openZapCheckout,
 	refreshZapConfirm: refreshZapCheckout,
 	executeZap,

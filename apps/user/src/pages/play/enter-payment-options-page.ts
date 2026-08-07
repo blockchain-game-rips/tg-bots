@@ -12,7 +12,7 @@ import { chainToEmoji, chainToName } from '../../utils/chain'
 import { isSameChainAddress } from '../../utils/currency'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
-export const EnterChoosePaymentWalletPage = {
+export const EnterPaymentOptionsPage = {
 	render(args: {
 		availablePreset: AvailablePresetDtoOutput
 		entryCount: number
@@ -41,7 +41,7 @@ export const EnterChoosePaymentWalletPage = {
 	},
 }
 
-const WALLET_TITLE = '💳 Choose payment wallet'
+const PAYMENT_TOKEN_TITLE = '🪙 Choose payment token'
 
 function buildMessage(
 	config: ReturnType<typeof resolveConfig>,
@@ -52,7 +52,7 @@ function buildMessage(
 	const lines: Line[] = [
 		enterBreadcrumb(configName(config)),
 		'',
-		WALLET_TITLE,
+		PAYMENT_TOKEN_TITLE,
 		'',
 		`Entry total: ${formatAmountWithUsd(entryTotal)}`,
 		`Entries: ${entryCount.toString()}`,
@@ -60,15 +60,47 @@ function buildMessage(
 		'Available balances:',
 	]
 
-	for (const balance of payableBalances) {
-		const { chain } = balance.currency.chainAddress
+	for (const balance of groupByChain(payableBalances)) {
+		if (balance.kind === 'chain') {
+			lines.push('')
+			lines.push(
+				`${chainToEmoji(balance.chain)} ${chainToName(balance.chain)}`,
+			)
 
-		lines.push('')
-		lines.push(`${chainToEmoji(chain)} ${chainToName(chain)}`)
-		lines.push(formatAmountWithUsd(balance))
+			continue
+		}
+
+		lines.push(formatAmountWithUsd(balance.balance))
 	}
 
 	return joinLines(lines)
+}
+
+type GroupedLine =
+	| {
+			kind: 'chain'
+			chain: CurrencyAmountDtoOutput['currency']['chainAddress']['chain']
+	  }
+	| { kind: 'balance'; balance: CurrencyAmountDtoOutput }
+
+function groupByChain(balances: CurrencyAmountDtoOutput[]): GroupedLine[] {
+	const lines: GroupedLine[] = []
+
+	let currentChainId: string | undefined
+
+	for (const balance of balances) {
+		const { chain } = balance.currency.chainAddress
+		const chainId = `${chain.namespace}:${chain.reference}`
+
+		if (chainId !== currentChainId) {
+			lines.push({ kind: 'chain', chain })
+			currentChainId = chainId
+		}
+
+		lines.push({ kind: 'balance', balance })
+	}
+
+	return lines
 }
 
 function buildKeyboard(
@@ -86,8 +118,8 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Enter from another chain',
-			buildActionData(actionIds.openZapChooseChain, undefined),
+			'Pay from another chain',
+			buildActionData(actionIds.openEnterChoosePaymentChain, undefined),
 		)
 		.row()
 
@@ -101,7 +133,7 @@ function buildKeyboard(
 function payLabel(balance: CurrencyAmountDtoOutput): string {
 	const { chainAddress, symbol } = balance.currency
 
-	return `Pay with ${chainToName(chainAddress.chain)} ${symbol}`
+	return `${chainToName(chainAddress.chain)} ${symbol}`
 }
 
 function payActionData(

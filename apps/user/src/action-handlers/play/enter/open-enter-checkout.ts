@@ -35,7 +35,7 @@ export const openEnterCheckout: ActionDef<number> = withPayload(
 
 		const entryTotal = {
 			amount: totalCost.toString(),
-			currency: nativeBalance.currency,
+			currency: config.entryPrice.currency,
 		}
 
 		const flow = toStep(session.flow, 'entry-count-chosen', {

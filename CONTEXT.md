@@ -58,3 +58,11 @@ _Avoid_: Case, mode, state (as a preview name)
 **insufficientAmounts**:
 The subset of a user's balances that fall short of what an operation requires. A computed domain result, distinct from any display of it.
 _Avoid_: Shortfall, missing funds
+
+**Payment token**:
+The currency a user pays for entries with. Always a token the user holds, on any supported chain — distinct from the entry price, which is denominated in Base ETH regardless of what the user pays with. UI copy says payment token, never payment wallet: the user has one EVM wallet, and what they are choosing between is currencies, not wallets.
+_Avoid_: Payment wallet, payment method, funding source
+
+**Choose payment token page**:
+The shortlist of ways to pay for entries, shown after the entry count is chosen. Always offers Base ETH regardless of balance (the direct path — no bridge or swap), plus every other currency the user holds, plus an escape to the chain → token picker for funds not on the shortlist. Not a currency picker: the browse pickers behind "Pay from another chain" are.
+_Avoid_: Payment wallet page, choose payment method page

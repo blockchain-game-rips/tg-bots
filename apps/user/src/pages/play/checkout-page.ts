@@ -65,7 +65,7 @@ export const CheckoutPage = {
 
 		return {
 			message: buildMessage(args, insufficientAmounts),
-			keyboard: buildKeyboard(insufficientAmounts),
+			keyboard: buildKeyboard(insufficientAmounts, args.quote),
 		}
 	},
 }
@@ -230,12 +230,20 @@ function insufficientCurrencyBlock(
 
 function buildKeyboard(
 	insufficientAmounts: CurrencyAmountDtoOutput[],
+	quote: CheckoutQuote,
 ): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	if (isSufficient(insufficientAmounts)) {
+		const buttonText = isCrosschain(quote)
+			? 'Confirm Bridge & Enter'
+			: 'Confirm Entry'
+
 		keyboard
-			.text('Confirm', buildActionData(actionIds.executeEnter, undefined))
+			.text(
+				buttonText,
+				buildActionData(actionIds.executeEnter, undefined),
+			)
 			.row()
 	} else {
 		for (const balance of insufficientAmounts) {

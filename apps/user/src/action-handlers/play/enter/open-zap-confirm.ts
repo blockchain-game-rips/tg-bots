@@ -1,11 +1,11 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { assertFlow, HandlerResult } from '@rips/grammy-kit'
-import { ActionDef, noPayload, withPayload } from '../../action-def'
-import { Flow, toStep } from '../../flows'
-import { CheckoutPage } from '../../pages/play/checkout-page'
-import { EffectType, SessionData } from '../../types'
-import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
-import { currencyChainAddressCodec } from '../../utils/currency'
+import { ActionDef, noPayload, withPayload } from '../../../action-def'
+import { Flow, toStep } from '../../../flows'
+import { CheckoutPage } from '../../../pages/play/checkout-page'
+import { EffectType, SessionData } from '../../../types'
+import { fetchBalances, fetchPreset } from '../../../utils/api/wrappers'
+import { currencyChainAddressCodec } from '../../../utils/currency'
 import { ripsControllerQuoteZap } from './zap-api-stub'
 
 async function buildZapCheckout(

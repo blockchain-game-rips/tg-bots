@@ -1,11 +1,11 @@
 import { assertFlow } from '@rips/grammy-kit'
 import { parsePresetId } from '@rips/shared'
-import { ActionDef, withPayload } from '../../action-def'
-import { nativeChainAddress, SUPPORTED_CHAINS } from '../../constants'
-import { toStep } from '../../flows'
-import { EnterChoosePaymentWalletPage } from '../../pages/play/enter-choose-payment-wallet-page'
-import { EffectType } from '../../types'
-import { fetchBalances, fetchPreset } from '../../utils/api/wrappers'
+import { ActionDef, withPayload } from '../../../action-def'
+import { nativeChainAddress, SUPPORTED_CHAINS } from '../../../constants'
+import { toStep } from '../../../flows'
+import { EnterChoosePaymentWalletPage } from '../../../pages/play/enter-choose-payment-wallet-page'
+import { EffectType } from '../../../types'
+import { fetchBalances, fetchPreset } from '../../../utils/api/wrappers'
 
 export const openEnterChoosePaymentWallet: ActionDef<number> = withPayload(
 	{

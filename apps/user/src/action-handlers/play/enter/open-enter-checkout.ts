@@ -1,12 +1,12 @@
 import { ripsControllerQuotePurchase } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import { parseEntryCount, resolveConfig } from '@rips/shared'
-import { ActionDef, withPayload } from '../../action-def'
-import { NATIVE_ON_BASE } from '../../constants'
-import { toStep } from '../../flows'
-import { CheckoutPage } from '../../pages/play/checkout-page'
-import { EffectType } from '../../types'
-import { fetchNativeBalance, fetchPreset } from '../../utils/api/wrappers'
+import { ActionDef, withPayload } from '../../../action-def'
+import { NATIVE_ON_BASE } from '../../../constants'
+import { toStep } from '../../../flows'
+import { CheckoutPage } from '../../../pages/play/checkout-page'
+import { EffectType } from '../../../types'
+import { fetchNativeBalance, fetchPreset } from '../../../utils/api/wrappers'
 
 export const openEnterCheckout: ActionDef<number> = withPayload(
 	{

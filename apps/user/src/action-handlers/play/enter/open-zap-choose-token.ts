@@ -1,10 +1,10 @@
 import { assertFlow } from '@rips/grammy-kit'
-import { ActionDef, withPayload } from '../../action-def'
-import { toHold } from '../../flows'
-import { ZapChooseTokenPage } from '../../pages/play/zap-choose-token-page'
-import { Chain, EffectType } from '../../types'
-import { fetchCurrencies, fetchPreset } from '../../utils/api/wrappers'
-import { chainCodec, getCurrenciesForChain } from '../../utils/chain'
+import { ActionDef, withPayload } from '../../../action-def'
+import { toHold } from '../../../flows'
+import { ZapChooseTokenPage } from '../../../pages/play/zap-choose-token-page'
+import { Chain, EffectType } from '../../../types'
+import { fetchCurrencies, fetchPreset } from '../../../utils/api/wrappers'
+import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 
 export const openZapChooseToken: ActionDef<Chain> = withPayload(
 	chainCodec,

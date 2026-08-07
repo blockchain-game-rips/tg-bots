@@ -1,72 +1,60 @@
-import {
-	BuyEntriesPurchaseResponseDtoOutput,
-	BuyEntriesZapResponseDtoOutput,
-	BuyEntriesZapSamechainResponseDtoOutput,
-	GetZapResultResponseDtoOutput,
-	RipDtoOutput,
-} from '@rips/api-client'
-import { Chain } from '../../types'
+import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
 	joinLines,
 	Line,
 } from '@rips/grammy-kit'
-import { configName, formatAmountWithUsd } from '@rips/shared'
+import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { PageContent } from '../../types'
-import { chainToName, currencyToChain } from '../../utils/chain'
+import { Chain, PageContent } from '../../types'
+import { chainToName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
-type ZapSuccess = NonNullable<GetZapResultResponseDtoOutput['success']>
-
-interface DirectResult {
-	kind: 'direct'
-	result: BuyEntriesPurchaseResponseDtoOutput
-	rip: RipDtoOutput
+interface SingleChainTransactions {
+	kind: 'singleChain'
+	transactionId: string
 }
 
-interface SamechainResult {
-	kind: 'samechain'
-	result: BuyEntriesZapSamechainResponseDtoOutput
-	rip: RipDtoOutput
-}
-
-interface CrosschainResult {
+interface CrosschainTransactions {
 	kind: 'crosschain'
-	submit: BuyEntriesZapResponseDtoOutput
-	result: ZapSuccess
-	rip: RipDtoOutput
+	srcChain: Chain
+	srcTransactionId: string
+	dstChain: Chain
+	dstTransactionId: string
 }
 
-type SingleChainResult = DirectResult | SamechainResult
+export type EnterSuccessTransactions =
+	| SingleChainTransactions
+	| CrosschainTransactions
 
-type SuccessResult = SingleChainResult | CrosschainResult
-
-function isSingleChain(args: SuccessResult): args is SingleChainResult {
-	return args.kind === 'direct' || args.kind === 'samechain'
+export interface EnterSuccessArgs {
+	entryPrice: CurrencyAmountDtoOutput
+	entryCap: number
+	filledEntries: number
+	ripId: number
+	entryCount: number
+	transactions: EnterSuccessTransactions
 }
 
 export const EnterSuccessPage = {
-	render(args: SuccessResult): PageContent {
-		const { rip, result } = args
-
-		const { ripId, entryCount, startEntryIndex } = result
+	render(args: EnterSuccessArgs): PageContent {
+		const { entryPrice, entryCap, filledEntries, ripId, entryCount } = args
 
 		const lines: Line[] = [
-			enterBreadcrumb(configName(rip.config)),
+			enterBreadcrumb(formatAmountWithUsd(entryPrice)),
 			'',
 			'✅ Entry confirmed',
 			'',
 			`Rip: #${ripId.toString()}`,
 			`Entries: ${entryCount.toString()}`,
-			entryTotalLine(rip, entryCount),
+			entryTotalLine(entryPrice, entryCount),
 			'',
 			'Status:',
-			statusLine(startEntryIndex, entryCount, rip.config.entryCap),
+			statusLine(filledEntries, entryCap),
 			'',
-			...transactionLines(args),
+			...transactionLines(args.transactions),
 		]
 
 		return {
@@ -76,9 +64,10 @@ export const EnterSuccessPage = {
 	},
 }
 
-function entryTotalLine(rip: RipDtoOutput, entryCount: number): string {
-	const { entryPrice } = rip.config
-
+function entryTotalLine(
+	entryPrice: CurrencyAmountDtoOutput,
+	entryCount: number,
+): string {
 	const total = BigInt(entryCount) * BigInt(entryPrice.amount)
 
 	const formatted = formatAmountWithUsd({
@@ -89,32 +78,30 @@ function entryTotalLine(rip: RipDtoOutput, entryCount: number): string {
 	return `Entry total: ${formatted}`
 }
 
-function statusLine(
-	startEntryIndex: number,
-	entryCount: number,
-	entryCap: number,
-): string {
-	const filled = startEntryIndex + entryCount === entryCap
-
-	if (filled) return 'Rip filled — completing results.'
+// Compared with >= rather than ===: entryCap comes from a config that may be
+// stale, while filledEntries is a lower bound taken from the fresh purchase
+// response. A cap raised mid-purchase would otherwise read as "not filled".
+function statusLine(filledEntries: number, entryCap: number): string {
+	if (filledEntries >= entryCap) return 'Rip filled — completing results.'
 
 	return 'Waiting for Rip to fill.'
 }
 
-function transactionLines(args: SuccessResult): Line[] {
-	if (isSingleChain(args)) {
+function transactionLines(transactions: EnterSuccessTransactions): Line[] {
+	if (transactions.kind === 'singleChain') {
 		return [
 			'Transaction:',
-			FormattedString.code(args.result.transaction.id),
+			FormattedString.code(transactions.transactionId),
 		]
 	}
 
-	const srcChain = currencyToChain(args.submit.amountIn.currency)
-	const dstChain = currencyToChain(args.rip.currency)
+	const { srcChain, srcTransactionId, dstChain, dstTransactionId } =
+		transactions
 
 	return [
-		...transactionOnChainLines(srcChain, args.submit.srcTransaction.id),
-		...transactionOnChainLines(dstChain, args.result.dstTransaction.id),
+		...transactionOnChainLines(srcChain, srcTransactionId),
+		'',
+		...transactionOnChainLines(dstChain, dstTransactionId),
 	]
 }
 

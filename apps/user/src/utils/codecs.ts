@@ -1,4 +1,10 @@
 import { ErrorToRender, PayloadCodec } from '@rips/grammy-kit'
+import { parseEntryCount } from '@rips/shared'
+
+export const entryCountCodec: PayloadCodec<number> = {
+	encode: (entryCount) => entryCount.toString(),
+	decode: (raw) => parseEntryCount(raw),
+}
 
 export type AmountPayload = { kind: 'max' } | { kind: 'exact'; value: number }
 

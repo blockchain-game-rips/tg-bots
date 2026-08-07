@@ -19,6 +19,10 @@ export function currencyToChainName(currency: CurrencyDtoOutput): string {
 	return chainToName(currencyToChain(currency))
 }
 
+export function isSameChain(a: Chain, b: Chain): boolean {
+	return a.namespace === b.namespace && a.reference === b.reference
+}
+
 export function findChainIndex(chain: Chain): number {
 	return SUPPORTED_CHAINS_LIST.findIndex(
 		(c) =>

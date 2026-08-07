@@ -17,14 +17,14 @@ import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { isNativeChainAddress, nativeChainAddress } from '../../../constants'
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
-import { Chain, EffectType, HandlerResult } from '../../../types'
+import { EffectType, HandlerResult } from '../../../types'
 import {
 	fetchBalances,
 	fetchCurrency,
 	getBalance,
 } from '../../../utils/api/wrappers'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
-import { currencyToChain } from '../../../utils/chain'
+import { currencyToChain, isSameChain } from '../../../utils/chain'
 import {
 	currencyChainAddressCodec,
 	NATIVE_MAX_MARGIN_USD,
@@ -251,8 +251,4 @@ async function fetchSwapQuote(
 	})
 
 	return { kind: 'crosschain', quote: data }
-}
-
-function isSameChain(a: Chain, b: Chain): boolean {
-	return a.namespace === b.namespace && a.reference === b.reference
 }

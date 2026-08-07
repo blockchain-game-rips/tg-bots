@@ -9,12 +9,11 @@ import {
 import { assertFlow } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
-import { BASE_CHAIN, NATIVE_ON_BASE } from '../../../constants'
+import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toFlow } from '../../../flows'
 import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
 import { EffectType, HandlerResult } from '../../../types'
 import { fetchSingleBalance, getBalance } from '../../../utils/api/wrappers'
-import { isSameChain } from '../../../utils/chain'
 import { entryCountCodec } from '../../../utils/codecs'
 import {
 	currencyChainAddressCodec,
@@ -124,7 +123,9 @@ async function fetchCheckoutQuote(
 		paymentCurrencyChainAddress: payChainAddress,
 	}
 
-	if (isSameChainAddress(payChainAddress, NATIVE_ON_BASE)) {
+	const route = resolvePaymentRoute(payChainAddress)
+
+	if (route === 'direct') {
 		const { data } = await ripsControllerQuotePurchase({ headers, body })
 
 		return {
@@ -134,7 +135,7 @@ async function fetchCheckoutQuote(
 		}
 	}
 
-	if (isSameChain(payChainAddress.chain, BASE_CHAIN)) {
+	if (route === 'samechain') {
 		const { data } = await ripsControllerQuoteZapSamechain({
 			headers,
 			body,

@@ -199,7 +199,7 @@ function insufficientLines(
 		insufficientCurrencyBlock(balance, allExpenses),
 	)
 
-	return ['', ...blocks, 'Choose another wallet or deposit.']
+	return ['', ...blocks, 'Enter from another chain or deposit.']
 }
 
 function insufficientCurrencyBlock(
@@ -257,7 +257,7 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Change payment wallet',
+			'Enter from another chain',
 			buildActionData(
 				actionIds.openEnterChoosePaymentWallet,
 				args.availablePreset.preset.id,

@@ -16,13 +16,13 @@ export async function replacePage(
 ): Promise<Message> {
 	const newPageHasPhoto = newPage.photo !== undefined
 
-	if (message.hasPhoto === true && newPageHasPhoto === true) {
+	if (message.hasPhoto && newPageHasPhoto) {
 		await editMedia(api, message, newPage)
 
 		return message
 	}
 
-	if (message.hasPhoto === false && newPageHasPhoto === false) {
+	if (!message.hasPhoto && !newPageHasPhoto) {
 		await editText(api, message, newPage)
 
 		return message

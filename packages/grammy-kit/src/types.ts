@@ -75,7 +75,7 @@ export interface PromptContent {
 	placeholder: string
 }
 
-export type MessageRef = {
+export interface MessageRef {
 	chatId: number
 	messageId: number
 }

@@ -37,7 +37,7 @@ export const EnterPaymentOptionsPage = {
 	},
 }
 
-const PAYMENT_TOKEN_TITLE = '🪙 Choose payment token'
+const PAYMENT_TOKEN_TITLE = '💳 Choose payment token'
 
 function buildMessage(
 	config: ReturnType<typeof resolveConfig>,

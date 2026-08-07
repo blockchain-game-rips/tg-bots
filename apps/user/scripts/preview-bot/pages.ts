@@ -46,6 +46,8 @@ import { SwapSuccessPage } from '../../src/pages/swap/swap-success-page'
 import { DepositAddressPage } from '../../src/pages/wallet/deposit-address-page'
 import { DepositChooseChainPage } from '../../src/pages/wallet/deposit-choose-chain-page'
 import { DepositChooseCurrencyPage } from '../../src/pages/wallet/deposit-choose-currency-page'
+import { ExportKeyPage } from '../../src/pages/wallet/export-key-page'
+import { ExportKeyWarningPage } from '../../src/pages/wallet/export-key-warning-page'
 import { WalletPage } from '../../src/pages/wallet/wallet-page'
 import { WithdrawChooseAmountPage } from '../../src/pages/wallet/withdraw-choose-amount-page'
 import { WithdrawChooseChainPage } from '../../src/pages/wallet/withdraw-choose-chain-page'
@@ -92,6 +94,7 @@ import {
 	mockUsdcArbWithdrawAmountInsufficient,
 	mockUsdcOnBase,
 	mockUserEvmAddress,
+	mockUserPrivateKey,
 	mockViewPullsAllOpened,
 	mockViewPullsPayouts,
 	mockWalletBalances,
@@ -606,6 +609,16 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			"Wallet hub. Shows the user's balances across all supported chains (natives always shown, non-zero tokens beneath), with navigation to Deposit, Withdraw and Swap. Opened from Home.",
 		render: () => WalletPage.render(mockWalletBalances),
+	},
+	'export-key-warning': {
+		description:
+			'Warning shown before revealing the private key. Explains that anyone holding the key controls the wallet and that support never asks for it. Confirming opens export-key. Opened from Wallet.',
+		render: () => ExportKeyWarningPage.render(),
+	},
+	'export-key': {
+		description:
+			'Shows the wallet private key as tap-to-copy text and asks the user to delete the message once saved. Opened from export-key-warning.',
+		render: () => ExportKeyPage.render(mockUserPrivateKey),
 	},
 	'deposit-choose-chain': {
 		description:

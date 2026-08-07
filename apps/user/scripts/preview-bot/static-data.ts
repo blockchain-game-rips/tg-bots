@@ -1521,6 +1521,9 @@ export const mockPaymentTokenBalances: CurrencyAmountDtoOutput[] = [
 
 export const mockUserEvmAddress = '0x1234567890abcdef1234567890abcdef12345678'
 
+export const mockUserPrivateKey =
+	'0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789'
+
 export const mockRip: RipDtoOutput = {
 	id: 1,
 	presetId: 1,

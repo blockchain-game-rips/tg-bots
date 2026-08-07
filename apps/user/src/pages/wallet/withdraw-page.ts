@@ -243,7 +243,7 @@ function buildKeyboard(
 	if (args.kind === 'quoted' && isSufficientAmounts(insufficientAmounts)) {
 		keyboard
 			.text(
-				'Confirm',
+				'Confirm Withdrawal',
 				buildActionData(actionIds.executeWithdraw, undefined),
 			)
 			.row()
@@ -253,12 +253,12 @@ function buildKeyboard(
 
 	return keyboard
 		.text(
-			'Enter amount',
+			'Enter Amount',
 			buildActionData(actionIds.openWithdrawChooseAmount, undefined),
 		)
 		.row()
 		.text(
-			'Enter recipient',
+			'Enter Recipient',
 			buildActionData(actionIds.promptWithdrawRecipient, undefined),
 		)
 		.appendNavButtons(navButtons)

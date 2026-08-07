@@ -1409,6 +1409,10 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	startEntryIndex: 0,
 }
 
+// Samechain settles in a single Base transaction like a direct purchase; a
+// distinct id keeps the two preview variants tellable apart.
+export const mockZapSamechainTransactionId = '0x5a3ec4'
+
 export const mockZapQuote: QuoteZapResponseDtoOutput = {
 	amountIn: { currency: mockUsdcArb, amount: '13500000' }, // 13.5 USDC
 	durationMs: 45000,

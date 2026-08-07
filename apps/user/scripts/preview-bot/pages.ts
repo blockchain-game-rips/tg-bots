@@ -1,7 +1,7 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
-import { RipStatusGroup } from '@rips/shared'
-import { SUPPORTED_CHAINS } from '../../src/constants'
+import { resolveConfig, RipStatusGroup } from '@rips/shared'
+import { BASE_CHAIN, SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
@@ -10,7 +10,10 @@ import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
 import { EnterPaymentOptionsPage } from '../../src/pages/play/enter-payment-options-page'
 import { EnterChoosePresetPage } from '../../src/pages/play/enter-choose-preset-page'
-import { EnterSuccessPage } from '../../src/pages/play/enter-success-page'
+import {
+	EnterSuccessPage,
+	EnterSuccessTransactions,
+} from '../../src/pages/play/enter-success-page'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
 import { CardCollectionTierPage } from '../../src/pages/play/card-collection-tier'
 import { FinalizedRipsPage } from '../../src/pages/play/finalized-rips-page'
@@ -101,6 +104,7 @@ import {
 	mockZapSamechainNativeBalance,
 	mockZapSamechainQuote,
 	mockZapSamechainSrcBalance,
+	mockZapSamechainTransactionId,
 	mockZapSrcBalanceInsufficient,
 	mockZapSrcBalanceSufficient,
 	mockZapSubmit,
@@ -133,6 +137,26 @@ function purchase(
 
 function mockRipWith(overrides: Partial<RipDtoOutput>): RipDtoOutput {
 	return { ...mockRip, ...overrides }
+}
+
+// Direct and samechain both settle in a single Base transaction, so they share
+// a shape and differ only in which token was spent to get there.
+function mockTransactions(variant: string): EnterSuccessTransactions {
+	if (variant === 'crosschain')
+		return {
+			kind: 'crosschain',
+			srcChain: mockZapSubmit.amountIn.currency.chainAddress.chain,
+			srcTransactionId: mockZapSubmit.srcTransaction.id,
+			dstChain: BASE_CHAIN,
+			dstTransactionId: mockZapSuccessResult.dstTransaction.id,
+		}
+
+	const transactionId =
+		variant === 'samechain'
+			? mockZapSamechainTransactionId
+			: mockPurchase.transaction.id
+
+	return { kind: 'singleChain', transactionId }
 }
 
 function mockRipDetailVariant(variant: string): RipDetailVariant {
@@ -380,13 +404,23 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'enter-success': {
 		description:
-			'Final step of the direct enter flow. Confirms a successful entry — shows rip number, entry count, entry total, fill status, and the transaction. Opened after enter-confirm.',
-		render: () =>
-			EnterSuccessPage.render({
-				kind: 'direct',
-				result: mockPurchase,
-				rip: mockRip,
-			}),
+			'Final step of the enter flow, one variant per payment route. Confirms a successful entry — shows rip number, entry count, entry total, fill status, and the transaction. "direct" and "samechain" settle in a single transaction on Base; "crosschain" bridges, so it shows a transaction on each chain.',
+		variants: ['direct', 'samechain', 'crosschain'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			const config = resolveConfig(mockAvailablePreset0)
+
+			return EnterSuccessPage.render({
+				entryPrice: config.entryPrice,
+				entryCap: config.entryCap,
+				filledEntries:
+					mockPurchase.startEntryIndex + mockPurchase.entryCount,
+				ripId: mockPurchase.ripId,
+				entryCount: mockPurchase.entryCount,
+				transactions: mockTransactions(resolvedVariant),
+			})
+		},
 	},
 	'enter-choose-payment-chain': {
 		description:
@@ -414,17 +448,6 @@ export const pages: Record<string, PageEntry> = {
 				entryCount: 3,
 				amountIn: mockZapCurrencyInBalance,
 				refund: mockZapCurrencyInBalance,
-			}),
-	},
-	'zap-success': {
-		description:
-			'Final step of the crosschain zap flow. Confirms a successful entry — shows rip, entry count, entry total, fill status, and a transaction per chain.',
-		render: () =>
-			EnterSuccessPage.render({
-				kind: 'crosschain',
-				submit: mockZapSubmit,
-				result: mockZapSuccessResult,
-				rip: mockRip,
 			}),
 	},
 	'my-rips': {

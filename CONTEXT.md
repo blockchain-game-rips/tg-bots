@@ -66,3 +66,7 @@ _Avoid_: Payment wallet, payment method, funding source
 **Choose payment token page**:
 The shortlist of ways to pay for entries, shown after the entry count is chosen. Always offers Base ETH regardless of balance (the direct path — no bridge or swap), plus every other currency the user holds, plus an escape to the chain → token picker for funds not on the shortlist. Not a currency picker: the browse pickers behind "Pay from another chain" are.
 _Avoid_: Payment wallet page, choose payment method page
+
+**Payment route**:
+Which of the three ways an entry purchase reaches Base — `direct` (paying in Base ETH, no bridge or swap), `samechain` (zapping from another token on Base), or `crosschain` (zapping from another chain). Determined solely by the payment token, so it is derived wherever it is needed rather than carried through the flow. Decides the quote endpoint, the buy endpoint, and which variant of the Enter success page is rendered. An internal name — it never appears in UI copy.
+_Avoid_: Payment method, payment path, entry method

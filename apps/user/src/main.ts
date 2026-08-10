@@ -11,6 +11,7 @@ import {
 } from '@rips/grammy-kit'
 import { Bot, InlineKeyboard, session } from 'grammy'
 import { actions } from './actions'
+import { botStartLink, setBotUsername } from './bot-identity'
 import { Flow } from './flows'
 import { Notifier } from './notifier'
 import { Context, EffectType, PageContent, SessionData } from './types'
@@ -95,7 +96,18 @@ bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
-run(bot)
+async function start() {
+	const me = await bot.api.getMe()
 
-const notifier = new Notifier(bot)
-notifier.run()
+	setBotUsername(me.username)
+
+	run(bot)
+
+	const notifier = new Notifier(bot, botStartLink())
+	notifier.run()
+}
+
+start().catch((error: unknown) => {
+	logger.error(error, 'Failed to start bot')
+	process.exit(1)
+})

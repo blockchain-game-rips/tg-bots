@@ -1,13 +1,18 @@
 import { CurrencyDtoOutput } from '@rips/api-client'
 import { PayloadCodec } from '@rips/grammy-kit'
-import { parseChain } from '@rips/shared'
+import {
+	Chain,
+	currencyToChain,
+	findChainIndex as findChainIndexIn,
+	isSameChain,
+	parseChain,
+	toCurrencyId,
+} from '@rips/shared'
 import {
 	SUPPORTED_CHAINS as SUPPORTED_CHAINS_LIST,
 	SUPPORTED_CURRENCIES,
 } from '../constants'
-import { Chain } from '../types'
 import { chainToName } from './chain-display'
-import { toCurrencyId } from './currency'
 
 export {
 	chainToEmoji,
@@ -15,23 +20,12 @@ export {
 	chainToNameOrReference,
 } from './chain-display'
 
-export function currencyToChain(currency: CurrencyDtoOutput): Chain {
-	return currency.chainAddress.chain
-}
-
 export function currencyToChainName(currency: CurrencyDtoOutput): string {
 	return chainToName(currencyToChain(currency))
 }
 
-export function isSameChain(a: Chain, b: Chain): boolean {
-	return a.namespace === b.namespace && a.reference === b.reference
-}
-
 export function findChainIndex(chain: Chain): number {
-	return SUPPORTED_CHAINS_LIST.findIndex(
-		(c) =>
-			c.namespace === chain.namespace && c.reference === chain.reference,
-	)
+	return findChainIndexIn(chain, SUPPORTED_CHAINS_LIST)
 }
 
 export const chainCodec: PayloadCodec<Chain> = {
@@ -40,13 +34,7 @@ export const chainCodec: PayloadCodec<Chain> = {
 }
 
 export function getCurrenciesForChain(chain: Chain): string[] {
-	return SUPPORTED_CURRENCIES.filter(
-		(c) =>
-			c.chain.namespace === chain.namespace &&
-			c.chain.reference === chain.reference,
-	).map(toCurrencyId)
-}
-
-export function truncateAddress(address: string): string {
-	return `${address.slice(0, 6)}...${address.slice(-4)}`
+	return SUPPORTED_CURRENCIES.filter((c) => isSameChain(c.chain, chain)).map(
+		toCurrencyId,
+	)
 }

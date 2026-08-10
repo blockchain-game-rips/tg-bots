@@ -10,7 +10,8 @@ import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { currencyToChain, currencyToChainName } from '../../utils/chain'
+import { currencyToChain } from '@rips/shared'
+import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface Draft {

@@ -1,5 +1,5 @@
 import { EIP155_NAMESPACE, SUPPORTED_CHAINS } from '../constants'
-import { Chain } from '../types'
+import { Chain } from '@rips/shared'
 
 type SupportedChain = (typeof SUPPORTED_CHAINS)[number]
 type SupportedNamespace = SupportedChain['namespace']

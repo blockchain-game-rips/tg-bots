@@ -12,6 +12,7 @@ import {
 } from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
+	currencyToChain,
 	findInsufficientBalances,
 	formatAmountWithUsd,
 	toCurrencyAmount,
@@ -19,11 +20,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import {
-	chainToName,
-	currencyToChain,
-	currencyToChainName,
-} from '../../utils/chain'
+import { chainToName, currencyToChainName } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 const NOT_SET = 'Not set'

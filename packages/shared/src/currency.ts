@@ -3,7 +3,8 @@ import {
 	CurrencyAmountDtoOutput,
 	CurrencyDtoOutput,
 } from '@rips/api-client'
-import { formatUnits } from './format/units'
+import { Chain, isSameChain } from './chain'
+import { formatUnits, parseUnits } from './format/units'
 
 export { formatUnits, parseUnits } from './format/units'
 
@@ -17,6 +18,20 @@ export function toCurrencyId(
 	const { address, chain } = currencyChainAddress
 	const { namespace, reference } = chain
 	return `${namespace}:${reference}:${address}`
+}
+
+export function isSameChainAddress(
+	a: ChainAddressDtoOutput,
+	b: ChainAddressDtoOutput,
+): boolean {
+	return (
+		isSameChain(a.chain, b.chain) &&
+		a.address.toLowerCase() === b.address.toLowerCase()
+	)
+}
+
+export function currencyToChain(currency: CurrencyDtoOutput): Chain {
+	return currency.chainAddress.chain
 }
 
 export function rescaleAmount(
@@ -37,10 +52,20 @@ export function toCurrencyAmount(
 	return { currency, amount: amount.toString() }
 }
 
+export function usdToTokenUnits(
+	usd: number,
+	currency: CurrencyDtoOutput,
+): bigint {
+	if (currency.priceUsd <= 0) return 0n
+
+	const tokenAmount = usd / currency.priceUsd
+
+	return parseUnits(tokenAmount.toFixed(currency.decimals), currency.decimals)
+}
+
 // Two variants are provided because callers differ in what they have available:
-// findCurrencyIndexById uses a derived string key (more robust across serialization
-// boundaries), while findCurrencyIndexByAddress compares fields directly (useful
-// when a ChainAddressDtoOutput is at hand and no toCurrencyId rip-trip is needed).
+// findCurrencyIndexById takes a derived string key, while findCurrencyIndexByAddress
+// takes a ChainAddressDtoOutput directly.
 export function findCurrencyIndexById(
 	currencies: ChainAddressDtoOutput[],
 	currencyId: string,
@@ -52,11 +77,7 @@ export function findCurrencyIndexByAddress(
 	currencies: ChainAddressDtoOutput[],
 	value: ChainAddressDtoOutput,
 ): number {
-	return currencies.findIndex(
-		(c) =>
-			c.address === value.address &&
-			c.chain.reference === value.chain.reference,
-	)
+	return currencies.findIndex((c) => isSameChainAddress(c, value))
 }
 
 export function toFixedDigitsFromPrice(priceUsd: number): number {

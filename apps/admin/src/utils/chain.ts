@@ -1,5 +1,5 @@
+import { Chain } from '@rips/shared'
 import { EIP155_NAMESPACE } from '../constants'
-import { Chain } from '../types'
 
 const CHAIN_NAMES: Record<string, Record<string, string> | undefined> = {
 	[EIP155_NAMESPACE]: {

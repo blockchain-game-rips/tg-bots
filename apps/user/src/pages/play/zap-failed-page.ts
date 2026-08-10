@@ -6,7 +6,8 @@ import { joinLines } from '@rips/grammy-kit'
 import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { PageContent } from '../../types'
-import { chainToName, currencyToChain } from '../../utils/chain'
+import { currencyToChain } from '@rips/shared'
+import { chainToName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const ZapFailedPage = {

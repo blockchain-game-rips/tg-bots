@@ -18,7 +18,7 @@ import {
 	CardCollection,
 } from '../../domain/card-collection'
 import { copiesByCardId } from '../../domain/reveal-summary'
-import { isSameChainAddress, toCurrencyId } from '../currency'
+import { isSameChainAddress, toCurrencyId } from '@rips/shared'
 
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,

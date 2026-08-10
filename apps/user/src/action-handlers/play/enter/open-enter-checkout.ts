@@ -7,7 +7,7 @@ import {
 	ripsControllerQuoteZapSamechain,
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
-import { resolveConfig } from '@rips/shared'
+import { isSameChainAddress, resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toFlow } from '../../../flows'
@@ -15,10 +15,7 @@ import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
 import { EffectType, HandlerResult } from '../../../types'
 import { fetchSingleBalance, getBalance } from '../../../utils/api/wrappers'
 import { entryCountCodec } from '../../../utils/codecs'
-import {
-	currencyChainAddressCodec,
-	isSameChainAddress,
-} from '../../../utils/currency'
+import { currencyChainAddressCodec } from '../../../utils/currency'
 
 interface CheckoutDraft {
 	availablePreset: AvailablePresetDtoOutput

@@ -9,12 +9,19 @@ import {
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import {
+	currencyToChain,
+	isSameChain,
 	parseCurrencyAmount,
 	rescaleAmount,
 	toCurrencyAmount,
+	usdToTokenUnits,
 } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
-import { isNativeChainAddress, nativeChainAddress } from '../../../constants'
+import {
+	isNativeChainAddress,
+	NATIVE_MAX_MARGIN_USD,
+	nativeChainAddress,
+} from '../../../constants'
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
 import { EffectType, HandlerResult } from '../../../types'
@@ -24,12 +31,7 @@ import {
 	getBalance,
 } from '../../../utils/api/wrappers'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
-import { currencyToChain, isSameChain } from '../../../utils/chain'
-import {
-	currencyChainAddressCodec,
-	NATIVE_MAX_MARGIN_USD,
-	usdToTokenUnits,
-} from '../../../utils/currency'
+import { currencyChainAddressCodec } from '../../../utils/currency'
 
 interface CheckoutDraft {
 	srcCurrencyBalance: CurrencyAmountDtoOutput

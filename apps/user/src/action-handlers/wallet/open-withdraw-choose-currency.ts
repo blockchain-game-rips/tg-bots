@@ -1,7 +1,8 @@
+import { Chain } from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import { toHold } from '../../flows'
 import { WithdrawChooseCurrencyPage } from '../../pages/wallet/withdraw-choose-currency-page'
-import { Chain, EffectType } from '../../types'
+import { EffectType } from '../../types'
 import { fetchCurrencies } from '../../utils/api/wrappers'
 import { chainCodec, getCurrenciesForChain } from '../../utils/chain'
 

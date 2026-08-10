@@ -1,7 +1,6 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { BASE_CHAIN, NATIVE_ON_BASE } from '../constants'
-import { isSameChain } from '../utils/chain'
-import { isSameChainAddress } from '../utils/currency'
+import { isSameChain, isSameChainAddress } from '@rips/shared'
 
 /**
  * Which of the three ways an entry purchase reaches Base. Decides the quote

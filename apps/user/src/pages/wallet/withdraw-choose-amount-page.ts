@@ -4,7 +4,8 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName, currencyToChain } from '../../utils/chain'
+import { currencyToChain } from '@rips/shared'
+import { chainToName } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawChooseAmountPage = {

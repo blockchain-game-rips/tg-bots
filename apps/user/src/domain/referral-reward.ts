@@ -3,7 +3,7 @@ import {
 	GetReferrerResponseDtoOutput,
 } from '@rips/api-client'
 import { NATIVE_ON_BASE } from '../constants'
-import { isSameChainAddress } from '../utils/currency'
+import { isSameChainAddress } from '@rips/shared'
 
 type ReferrerState = GetReferrerResponseDtoOutput['states'][number]
 

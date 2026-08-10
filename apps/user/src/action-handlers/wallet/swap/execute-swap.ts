@@ -9,12 +9,11 @@ import {
 	walletsControllerSwapSamechain,
 } from '@rips/api-client'
 import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
-import { toCurrencyAmount } from '@rips/shared'
+import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { Flow, toHold, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
-import { Chain, EffectType, HandlerResult } from '../../../types'
-import { currencyToChain } from '../../../utils/chain'
+import { EffectType, HandlerResult } from '../../../types'
 
 const SWAP_POLL_INTERVAL_MS = 2000
 const SWAP_POLL_TIMEOUT_MS = 60000
@@ -111,8 +110,4 @@ async function pollSwapResult(zapId: string): Promise<SwapSuccess> {
 	}
 
 	throw new ErrorToRender('Swap timed out')
-}
-
-function isSameChain(a: Chain, b: Chain): boolean {
-	return a.namespace === b.namespace && a.reference === b.reference
 }

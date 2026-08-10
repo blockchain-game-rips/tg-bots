@@ -2,7 +2,8 @@ import { ChainAddressDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { SUPPORTED_CHAINS } from '../constants'
-import { ActionId, Chain, NavIds, PageContent } from '../types'
+import { Chain } from '@rips/shared'
+import { ActionId, NavIds, PageContent } from '../types'
 import { chainToName, currencyToChainName } from '../utils/chain'
 
 interface ChooseChainParams<T> {

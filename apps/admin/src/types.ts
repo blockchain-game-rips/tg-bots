@@ -4,7 +4,6 @@ import { Flow } from './flows'
 
 export {
 	ActionId,
-	Chain,
 	Effect,
 	EffectAsk,
 	EffectEdit,

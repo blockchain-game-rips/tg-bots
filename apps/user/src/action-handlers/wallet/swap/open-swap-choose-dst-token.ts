@@ -1,8 +1,9 @@
+import { Chain } from '@rips/shared'
 import { assertFlow, isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
 import { Flow, toHold } from '../../../flows'
 import { SwapChooseDstTokenPage } from '../../../pages/swap/swap-choose-dst-token-page'
-import { Chain, EffectType, HandlerResult } from '../../../types'
+import { EffectType, HandlerResult } from '../../../types'
 import { fetchCurrencies } from '../../../utils/api/wrappers'
 import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 

@@ -9,7 +9,8 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard, InputFile } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { chainToName, currencyToChain } from '../../utils/chain'
+import { currencyToChain } from '@rips/shared'
+import { chainToName } from '../../utils/chain'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'
 
 interface RenderArgs {

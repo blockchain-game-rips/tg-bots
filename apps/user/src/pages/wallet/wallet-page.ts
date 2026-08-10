@@ -1,3 +1,4 @@
+import { Chain } from '@rips/shared'
 import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
@@ -9,8 +10,9 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
-import { Chain, PageContent } from '../../types'
-import { chainToEmoji, chainToName, currencyToChain } from '../../utils/chain'
+import { PageContent } from '../../types'
+import { currencyToChain } from '@rips/shared'
+import { chainToEmoji, chainToName } from '../../utils/chain'
 
 function isZeroAmount(balance: CurrencyAmountDtoOutput): boolean {
 	return BigInt(balance.amount) === 0n

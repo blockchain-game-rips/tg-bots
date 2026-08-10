@@ -175,3 +175,5 @@ export const SUPPORTED_CURRENCIES: ChainAddressDtoOutput[] = [
 		chain: BASE_CHAIN,
 	}, // USDC
 ]
+
+export const NATIVE_MAX_MARGIN_USD = 0.1

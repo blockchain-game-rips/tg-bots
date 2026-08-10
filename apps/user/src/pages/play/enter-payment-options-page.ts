@@ -3,13 +3,17 @@ import {
 	CurrencyAmountDtoOutput,
 } from '@rips/api-client'
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
-import { configName, formatAmountWithUsd, resolveConfig } from '@rips/shared'
+import {
+	configName,
+	formatAmountWithUsd,
+	isSameChainAddress,
+	resolveConfig,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { NATIVE_ON_BASE } from '../../constants'
 import { PageContent } from '../../types'
 import { chainToEmoji, chainToName } from '../../utils/chain'
-import { isSameChainAddress } from '../../utils/currency'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const EnterPaymentOptionsPage = {

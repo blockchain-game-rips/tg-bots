@@ -4,10 +4,15 @@ import {
 	walletsControllerQuoteWithdraw,
 } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
-import { parseCurrencyAmount, parseEvmAddress } from '@rips/shared'
+import {
+	parseCurrencyAmount,
+	parseEvmAddress,
+	usdToTokenUnits,
+} from '@rips/shared'
 import { ActionDef, withPayload } from '../../action-def'
 import {
 	isNativeChainAddress,
+	NATIVE_MAX_MARGIN_USD,
 	nativeChainAddress,
 	ZERO_ADDRESS,
 } from '../../constants'
@@ -16,11 +21,7 @@ import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType, HandlerResult } from '../../types'
 import { fetchBalances, getBalance } from '../../utils/api/wrappers'
 import { AmountPayload, amountCodec } from '../../utils/codecs'
-import {
-	currencyChainAddressCodec,
-	NATIVE_MAX_MARGIN_USD,
-	usdToTokenUnits,
-} from '../../utils/currency'
+import { currencyChainAddressCodec } from '../../utils/currency'
 import { isFlow } from '@rips/grammy-kit'
 
 interface WithdrawDraft {

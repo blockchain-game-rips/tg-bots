@@ -4,7 +4,7 @@ import { ActionDef, noPayload } from '../../action-def'
 import { toReset } from '../../flows'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'
-import { toCurrencyAmount } from '../../utils/currency'
+import { toCurrencyAmount } from '@rips/shared'
 
 export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'withdraw', 'withdraw-page')

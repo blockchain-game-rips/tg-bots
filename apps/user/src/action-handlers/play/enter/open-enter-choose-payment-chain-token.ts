@@ -1,3 +1,4 @@
+import { Chain } from '@rips/shared'
 import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { toHold } from '../../../flows'
@@ -5,7 +6,7 @@ import {
 	EnterChoosePaymentTokenPage,
 	EnterChoosePaymentChainPage,
 } from '../../../pages/play/enter-choose-payment-chain-token-pages'
-import { Chain, EffectType } from '../../../types'
+import { EffectType } from '../../../types'
 import { fetchCurrencies } from '../../../utils/api/wrappers'
 import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 

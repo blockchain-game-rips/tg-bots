@@ -1,9 +1,13 @@
 import { CurrencyDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
-import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
+import {
+	Chain,
+	currencyAmountDisplayParts,
+	toCurrencyAmount,
+} from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { ActionId, Chain, PageContent } from '../../types'
+import { ActionId, PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChainKeyboard } from '../choose-chain-currency'

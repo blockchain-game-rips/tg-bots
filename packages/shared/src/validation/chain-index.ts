@@ -1,4 +1,4 @@
-import { Chain } from '@rips/grammy-kit'
+import { Chain } from '../chain'
 import z from 'zod'
 import { parsePayload } from './parse-payload'
 

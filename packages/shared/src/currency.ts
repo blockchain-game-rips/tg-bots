@@ -3,8 +3,6 @@ import {
 	CurrencyAmountDtoOutput,
 	CurrencyDtoOutput,
 } from '@rips/api-client'
-import { fmt, FormattedString } from '@rips/grammy-kit'
-
 import { formatUnits } from './format/units'
 
 export { formatUnits, parseUnits } from './format/units'
@@ -12,15 +10,6 @@ export { formatUnits, parseUnits } from './format/units'
 const USD_MIN_DISPLAY = 0.01
 const MAX_TOFIXED_DIGITS = 6
 const FEE_BASIS = 10000
-
-export interface Expense {
-	label: string
-	amount: CurrencyAmountDtoOutput
-}
-
-export interface FundsBreakdownResult {
-	insufficientAmounts: CurrencyAmountDtoOutput[]
-}
 
 export function toCurrencyId(
 	currencyChainAddress: ChainAddressDtoOutput,
@@ -129,83 +118,24 @@ export function formatPercent(basisPoints: number): string {
 	return `${((basisPoints / FEE_BASIS) * 100).toFixed(2)}%`
 }
 
-export function insufficientBalanceLines(args: {
-	tokenAmount: CurrencyAmountDtoOutput
-	feeAmount: CurrencyAmountDtoOutput
-	insufficientAmounts: CurrencyAmountDtoOutput[]
-	userEvmAddress: string
-	feeLabel: string
-}): FormattedString[] {
-	const {
-		tokenAmount,
-		feeAmount,
-		insufficientAmounts,
-		userEvmAddress,
-		feeLabel,
-	} = args
-
-	const tokenInsufficient = insufficientAmounts.some(
-		(a) => a.currency.id === tokenAmount.currency.id,
-	)
-
-	if (tokenInsufficient) {
-		const tokenSymbol = tokenAmount.currency.symbol
-		return [
-			fmt`⚠️ ${FormattedString.b(`Insufficient ${tokenSymbol}`)}`,
-			fmt``,
-			fmt`Enter a smaller amount`,
-		]
-	}
-
-	const feeSymbol = feeAmount.currency.symbol
-
-	return [
-		fmt`⚠️ ${FormattedString.b(`Insufficient ${feeSymbol} for ${feeLabel}`)}`,
-		fmt``,
-		fmt`Deposit ${feeSymbol} to:`,
-		FormattedString.code(userEvmAddress),
-		fmt``,
-		fmt`Then press Update`,
-	]
-}
-
-export function insufficientFundsDepositLines(
-	userEvmAddress: string,
-): FormattedString[] {
-	return [
-		fmt`⚠️ ${FormattedString.b('Insufficient funds')}`,
-		fmt``,
-		fmt`Deposit to:`,
-		FormattedString.code(userEvmAddress),
-		fmt``,
-		fmt`Then press Update`,
-	]
-}
-
-// TODO: the funds breakdown display block was removed during the
-// FormattedString migration. Only the insufficient-balance computation
-// remains. Re-introduce a rendered breakdown as FormattedString if needed.
-export function fundsBreakdown(
-	expenses: Expense[],
+// Balances are deduplicated by currency so that paying with the native token
+// does not report the same balance twice.
+export function findInsufficientBalances(
+	expenses: CurrencyAmountDtoOutput[],
 	balances: CurrencyAmountDtoOutput[],
-): FundsBreakdownResult {
+): CurrencyAmountDtoOutput[] {
 	const uniqueBalances = balances.filter(
 		(b, i, arr) =>
 			arr.findIndex((x) => x.currency.id === b.currency.id) === i,
 	)
 
-	const insufficientAmounts: CurrencyAmountDtoOutput[] = []
+	return uniqueBalances.filter((balance) => {
+		const totalRequired = expenses.reduce((sum, expense) => {
+			if (expense.currency.id !== balance.currency.id) return sum
 
-	for (const balance of uniqueBalances) {
-		const totalRequired = expenses.reduce((sum, { amount }) => {
-			if (amount.currency.id !== balance.currency.id) return sum
-			return sum + BigInt(amount.amount)
+			return sum + BigInt(expense.amount)
 		}, 0n)
 
-		if (BigInt(balance.amount) < totalRequired) {
-			insufficientAmounts.push(balance)
-		}
-	}
-
-	return { insufficientAmounts }
+		return BigInt(balance.amount) < totalRequired
+	})
 }

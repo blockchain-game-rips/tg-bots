@@ -13,9 +13,8 @@ import {
 } from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
-	Expense,
+	findInsufficientBalances,
 	formatAmountWithUsd,
-	fundsBreakdown,
 	toCurrencyAmount,
 	toShortDurationFormat,
 } from '@rips/shared'
@@ -32,7 +31,10 @@ export const SwapCheckoutPage = {
 			amountIn: toCurrencyAmount(args.amountIn, args.srcBalance.currency),
 		}
 
-		const insufficientAmounts = findInsufficientBalances(resolved)
+		const insufficientAmounts = findInsufficientBalances(
+			[resolved.amountIn, ...feeAmounts(resolved.quote)],
+			[resolved.srcBalance, resolved.nativeBalance],
+		)
 
 		return {
 			message: buildMessage(resolved, insufficientAmounts),
@@ -94,42 +96,16 @@ function buildMessage(
 	return joinLines(lines)
 }
 
-function findInsufficientBalances(
-	args: ResolvedArgs,
-): CurrencyAmountDtoOutput[] {
-	const { srcBalance, nativeBalance, amountIn, quote } = args
-
-	const expenses: Expense[] = [
-		{ label: 'Amount', amount: amountIn },
-		...feeExpenses(quote),
-	]
-
-	const { insufficientAmounts } = fundsBreakdown(expenses, [
-		srcBalance,
-		nativeBalance,
-	])
-
-	return insufficientAmounts
-}
-
 function isSufficientAmounts(insufficientAmounts: CurrencyAmountDtoOutput[]) {
 	return insufficientAmounts.length === 0
 }
 
-function feeExpenses(quote: SwapQuote): Expense[] {
-	const networkFee: Expense = {
-		label: 'Network fee',
-		amount: quote.quote.blockchainFee,
-	}
+function feeAmounts(quote: SwapQuote): CurrencyAmountDtoOutput[] {
+	const networkFee = quote.quote.blockchainFee
 
 	if (isSamechain(quote)) return [networkFee]
 
-	const bridgeFee: Expense = {
-		label: 'Bridge/swap fee',
-		amount: quote.quote.fee,
-	}
-
-	return [bridgeFee, networkFee]
+	return [quote.quote.fee, networkFee]
 }
 
 function insufficientLines(

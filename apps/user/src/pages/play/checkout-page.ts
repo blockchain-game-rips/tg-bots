@@ -14,9 +14,8 @@ import {
 } from '@rips/grammy-kit'
 import {
 	configName,
-	Expense,
+	findInsufficientBalances,
 	formatAmountWithUsd,
-	fundsBreakdown,
 	resolveConfig,
 	toShortDurationFormat,
 } from '@rips/shared'
@@ -61,7 +60,10 @@ interface CheckoutArgs {
 
 export const CheckoutPage = {
 	render(args: CheckoutArgs): PageContent {
-		const insufficientAmounts = findInsufficientBalances(args)
+		const insufficientAmounts = findInsufficientBalances(
+			expenseAmounts(args.quote),
+			[args.srcBalance, args.nativeBalance],
+		)
 
 		return {
 			message: buildMessage(args, insufficientAmounts),
@@ -86,38 +88,13 @@ function entryTotalAmount(quote: CheckoutQuote): CurrencyAmountDtoOutput {
 	return isDirect(quote) ? quote.amountIn : quote.quote.amountIn
 }
 
-function expenses(quote: CheckoutQuote): Expense[] {
-	const entryTotal: Expense = {
-		label: 'Entry total',
-		amount: entryTotalAmount(quote),
-	}
-
-	const networkFee: Expense = {
-		label: 'Network fee',
-		amount: quote.quote.blockchainFee,
-	}
+function expenseAmounts(quote: CheckoutQuote): CurrencyAmountDtoOutput[] {
+	const entryTotal = entryTotalAmount(quote)
+	const networkFee = quote.quote.blockchainFee
 
 	if (!isCrosschain(quote)) return [entryTotal, networkFee]
 
-	const bridgeSwapCost: Expense = {
-		label: 'Bridge/swap cost',
-		amount: quote.quote.fee,
-	}
-
-	return [entryTotal, bridgeSwapCost, networkFee]
-}
-
-function findInsufficientBalances(
-	args: CheckoutArgs,
-): CurrencyAmountDtoOutput[] {
-	const { srcBalance, nativeBalance, quote } = args
-
-	const { insufficientAmounts } = fundsBreakdown(expenses(quote), [
-		srcBalance,
-		nativeBalance,
-	])
-
-	return insufficientAmounts
+	return [entryTotal, quote.quote.fee, networkFee]
 }
 
 function buildMessage(
@@ -193,10 +170,10 @@ function insufficientLines(
 ): Line[] {
 	if (isSufficient(insufficientAmounts)) return []
 
-	const allExpenses = expenses(args.quote)
+	const allExpenseAmounts = expenseAmounts(args.quote)
 
 	const blocks = insufficientAmounts.flatMap((balance) =>
-		insufficientCurrencyBlock(balance, allExpenses),
+		insufficientCurrencyBlock(balance, allExpenseAmounts),
 	)
 
 	return ['', ...blocks, 'Deposit or pay with another token.']
@@ -204,15 +181,15 @@ function insufficientLines(
 
 function insufficientCurrencyBlock(
 	balance: CurrencyAmountDtoOutput,
-	allExpenses: Expense[],
+	allExpenseAmounts: CurrencyAmountDtoOutput[],
 ): Line[] {
 	const { currency } = balance
 	const chainName = currencyToChainName(currency)
 
-	const required = allExpenses.reduce((sum, { amount }) => {
-		if (amount.currency.id !== currency.id) return sum
+	const required = allExpenseAmounts.reduce((sum, expense) => {
+		if (expense.currency.id !== currency.id) return sum
 
-		return sum + BigInt(amount.amount)
+		return sum + BigInt(expense.amount)
 	}, 0n)
 
 	const requiredAmount: CurrencyAmountDtoOutput = {

@@ -12,8 +12,8 @@ import {
 } from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
+	findInsufficientBalances,
 	formatAmountWithUsd,
-	fundsBreakdown,
 	toCurrencyAmount,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -56,7 +56,7 @@ export const WithdrawPage = {
 	render(args: WithdrawArgs): PageContent {
 		const resolved = resolveAmount(args)
 
-		const insufficientAmounts = findInsufficientBalances(resolved)
+		const insufficientAmounts = insufficientWithdrawBalances(resolved)
 
 		return {
 			message: buildMessage(resolved, insufficientAmounts),
@@ -87,7 +87,7 @@ function isEmptyBalance(args: ResolvedArgs): boolean {
 	return args.kind === 'pending' && BigInt(args.currencyBalance.amount) === 0n
 }
 
-function findInsufficientBalances(
+function insufficientWithdrawBalances(
 	args: ResolvedArgs,
 ): CurrencyAmountDtoOutput[] {
 	if (args.kind === 'pending') return []
@@ -95,15 +95,10 @@ function findInsufficientBalances(
 	const { currencyBalance, nativeBalance, currencyAmount, withdrawQuote } =
 		args
 
-	const { insufficientAmounts } = fundsBreakdown(
-		[
-			{ label: 'Amount', amount: currencyAmount },
-			{ label: 'Blockchain fee', amount: withdrawQuote.blockchainFee },
-		],
+	return findInsufficientBalances(
+		[currencyAmount, withdrawQuote.blockchainFee],
 		[currencyBalance, nativeBalance],
 	)
-
-	return insufficientAmounts
 }
 
 function isSufficientAmounts(insufficientAmounts: CurrencyAmountDtoOutput[]) {

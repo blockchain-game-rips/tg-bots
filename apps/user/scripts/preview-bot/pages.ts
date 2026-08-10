@@ -3,6 +3,7 @@ import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { resolveConfig, RipStatusGroup } from '@rips/shared'
 import { BASE_CHAIN, SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
+import { buildRevealSummary } from '../../src/domain/reveal-summary'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
 import { WelcomePage } from '../../src/pages/onboarding/welcome-page'
@@ -24,7 +25,10 @@ import {
 	RipDetailPage,
 	RipDetailVariant,
 } from '../../src/pages/play/rip-detail-page'
-import { RevealSinglePage } from '../../src/pages/play/reveal-single-page'
+import {
+	RevealSinglePage,
+	RevealSingleVariant,
+} from '../../src/pages/play/reveal-single-page'
 import { ViewPullsPage } from '../../src/pages/play/view-pulls-page'
 import { MyRipsPage } from '../../src/pages/play/my-rips-page'
 import {
@@ -77,6 +81,13 @@ import {
 	mockPurchaseQuote,
 	mockReceiverAddress,
 	mockReferrerData,
+	mockRevealBatch,
+	mockRevealBatchCapped,
+	mockRevealBatchCollapsed,
+	mockRevealPayoutCommon,
+	mockRevealPayoutEpic,
+	mockRevealPayoutMythic,
+	mockPreRevealCollection,
 	mockRevealedPayouts,
 	mockRip,
 	mockSufficientBalance,
@@ -86,7 +97,6 @@ import {
 	mockSwapSamechainQuote,
 	mockSwapSamechainResult,
 	mockTierTables,
-	mockUnrevealedPayouts,
 	mockUsdcArb,
 	mockUsdcArbBalance,
 	mockUsdcArbBalanceEmpty,
@@ -121,12 +131,9 @@ const PULLS_COUNT = 8
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
 
 const mockAvailablePreset0 = mockAvailablePresets[0]
-const mockRevealedPayout0 = mockRevealedPayouts[0]
 
 if (mockAvailablePreset0 === undefined)
 	throw new Error('mockAvailablePresets[0] is missing')
-if (mockRevealedPayout0 === undefined)
-	throw new Error('mockRevealedPayouts[0] is missing')
 
 const OTHER_USER_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12'
 
@@ -253,6 +260,54 @@ function viewPullsPayoutsFor(variant: string): PayoutDtoOutput[] {
 
 		default:
 			return mockViewPullsPayouts
+	}
+}
+
+function revealBatchFor(variant: string): PayoutDtoOutput[] {
+	switch (variant) {
+		case 'collapsed-duplicates':
+			return mockRevealBatchCollapsed
+
+		case 'capped':
+			return mockRevealBatchCapped
+
+		default:
+			return mockRevealBatch
+	}
+}
+
+const MOCK_COLLECTION_PROGRESS = { collected: 39, total: 151 }
+const MOCK_UNOPENED_REMAINING = 7
+const MOCK_COPIES_OWNED = 4
+const NO_PULLS_LEFT = 0
+
+function revealSingleVariantFor(variant: string): RevealSingleVariant {
+	const base = {
+		rip: mockRip,
+		revealedPayout: mockRevealPayoutCommon,
+		unopenedCount: MOCK_UNOPENED_REMAINING,
+		isNew: false,
+		collectionProgress: MOCK_COLLECTION_PROGRESS,
+		copiesOwned: MOCK_COPIES_OWNED,
+	}
+
+	switch (variant) {
+		case 'mythic':
+			return {
+				...base,
+				revealedPayout: mockRevealPayoutMythic,
+				isNew: true,
+			}
+
+		case 'last-pull':
+			return {
+				...base,
+				revealedPayout: mockRevealPayoutEpic,
+				unopenedCount: NO_PULLS_LEFT,
+			}
+
+		default:
+			return base
 	}
 }
 
@@ -509,28 +564,45 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'reveal-payouts': {
 		description:
-			'Entry point for revealing entries ("Open Rips" in the Play menu). Shows unrevealed entry count with "Reveal Next" and "Reveal All" buttons. Part of a 3-page reveal flow that behaves as one screen to the user — back leads to Play.',
-		render: () => RevealPayoutsPage.render(mockUnrevealedPayouts),
+			'The Open Pulls hub ("Open Pulls" in the Play menu). States the unopened count in words and explains what a pull reveals, offering Reveal Next / Reveal All. The "empty" variant drops the reveal buttons for Enter Rips so the page is not a dead end. Part of a 3-page reveal flow that behaves as one screen — back leads to Play.',
+		variants: ['has-pulls', 'empty'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			if (resolvedVariant === 'empty')
+				return RevealPayoutsPage.render(NO_PULLS_LEFT)
+
+			return RevealPayoutsPage.render(PULLS_COUNT)
+		},
 	},
 	'reveal-single': {
 		description:
-			'Shows the result of revealing one entry. Also shows remaining unrevealed count with options to continue. Only opened from reveal-payouts. Part of the reveal flow — back leads to Play.',
-		render: () =>
-			RevealSinglePage.render(
-				mockRip,
-				mockRevealedPayout0,
-				mockUnrevealedPayouts,
-			),
+			'The result of opening one pull, led by the tier headline. Shows the card, the payout in ETH with a USD approximation, whether the card is new or a duplicate, and then either collection progress (new cards only) or copies owned (duplicates only). "mythic" adds flavour copy; "last-pull" replaces the reveal buttons with Enter Rips. Reached from the hub or from another result — back leads to Play.',
+		variants: ['duplicate', 'mythic', 'last-pull'],
+		render(variant) {
+			return RevealSinglePage.render(
+				revealSingleVariantFor(resolveVariant(this, variant)),
+			)
+		},
 	},
 	'reveal-all': {
 		description:
-			'Shows all revealed payouts as a list. Also shows remaining unrevealed count. Can be opened from reveal-payouts or reveal-single. Part of the reveal flow — back leads to Play.',
-		render: () =>
-			RevealAllPage.render(
-				[mockRip],
-				mockRevealedPayouts,
-				mockUnrevealedPayouts,
-			),
+			'The Reveal All summary: how many pulls were opened, the best pull and its payout, total credited, new-vs-duplicate counts, and every card grouped under its tier. Totals carry a USD approximation; grouped rows are ETH-only. "collapsed-duplicates" shows same-card rows collapsed into one row with a count and summed payout; "capped" overflows the 30-row cap and shows the "…and N more" line.',
+		variants: ['default', 'collapsed-duplicates', 'capped'],
+		render(variant) {
+			const resolvedVariant = resolveVariant(this, variant)
+
+			return RevealAllPage.render({
+				currency: mockRip.currency,
+				summary: buildRevealSummary(
+					buildCardCollection(
+						mockCardDefinitions,
+						mockPreRevealCollection,
+					),
+					revealBatchFor(resolvedVariant),
+				),
+			})
+		},
 	},
 	'withdraw-choose-chain': {
 		description:

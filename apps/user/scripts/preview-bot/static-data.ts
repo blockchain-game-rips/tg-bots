@@ -2037,3 +2037,101 @@ export const mockConfigs: ConfigDtoOutput[] = [
 		],
 	},
 ]
+
+// Reveal mocks. Card ids come from the definitions roster, since the collection
+// diff only recognises cards that exist there. "Mini Whale" is deliberately
+// already owned and "The Degenerate" is not, so a batch diffed against this
+// snapshot yields both duplicates and new cards.
+export const mockPreRevealCollection: GetCardCollectionResponseDtoOutput = {
+	tiers: [
+		[],
+		[
+			{
+				card: {
+					id: 10,
+					name: 'Mini Whale',
+					tier: 1,
+					imageUrl: CARD_IMAGE_URL,
+				},
+				count: 3,
+			},
+		],
+		[],
+		[],
+		[],
+		[],
+		[],
+	],
+}
+
+export const mockRevealBatch: PayoutDtoOutput[] = [
+	mockPayout(1, '1800000000000000', true, {
+		id: 64,
+		name: 'The Degenerate',
+		tier: 4,
+	}),
+	mockPayout(2, '700000000000000', true, {
+		id: 76,
+		name: 'Floor Sweeper',
+		tier: 3,
+	}),
+	mockPayout(3, '110000000000000', true, {
+		id: 10,
+		name: 'Mini Whale',
+		tier: 1,
+	}),
+	mockPayout(4, '110000000000000', true, {
+		id: 11,
+		name: 'Queue Priest',
+		tier: 1,
+	}),
+]
+
+// Four copies of one already-owned card, to exercise row collapsing with a
+// summed payout.
+export const mockRevealBatchCollapsed: PayoutDtoOutput[] = [
+	mockPayout(1, '1800000000000000', true, {
+		id: 64,
+		name: 'The Degenerate',
+		tier: 4,
+	}),
+	...Array.from({ length: 4 }, (_, index) =>
+		mockPayout(index + 2, '110000000000000', true, {
+			id: 10,
+			name: 'Mini Whale',
+			tier: 1,
+		}),
+	),
+]
+
+// Distinct cards well past the 30-row cap, to exercise the "…and N more" line.
+export const mockRevealBatchCapped: PayoutDtoOutput[] = Array.from(
+	{ length: 40 },
+	(_, index) =>
+		mockPayout(index + 1, '110000000000000', true, {
+			id: 200 + index,
+			name: `Common Card ${(200 + index).toString()}`,
+			tier: 1,
+		}),
+)
+
+export const mockRevealPayoutMythic: PayoutDtoOutput = mockPayout(
+	1,
+	'50000000000000000',
+	true,
+	{ id: 0, name: 'Kendu Attitude', tier: 6 },
+)
+
+export const mockRevealPayoutCommon: PayoutDtoOutput = mockPayout(
+	3,
+	'110000000000000',
+	true,
+	{ id: 10, name: 'Mini Whale', tier: 1 },
+)
+
+export const mockRevealPayoutEpic: PayoutDtoOutput = mockPayout(
+	1,
+	'1800000000000000',
+	true,
+	{ id: 64, name: 'The Degenerate', tier: 4 },
+)

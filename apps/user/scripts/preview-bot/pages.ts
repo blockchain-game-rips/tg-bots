@@ -6,6 +6,10 @@ import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
 import { AboutPage } from '../../src/pages/about/about-page'
 import { HomePage } from '../../src/pages/home-page'
+import { GlobalCompletedRipPage } from '../../src/pages/notifications/global-completed-page'
+import { GlobalRefundedRipPage } from '../../src/pages/notifications/global-refunded-page'
+import { UserCompletedRipPage } from '../../src/pages/notifications/user-completed-page'
+import { UserRefundedRipPage } from '../../src/pages/notifications/user-refunded-page'
 import { WelcomePage } from '../../src/pages/onboarding/welcome-page'
 import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
@@ -136,6 +140,11 @@ if (mockAvailablePreset0 === undefined)
 	throw new Error('mockAvailablePresets[0] is missing')
 
 const OTHER_USER_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12'
+
+const [mockCompletedRip, mockRefundedRip] = mockFinalizedRips
+
+if (mockCompletedRip === undefined || mockRefundedRip === undefined)
+	throw new Error('mockFinalizedRips is missing a completed or refunded rip')
 
 function purchase(
 	userAddress: string,
@@ -929,5 +938,25 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Explains how the game works and lists every entry level. Each level shows its name, entry price (with USD equivalent), fill window, and entries to fill. Closes with the card/payout nature and the referral compliance notice.',
 		render: () => AboutPage.render(mockAvailablePresets),
+	},
+	'notification-user-completed': {
+		description:
+			'Push sent to a participant when their Rip completes. Announces the result and links straight to the reveal hub.',
+		render: () => UserCompletedRipPage.render(mockCompletedRip),
+	},
+	'notification-user-refunded': {
+		description:
+			'Push sent to a participant when their Rip is refunded. Confirms the funds are back in the wallet and links to it.',
+		render: () => UserRefundedRipPage.render(mockRefundedRip),
+	},
+	'notification-global-completed': {
+		description:
+			'Broadcast announcing a completed Rip to everyone. No keyboard — informational only.',
+		render: () => GlobalCompletedRipPage.render(mockCompletedRip),
+	},
+	'notification-global-refunded': {
+		description:
+			'Broadcast announcing a refunded Rip to everyone. No keyboard — informational only.',
+		render: () => GlobalRefundedRipPage.render(mockRefundedRip),
 	},
 }

@@ -25,14 +25,18 @@ function isNotificationType(value: string): value is NotificationType {
 	return (NOTIFICATION_TYPES as string[]).includes(value)
 }
 
-type PageBuilder = (rip: RipDtoOutput) => PageContent
+type GroupPageBuilder = (rip: RipDtoOutput, playLink: string) => PageContent
 
-const groupPages: Record<NotificationType, PageBuilder> = {
-	CLAIMED: (rip) => GlobalCompletedRipPage.render(rip),
-	REFUNDED: (rip) => GlobalRefundedRipPage.render(rip),
+type UserPageBuilder = (rip: RipDtoOutput) => PageContent
+
+const groupPages: Record<NotificationType, GroupPageBuilder> = {
+	CLAIMED: (rip, playLink) =>
+		GlobalCompletedRipPage.render({ rip, playLink }),
+	REFUNDED: (rip, playLink) =>
+		GlobalRefundedRipPage.render({ rip, playLink }),
 }
 
-const userPages: Record<NotificationType, PageBuilder> = {
+const userPages: Record<NotificationType, UserPageBuilder> = {
 	CLAIMED: (rip) => UserCompletedRipPage.render(rip),
 	REFUNDED: (rip) => UserRefundedRipPage.render(rip),
 }
@@ -40,7 +44,10 @@ const userPages: Record<NotificationType, PageBuilder> = {
 export class Notifier {
 	private readonly gameGroupId = getEnvSafe('GAME_GROUP_ID')
 
-	constructor(private readonly bot: Bot<Context>) {}
+	constructor(
+		private readonly bot: Bot<Context>,
+		private readonly playLink: string,
+	) {}
 
 	run() {
 		void this.pollLoop()
@@ -79,15 +86,17 @@ export class Notifier {
 
 			const isGroupNotification =
 				notification.userTelegramId === GROUP_USER_ID
-			const pages = isGroupNotification ? groupPages : userPages
-			const buildPage = pages[notification.type]
+
+			const page = isGroupNotification
+				? groupPages[notification.type](rip, this.playLink)
+				: userPages[notification.type](rip)
 
 			const chatId = isGroupNotification
 				? this.gameGroupId
 				: notification.userTelegramId
 
 			try {
-				await this.sendNotification(chatId, buildPage(rip))
+				await this.sendNotification(chatId, page)
 				await notificationsControllerMarkNotified({
 					path: { notificationId: notification.id },
 				})

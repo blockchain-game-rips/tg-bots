@@ -1778,7 +1778,26 @@
       "TransactionDto_Output": {
         "type": "object",
         "properties": {
+          "chain": {
+            "type": "object",
+            "properties": {
+              "reference": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reference",
+              "namespace"
+            ],
+            "additionalProperties": false
+          },
           "id": {
+            "type": "string"
+          },
+          "senderAddress": {
             "type": "string"
           },
           "cost": {
@@ -1786,7 +1805,10 @@
           }
         },
         "required": [
-          "id"
+          "chain",
+          "id",
+          "senderAddress",
+          "cost"
         ],
         "additionalProperties": false
       },

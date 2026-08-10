@@ -12,16 +12,16 @@ import { PageContent } from '../../types'
 
 export const UserCompletedRipPage = {
 	render(rip: RipDtoOutput): PageContent {
-		const preset = configName(rip.config)
+		const entryLevel = configName(rip.config)
 
 		const lines = [
-			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} is over — open your payouts!`)}`,
+			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} is over — open your pulls!`)}`,
 			'',
-			`Preset: ${preset}`,
+			`Entry level: ${entryLevel}`,
 		]
 
 		const keyboard = new InlineKeyboard().text(
-			'Open Rips 🎁',
+			'🎁 Open Pulls',
 			buildActionData(actionIds.openOpenPullsNoBack, undefined),
 		)
 

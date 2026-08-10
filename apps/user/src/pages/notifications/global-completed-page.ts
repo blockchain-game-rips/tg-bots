@@ -6,12 +6,12 @@ import { PageContent } from '../../types'
 
 export const GlobalCompletedRipPage = {
 	render(rip: RipDtoOutput): PageContent {
-		const preset = configName(rip.config)
+		const entryLevel = configName(rip.config)
 
 		const lines = [
 			fmt`🏆 ${FormattedString.b(`Rip #${rip.id.toString()} Completed!`)}`,
 			'',
-			`Preset: ${preset}`,
+			`Entry level: ${entryLevel}`,
 		]
 
 		return {

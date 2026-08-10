@@ -12,17 +12,17 @@ import { PageContent } from '../../types'
 
 export const UserRefundedRipPage = {
 	render(rip: RipDtoOutput): PageContent {
-		const preset = configName(rip.config)
+		const entryLevel = configName(rip.config)
 
 		const lines = [
 			fmt`↩️ ${FormattedString.b(`Rip #${rip.id.toString()} was refunded`)}`,
 			'',
-			`Preset: ${preset}`,
-			'Your funds have been returned to your balance.',
+			`Entry level: ${entryLevel}`,
+			'Your funds have been returned to your wallet.',
 		]
 
 		const keyboard = new InlineKeyboard().text(
-			'Check Wallet',
+			'💼 Wallet',
 			buildActionData(actionIds.openWallet, undefined),
 		)
 

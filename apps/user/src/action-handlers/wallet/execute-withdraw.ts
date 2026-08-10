@@ -40,7 +40,6 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 			page: WithdrawSuccessPage.render({
 				transaction: withdrawResult,
 				currencyAmount,
-				blockchainFee: withdrawResult.cost,
 				recipientAddress,
 			}),
 		},

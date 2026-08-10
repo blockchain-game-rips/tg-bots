@@ -12,17 +12,15 @@ import {
 import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
-import { BASE_CHAIN } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toHold, toReset } from '../../../flows'
 import {
 	EnterSuccessArgs,
 	EnterSuccessPage,
-	EnterSuccessTransactions,
 } from '../../../pages/play/enter-success-page'
 import { EffectType, HandlerResult } from '../../../types'
 import { fetchRip } from '../../../utils/api/wrappers'
-import { currencyToChain } from '../../../utils/chain'
+import { TransactionOutcome } from '../../../utils/display/transaction-outcome'
 
 const ZAP_POLL_INTERVAL_MS = 2000
 const ZAP_POLL_TIMEOUT_MS = 60000
@@ -34,7 +32,7 @@ interface PurchaseOutcome {
 	ripId: number
 	entryCount: number
 	startEntryIndex: number
-	transactions: EnterSuccessTransactions
+	transactions: TransactionOutcome
 }
 
 export const executeEnter: ActionDef<void> = noPayload((session) => {
@@ -106,7 +104,7 @@ async function buyDirect(
 		...data,
 		transactions: {
 			kind: 'singleChain',
-			transactionId: data.transaction.id,
+			transaction: data.transaction,
 		},
 	}
 }
@@ -124,7 +122,7 @@ async function buySamechain(
 		...data,
 		transactions: {
 			kind: 'singleChain',
-			transactionId: data.transaction.id,
+			transaction: data.transaction,
 		},
 	}
 }
@@ -146,10 +144,8 @@ async function buyCrosschain(
 		startEntryIndex: result.startEntryIndex,
 		transactions: {
 			kind: 'crosschain',
-			srcChain: currencyToChain(submit.amountIn.currency),
-			srcTransactionId: submit.srcTransaction.id,
-			dstChain: BASE_CHAIN,
-			dstTransactionId: result.dstTransaction.id,
+			srcTransaction: submit.srcTransaction,
+			dstTransaction: result.dstTransaction,
 		},
 	}
 }

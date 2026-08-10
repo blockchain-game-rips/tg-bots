@@ -1,33 +1,14 @@
 import { CurrencyAmountDtoOutput } from '@rips/api-client'
-import {
-	buildActionData,
-	FormattedString,
-	joinLines,
-	Line,
-} from '@rips/grammy-kit'
+import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { Chain, PageContent } from '../../types'
-import { chainToName } from '../../utils/chain'
+import { PageContent } from '../../types'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
-
-interface SingleChainTransactions {
-	kind: 'singleChain'
-	transactionId: string
-}
-
-interface CrosschainTransactions {
-	kind: 'crosschain'
-	srcChain: Chain
-	srcTransactionId: string
-	dstChain: Chain
-	dstTransactionId: string
-}
-
-export type EnterSuccessTransactions =
-	| SingleChainTransactions
-	| CrosschainTransactions
+import {
+	TransactionOutcome,
+	transactionOutcomeLines,
+} from '../../utils/display/transaction-outcome'
 
 export interface EnterSuccessArgs {
 	entryPrice: CurrencyAmountDtoOutput
@@ -35,7 +16,7 @@ export interface EnterSuccessArgs {
 	filledEntries: number
 	ripId: number
 	entryCount: number
-	transactions: EnterSuccessTransactions
+	transactions: TransactionOutcome
 }
 
 export const EnterSuccessPage = {
@@ -54,7 +35,7 @@ export const EnterSuccessPage = {
 			'Status:',
 			statusLine(filledEntries, entryCap),
 			'',
-			...transactionLines(args.transactions),
+			...transactionOutcomeLines(args.transactions),
 		]
 
 		return {
@@ -85,31 +66,6 @@ function statusLine(filledEntries: number, entryCap: number): string {
 	if (filledEntries >= entryCap) return 'Rip filled — completing results.'
 
 	return 'Waiting for Rip to fill.'
-}
-
-function transactionLines(transactions: EnterSuccessTransactions): Line[] {
-	if (transactions.kind === 'singleChain') {
-		return [
-			'Transaction:',
-			FormattedString.code(transactions.transactionId),
-		]
-	}
-
-	const { srcChain, srcTransactionId, dstChain, dstTransactionId } =
-		transactions
-
-	return [
-		...transactionOnChainLines(srcChain, srcTransactionId),
-		'',
-		...transactionOnChainLines(dstChain, dstTransactionId),
-	]
-}
-
-function transactionOnChainLines(chain: Chain, transactionId: string): Line[] {
-	return [
-		`Transaction on ${chainToName(chain)}:`,
-		FormattedString.code(transactionId),
-	]
 }
 
 function buildKeyboard(ripId: number): InlineKeyboard {

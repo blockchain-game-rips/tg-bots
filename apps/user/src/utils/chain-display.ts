@@ -64,6 +64,24 @@ export function chainToName(chain: Chain): string {
 	return chainName
 }
 
+/**
+ * Names a chain without throwing, falling back to the raw CAIP-2 identifier.
+ * Receipts for settled transactions must render even when the chain is one the
+ * bot does not offer, so an unknown chain degrades the label rather than the
+ * whole screen.
+ */
+export function chainToNameOrReference(chain: Chain): string {
+	if (!isSupportedNamespace(chain.namespace)) {
+		return toChainId(chain)
+	}
+
+	return CHAIN_NAMES[chain.namespace][chain.reference] ?? toChainId(chain)
+}
+
+function toChainId(chain: Chain): string {
+	return `${chain.namespace}:${chain.reference}`
+}
+
 export function chainToEmoji(chain: Chain): string {
 	if (!isSupportedNamespace(chain.namespace)) {
 		throw chainNotFoundError('emoji', chain)

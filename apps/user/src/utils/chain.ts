@@ -9,7 +9,11 @@ import { Chain } from '../types'
 import { chainToName } from './chain-display'
 import { toCurrencyId } from './currency'
 
-export { chainToEmoji, chainToName } from './chain-display'
+export {
+	chainToEmoji,
+	chainToName,
+	chainToNameOrReference,
+} from './chain-display'
 
 export function currencyToChain(currency: CurrencyDtoOutput): Chain {
 	return currency.chainAddress.chain

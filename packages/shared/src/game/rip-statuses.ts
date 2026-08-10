@@ -61,8 +61,8 @@ export function groupRipStatus(status: RipDtoOutput['status']): RipStatusGroup {
 }
 
 export const RIP_STATUS_LABEL: Record<RipStatusGroup, string> = {
-	[RipStatusGroup.FILLING]: '🟢 Filling',
-	[RipStatusGroup.COMPLETING]: '⏳ Completing',
+	[RipStatusGroup.FILLING]: '⏳ Filling',
+	[RipStatusGroup.COMPLETING]: '🔐 Completing',
 	[RipStatusGroup.COMPLETED]: '✅ Completed',
 	[RipStatusGroup.REFUNDING]: '↩️ Refunding',
 	[RipStatusGroup.REFUNDED]: '↩️ Refunded',

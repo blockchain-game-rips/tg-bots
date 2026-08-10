@@ -67,13 +67,29 @@ export function createButtonHandler(
 	}
 }
 
+interface ActionCall {
+	actionId: string
+	payload: string | undefined
+}
+
+function parseActionData(data: string): ActionCall {
+	const separatorIndex = data.indexOf(COMMAND_SEPARATOR)
+
+	if (separatorIndex === -1) return { actionId: data, payload: undefined }
+
+	return {
+		actionId: data.slice(0, separatorIndex),
+		payload: data.slice(separatorIndex + 1),
+	}
+}
+
 function resolveAction(
 	ctx: ButtonContext,
 	actions: Record<string, BoundAction | undefined>,
-): { action: BoundAction; payload: string | undefined } | null {
-	const [actionId, payload] = ctx.callbackQuery.data.split(COMMAND_SEPARATOR)
+): (ActionCall & { action: BoundAction }) | null {
+	const { actionId, payload } = parseActionData(ctx.callbackQuery.data)
 
-	if (actionId === undefined) {
+	if (actionId === '') {
 		logger.error('Missing action ID in callback data')
 		return null
 	}
@@ -85,7 +101,7 @@ function resolveAction(
 		return null
 	}
 
-	return { action, payload }
+	return { action, actionId, payload }
 }
 
 function toMessage(message: TelegramMessage): Message {

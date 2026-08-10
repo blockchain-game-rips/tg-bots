@@ -11,7 +11,7 @@ export const openRevealPayouts: ActionDef<void> = noPayload(async (session) => {
 		flow: toReset(),
 		effect: {
 			type: EffectType.EDIT,
-			page: RevealPayoutsPage.render(unrevealedPayouts),
+			page: RevealPayoutsPage.render(unrevealedPayouts.length),
 		},
 	}
 })

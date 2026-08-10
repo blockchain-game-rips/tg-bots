@@ -17,6 +17,7 @@ import {
 	buildCardCollection,
 	CardCollection,
 } from '../../domain/card-collection'
+import { copiesByCardId } from '../../domain/reveal-summary'
 import { isSameChainAddress, toCurrencyId } from '../currency'
 
 const chainAddressQuerySerializer = createQuerySerializer({
@@ -149,6 +150,19 @@ export async function fetchSingleBalance(
 export async function fetchCardCollection(
 	telegramId: string,
 ): Promise<CardCollection> {
+	return (await fetchCardCollectionWithCounts(telegramId)).collection
+}
+
+/**
+ * Reveals need per-card copy counts, which CardCollection discards, so the raw
+ * response is returned alongside it.
+ */
+export async function fetchCardCollectionWithCounts(
+	telegramId: string,
+): Promise<{
+	collection: CardCollection
+	copiesBefore: Map<number, number>
+}> {
 	const headers = { 'x-telegram-id': telegramId }
 
 	const [{ data: definitions }, { data: collection }] = await Promise.all([
@@ -156,7 +170,10 @@ export async function fetchCardCollection(
 		ripsControllerGetCardCollection({ headers }),
 	])
 
-	return buildCardCollection(definitions, collection)
+	return {
+		collection: buildCardCollection(definitions, collection),
+		copiesBefore: copiesByCardId(collection),
+	}
 }
 
 export async function fetchPreset(

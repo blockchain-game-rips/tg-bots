@@ -1,7 +1,6 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
-	fmt,
 	FormattedString,
 	joinLines,
 	Line,
@@ -10,50 +9,115 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { tierName } from '../../utils/tiers'
+import { row } from '../../utils/page-row'
+import { tierByIndex } from '../../utils/tiers'
+
+const FLAVOUR_COPY = '🔥 Nice pull'
+
+/** Only the top two tiers get flavour copy. */
+const FLAVOUR_MIN_TIER = 5
+
+export interface RevealSingleVariant {
+	rip: RipDtoOutput
+	revealedPayout: PayoutDtoOutput
+	unopenedCount: number
+	isNew: boolean
+	collectionProgress: { collected: number; total: number }
+	copiesOwned: number
+}
+
+function tierHeadline(tierIndex: number): string {
+	const tier = tierByIndex(tierIndex)
+
+	if (tier === undefined) return 'Pull'
+
+	return `${tier.emoji} ${tier.name} Pull`
+}
+
+function collectionLines(variant: RevealSingleVariant): Line[] {
+	const { isNew, collectionProgress, copiesOwned } = variant
+
+	if (isNew) {
+		return [
+			'',
+			'🆕 New card',
+			...row(
+				'Collection progress',
+				`${collectionProgress.collected.toString()} / ${collectionProgress.total.toString()}`,
+			),
+		]
+	}
+
+	return [
+		'',
+		'♻️ Duplicate',
+		...row('You now own', `${copiesOwned.toString()} copies`),
+	]
+}
 
 export const RevealSinglePage = {
-	render(
-		rip: RipDtoOutput,
-		revealedPayout: PayoutDtoOutput,
-		unrevealedPayouts: PayoutDtoOutput[],
-	): PageContent {
-		const payoutCurrencyAmount = {
-			amount: revealedPayout.payoutAmount,
-			currency: rip.currency,
-		}
+	render(variant: RevealSingleVariant): PageContent {
+		const { rip, revealedPayout, unopenedCount } = variant
+
+		const card = revealedPayout.card
 
 		const lines: Line[] = [
-			FormattedString.b('Open Rips'),
-			'',
-			fmt`🎁 ${FormattedString.a(revealedPayout.card.name, revealedPayout.card.imageUrl)} [${tierName(revealedPayout.card.tier)}]`,
-			`Entry #${revealedPayout.entryNumber.toString()} — ${formatAmountWithUsd(payoutCurrencyAmount)}`,
-			'',
-			`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
+			FormattedString.b(tierHeadline(card.tier)),
+			...row('Card', FormattedString.a(card.name, card.imageUrl)),
+			...row(
+				'Payout',
+				formatAmountWithUsd({
+					amount: revealedPayout.payoutAmount,
+					currency: rip.currency,
+				}),
+			),
+			...collectionLines(variant),
 		]
 
-		const keyboard = new InlineKeyboard()
+		if (card.tier >= FLAVOUR_MIN_TIER) lines.push('', FLAVOUR_COPY)
 
-		if (unrevealedPayouts.length > 0) {
-			keyboard
-				.text(
-					'Reveal Next',
-					buildActionData(actionIds.openRevealSingle, undefined),
-				)
-				.row()
-				.text(
-					'Reveal All',
-					buildActionData(actionIds.openRevealAll, undefined),
-				)
-				.row()
-		}
+		lines.push(...row('Unopened pulls', unopenedCount.toString()))
 
 		return {
 			message: joinLines(lines),
-			keyboard: keyboard.appendNavButtons({
-				home: actionIds.openHome,
-				parent: actionIds.openHome,
-			}),
+			keyboard: buildKeyboard(unopenedCount),
 		}
 	},
+}
+
+function buildKeyboard(unopenedCount: number): InlineKeyboard {
+	const keyboard = new InlineKeyboard()
+
+	if (unopenedCount > 0) {
+		keyboard
+			.text(
+				'Reveal Next',
+				buildActionData(actionIds.openRevealSingle, undefined),
+			)
+			.row()
+			.text(
+				'Reveal All',
+				buildActionData(actionIds.openRevealAll, undefined),
+			)
+			.row()
+	} else {
+		keyboard
+			.text(
+				'Enter Rips',
+				buildActionData(actionIds.openChoosePreset, undefined),
+			)
+			.row()
+	}
+
+	keyboard
+		.text(
+			'View Collection',
+			buildActionData(actionIds.openCardCollection, undefined),
+		)
+		.row()
+
+	return keyboard.appendNavButtons({
+		home: actionIds.openHome,
+		parent: actionIds.openHome,
+	})
 }

@@ -1,4 +1,3 @@
-import { PayoutDtoOutput } from '@rips/api-client'
 import {
 	buildActionData,
 	FormattedString,
@@ -9,43 +8,65 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 
-function buildRevealPayoutsContent(unrevealedPayouts: PayoutDtoOutput[]): {
+const TITLE = '🎁 Open Pulls'
+
+function countSentence(unopenedCount: number): string {
+	if (unopenedCount === 0) return 'You have no unopened pulls.'
+
+	const noun = unopenedCount === 1 ? 'pull' : 'pulls'
+
+	return `You have ${unopenedCount.toString()} unopened ${noun}.`
+}
+
+function buildOpenPullsContent(unopenedCount: number): {
 	lines: Line[]
 	keyboard: InlineKeyboard
 } {
 	const lines: Line[] = [
-		FormattedString.b('Open Rips'),
+		FormattedString.b(TITLE),
 		'',
-		`🎟 Unrevealed entries: ${unrevealedPayouts.length.toString()}`,
+		countSentence(unopenedCount),
 	]
-
-	if (unrevealedPayouts.length === 0) {
-		lines.push('', 'All entries have been revealed.')
-	}
 
 	const keyboard = new InlineKeyboard()
 
-	if (unrevealedPayouts.length > 0) {
+	if (unopenedCount === 0) {
 		keyboard
 			.text(
-				'Reveal Next',
-				buildActionData(actionIds.openRevealSingle, undefined),
+				'Enter Rips',
+				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
-			.text(
-				'Reveal All',
-				buildActionData(actionIds.openRevealAll, undefined),
-			)
-			.row()
+
+		return { lines, keyboard }
 	}
+
+	lines.push(
+		'',
+		'Each pull reveals:',
+		'• your result',
+		'• your payout',
+		'• one collectible card',
+	)
+
+	keyboard
+		.text(
+			'Reveal Next',
+			buildActionData(actionIds.openRevealSingle, undefined),
+		)
+		.row()
+		.text('Reveal All', buildActionData(actionIds.openRevealAll, undefined))
+		.row()
 
 	return { lines, keyboard }
 }
 
 export const RevealPayoutsPage = {
-	render(unrevealedPayouts: PayoutDtoOutput[]): PageContent {
-		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
+	render(unopenedCount: number): PageContent {
+		const { lines, keyboard } = buildOpenPullsContent(unopenedCount)
 
+		// TODO: Back targets Home, so arriving here from a rip's pulls page loses
+		// the origin. Shared root cause with the Back-origin TODO in view-pulls-page.
 		keyboard.appendNavButtons({
 			home: actionIds.openHome,
 			parent: actionIds.openHome,
@@ -56,8 +77,8 @@ export const RevealPayoutsPage = {
 }
 
 export const RevealPayoutsNoBackPage = {
-	render(unrevealedPayouts: PayoutDtoOutput[]): PageContent {
-		const { lines, keyboard } = buildRevealPayoutsContent(unrevealedPayouts)
+	render(unopenedCount: number): PageContent {
+		const { lines, keyboard } = buildOpenPullsContent(unopenedCount)
 
 		keyboard.row().appendHomeButton()
 

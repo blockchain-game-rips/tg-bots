@@ -14,7 +14,7 @@ export const openOpenPulls: ActionDef<void> = noPayload(async (session) => {
 		flow: toReset(),
 		effect: {
 			type: EffectType.EDIT,
-			page: RevealPayoutsPage.render(unrevealedPayouts),
+			page: RevealPayoutsPage.render(unrevealedPayouts.length),
 		},
 	}
 })
@@ -29,7 +29,7 @@ export const openOpenPullsNoBack: ActionDef<void> = noPayload(
 			flow: toReset(),
 			effect: {
 				type: EffectType.EDIT,
-				page: RevealPayoutsNoBackPage.render(unrevealedPayouts),
+				page: RevealPayoutsNoBackPage.render(unrevealedPayouts.length),
 			},
 		}
 	},

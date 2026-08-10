@@ -10,7 +10,7 @@ import { actionIds } from '../../actions'
 import { ActionId, PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { buildChainKeyboard } from '../choose-chain-currency'
+import { buildChainKeyboard } from '../../utils/chain-currency-keyboard'
 
 export const SwapChooseSrcChainPage = {
 	renderFreshDraft(args: { chains: Chain[] }): PageContent {

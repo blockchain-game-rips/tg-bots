@@ -7,7 +7,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName, currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
-import { buildCurrencyKeyboard } from '../choose-chain-currency'
+import { buildCurrencyKeyboard } from '../../utils/chain-currency-keyboard'
 
 export const SwapChooseSrcTokenPage = {
 	renderFreshDraft(args: {

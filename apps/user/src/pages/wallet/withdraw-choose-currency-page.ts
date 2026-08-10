@@ -1,27 +1,31 @@
 import { CurrencyDtoOutput } from '@rips/api-client'
+import { joinLines } from '@rips/grammy-kit'
+import { Chain } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import { chainToName } from '../../utils/chain'
+import { buildCurrencyKeyboard } from '../../utils/chain-currency-keyboard'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
-import {
-	buildChooseCurrencyPage,
-	chainBreadcrumbSegment,
-} from '../choose-chain-currency'
 
 export const WithdrawChooseCurrencyPage = {
-	render(currencies: CurrencyDtoOutput[]): PageContent {
-		return buildChooseCurrencyPage({
-			lines: [
-				withdrawBreadcrumb(chainBreadcrumbSegment(currencies)),
-				'',
-				'Choose token to withdraw',
-			],
-			currencies,
-			currencyActionId: actionIds.openWithdrawFromCurrency,
-			currencyPayload: (currency) => currency.chainAddress,
-			nav: {
-				parent: actionIds.openWithdrawChooseChain,
-				home: actionIds.openHome,
-			},
+	render(args: {
+		chain: Chain
+		currencies: CurrencyDtoOutput[]
+	}): PageContent {
+		const message = joinLines([
+			withdrawBreadcrumb(chainToName(args.chain)),
+			'',
+			'Choose token to withdraw',
+		])
+
+		const keyboard = buildCurrencyKeyboard(
+			args.currencies,
+			actionIds.openWithdrawFromCurrency,
+		).appendNavButtons({
+			parent: actionIds.openWithdrawChooseChain,
+			home: actionIds.openHome,
 		})
+
+		return { message, keyboard }
 	},
 }

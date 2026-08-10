@@ -1,21 +1,26 @@
+import { joinLines } from '@rips/grammy-kit'
+import { Chain } from '@rips/shared'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { buildChooseChainPage } from '../choose-chain-currency'
+import { buildChainKeyboard } from '../../utils/chain-currency-keyboard'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
 export const WithdrawChooseChainPage = {
-	render(): PageContent {
-		const lines = [
+	render(args: { chains: Chain[] }): PageContent {
+		const message = joinLines([
 			withdrawBreadcrumb(),
 			'',
 			'Choose the chain you want to withdraw from:',
-		]
+		])
 
-		return buildChooseChainPage({
-			lines,
-			chainActionId: actionIds.openWithdrawChooseCurrency,
-			chainPayload: (chain) => chain,
-			nav: { parent: actionIds.openWallet, home: actionIds.openHome },
+		const keyboard = buildChainKeyboard(
+			args.chains,
+			actionIds.openWithdrawChooseCurrency,
+		).appendNavButtons({
+			parent: actionIds.openWallet,
+			home: actionIds.openHome,
 		})
+
+		return { message, keyboard }
 	},
 }

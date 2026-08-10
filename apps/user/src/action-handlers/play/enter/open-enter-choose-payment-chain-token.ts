@@ -1,6 +1,7 @@
 import { Chain } from '@rips/shared'
 import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
+import { SUPPORTED_CHAINS } from '../../../constants'
 import { toHold } from '../../../flows'
 import {
 	EnterChoosePaymentTokenPage,
@@ -20,7 +21,10 @@ export const openEnterChoosePaymentChain: ActionDef<void> = noPayload(
 			flow: toHold(),
 			effect: {
 				type: EffectType.EDIT,
-				page: EnterChoosePaymentChainPage.render({ availablePreset }),
+				page: EnterChoosePaymentChainPage.render({
+					availablePreset,
+					chains: [...SUPPORTED_CHAINS],
+				}),
 			},
 		}
 	},
@@ -41,6 +45,7 @@ export const openEnterChoosePaymentToken: ActionDef<Chain> = withPayload(
 				type: EffectType.EDIT,
 				page: EnterChoosePaymentTokenPage.render({
 					availablePreset,
+					chain,
 					currencies,
 				}),
 			},

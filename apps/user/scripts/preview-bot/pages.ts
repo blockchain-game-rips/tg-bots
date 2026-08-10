@@ -1,6 +1,6 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
-import { resolveConfig, RipStatusGroup } from '@rips/shared'
+import { currencyToChain, resolveConfig, RipStatusGroup } from '@rips/shared'
 import { SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
@@ -131,6 +131,8 @@ const REFERRAL_FEE_BPS = 1000
 const PULLS_COUNT = 8
 
 const mockWithdrawCurrencies = [mockWithdrawAmount.currency]
+
+const mockWithdrawChain = currencyToChain(mockWithdrawAmount.currency)
 
 const mockAvailablePreset0 = mockAvailablePresets[0]
 
@@ -493,6 +495,7 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			EnterChoosePaymentChainPage.render({
 				availablePreset: mockAvailablePreset0,
+				chains: [...SUPPORTED_CHAINS],
 			}),
 	},
 	'enter-choose-payment-token': {
@@ -501,6 +504,7 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			EnterChoosePaymentTokenPage.render({
 				availablePreset: mockAvailablePreset0,
+				chain: currencyToChain(mockZapCurrencyInBalance.currency),
 				currencies: [mockZapCurrencyInBalance.currency],
 			}),
 	},
@@ -614,12 +618,17 @@ export const pages: Record<string, PageEntry> = {
 	'withdraw-choose-chain': {
 		description:
 			'First step of the withdraw flow. Choose a chain to withdraw from.',
-		render: () => WithdrawChooseChainPage.render(),
+		render: () =>
+			WithdrawChooseChainPage.render({ chains: [...SUPPORTED_CHAINS] }),
 	},
 	'withdraw-choose-currency': {
 		description:
 			'Second step of the withdraw flow. Choose a currency on the selected chain.',
-		render: () => WithdrawChooseCurrencyPage.render(mockWithdrawCurrencies),
+		render: () =>
+			WithdrawChooseCurrencyPage.render({
+				chain: mockWithdrawChain,
+				currencies: mockWithdrawCurrencies,
+			}),
 	},
 	'withdraw-choose-amount': {
 		description:
@@ -701,12 +710,17 @@ export const pages: Record<string, PageEntry> = {
 	'deposit-choose-chain': {
 		description:
 			'First step of the deposit flow. Choose a chain to deposit to. Opened from Wallet.',
-		render: () => DepositChooseChainPage.render(),
+		render: () =>
+			DepositChooseChainPage.render({ chains: [...SUPPORTED_CHAINS] }),
 	},
 	'deposit-choose-currency': {
 		description:
 			'Second step of the deposit flow. Choose a currency on the selected chain.',
-		render: () => DepositChooseCurrencyPage.render(mockWithdrawCurrencies),
+		render: () =>
+			DepositChooseCurrencyPage.render({
+				chain: mockWithdrawChain,
+				currencies: mockWithdrawCurrencies,
+			}),
 	},
 	'deposit-address': {
 		description:

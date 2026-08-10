@@ -1,7 +1,7 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { resolveConfig, RipStatusGroup } from '@rips/shared'
-import { BASE_CHAIN, SUPPORTED_CHAINS } from '../../src/constants'
+import { SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
 import { AboutPage } from '../../src/pages/about/about-page'
@@ -15,10 +15,8 @@ import { CheckoutPage } from '../../src/pages/play/checkout-page'
 import { EnterChooseEntryCountPage } from '../../src/pages/play/enter-choose-entry-count-page'
 import { EnterPaymentOptionsPage } from '../../src/pages/play/enter-payment-options-page'
 import { EnterChoosePresetPage } from '../../src/pages/play/enter-choose-preset-page'
-import {
-	EnterSuccessPage,
-	EnterSuccessTransactions,
-} from '../../src/pages/play/enter-success-page'
+import { EnterSuccessPage } from '../../src/pages/play/enter-success-page'
+import { TransactionOutcome } from '../../src/utils/display/transaction-outcome'
 import { CardCollectionPage } from '../../src/pages/play/card-collection'
 import { CardCollectionTierPage } from '../../src/pages/play/card-collection-tier'
 import { FinalizedRipsPage } from '../../src/pages/play/finalized-rips-page'
@@ -121,7 +119,7 @@ import {
 	mockZapSamechainNativeBalance,
 	mockZapSamechainQuote,
 	mockZapSamechainSrcBalance,
-	mockZapSamechainTransactionId,
+	mockZapSamechainTransaction,
 	mockZapSrcBalanceInsufficient,
 	mockZapSrcBalanceSufficient,
 	mockZapSubmit,
@@ -162,22 +160,20 @@ function mockRipWith(overrides: Partial<RipDtoOutput>): RipDtoOutput {
 
 // Direct and samechain both settle in a single Base transaction, so they share
 // a shape and differ only in which token was spent to get there.
-function mockTransactions(variant: string): EnterSuccessTransactions {
+function mockTransactions(variant: string): TransactionOutcome {
 	if (variant === 'crosschain')
 		return {
 			kind: 'crosschain',
-			srcChain: mockZapSubmit.amountIn.currency.chainAddress.chain,
-			srcTransactionId: mockZapSubmit.srcTransaction.id,
-			dstChain: BASE_CHAIN,
-			dstTransactionId: mockZapSuccessResult.dstTransaction.id,
+			srcTransaction: mockZapSubmit.srcTransaction,
+			dstTransaction: mockZapSuccessResult.dstTransaction,
 		}
 
-	const transactionId =
+	const transaction =
 		variant === 'samechain'
-			? mockZapSamechainTransactionId
-			: mockPurchase.transaction.id
+			? mockZapSamechainTransaction
+			: mockPurchase.transaction
 
-	return { kind: 'singleChain', transactionId }
+	return { kind: 'singleChain', transaction }
 }
 
 function mockRipDetailVariant(variant: string): RipDetailVariant {
@@ -684,7 +680,6 @@ export const pages: Record<string, PageEntry> = {
 			WithdrawSuccessPage.render({
 				transaction: mockWithdrawTransaction,
 				currencyAmount: mockUsdcArbWithdrawAmount,
-				blockchainFee: mockEthArbNetworkFee,
 				recipientAddress: mockReceiverAddress,
 			}),
 	},

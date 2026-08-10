@@ -24,6 +24,8 @@ import {
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
 
+const MOCK_SENDER_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678'
+
 const mockChainAddress = {
 	address: '0x0000000000000000000000000000000000000000',
 	chain: { reference: '8453', namespace: 'eip155' },
@@ -1302,13 +1304,23 @@ const mockSwapSrcTxId = '0xecc4a1c2b3d4e5f60718293a4b5c6d7e8f9012345678d3bf'
 const mockSwapDstTxId = '0x1a2b3c4d5e6f708192a3b4c5d6e7f80912345678aabbccdd'
 
 export const mockSwapSamechainResult: SwapSamechainResponseDtoOutput = {
-	transaction: { id: mockSwapSrcTxId, cost: mockEthArbNetworkFee },
+	transaction: {
+		id: mockSwapSrcTxId,
+		cost: mockEthArbNetworkFee,
+		chain: mockArbNativeChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
+	},
 	amountOut: { currency: mockUsdcArb, amount: '24900000' }, // ~24.9 USDC on Arbitrum
 }
 
 export const mockSwapCrosschainResponse: SwapResponseDtoOutput = {
 	zapId: 'swap_abc123',
-	srcTransaction: { id: mockSwapSrcTxId, cost: mockEthArbNetworkFee },
+	srcTransaction: {
+		id: mockSwapSrcTxId,
+		cost: mockEthArbNetworkFee,
+		chain: mockArbNativeChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
+	},
 	amountIn: mockUsdcArbWithdrawAmount,
 	fee: mockSwapBridgeFee,
 	durationMs: SWAP_DURATION_MS,
@@ -1317,13 +1329,20 @@ export const mockSwapCrosschainResponse: SwapResponseDtoOutput = {
 export const mockSwapCrosschainSuccessResult: NonNullable<
 	GetSwapResultResponseDtoOutput['success']
 > = {
-	dstTransaction: { id: mockSwapDstTxId, cost: mockEthArbNetworkFee },
+	dstTransaction: {
+		id: mockSwapDstTxId,
+		cost: mockEthArbNetworkFee,
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
+	},
 	amountOut: mockSwapAmountOut,
 }
 
 export const mockWithdrawTransaction: TransactionDtoOutput = {
 	id: '0xjkl012',
 	cost: { currency: mockEth, amount: '210000000000000' },
+	chain: mockArbNativeChainAddress.chain,
+	senderAddress: MOCK_SENDER_ADDRESS,
 }
 
 export const mockWithdrawChainIndex = 0 // Arbitrum
@@ -1395,6 +1414,8 @@ export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
 	transaction: {
 		id: '0xghi789',
 		cost: { currency: mockEth, amount: '210000000000000' },
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	amount: { currency: mockEth, amount: '12000000000000000' },
 }
@@ -1403,6 +1424,8 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	transaction: {
 		id: '0xabc123',
 		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	ripId: 1,
 	entryCount: 3,
@@ -1411,7 +1434,12 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 
 // Samechain settles in a single Base transaction like a direct purchase; a
 // distinct id keeps the two preview variants tellable apart.
-export const mockZapSamechainTransactionId = '0x5a3ec4'
+export const mockZapSamechainTransaction: TransactionDtoOutput = {
+	id: '0x5a3ec4',
+	cost: { currency: mockEth, amount: '210000000000000' },
+	chain: mockChainAddress.chain,
+	senderAddress: MOCK_SENDER_ADDRESS,
+}
 
 export const mockZapQuote: QuoteZapResponseDtoOutput = {
 	amountIn: { currency: mockUsdcArb, amount: '13500000' }, // 13.5 USDC
@@ -1462,6 +1490,8 @@ export const mockZapSuccessResult: NonNullable<
 	dstTransaction: {
 		id: '0xdef456',
 		cost: { currency: mockEth, amount: '210000000000000' },
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	entryCount: 3,
 	ripId: 1,
@@ -1474,6 +1504,8 @@ export const mockZapSubmit: BuyEntriesZapResponseDtoOutput = {
 	srcTransaction: {
 		id: '0x789abc',
 		cost: { currency: mockEthArb, amount: '100000000000000' },
+		chain: mockArbNativeChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	amountIn: { currency: mockUsdcArb, amount: '13500000' },
 	fee: { currency: mockEthArb, amount: '1000000000000000' },

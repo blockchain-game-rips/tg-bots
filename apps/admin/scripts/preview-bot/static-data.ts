@@ -16,6 +16,8 @@ import {
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
 
+const MOCK_SENDER_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678'
+
 const mockChainAddress = {
 	address: '0x0000000000000000000000000000000000000000',
 	chain: { reference: '8453', namespace: 'eip155' },
@@ -197,6 +199,8 @@ export const mockSwapAmountIn: CurrencyAmountDtoOutput = {
 export const mockWithdrawTransaction: TransactionDtoOutput = {
 	id: '0xjkl012',
 	cost: { currency: mockEth, amount: '210000000000000' },
+	chain: mockChainAddress.chain,
+	senderAddress: MOCK_SENDER_ADDRESS,
 }
 
 export const mockWithdrawChainIndex = 0 // Arbitrum
@@ -247,6 +251,8 @@ export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
 	transaction: {
 		id: '0xghi789',
 		cost: { currency: mockEth, amount: '210000000000000' },
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	amount: { currency: mockEth, amount: '12000000000000000' },
 }
@@ -255,6 +261,8 @@ export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
 	transaction: {
 		id: '0xabc123',
 		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	ripId: 1,
 	entryCount: 3,
@@ -294,6 +302,8 @@ export const mockZapSuccessResult: NonNullable<
 	dstTransaction: {
 		id: '0xdef456',
 		cost: { currency: mockEth, amount: '210000000000000' },
+		chain: mockChainAddress.chain,
+		senderAddress: MOCK_SENDER_ADDRESS,
 	},
 	entryCount: 3,
 	ripId: 1,

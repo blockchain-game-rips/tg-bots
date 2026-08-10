@@ -11,11 +11,8 @@ export const TransactionPage = {
 			FormattedString.b(title),
 			'',
 			fmt`Tx: ${FormattedString.code(tx.transaction.id)}`,
+			`Fee: ${formatAmountWithUsd(tx.transaction.cost)}`,
 		]
-
-		if (tx.transaction.cost !== undefined) {
-			lines.push(`Fee: ${formatAmountWithUsd(tx.transaction.cost)}`)
-		}
 
 		const keyboard = new InlineKeyboard().text('Home', actionIds.openHome)
 

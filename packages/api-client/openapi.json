@@ -1707,25 +1707,28 @@
             "type": "string"
           },
           "chain": {
-            "type": "object",
-            "properties": {
-              "reference": {
-                "type": "string"
-              },
-              "namespace": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "reference",
-              "namespace"
-            ],
-            "additionalProperties": false
+            "$ref": "#/components/schemas/ChainDto_Output"
           }
         },
         "required": [
           "address",
           "chain"
+        ],
+        "additionalProperties": false
+      },
+      "ChainDto_Output": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "namespace"
         ],
         "additionalProperties": false
       },
@@ -1779,20 +1782,7 @@
         "type": "object",
         "properties": {
           "chain": {
-            "type": "object",
-            "properties": {
-              "reference": {
-                "type": "string"
-              },
-              "namespace": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "reference",
-              "namespace"
-            ],
-            "additionalProperties": false
+            "$ref": "#/components/schemas/ChainDto_Output"
           },
           "id": {
             "type": "string"
@@ -1872,24 +1862,27 @@
             "type": "string"
           },
           "chain": {
-            "type": "object",
-            "properties": {
-              "reference": {
-                "type": "string"
-              },
-              "namespace": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "reference",
-              "namespace"
-            ]
+            "$ref": "#/components/schemas/UpdatePresetConfigBodyDtoChainDto"
           }
         },
         "required": [
           "address",
           "chain"
+        ]
+      },
+      "UpdatePresetConfigBodyDtoChainDto": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "namespace"
         ]
       },
       "UpdatePresetConfigBodyDto": {

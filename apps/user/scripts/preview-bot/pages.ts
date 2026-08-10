@@ -141,6 +141,8 @@ if (mockAvailablePreset0 === undefined)
 
 const OTHER_USER_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12'
 
+const MOCK_PLAY_LINK = 'https://t.me/RipsBot?start'
+
 const [mockCompletedRip, mockRefundedRip] = mockFinalizedRips
 
 if (mockCompletedRip === undefined || mockRefundedRip === undefined)
@@ -951,12 +953,20 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'notification-global-completed': {
 		description:
-			'Broadcast announcing a completed Rip to everyone. No keyboard — informational only.',
-		render: () => GlobalCompletedRipPage.render(mockCompletedRip),
+			'Broadcast announcing a completed Rip to the group. Links into the bot so onlookers can start playing.',
+		render: () =>
+			GlobalCompletedRipPage.render({
+				rip: mockCompletedRip,
+				playLink: MOCK_PLAY_LINK,
+			}),
 	},
 	'notification-global-refunded': {
 		description:
-			'Broadcast announcing a refunded Rip to everyone. No keyboard — informational only.',
-		render: () => GlobalRefundedRipPage.render(mockRefundedRip),
+			'Broadcast announcing a refunded Rip to the group. Links into the bot so onlookers can start playing.',
+		render: () =>
+			GlobalRefundedRipPage.render({
+				rip: mockRefundedRip,
+				playLink: MOCK_PLAY_LINK,
+			}),
 	},
 }

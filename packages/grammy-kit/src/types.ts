@@ -4,7 +4,16 @@ import { FlowBase, FlowTransition } from './session/session-utils'
 
 export type ActionId<P = void> = string & { readonly __payloadType: P }
 
-export interface SessionData<F extends FlowBase | null> {
+export interface ActionData {
+	actionId: string
+	payload: string | undefined
+}
+
+export type HistoryEntry =
+	| { kind: 'action'; action: ActionData }
+	| { kind: 'page'; page: PageContent }
+
+export interface SessionData<F extends FlowBase | null = any> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
@@ -13,6 +22,7 @@ export interface SessionData<F extends FlowBase | null> {
 	} | null
 	flow: F
 	lastPage: PageContent | null
+	history: HistoryEntry[]
 }
 
 export enum EffectType {
@@ -24,6 +34,10 @@ export enum EffectType {
 export interface EffectEdit {
 	type: EffectType.EDIT
 	page: PageContent
+	history?: {
+		kind?: 'action' | 'page'
+		clears?: boolean
+	}
 }
 
 export interface EffectAsk {

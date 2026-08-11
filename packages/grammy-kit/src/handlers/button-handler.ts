@@ -7,7 +7,7 @@ import {
 	InlineKeyboard,
 	SessionFlavor,
 } from 'grammy'
-import { COMMAND_SEPARATOR } from '../action/action-data'
+import { parseActionData } from '../action/action-data'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
@@ -45,16 +45,19 @@ export function createButtonHandler(
 			if (message === undefined)
 				throw new Error('No message id on callback query')
 
-			const resolved = resolveAction(ctx, actions)
+			const action = parseActionData(ctx.callbackQuery.data)
 
-			if (resolved === null) return
+			if (action.actionId === '') {
+				logger.error('Missing action ID in callback data')
+				return
+			}
 
 			await executeEffectOrDisplayError(
 				ctx.api,
 				toMessage(message),
 				ctx.session,
-				resolved.action,
-				resolved.payload,
+				actions,
+				action,
 				recoverPage(message),
 				messagesToDelete,
 			)
@@ -65,43 +68,6 @@ export function createButtonHandler(
 			processingUsers.delete(userId)
 		}
 	}
-}
-
-interface ActionCall {
-	actionId: string
-	payload: string | undefined
-}
-
-function parseActionData(data: string): ActionCall {
-	const separatorIndex = data.indexOf(COMMAND_SEPARATOR)
-
-	if (separatorIndex === -1) return { actionId: data, payload: undefined }
-
-	return {
-		actionId: data.slice(0, separatorIndex),
-		payload: data.slice(separatorIndex + 1),
-	}
-}
-
-function resolveAction(
-	ctx: ButtonContext,
-	actions: Record<string, BoundAction | undefined>,
-): (ActionCall & { action: BoundAction }) | null {
-	const { actionId, payload } = parseActionData(ctx.callbackQuery.data)
-
-	if (actionId === '') {
-		logger.error('Missing action ID in callback data')
-		return null
-	}
-
-	const action = actions[actionId]
-
-	if (action === undefined) {
-		logger.error({ actionId }, 'Unknown action')
-		return null
-	}
-
-	return { action, actionId, payload }
 }
 
 function toMessage(message: TelegramMessage): Message {

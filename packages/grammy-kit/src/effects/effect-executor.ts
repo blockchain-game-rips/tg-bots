@@ -4,7 +4,17 @@ import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
 import { replacePage } from '../messaging/page-delivery'
 import { sendPrompt } from '../messaging/prompt-delivery'
-import { Effect, EffectType, Message, PageContent, SessionData } from '../types'
+import { BACK_ACTION_ID } from '../action/action-data'
+import { previousEntry, recordPage } from '../session/history'
+import {
+	ActionData,
+	Effect,
+	EffectType,
+	HistoryEntry,
+	Message,
+	PageContent,
+	SessionData,
+} from '../types'
 import { fireAndForget } from '../utils/common'
 import {
 	composePageContentWithError,
@@ -26,14 +36,14 @@ async function executeEffect(
 	effect: Effect,
 	api: Api,
 	messageToEdit: Message,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	session: SessionData<any>,
+	session: SessionData,
+	action: ActionData,
 ): Promise<void> {
 	switch (effect.type) {
 		case EffectType.EDIT:
 			await replacePage(api, messageToEdit, effect.page)
 
-			session.lastPage = effect.page
+			recordPage(session, action, effect)
 			break
 
 		case EffectType.ASK:
@@ -61,29 +71,66 @@ async function executeEffect(
 				api,
 				loadingMessage,
 				session,
+				action,
 			)
 			break
 		}
 	}
 }
 
+async function resolveEffectToExecute(
+	session: SessionData,
+	actions: Record<string, BoundAction | undefined>,
+	action: ActionData,
+): Promise<Effect | null> {
+	const target = resolveTarget(session, action)
+
+	if (target === null) return null
+
+	if (target.kind === 'page') {
+		return { type: EffectType.EDIT, page: target.page }
+	}
+
+	const boundAction = actions[target.action.actionId]
+
+	if (boundAction === undefined) {
+		logger.error({ actionId: target.action.actionId }, 'Unknown action')
+
+		return null
+	}
+
+	const { payload } = target.action
+
+	return await boundAction.handler(
+		session,
+		payload !== undefined ? boundAction.decode(payload) : undefined,
+	)
+}
+
+function resolveTarget(
+	session: SessionData,
+	action: ActionData,
+): HistoryEntry | null {
+	if (action.actionId !== BACK_ACTION_ID) return { kind: 'action', action }
+
+	return previousEntry(session)
+}
+
 export async function executeEffectOrDisplayError(
 	api: Api,
 	messageToEdit: Message,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	session: SessionData<any>,
-	boundAction: BoundAction,
-	rawPayload: string | undefined,
+	session: SessionData,
+	actions: Record<string, BoundAction | undefined>,
+	action: ActionData,
 	fallbackPage: PageContent,
 	messagesToDelete: number[] = [],
 ): Promise<void> {
 	try {
-		const payload =
-			rawPayload !== undefined
-				? boundAction.decode(rawPayload)
-				: undefined
-		const effect = await boundAction.handler(session, payload)
-		await executeEffect(effect, api, messageToEdit, session)
+		const effect = await resolveEffectToExecute(session, actions, action)
+
+		if (effect === null) return
+
+		await executeEffect(effect, api, messageToEdit, session, action)
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 

@@ -9,7 +9,6 @@ import {
 } from 'grammy'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
-import { logger } from '../logging/pino-logger'
 import { FlowBase } from '../session/session-utils'
 import { ActionId, Message, PageContent, SessionData } from '../types'
 
@@ -39,22 +38,12 @@ export function createMessageHandler(
 
 		ctx.session.lastAsk = null
 
-		const boundAction = actions[ask.onSubmit]
-
-		if (boundAction === undefined) {
-			logger.error(
-				{ actionId: ask.onSubmit },
-				'Unknown action for onSubmit',
-			)
-			return
-		}
-
 		await executeEffectOrDisplayError(
 			bot.api,
 			ask.messageToEdit,
 			ctx.session,
-			boundAction,
-			submit.message,
+			actions,
+			{ actionId: ask.onSubmit, payload: submit.message },
 			EMPTY_PAGE,
 			messagesToDelete,
 		)

@@ -5,8 +5,7 @@ import { ActionDef, AnyActionDef, resolveEffect } from './action-def'
 
 export type { ActionId }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySession = SessionData<any>
+type AnySession = SessionData
 
 export interface BoundAction {
 	decode: (raw: string) => unknown

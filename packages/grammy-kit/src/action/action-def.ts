@@ -1,8 +1,7 @@
 import { applyFlowTransition, FlowBase } from '../session/session-utils'
 import { Effect, HandlerResult, SessionData } from '../types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySession = SessionData<any>
+type AnySession = SessionData
 
 export interface PayloadCodec<P> {
 	encode: (value: P) => string

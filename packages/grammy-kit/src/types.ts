@@ -21,18 +21,18 @@ export interface SessionData<F extends FlowBase | null = any> {
 		promptMessageId: number
 	} | null
 	flow: F
-	lastPage: PageContent | null
+	lastNavigatedPage: PageContent | null
 	history: HistoryEntry[]
 }
 
 export enum EffectType {
-	EDIT,
+	NAVIGATE,
 	ASK,
-	SEND_LOADING,
+	LOADING,
 }
 
-export interface EffectEdit {
-	type: EffectType.EDIT
+export interface EffectNavigate {
+	type: EffectType.NAVIGATE
 	page: PageContent
 	history?: {
 		kind?: 'action' | 'page'
@@ -47,17 +47,21 @@ export interface EffectAsk {
 }
 
 export interface EffectLoading<F extends FlowBase | null = FlowBase | null> {
-	type: EffectType.SEND_LOADING
+	type: EffectType.LOADING
 	message: FormattedString
 	next: () => Promise<HandlerResult<F>>
 }
 
-export type Effect = EffectEdit | EffectAsk | EffectLoading
+export type Effect = EffectNavigate | EffectAsk | EffectLoading
 
-export interface HandlerResult<F extends FlowBase | null> {
-	flow: FlowTransition<F>
-	effect: Effect
-}
+export type HandlerResult<F extends FlowBase | null> =
+	| { flow: FlowTransition<F>; effect: EffectNavigate | EffectAsk }
+	| { flow?: never; effect: EffectLoading<F> }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyHandlerResult = HandlerResult<any>
+
+export type LastAsk = NonNullable<SessionData['lastAsk']>
 
 export type Line = string | FormattedString
 

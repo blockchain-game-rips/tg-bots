@@ -567,7 +567,7 @@ describe('committing the session', () => {
 
 		session.lastAsk = {
 			onSubmit: 'submit' as ActionId<unknown>,
-			messageToEdit: message,
+			message,
 			promptMessageId: 9,
 		}
 
@@ -614,7 +614,7 @@ describe('committing the session', () => {
 
 		session.lastAsk = {
 			onSubmit: 'submit' as ActionId<unknown>,
-			messageToEdit: message,
+			message,
 			promptMessageId: 9,
 		}
 

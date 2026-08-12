@@ -1,7 +1,7 @@
 import { Api, GrammyError, InlineKeyboard } from 'grammy'
 import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
-import { replacePage } from '../messaging/page-delivery'
+import { replacePage, sendMessage } from '../messaging/page-delivery'
 import { sendPrompt } from '../messaging/prompt-delivery'
 import { recordPage } from '../session/history'
 import { applyFlowTransition, FlowTransition } from '../session/session-utils'
@@ -58,24 +58,33 @@ function isLoading(result: AnyHandlerResult): result is LoadingResult {
 	return result.effect.type === EffectType.LOADING
 }
 
+async function deliverPage(
+	api: Api,
+	chatId: number,
+	message: Message | null,
+	page: PageContent,
+): Promise<Message> {
+	if (message !== null) return replacePage(api, { chatId, message }, page)
+
+	const messageId = await sendMessage(api, chatId, page)
+
+	return { messageId, hasPhoto: page.photo !== undefined }
+}
+
 async function performEffect(
 	api: Api,
 	chatId: number,
-	message: Message,
+	message: Message | null,
 	initialResult: AnyHandlerResult,
 	action: ActionData,
 ): Promise<SessionChange> {
 	let result = initialResult
 
 	while (isLoading(result)) {
-		message = await replacePage(
-			api,
-			{ chatId, message },
-			{
-				message: result.effect.message,
-				keyboard: new InlineKeyboard(),
-			},
-		)
+		message = await deliverPage(api, chatId, message, {
+			message: result.effect.message,
+			keyboard: new InlineKeyboard(),
+		})
 
 		result = await result.effect.next()
 	}
@@ -84,7 +93,7 @@ async function performEffect(
 
 	switch (effect.type) {
 		case EffectType.NAVIGATE:
-			await replacePage(api, { chatId, message }, effect.page)
+			message = await deliverPage(api, chatId, message, effect.page)
 
 			return { kind: 'page', flow, action, effect }
 
@@ -139,7 +148,7 @@ function resolveErrorPage(
 export async function executeEffectOrDisplayError(
 	api: Api,
 	chatId: number,
-	message: Message,
+	message: Message | null,
 	session: SessionData,
 	actions: Record<string, BoundAction | undefined>,
 	action: ActionData,
@@ -157,7 +166,7 @@ export async function executeEffectOrDisplayError(
 
 		const errorPage = resolveErrorPage(session, error, fallbackPage)
 
-		fireAndForget(replacePage(api, { chatId, message }, errorPage))
+		fireAndForget(deliverPage(api, chatId, message, errorPage))
 
 		commitSessionChange(session, STAYED_PUT)
 	} finally {

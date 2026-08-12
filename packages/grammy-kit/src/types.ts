@@ -17,7 +17,7 @@ export interface SessionData<F extends FlowBase | null = any> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
-		message: Message
+		message: Message | null
 		promptMessageId: number
 	} | null
 	flow: F

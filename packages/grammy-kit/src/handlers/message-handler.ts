@@ -39,7 +39,7 @@ export function createMessageHandler(
 		await executeEffectOrDisplayError(
 			bot.api,
 			ctx.chat.id,
-			ask.messageToEdit,
+			ask.message,
 			ctx.session,
 			actions,
 			{ actionId: ask.onSubmit, payload: submit.message },
@@ -53,7 +53,7 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 	ask: {
 		messageId: number
 		onSubmit: ActionId<unknown>
-		messageToEdit: Message
+		message: Message | null
 	}
 	submit: {
 		message: string
@@ -72,7 +72,7 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 		ask: {
 			messageId: repliedTo.message_id,
 			onSubmit: lastAsk.onSubmit,
-			messageToEdit: lastAsk.message,
+			message: lastAsk.message,
 		},
 		submit: {
 			message: ctx.message.text,

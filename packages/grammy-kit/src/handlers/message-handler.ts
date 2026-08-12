@@ -1,21 +1,10 @@
-import { FormattedString } from '@grammyjs/parse-mode'
 import { User } from '@grammyjs/types'
-import {
-	Api,
-	Filter,
-	Context as GrammyContext,
-	InlineKeyboard,
-	SessionFlavor,
-} from 'grammy'
+import { Api, Filter, Context as GrammyContext, SessionFlavor } from 'grammy'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { FlowBase } from '../session/session-utils'
-import { ActionId, Message, PageContent, SessionData } from '../types'
-
-const EMPTY_PAGE: PageContent = {
-	message: new FormattedString('', []),
-	keyboard: new InlineKeyboard(),
-}
+import { ActionId, Message, SessionData } from '../types'
+import { EMPTY_PAGE } from './empty-page'
 
 type BaseContext = GrammyContext &
 	SessionFlavor<SessionData<FlowBase | null>> & { from: User }

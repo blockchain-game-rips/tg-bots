@@ -50,7 +50,7 @@ function currentEntry(session: SessionData): HistoryEntry | null {
 	return session.history[session.history.length - 1] ?? null
 }
 
-export function previousEntry(session: SessionData): HistoryEntry | null {
+function previousEntry(session: SessionData): HistoryEntry | null {
 	return session.history[session.history.length - 2] ?? null
 }
 

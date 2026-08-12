@@ -52,6 +52,7 @@ export function createButtonHandler(
 
 			await executeEffectOrDisplayError(
 				ctx.api,
+				message.chat.id,
 				toMessage(message),
 				ctx.session,
 				actions,
@@ -70,7 +71,6 @@ export function createButtonHandler(
 
 function toMessage(message: TelegramMessage): Message {
 	return {
-		chatId: message.chat.id,
 		messageId: message.message_id,
 		hasPhoto: hasPhoto(message),
 	}

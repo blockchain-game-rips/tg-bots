@@ -31,7 +31,6 @@ const makePage = (text: string): PageContent => ({
 })
 
 const message: Message = {
-	chatId: CHAT_ID,
 	messageId: MESSAGE_ID,
 	hasPhoto: false,
 }
@@ -128,6 +127,7 @@ const run = (
 ) =>
 	executeEffectOrDisplayError(
 		fake.api,
+		CHAT_ID,
 		message,
 		session,
 		actions,

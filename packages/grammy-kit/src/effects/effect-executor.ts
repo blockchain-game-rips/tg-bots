@@ -60,18 +60,22 @@ function isLoading(result: AnyHandlerResult): result is LoadingResult {
 
 async function performEffect(
 	api: Api,
+	chatId: number,
 	message: Message,
 	initialResult: AnyHandlerResult,
 	action: ActionData,
 ): Promise<SessionChange> {
 	let result = initialResult
-	let messageToEdit = message
 
 	while (isLoading(result)) {
-		messageToEdit = await replacePage(api, messageToEdit, {
-			message: result.effect.message,
-			keyboard: new InlineKeyboard(),
-		})
+		message = await replacePage(
+			api,
+			{ chatId, message },
+			{
+				message: result.effect.message,
+				keyboard: new InlineKeyboard(),
+			},
+		)
 
 		result = await result.effect.next()
 	}
@@ -80,23 +84,19 @@ async function performEffect(
 
 	switch (effect.type) {
 		case EffectType.NAVIGATE:
-			await replacePage(api, messageToEdit, effect.page)
+			await replacePage(api, { chatId, message }, effect.page)
 
 			return { kind: 'page', flow, action, effect }
 
 		case EffectType.ASK: {
-			const promptMessageId = await sendPrompt(
-				api,
-				messageToEdit.chatId,
-				effect.prompt,
-			)
+			const promptMessageId = await sendPrompt(api, chatId, effect.prompt)
 
 			return {
 				kind: 'ask',
 				flow,
 				lastAsk: {
 					onSubmit: effect.onSubmit,
-					messageToEdit,
+					message,
 					promptMessageId,
 				},
 			}
@@ -138,7 +138,8 @@ function resolveErrorPage(
 
 export async function executeEffectOrDisplayError(
 	api: Api,
-	messageToEdit: Message,
+	chatId: number,
+	message: Message,
 	session: SessionData,
 	actions: Record<string, BoundAction | undefined>,
 	action: ActionData,
@@ -148,7 +149,7 @@ export async function executeEffectOrDisplayError(
 	try {
 		const result = await resolveActionEffect(session, actions, action)
 
-		const change = await performEffect(api, messageToEdit, result, action)
+		const change = await performEffect(api, chatId, message, result, action)
 
 		commitSessionChange(session, change)
 	} catch (error) {
@@ -156,14 +157,12 @@ export async function executeEffectOrDisplayError(
 
 		const errorPage = resolveErrorPage(session, error, fallbackPage)
 
-		fireAndForget(replacePage(api, messageToEdit, errorPage))
+		fireAndForget(replacePage(api, { chatId, message }, errorPage))
 
 		commitSessionChange(session, STAYED_PUT)
 	} finally {
 		if (messagesToDelete.length !== 0) {
-			fireAndForget(
-				api.deleteMessages(messageToEdit.chatId, messagesToDelete),
-			)
+			fireAndForget(api.deleteMessages(chatId, messagesToDelete))
 		}
 	}
 }

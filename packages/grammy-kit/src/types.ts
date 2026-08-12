@@ -17,7 +17,7 @@ export interface SessionData<F extends FlowBase | null = any> {
 	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
-		messageToEdit: Message
+		message: Message
 		promptMessageId: number
 	} | null
 	flow: F
@@ -93,11 +93,7 @@ export interface PromptContent {
 	placeholder: string
 }
 
-export interface MessageRef {
-	chatId: number
+export type Message = {
 	messageId: number
-}
-
-export type Message = MessageRef & {
 	hasPhoto: boolean
 }

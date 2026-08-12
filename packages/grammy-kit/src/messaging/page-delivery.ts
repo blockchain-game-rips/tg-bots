@@ -1,6 +1,12 @@
 import { FormattedString } from '@grammyjs/parse-mode'
 import { Api, InputMediaBuilder } from 'grammy'
-import { Message, MessageRef, PageContent, PhotoPage, TextPage } from '../types'
+import { Message, PageContent, PhotoPage, TextPage } from '../types'
+
+/** A message together with the chat it lives in, so the two cannot drift. */
+export type ChatMessage = {
+	chatId: number
+	message: Message
+}
 
 function captionArgs(message: FormattedString) {
 	return {
@@ -11,49 +17,54 @@ function captionArgs(message: FormattedString) {
 
 export async function replacePage(
 	api: Api,
-	message: Message,
+	target: ChatMessage,
 	newPage: PageContent,
 ): Promise<Message> {
+	const { chatId, message } = target
 	const newPageHasPhoto = newPage.photo !== undefined
 
 	if (message.hasPhoto && newPageHasPhoto) {
-		await editMedia(api, message, newPage)
+		await editMedia(api, target, newPage)
 
 		return message
 	}
 
 	if (!message.hasPhoto && !newPageHasPhoto) {
-		await editText(api, message, newPage)
+		await editText(api, target, newPage)
 
 		return message
 	}
 
 	const [, sentMessageId] = await Promise.all([
-		api.deleteMessage(message.chatId, message.messageId),
-		sendMessage(api, message.chatId, newPage),
+		api.deleteMessage(chatId, message.messageId),
+		sendMessage(api, chatId, newPage),
 	])
 
 	return {
-		chatId: message.chatId,
 		messageId: sentMessageId,
 		hasPhoto: newPageHasPhoto,
 	}
 }
 
-async function editMedia(api: Api, ref: MessageRef, newPage: PhotoPage) {
+async function editMedia(api: Api, target: ChatMessage, newPage: PhotoPage) {
 	await api.editMessageMedia(
-		ref.chatId,
-		ref.messageId,
+		target.chatId,
+		target.message.messageId,
 		InputMediaBuilder.photo(newPage.photo, captionArgs(newPage.message)),
 		{ reply_markup: newPage.keyboard },
 	)
 }
 
-async function editText(api: Api, ref: MessageRef, newPage: TextPage) {
-	await api.editMessageText(ref.chatId, ref.messageId, newPage.message.text, {
-		reply_markup: newPage.keyboard,
-		entities: newPage.message.entities,
-	})
+async function editText(api: Api, target: ChatMessage, newPage: TextPage) {
+	await api.editMessageText(
+		target.chatId,
+		target.message.messageId,
+		newPage.message.text,
+		{
+			reply_markup: newPage.keyboard,
+			entities: newPage.message.entities,
+		},
+	)
 }
 
 export async function sendMessage(

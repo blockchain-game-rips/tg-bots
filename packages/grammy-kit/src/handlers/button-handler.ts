@@ -38,8 +38,6 @@ export function createButtonHandler(
 			const messagesToDelete =
 				lastAsk === null ? [] : [lastAsk.promptMessageId]
 
-			ctx.session.lastAsk = null
-
 			const message = ctx.callbackQuery.message
 
 			if (message === undefined)

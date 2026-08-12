@@ -36,8 +36,6 @@ export function createMessageHandler(
 		const { ask, submit } = askAndSubmit
 		const messagesToDelete = [ask.messageId, submit.messageId]
 
-		ctx.session.lastAsk = null
-
 		await executeEffectOrDisplayError(
 			bot.api,
 			ask.messageToEdit,

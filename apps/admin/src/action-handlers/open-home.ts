@@ -17,8 +17,9 @@ export const openHome: ActionDef<void> = noPayload(async () => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: HomePage.render(state, adminWallet),
+			history: { clears: true },
 		},
 	}
 })

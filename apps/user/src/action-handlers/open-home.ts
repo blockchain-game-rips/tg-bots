@@ -35,8 +35,9 @@ export const openHome: ActionDef<void> = noPayload(async (session) => {
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: WelcomePage.render(),
+				history: { clears: true },
 			},
 		}
 	}
@@ -92,12 +93,13 @@ async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: HomePage.render({
 				unopenedPulls: unrevealedPayouts.length,
 				baseBalance,
 				referralFee,
 			}),
+			history: { clears: true },
 		},
 	}
 }

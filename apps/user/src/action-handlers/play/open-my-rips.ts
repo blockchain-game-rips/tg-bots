@@ -36,7 +36,7 @@ export const openMyRips: ActionDef<void> = noPayload(async (session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: MyRipsPage.render({
 				unopenedPulls: unrevealedPayouts.length,
 				activeEntries,

@@ -14,7 +14,7 @@ export const openDepositChooseCurrency: ActionDef<Chain> = withPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: DepositChooseCurrencyPage.render({ chain, currencies }),
 			},
 		}

@@ -6,7 +6,7 @@ export {
 	ActionId,
 	Effect,
 	EffectAsk,
-	EffectEdit,
+	EffectNavigate,
 	EffectType,
 	HandlerResult,
 	NavIds,

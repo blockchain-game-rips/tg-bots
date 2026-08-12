@@ -6,7 +6,6 @@ import {
 	FormattedString,
 	joinLines,
 	toFlow,
-	toHold,
 	toReset,
 } from '@rips/grammy-kit'
 import { noPayload, withPayload } from '../action-def'
@@ -56,7 +55,7 @@ export const submitConfirmSetDefaultFee: ActionDef<string> =
 			return {
 				flow,
 				effect: {
-					type: EffectType.EDIT,
+					type: EffectType.NAVIGATE,
 					page: ConfirmationPage.render(
 						fmt`This will set the default referral fee to ${FormattedString.b(`${String(bp)} bp`)}.`,
 						actionIds.executeConfirmSetDefaultFee,
@@ -73,9 +72,8 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 		const { bp } = session.flow.data
 
 		return {
-			flow: toHold(),
 			effect: {
-				type: EffectType.SEND_LOADING,
+				type: EffectType.LOADING,
 				message: fmt`Setting default fee...`,
 				next: async () => {
 					const { data: tx } =
@@ -87,7 +85,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 					return {
 						flow: toReset(),
 						effect: {
-							type: EffectType.EDIT,
+							type: EffectType.NAVIGATE,
 							page: TransactionPage.render(
 								`Default fee set to ${String(bp)} bp`,
 								tx,

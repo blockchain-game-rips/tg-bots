@@ -21,7 +21,7 @@ export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 			return {
 				flow: toHold(),
 				effect: {
-					type: EffectType.EDIT,
+					type: EffectType.NAVIGATE,
 					page: SwapChooseSrcTokenPage.renderDraftEdit({
 						srcChain,
 						currencies,
@@ -36,7 +36,7 @@ export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: SwapChooseSrcTokenPage.renderFreshDraft({
 					srcChain,
 					currencies,

@@ -13,7 +13,7 @@ export const openWithdrawChooseAmount: ActionDef<void> = noPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: WithdrawChooseAmountPage.render(currencyBalance),
 			},
 		}

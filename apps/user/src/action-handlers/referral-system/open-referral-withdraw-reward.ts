@@ -39,7 +39,7 @@ export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: ClaimRewardPage.render({
 					reward: {
 						amount: state.rewards.available,

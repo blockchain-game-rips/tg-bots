@@ -29,7 +29,7 @@ export const openFinalizedRips: ActionDef<boolean> = withPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: FinalizedRipsPage.render(data.rips, mineOnly),
 			},
 		}

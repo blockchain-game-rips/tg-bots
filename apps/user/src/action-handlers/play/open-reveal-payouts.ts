@@ -10,7 +10,7 @@ export const openRevealPayouts: ActionDef<void> = noPayload(async (session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: RevealPayoutsPage.render(unrevealedPayouts.length),
 		},
 	}

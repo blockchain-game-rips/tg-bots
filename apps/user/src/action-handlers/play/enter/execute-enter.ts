@@ -13,7 +13,7 @@ import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
-import { Flow, toHold, toReset } from '../../../flows'
+import { Flow, toReset } from '../../../flows'
 import {
 	EnterSuccessArgs,
 	EnterSuccessPage,
@@ -48,9 +48,8 @@ export const executeEnter: ActionDef<void> = noPayload((session) => {
 	}
 
 	return {
-		flow: toHold(),
 		effect: {
-			type: EffectType.SEND_LOADING,
+			type: EffectType.LOADING,
 			message: fmt`Entering...`,
 			next: () =>
 				executeEnterRequest(session.telegramId, availablePreset, body),
@@ -74,7 +73,7 @@ async function executeEnterRequest(
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: EnterSuccessPage.render(
 				await toSuccessArgs(availablePreset, outcome),
 			),

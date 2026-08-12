@@ -36,7 +36,7 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: WithdrawSuccessPage.render({
 				transaction: withdrawResult,
 				currencyAmount,

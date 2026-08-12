@@ -20,7 +20,7 @@ export const openEnterChoosePaymentChain: ActionDef<void> = noPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: EnterChoosePaymentChainPage.render({
 					availablePreset,
 					chains: [...SUPPORTED_CHAINS],
@@ -42,7 +42,7 @@ export const openEnterChoosePaymentToken: ActionDef<Chain> = withPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: EnterChoosePaymentTokenPage.render({
 					availablePreset,
 					chain,

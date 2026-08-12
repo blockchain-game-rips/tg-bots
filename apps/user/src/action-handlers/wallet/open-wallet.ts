@@ -13,7 +13,7 @@ export const openWallet: ActionDef<void> = noPayload(async (session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: WalletPage.render(balances),
 		},
 	}

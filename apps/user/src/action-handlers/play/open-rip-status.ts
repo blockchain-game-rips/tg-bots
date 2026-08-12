@@ -32,7 +32,7 @@ export const openRipStatus: ActionDef<number> = withPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: RipDetailPage.render(variant),
 			},
 		}

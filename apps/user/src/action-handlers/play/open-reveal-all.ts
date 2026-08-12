@@ -65,7 +65,7 @@ async function revealBatch(telegramId: string): Promise<HandlerResult<Flow>> {
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: RevealAllPage.render({
 					currency: rip.currency,
 					summary,

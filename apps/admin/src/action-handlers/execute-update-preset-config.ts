@@ -9,7 +9,6 @@ import {
 	FormattedString,
 	joinLines,
 	toFlow,
-	toHold,
 	toReset,
 } from '@rips/grammy-kit'
 import { parseUnits, toCurrencyId, toShortDurationFormat } from '@rips/shared'
@@ -19,7 +18,7 @@ import { NATIVE_ON_BASE } from '../constants'
 import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
-import { Effect, EffectType } from '../types'
+import { EffectLoading, EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parsePresetConfig } from '../validation/preset-config'
 
@@ -83,7 +82,7 @@ export const submitConfirmUpdatePresetConfig: ActionDef<string> =
 			return {
 				flow,
 				effect: {
-					type: EffectType.EDIT,
+					type: EffectType.NAVIGATE,
 					page: ConfirmationPage.render(
 						description,
 						actionIds.executeConfirmUpdatePresetConfig,
@@ -106,8 +105,8 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 			payoutDistribution,
 		} = session.flow.data
 
-		const effect: Effect = {
-			type: EffectType.SEND_LOADING,
+		const effect: EffectLoading = {
+			type: EffectType.LOADING,
 			message: fmt`Updating preset config...`,
 			next: async () => {
 				const { data: currenciesRes } =
@@ -150,7 +149,7 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 				return {
 					flow: toReset(),
 					effect: {
-						type: EffectType.EDIT,
+						type: EffectType.NAVIGATE,
 						page: TransactionPage.render(
 							`Preset #${String(presetId)} config updated`,
 							tx,
@@ -160,6 +159,6 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 			},
 		}
 
-		return { flow: toHold(), effect }
+		return { effect }
 	},
 )

@@ -14,7 +14,7 @@ export const openSwapChooseSrcChain: ActionDef<void> = noPayload((session) => {
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: SwapChooseSrcChainPage.renderDraftEdit({
 					chains,
 					srcCurrency: srcCurrencyBalance.currency,
@@ -28,7 +28,7 @@ export const openSwapChooseSrcChain: ActionDef<void> = noPayload((session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: SwapChooseSrcChainPage.renderFreshDraft({ chains }),
 		},
 	}

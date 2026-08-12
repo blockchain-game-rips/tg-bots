@@ -8,7 +8,7 @@ import { EffectType } from '../../types'
 export const openExportKeyWarning: ActionDef<void> = noPayload(() => ({
 	flow: toReset(),
 	effect: {
-		type: EffectType.EDIT,
+		type: EffectType.NAVIGATE,
 		page: ExportKeyWarningPage.render(),
 	},
 }))
@@ -21,7 +21,7 @@ export const openExportKey: ActionDef<void> = noPayload(async (session) => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: ExportKeyPage.render(data.privateKey),
 		},
 	}

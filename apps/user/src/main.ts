@@ -4,17 +4,17 @@ import { initApiClient } from '@rips/api-client'
 import {
 	createButtonHandler,
 	createMessageHandler,
+	createStartHandler,
 	createTelegramMetricsTransformer,
-	fmt,
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
-import { Bot, InlineKeyboard, session } from 'grammy'
-import { actions } from './actions'
+import { Bot, session } from 'grammy'
+import { actionIds, actions } from './actions'
 import { botStartLink, setBotUsername } from './bot-identity'
 import { Flow } from './flows'
 import { Notifier } from './notifier'
-import { Context, EffectType, PageContent, SessionData } from './types'
+import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 import { installKeyboardExtensions } from './utils/keyboard'
 
@@ -48,7 +48,13 @@ bot.use((ctx, next) => {
 })
 
 function initial(): SessionData<Flow> {
-	return { telegramId: '', lastAsk: null, flow: null, lastPage: null }
+	return {
+		telegramId: '',
+		lastAsk: null,
+		flow: null,
+		lastNavigatedPage: null,
+		history: [],
+	}
 }
 
 bot.use(session({ initial }))
@@ -63,32 +69,9 @@ bot.use((ctx, next) => {
 
 const handleButton = createButtonHandler(actions)
 const handleMessage = createMessageHandler(actions)
+const handleStart = createStartHandler(actions, actionIds.openHome)
 
-bot.command('start', async (ctx) => {
-	let pageContent: PageContent = {
-		keyboard: new InlineKeyboard(),
-		message: fmt`Failed to get or create user`,
-	}
-
-	try {
-		const homeAction = actions['0']
-
-		if (homeAction === undefined)
-			throw new Error('Home action not registered')
-
-		const showHomeEffect = await homeAction.handler(ctx.session, undefined)
-		if (showHomeEffect.type === EffectType.EDIT) {
-			pageContent = showHomeEffect.page
-		}
-	} catch (error) {
-		logger.error(error, 'Error in /start command')
-	}
-
-	await ctx.reply(pageContent.message.text, {
-		reply_markup: pageContent.keyboard,
-		entities: pageContent.message.entities,
-	})
-})
+bot.command('start', async (ctx) => handleStart(ctx))
 
 bot.on('callback_query:data', async (ctx) => handleButton(ctx))
 

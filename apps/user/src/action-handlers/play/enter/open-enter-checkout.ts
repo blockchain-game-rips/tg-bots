@@ -78,7 +78,7 @@ async function renderCheckout(
 	return {
 		flow: toFlow('enter', 'at-checkout', draft),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: CheckoutPage.render({
 				availablePreset,
 				entryCount,

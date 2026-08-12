@@ -19,7 +19,7 @@ export const openViewPulls: ActionDef<number> = withPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: ViewPullsPage.render({ rip, payouts }),
 			},
 		}

@@ -11,7 +11,7 @@ export const openCardCollection: ActionDef<void> = noPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: CardCollectionPage.render(collection),
 			},
 		}

@@ -49,7 +49,7 @@ async function renderPaymentOptions(
 			balances,
 		}),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: EnterPaymentOptionsPage.render({
 				availablePreset,
 				entryCount,

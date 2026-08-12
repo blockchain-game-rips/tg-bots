@@ -16,7 +16,7 @@ export const openOngoingRips: ActionDef<void> = noPayload(async () => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: OngoingRipsPage.render({
 				availablePresets: presetsData.availablePresets,
 				ongoingRips: ripsData.rips,

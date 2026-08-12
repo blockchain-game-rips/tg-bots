@@ -11,7 +11,7 @@ import {
 import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
-import { Flow, toHold, toReset } from '../../../flows'
+import { Flow, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
 import { EffectType, HandlerResult } from '../../../types'
 
@@ -28,9 +28,8 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 	const amountInDto = toCurrencyAmount(amountIn, srcCurrencyBalance.currency)
 
 	return {
-		flow: toHold(),
 		effect: {
-			type: EffectType.SEND_LOADING,
+			type: EffectType.LOADING,
 			message: fmt`Swapping...`,
 			next: () =>
 				executeSwapRequest(
@@ -60,7 +59,7 @@ async function executeSwapRequest(
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page,
 		},
 	}

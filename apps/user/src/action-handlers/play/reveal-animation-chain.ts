@@ -1,16 +1,16 @@
 import { fmt, wait } from '@rips/grammy-kit'
 import { AnimationFrame } from '../../domain/reveal-animation'
-import { Flow, toHold } from '../../flows'
+import { Flow } from '../../flows'
 import { EffectType, HandlerResult } from '../../types'
 
 /**
- * Chains frames into recursive SEND_LOADING effects, each rendered with an empty
+ * Chains frames into recursive loading effects, each rendered with an empty
  * keyboard. The missing keyboard is load-bearing: a stale one would still offer
  * Reveal Next, and a tap mid-animation would race a second reveal on the same
  * message.
  *
- * SEND_LOADING does not write session.lastPage — only EDIT does — so frames
- * leave lastPage pointing at the page the user came from. An error thrown
+ * Loading does not write session.lastNavigatedPage — only navigation does — so
+ * frames leave it pointing at the page the user came from. An error thrown
  * mid-animation therefore appends to a page that still has a keyboard rather
  * than stranding the user on a frame with no way out.
  */
@@ -24,9 +24,8 @@ export function playFrames(
 		throw new Error('Animation needs at least one frame')
 
 	return {
-		flow: toHold(),
 		effect: {
-			type: EffectType.SEND_LOADING,
+			type: EffectType.LOADING,
 			message: fmt`${frame.text}`,
 			next: async () => {
 				await wait(frame.durationMs)

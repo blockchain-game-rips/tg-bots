@@ -5,7 +5,6 @@ import {
 	fmt,
 	FormattedString,
 	toFlow,
-	toHold,
 	toReset,
 } from '@rips/grammy-kit'
 import { parseEvmAddress } from '@rips/shared'
@@ -56,7 +55,7 @@ function submitConfirmSetReferrerFrozen(frozen: boolean): ActionDef<string> {
 			return {
 				flow,
 				effect: {
-					type: EffectType.EDIT,
+					type: EffectType.NAVIGATE,
 					page: ConfirmationPage.render(
 						description,
 						actionIds.executeConfirmReferrerFrozen,
@@ -81,9 +80,8 @@ export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
 		const { address, frozen } = session.flow.data
 
 		return {
-			flow: toHold(),
 			effect: {
-				type: EffectType.SEND_LOADING,
+				type: EffectType.LOADING,
 				message: frozen
 					? fmt`Freezing referrer...`
 					: fmt`Unfreezing referrer...`,
@@ -103,7 +101,7 @@ export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
 					return {
 						flow: toReset(),
 						effect: {
-							type: EffectType.EDIT,
+							type: EffectType.NAVIGATE,
 							page: TransactionPage.render(title, tx),
 						},
 					}

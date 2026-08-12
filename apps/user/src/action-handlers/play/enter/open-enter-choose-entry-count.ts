@@ -17,7 +17,7 @@ export const openEnterChooseEntryCount: ActionDef<number> = withPayload(
 		return {
 			flow: toFlow('enter', 'choosing-entry-count', { availablePreset }),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: EnterChooseEntryCountPage.renderFreshDraft(
 					availablePreset,
 				),
@@ -35,7 +35,7 @@ export const openEnterChooseEntryCountFromCheckout: ActionDef<void> = noPayload(
 		return {
 			flow: toHold(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: EnterChooseEntryCountPage.renderDraftEdit(
 					availablePreset,
 				),

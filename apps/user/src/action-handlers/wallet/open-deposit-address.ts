@@ -25,7 +25,7 @@ async function renderDepositAddress(
 	return {
 		flow: toHold(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: DepositAddressPage.render({ balance, depositAddress, qr }),
 		},
 	}

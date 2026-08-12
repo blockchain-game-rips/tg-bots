@@ -18,7 +18,7 @@ export const openCardCollectionTier: ActionDef<number> = withPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: CardCollectionTierPage.render(tierCollection),
 			},
 		}

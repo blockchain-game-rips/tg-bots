@@ -9,7 +9,6 @@ import {
 	FormattedString,
 	joinLines,
 	toFlow,
-	toHold,
 	toReset,
 } from '@rips/grammy-kit'
 import { parseUnits, toCurrencyId } from '@rips/shared'
@@ -19,7 +18,7 @@ import { NATIVE_ON_BASE } from '../constants'
 import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
-import { Effect, EffectType } from '../types'
+import { EffectLoading, EffectType } from '../types'
 import { adminApiHeader } from '../utils/api'
 import { parseTierList } from '../validation/tier-list'
 
@@ -71,7 +70,7 @@ export const submitConfirmSetTiers: ActionDef<string> = withPayload<string>(
 		return {
 			flow,
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: ConfirmationPage.render(
 					fmt`This will set ${FormattedString.b(String(tiers.length))} referral tier(s):\n${tierSummary}`,
 					actionIds.executeConfirmSetTiers,
@@ -86,8 +85,8 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 
 	const { tiers } = session.flow.data
 
-	const effect: Effect = {
-		type: EffectType.SEND_LOADING,
+	const effect: EffectLoading = {
+		type: EffectType.LOADING,
 		message: fmt`Setting referral tiers...`,
 		next: async () => {
 			const { data: currenciesRes } =
@@ -120,7 +119,7 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 			return {
 				flow: toReset(),
 				effect: {
-					type: EffectType.EDIT,
+					type: EffectType.NAVIGATE,
 					page: TransactionPage.render(
 						`Referral tiers updated (${String(tiers.length)} tier(s))`,
 						tx,
@@ -130,5 +129,5 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 		},
 	}
 
-	return { flow: toHold(), effect }
+	return { effect }
 })

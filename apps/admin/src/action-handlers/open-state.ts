@@ -20,7 +20,7 @@ export const openState: ActionDef<void> = noPayload(async () => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: StatePage.render(state, adminWallet, tierTablesRes),
 		},
 	}

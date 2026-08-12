@@ -10,7 +10,7 @@ export const openEnterChoosePreset: ActionDef<void> = noPayload(async () => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: EnterChoosePresetPage.render(availablePresets),
 		},
 	}

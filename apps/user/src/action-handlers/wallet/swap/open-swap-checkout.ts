@@ -188,7 +188,7 @@ async function renderCheckout(
 	return {
 		flow: toFlow('swap', 'src-dst-amount-chosen', draft),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: SwapCheckoutPage.render({
 				srcBalance: srcCurrencyBalance,
 				nativeBalance: nativeCurrencyBalance,

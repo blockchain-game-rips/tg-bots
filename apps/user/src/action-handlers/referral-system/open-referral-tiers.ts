@@ -10,7 +10,7 @@ export const openReferralTiers: ActionDef<void> = noPayload(async () => {
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: ReferralTiersPage.render(tierTables),
 		},
 	}

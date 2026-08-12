@@ -15,7 +15,7 @@ export const executeReferralWithdrawReward: ActionDef<void> = noPayload(
 		return {
 			flow: toReset(),
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: WithdrawRewardSuccessPage.render(data),
 			},
 		}

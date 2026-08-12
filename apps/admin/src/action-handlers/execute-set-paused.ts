@@ -5,7 +5,6 @@ import {
 	fmt,
 	FormattedString,
 	toFlow,
-	toHold,
 	toReset,
 } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
@@ -31,7 +30,7 @@ function openConfirmPaused(isPaused: boolean): ActionDef<void> {
 		return {
 			flow,
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: ConfirmationPage.render(
 					description,
 					actionIds.executeConfirmPaused,
@@ -50,9 +49,8 @@ export const executeConfirmPaused: ActionDef<void> = noPayload((session) => {
 	const { isPaused } = session.flow.data
 
 	return {
-		flow: toHold(),
 		effect: {
-			type: EffectType.SEND_LOADING,
+			type: EffectType.LOADING,
 			message: isPaused ? fmt`Pausing...` : fmt`Unpausing...`,
 			next: async () => {
 				const { data: tx } = await adminControllerSetPaused({
@@ -63,7 +61,7 @@ export const executeConfirmPaused: ActionDef<void> = noPayload((session) => {
 				return {
 					flow: toReset(),
 					effect: {
-						type: EffectType.EDIT,
+						type: EffectType.NAVIGATE,
 						page: TransactionPage.render(title, tx),
 					},
 				}

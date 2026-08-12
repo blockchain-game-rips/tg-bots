@@ -7,7 +7,7 @@ import { EffectType } from '../../types'
 export const openWithdrawChooseChain: ActionDef<void> = noPayload(() => ({
 	flow: toReset(),
 	effect: {
-		type: EffectType.EDIT,
+		type: EffectType.NAVIGATE,
 		page: WithdrawChooseChainPage.render({ chains: [...SUPPORTED_CHAINS] }),
 	},
 }))

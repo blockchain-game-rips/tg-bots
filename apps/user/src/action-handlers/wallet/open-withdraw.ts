@@ -138,7 +138,7 @@ async function renderWithdraw(
 		return {
 			flow,
 			effect: {
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page: WithdrawPage.render({
 					kind: 'pending',
 					currencyBalance,
@@ -158,7 +158,7 @@ async function renderWithdraw(
 	return {
 		flow,
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: WithdrawPage.render({
 				kind: 'quoted',
 				currencyBalance,

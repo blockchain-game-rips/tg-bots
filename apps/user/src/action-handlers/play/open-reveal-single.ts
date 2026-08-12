@@ -74,7 +74,7 @@ async function renderResult(
 	return {
 		flow: toReset(),
 		effect: {
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: RevealSinglePage.render({
 				rip,
 				revealedPayout,

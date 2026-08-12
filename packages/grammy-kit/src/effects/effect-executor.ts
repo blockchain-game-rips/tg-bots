@@ -34,6 +34,9 @@ function isMessageNotModifiedError(error: unknown): boolean {
 	)
 }
 
+// FlowTransition is invariant in its flow type, so no single concrete argument
+// accepts every app's flow. The executor never inspects the transition, it only
+// forwards it to applyFlowTransition, so the wildcard costs no safety here.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFlowTransition = FlowTransition<any>
 

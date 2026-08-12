@@ -1,5 +1,5 @@
-import { applyFlowTransition, FlowBase } from '../session/session-utils'
-import { Effect, HandlerResult, SessionData } from '../types'
+import { FlowBase } from '../session/session-utils'
+import { HandlerResult, SessionData } from '../types'
 
 type AnySession = SessionData
 
@@ -49,13 +49,4 @@ export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
 		handler: (session, payload) =>
 			handler(session as SessionData<F>, payload),
 	}
-}
-
-export function resolveEffect<F extends FlowBase | null>(
-	session: SessionData<F>,
-	result: HandlerResult<F>,
-): Effect {
-	applyFlowTransition(session, result.flow)
-
-	return result.effect
 }

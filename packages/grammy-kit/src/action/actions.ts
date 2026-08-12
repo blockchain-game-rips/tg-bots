@@ -1,15 +1,16 @@
 import { botActionDuration } from '../metrics/registry'
-import { ActionId, Effect, SessionData } from '../types'
+import { ActionId, AnyHandlerResult, SessionData } from '../types'
 import { registerEncoder } from './action-data'
-import { ActionDef, AnyActionDef, resolveEffect } from './action-def'
+import { ActionDef, AnyActionDef } from './action-def'
 
 export type { ActionId }
 
-type AnySession = SessionData
-
 export interface BoundAction {
 	decode: (raw: string) => unknown
-	handler: (session: AnySession, payload: unknown) => Promise<Effect> | Effect
+	handler: (
+		session: SessionData,
+		payload: unknown,
+	) => Promise<AnyHandlerResult> | AnyHandlerResult
 }
 
 function toActionId(index: number): ActionId {
@@ -45,9 +46,7 @@ export function buildActions(
 			handler: async (session, payload) => {
 				const end = botActionDuration.startTimer({ action: name })
 				try {
-					const result = await def.handler(session, payload)
-
-					return resolveEffect(session, result)
+					return await def.handler(session, payload)
 				} finally {
 					end()
 				}

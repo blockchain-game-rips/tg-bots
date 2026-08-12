@@ -1,21 +1,23 @@
 import { Api, GrammyError, InlineKeyboard } from 'grammy'
-import { resolveEffect } from '../action/action-def'
 import { BoundAction } from '../action/actions'
 import { logger } from '../logging/pino-logger'
 import { replacePage } from '../messaging/page-delivery'
 import { sendPrompt } from '../messaging/prompt-delivery'
-import { BACK_ACTION_ID } from '../action/action-data'
-import { previousEntry, recordPage } from '../session/history'
+import { recordPage } from '../session/history'
+import { applyFlowTransition, FlowTransition } from '../session/session-utils'
 import {
 	ActionData,
-	Effect,
+	AnyHandlerResult,
+	EffectLoading,
+	EffectNavigate,
 	EffectType,
-	HistoryEntry,
+	LastAsk,
 	Message,
 	PageContent,
 	SessionData,
 } from '../types'
 import { fireAndForget } from '../utils/common'
+import { resolveActionEffect } from './resolve-effect'
 import {
 	composePageContentWithError,
 	ErrorToRender,
@@ -32,88 +34,103 @@ function isMessageNotModifiedError(error: unknown): boolean {
 	)
 }
 
-async function executeEffect(
-	effect: Effect,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyFlowTransition = FlowTransition<any>
+
+type SessionChange =
+	| {
+			kind: 'page'
+			flow: AnyFlowTransition
+			action: ActionData
+			effect: EffectNavigate
+	  }
+	| { kind: 'ask'; flow: AnyFlowTransition; lastAsk: LastAsk }
+	| { kind: 'stay' }
+
+const STAYED_PUT: SessionChange = { kind: 'stay' }
+
+type LoadingResult = Extract<AnyHandlerResult, { effect: EffectLoading }>
+
+function isLoading(result: AnyHandlerResult): result is LoadingResult {
+	return result.effect.type === EffectType.LOADING
+}
+
+async function performEffect(
 	api: Api,
-	messageToEdit: Message,
-	session: SessionData,
+	message: Message,
+	initialResult: AnyHandlerResult,
 	action: ActionData,
-): Promise<void> {
+): Promise<SessionChange> {
+	let result = initialResult
+	let messageToEdit = message
+
+	while (isLoading(result)) {
+		messageToEdit = await replacePage(api, messageToEdit, {
+			message: result.effect.message,
+			keyboard: new InlineKeyboard(),
+		})
+
+		result = await result.effect.next()
+	}
+
+	const { effect, flow } = result
+
 	switch (effect.type) {
-		case EffectType.EDIT:
+		case EffectType.NAVIGATE:
 			await replacePage(api, messageToEdit, effect.page)
 
-			recordPage(session, action, effect)
-			break
+			return { kind: 'page', flow, action, effect }
 
-		case EffectType.ASK:
+		case EffectType.ASK: {
 			const promptMessageId = await sendPrompt(
 				api,
 				messageToEdit.chatId,
 				effect.prompt,
 			)
 
-			session.lastAsk = {
-				onSubmit: effect.onSubmit,
-				messageToEdit,
-				promptMessageId,
+			return {
+				kind: 'ask',
+				flow,
+				lastAsk: {
+					onSubmit: effect.onSubmit,
+					messageToEdit,
+					promptMessageId,
+				},
 			}
-			break
-
-		case EffectType.SEND_LOADING: {
-			const loadingMessage = await replacePage(api, messageToEdit, {
-				message: effect.message,
-				keyboard: new InlineKeyboard(),
-			})
-
-			await executeEffect(
-				resolveEffect(session, await effect.next()),
-				api,
-				loadingMessage,
-				session,
-				action,
-			)
-			break
 		}
 	}
 }
 
-async function resolveEffectToExecute(
+function commitSessionChange(
 	session: SessionData,
-	actions: Record<string, BoundAction | undefined>,
-	action: ActionData,
-): Promise<Effect | null> {
-	const target = resolveTarget(session, action)
+	change: SessionChange,
+): void {
+	if (change.kind !== 'stay') applyFlowTransition(session, change.flow)
 
-	if (target === null) return null
+	session.lastAsk = change.kind === 'ask' ? change.lastAsk : null
 
-	if (target.kind === 'page') {
-		return { type: EffectType.EDIT, page: target.page }
+	if (change.kind === 'page') {
+		recordPage(session, change.action, change.effect)
 	}
-
-	const boundAction = actions[target.action.actionId]
-
-	if (boundAction === undefined) {
-		logger.error({ actionId: target.action.actionId }, 'Unknown action')
-
-		return null
-	}
-
-	const { payload } = target.action
-
-	return await boundAction.handler(
-		session,
-		payload !== undefined ? boundAction.decode(payload) : undefined,
-	)
 }
 
-function resolveTarget(
+function resolveErrorPage(
 	session: SessionData,
-	action: ActionData,
-): HistoryEntry | null {
-	if (action.actionId !== BACK_ACTION_ID) return { kind: 'action', action }
+	error: unknown,
+	fallbackPage: PageContent,
+): PageContent {
+	const isUnexpected = !(error instanceof ErrorToRender)
+	const errorId = isUnexpected ? generateErrorId() : undefined
 
-	return previousEntry(session)
+	if (isUnexpected) {
+		logger.error({ err: error, errorId })
+	}
+
+	return composePageContentWithError(
+		session.lastNavigatedPage ?? fallbackPage,
+		error,
+		errorId,
+	)
 }
 
 export async function executeEffectOrDisplayError(
@@ -126,28 +143,19 @@ export async function executeEffectOrDisplayError(
 	messagesToDelete: number[] = [],
 ): Promise<void> {
 	try {
-		const effect = await resolveEffectToExecute(session, actions, action)
+		const result = await resolveActionEffect(session, actions, action)
 
-		if (effect === null) return
+		const change = await performEffect(api, messageToEdit, result, action)
 
-		await executeEffect(effect, api, messageToEdit, session, action)
+		commitSessionChange(session, change)
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 
-		const isUnexpected = !(error instanceof ErrorToRender)
-		const errorId = isUnexpected ? generateErrorId() : undefined
-
-		if (isUnexpected) {
-			logger.error({ err: error, errorId })
-		}
-
-		const errorPage = composePageContentWithError(
-			session.lastPage ?? fallbackPage,
-			error,
-			errorId,
-		)
+		const errorPage = resolveErrorPage(session, error, fallbackPage)
 
 		fireAndForget(replacePage(api, messageToEdit, errorPage))
+
+		commitSessionChange(session, STAYED_PUT)
 	} finally {
 		if (messagesToDelete.length !== 0) {
 			fireAndForget(

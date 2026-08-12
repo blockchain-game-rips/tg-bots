@@ -1,13 +1,35 @@
 import { BACK_ACTION_ID } from '../action/action-data'
 import {
 	ActionData,
-	EffectEdit,
+	EffectNavigate,
 	HistoryEntry,
 	PageContent,
 	SessionData,
 } from '../types'
 
 export const MAX_HISTORY_DEPTH = 20
+
+/**
+ * Where an incoming action should take the user. Back is resolved against the
+ * trail; everything else runs its own handler.
+ */
+export type Navigation =
+	| { kind: 'forward'; action: ActionData }
+	| { kind: 'back'; to: HistoryEntry }
+	| { kind: 'at-root' }
+
+export function resolveNavigation(
+	session: SessionData,
+	action: ActionData,
+): Navigation {
+	if (action.actionId !== BACK_ACTION_ID) return { kind: 'forward', action }
+
+	const to = previousEntry(session)
+
+	if (to === null) return { kind: 'at-root' }
+
+	return { kind: 'back', to }
+}
 
 function isSameAction(entry: HistoryEntry, action: ActionData): boolean {
 	return (
@@ -35,9 +57,9 @@ export function previousEntry(session: SessionData): HistoryEntry | null {
 export function recordPage(
 	session: SessionData,
 	action: ActionData,
-	effect: EffectEdit,
+	effect: EffectNavigate,
 ): void {
-	session.lastPage = effect.page
+	session.lastNavigatedPage = effect.page
 
 	if (action.actionId === BACK_ACTION_ID) {
 		session.history.pop()
@@ -51,7 +73,10 @@ export function recordPage(
 	recordEntry(session, entry)
 }
 
-function resolveEntry(action: ActionData, effect: EffectEdit): HistoryEntry {
+function resolveEntry(
+	action: ActionData,
+	effect: EffectNavigate,
+): HistoryEntry {
 	if (effect.history?.kind === 'page') {
 		return { kind: 'page', page: effect.page }
 	}

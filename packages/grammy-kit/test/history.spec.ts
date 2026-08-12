@@ -5,8 +5,8 @@ import {
 	HistoryEntry,
 	MAX_HISTORY_DEPTH,
 	PageContent,
-	previousEntry,
 	recordPage,
+	resolveNavigation,
 	SessionData,
 } from '@rips/grammy-kit'
 import { InlineKeyboard, InputFile } from 'grammy'
@@ -15,7 +15,7 @@ const makeSession = (): SessionData => ({
 	telegramId: '1',
 	lastAsk: null,
 	flow: null,
-	lastPage: null,
+	lastNavigatedPage: null,
 	history: [],
 })
 
@@ -36,7 +36,7 @@ const enter = (session: SessionData, actionId: string, payload?: string) => {
 	recordPage(
 		session,
 		{ actionId, payload },
-		{ type: EffectType.EDIT, page: makePage(actionId) },
+		{ type: EffectType.NAVIGATE, page: makePage(actionId) },
 	)
 }
 
@@ -44,7 +44,7 @@ const enterWithoutAction = (session: SessionData, page: PageContent) => {
 	recordPage(
 		session,
 		{ actionId: 'unused', payload: undefined },
-		{ type: EffectType.EDIT, page, history: { kind: 'page' } },
+		{ type: EffectType.NAVIGATE, page, history: { kind: 'page' } },
 	)
 }
 
@@ -53,7 +53,7 @@ const enterAsRoot = (session: SessionData, actionId: string) => {
 		session,
 		{ actionId, payload: undefined },
 		{
-			type: EffectType.EDIT,
+			type: EffectType.NAVIGATE,
 			page: makePage(actionId),
 			history: { clears: true },
 		},
@@ -61,23 +61,28 @@ const enterAsRoot = (session: SessionData, actionId: string) => {
 }
 
 /**
- * Goes back the way the executor does: read the target, then record the
- * rendered page under the back action.
+ * Goes back the way the executor does: resolve the entry to render, then record
+ * the rendered page under the back action.
  */
 const goBack = (session: SessionData): HistoryEntry | null => {
-	const target = previousEntry(session)
+	const navigation = resolveNavigation(session, {
+		actionId: BACK_ACTION_ID,
+		payload: undefined,
+	})
 
-	if (target === null) return null
+	if (navigation.kind !== 'back') return null
 
-	const page = target.kind === 'page' ? target.page : makePage('rerun')
+	const entry = navigation.to
+
+	const page = entry.kind === 'page' ? entry.page : makePage('rerun')
 
 	recordPage(
 		session,
 		{ actionId: BACK_ACTION_ID, payload: undefined },
-		{ type: EffectType.EDIT, page },
+		{ type: EffectType.NAVIGATE, page },
 	)
 
-	return target
+	return entry
 }
 
 describe('recordPage', () => {
@@ -96,10 +101,10 @@ describe('recordPage', () => {
 		recordPage(
 			session,
 			{ actionId: 'home', payload: undefined },
-			{ type: EffectType.EDIT, page },
+			{ type: EffectType.NAVIGATE, page },
 		)
 
-		expect(session.lastPage).toBe(page)
+		expect(session.lastNavigatedPage).toBe(page)
 	})
 
 	it('keeps the pages behind the one on screen, in the order visited', () => {
@@ -242,13 +247,50 @@ describe('recordPage clearing the history', () => {
 			session,
 			{ actionId: 'welcome', payload: undefined },
 			{
-				type: EffectType.EDIT,
+				type: EffectType.NAVIGATE,
 				page,
 				history: { kind: 'page', clears: true },
 			},
 		)
 
 		expect(session.history).toEqual([{ kind: 'page', page }])
+	})
+})
+
+describe('resolveNavigation', () => {
+	const back = { actionId: BACK_ACTION_ID, payload: undefined }
+
+	it('sends a normal action forward to its own handler', () => {
+		const session = makeSession()
+
+		enter(session, 'home')
+
+		const action = { actionId: 'wallet', payload: undefined }
+
+		expect(resolveNavigation(session, action)).toEqual({
+			kind: 'forward',
+			action,
+		})
+	})
+
+	it('reports at-root when there is nowhere to go back to', () => {
+		const session = makeSession()
+
+		enter(session, 'home')
+
+		expect(resolveNavigation(session, back)).toEqual({ kind: 'at-root' })
+	})
+
+	it('points back at the page behind the one on screen', () => {
+		const session = makeSession()
+
+		enter(session, 'home')
+		enter(session, 'wallet')
+
+		expect(resolveNavigation(session, back)).toEqual({
+			kind: 'back',
+			to: actionEntry('home'),
+		})
 	})
 })
 

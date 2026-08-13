@@ -8,6 +8,14 @@ Telegram bots (user + admin) built on grammy, sharing a message-rendering kit an
 A renderable screen — its message content plus inline keyboard (and optional photo). Produced by a page's `render` function as a `PageContent`.
 _Avoid_: Screen, view
 
+**Sensitive page**:
+A page whose content holds a secret, such as the exported private key. Never kept in the session: it leaves no render behind for error messages and never joins the back trail, so no back press can return to the secret — leaving one lands on the page before the one that warned about it, and reaching it again means asking for it again. Sensitivity belongs to the content, so the page declares it rather than the handler that opened it.
+_Avoid_: Secret page, private page, ephemeral page
+
+**Sensitive action**:
+An action whose payload holds a secret the user typed, such as the private key submitted when importing a wallet. The page it lands on renders normally, but the action itself never joins the back trail — replaying it would replay the secret. Declared on the payload codec, next to the payload it describes. The counterpart to a Sensitive page: one protects what is shown, the other what was typed.
+_Avoid_: Secret action, private payload
+
 **FormattedString**:
 The canonical representation of message text: plain text plus formatting entities, from `@grammyjs/parse-mode`. Bots never build HTML markup strings; formatting is expressed as entities.
 _Avoid_: HTML string, markup string

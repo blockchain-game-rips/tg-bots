@@ -3,7 +3,7 @@ import { Api, InputMediaBuilder } from 'grammy'
 import { Message, PageContent, PhotoPage, TextPage } from '../types'
 
 /** A message together with the chat it lives in, so the two cannot drift. */
-export type ChatMessage = {
+export interface ChatMessage {
 	chatId: number
 	message: Message
 }

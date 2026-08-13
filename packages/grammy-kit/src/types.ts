@@ -88,7 +88,7 @@ export interface PromptContent {
 	placeholder: string
 }
 
-export type Message = {
+export interface Message {
 	messageId: number
 	hasPhoto: boolean
 }

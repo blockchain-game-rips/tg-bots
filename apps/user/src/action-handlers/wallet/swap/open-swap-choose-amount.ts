@@ -21,7 +21,7 @@ async function handler(
 			flow: toHold(),
 			effect: {
 				type: EffectType.NAVIGATE,
-				page: SwapChooseAmountPage.renderDraftEdit({
+				page: SwapChooseAmountPage.render({
 					srcBalance: srcCurrencyBalance,
 					dstCurrency,
 				}),
@@ -43,7 +43,7 @@ async function handler(
 		}),
 		effect: {
 			type: EffectType.NAVIGATE,
-			page: SwapChooseAmountPage.renderFreshDraft({
+			page: SwapChooseAmountPage.render({
 				srcBalance: srcCurrencyBalance,
 				dstCurrency,
 			}),

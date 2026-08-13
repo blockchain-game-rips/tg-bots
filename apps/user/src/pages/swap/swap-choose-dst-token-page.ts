@@ -2,7 +2,6 @@ import { Chain } from '@rips/shared'
 import { CurrencyAmountDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, toCurrencyAmount } from '@rips/shared'
-import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { chainToName, currencyToChainName } from '../../utils/chain'
@@ -19,14 +18,20 @@ export const SwapChooseDstTokenPage = {
 	renderFreshDraft(draft: Draft): PageContent {
 		return {
 			message: buildMessage(draft),
-			keyboard: buildFreshDraftKeyboard(draft),
+			keyboard: buildCurrencyKeyboard(
+				draft.dstCurrencies,
+				actionIds.openSwapChooseAmount,
+			).appendNavButtons(),
 		}
 	},
 
 	renderDraftEdit(draft: Draft, amountIn: bigint): PageContent {
 		return {
 			message: buildMessage(draft, amountIn),
-			keyboard: buildDraftEditKeyboard(draft.dstCurrencies),
+			keyboard: buildCurrencyKeyboard(
+				draft.dstCurrencies,
+				actionIds.openSwapCheckoutFromDst,
+			).appendNavButtons(),
 		}
 	},
 }
@@ -67,31 +72,4 @@ function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	const { displayAmount, symbol } = currencyAmountDisplayParts(amount)
 
 	return `${displayAmount} ${symbol}`
-}
-
-function buildFreshDraftKeyboard(draft: Draft): InlineKeyboard {
-	const keyboard = buildCurrencyKeyboard(
-		draft.dstCurrencies,
-		actionIds.openSwapChooseAmount,
-	)
-
-	return keyboard.appendNavButtons({
-		parent: actionIds.openSwapChooseDstChain,
-		parentPayload: draft.srcBalance.currency.chainAddress,
-		home: actionIds.openHome,
-	})
-}
-
-function buildDraftEditKeyboard(
-	dstCurrencies: CurrencyDtoOutput[],
-): InlineKeyboard {
-	const keyboard = buildCurrencyKeyboard(
-		dstCurrencies,
-		actionIds.openSwapCheckoutFromDst,
-	)
-
-	return keyboard.appendNavButtons({
-		parent: actionIds.openSwapCheckout,
-		home: actionIds.openHome,
-	})
 }

@@ -4,13 +4,11 @@ import {
 	FormattedString,
 	joinLines,
 	Line,
-	NavIds,
 } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
-import { currencyToChain } from '@rips/shared'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -20,27 +18,12 @@ interface Draft {
 }
 
 export const SwapChooseAmountPage = {
-	renderFreshDraft(draft: Draft): PageContent {
-		return render(draft, {
-			parent: actionIds.openSwapChooseDstToken,
-			parentPayload: currencyToChain(draft.dstCurrency),
-			home: actionIds.openHome,
-		})
+	render(draft: Draft): PageContent {
+		return {
+			message: buildMessage(draft),
+			keyboard: buildKeyboard(),
+		}
 	},
-
-	renderDraftEdit(draft: Draft): PageContent {
-		return render(draft, {
-			parent: actionIds.openSwapCheckout,
-			home: actionIds.openHome,
-		})
-	},
-}
-
-function render(draft: Draft, back: NavIds): PageContent {
-	return {
-		message: buildMessage(draft),
-		keyboard: buildKeyboard(back),
-	}
 }
 
 function buildMessage(draft: Draft): FormattedString {
@@ -71,7 +54,7 @@ function formatAmount(amount: CurrencyAmountDtoOutput): string {
 	return `${displayAmount} ${symbol}`
 }
 
-function buildKeyboard(back: NavIds): InlineKeyboard {
+function buildKeyboard(): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 		.text(
 			'Max',
@@ -85,5 +68,5 @@ function buildKeyboard(back: NavIds): InlineKeyboard {
 			buildActionData(actionIds.promptSwapAmount, undefined),
 		)
 
-	return keyboard.appendNavButtons(back)
+	return keyboard.appendNavButtons()
 }

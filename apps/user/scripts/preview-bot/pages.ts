@@ -825,18 +825,12 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'swap-choose-amount': {
 		description:
-			'Fifth step of the swap flow. Choose how much to swap via Max or Custom amount. The "fresh-draft" variant is opened from choose-dst-token, back leads to choose-dst-token. The "draft-edit" variant is opened from swap checkout via Change Amount, back leads to checkout. Both show the source and destination tokens plus the source balance.',
-		variants: ['fresh-draft', 'draft-edit'],
-		render(variant) {
-			const draft = {
+			'Fifth step of the swap flow. Choose how much to swap via Max or Custom amount. Reached either from choose-dst-token or from swap checkout via Change Amount; back retraces whichever way the user came. Shows the source and destination tokens plus the source balance.',
+		render() {
+			return SwapChooseAmountPage.render({
 				srcBalance: mockUsdcArbWithdrawAmount,
 				dstCurrency: mockUsdcArb,
-			}
-
-			if (resolveVariant(this, variant) === 'fresh-draft')
-				return SwapChooseAmountPage.renderFreshDraft(draft)
-
-			return SwapChooseAmountPage.renderDraftEdit(draft)
+			})
 		},
 	},
 	'swap-checkout': {

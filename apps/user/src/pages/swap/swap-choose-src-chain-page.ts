@@ -5,9 +5,8 @@ import {
 	currencyAmountDisplayParts,
 	toCurrencyAmount,
 } from '@rips/shared'
-import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
-import { ActionId, PageContent } from '../../types'
+import { PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 import { buildChainKeyboard } from '../../utils/chain-currency-keyboard'
@@ -16,7 +15,10 @@ export const SwapChooseSrcChainPage = {
 	renderFreshDraft(args: { chains: Chain[] }): PageContent {
 		return {
 			message: buildMessage(['Move funds between your bot wallets.']),
-			keyboard: buildKeyboard(args.chains, actionIds.openWallet),
+			keyboard: buildChainKeyboard(
+				args.chains,
+				actionIds.openSwapChooseSrcToken,
+			).appendNavButtons(),
 		}
 	},
 
@@ -32,7 +34,10 @@ export const SwapChooseSrcChainPage = {
 			message: buildMessage(
 				draftLines(srcCurrency, dstCurrency, amountIn),
 			),
-			keyboard: buildKeyboard(chains, actionIds.openSwapCheckout),
+			keyboard: buildChainKeyboard(
+				chains,
+				actionIds.openSwapChooseSrcToken,
+			).appendNavButtons(),
 		}
 	},
 }
@@ -62,19 +67,4 @@ function draftLines(
 		`To: ${dstChainName} ${dstCurrency.symbol}`,
 		`Amount: ${displayAmount}`,
 	]
-}
-
-function buildKeyboard(
-	chains: Chain[],
-	parentActionId: ActionId,
-): InlineKeyboard {
-	const keyboard = buildChainKeyboard(
-		chains,
-		actionIds.openSwapChooseSrcToken,
-	)
-
-	return keyboard.appendNavButtons({
-		parent: parentActionId,
-		home: actionIds.openHome,
-	})
 }

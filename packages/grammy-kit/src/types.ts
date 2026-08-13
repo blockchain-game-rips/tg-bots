@@ -68,6 +68,9 @@ export type Line = string | FormattedString
 interface PageContentBase {
 	message: FormattedString
 	keyboard: InlineKeyboard
+
+	/** Holds a secret, so it is never kept in the session. */
+	sensitive?: boolean
 }
 
 export interface PhotoPage extends PageContentBase {

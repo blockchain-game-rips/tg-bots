@@ -161,6 +161,81 @@ describe('executing a render', () => {
 	})
 })
 
+describe('executing a render of a sensitive page', () => {
+	const SECRET = '0xdeadbeef'
+
+	it('shows a later error on the fallback, never re-rendering the secret', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		await run(
+			fake,
+			session,
+			{
+				key: boundAction({
+					type: EffectType.NAVIGATE,
+					page: { ...makePage(SECRET), sensitive: true },
+				}),
+			},
+			'key',
+		)
+
+		await run(
+			fake,
+			session,
+			{
+				boom: {
+					decode: (raw: string) => raw,
+					handler: () => {
+						throw new Error('boom')
+					},
+				},
+			},
+			'boom',
+		)
+
+		const errorText = fake.editedTexts[fake.editedTexts.length - 1] ?? ''
+
+		expect(errorText).not.toContain(SECRET)
+		expect(errorText).toContain('fallback')
+	})
+})
+
+describe('executing a sensitive action', () => {
+	const SECRET = '0xprivatekey'
+
+	it('keeps the typed secret out of the trail it lands on', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		enter(session, 'welcome')
+
+		await executeEffectOrDisplayError(
+			fake.api,
+			CHAT_ID,
+			message,
+			session,
+			{
+				imp: {
+					decode: (raw: string) => raw,
+					sensitive: true,
+					handler: () =>
+						holding({
+							type: EffectType.NAVIGATE,
+							page: makePage('home'),
+						}),
+				},
+			},
+			{ actionId: 'imp', payload: SECRET },
+			makePage('fallback'),
+			[],
+		)
+
+		expect(fake.editedTexts).toEqual(['home'])
+		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+	})
+})
+
 describe('executing an ask', () => {
 	it('sends the prompt and remembers where the answer goes', async () => {
 		const fake = makeApi()

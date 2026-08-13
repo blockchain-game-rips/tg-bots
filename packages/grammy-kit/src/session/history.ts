@@ -54,11 +54,23 @@ function previousEntry(session: SessionData): HistoryEntry | null {
 	return session.history[session.history.length - 2] ?? null
 }
 
+export interface RecordOptions {
+	/** The action carries a secret in its payload, such as a typed private key. */
+	actionIsSensitive?: boolean
+}
+
 export function recordPage(
 	session: SessionData,
 	action: ActionData,
 	effect: EffectNavigate,
+	options: RecordOptions = {},
 ): void {
+	if (effect.page.sensitive === true) {
+		session.lastNavigatedPage = null
+
+		return
+	}
+
 	session.lastNavigatedPage = effect.page
 
 	if (action.actionId === BACK_ACTION_ID) {
@@ -68,6 +80,9 @@ export function recordPage(
 	}
 
 	if (effect.history?.clears === true) session.history = []
+
+	// replaying it would replay the secret, so the trail keeps no trace of it
+	if (options.actionIsSensitive === true) return
 
 	const entry = resolveEntry(action, effect)
 	recordEntry(session, entry)

@@ -7,6 +7,7 @@ export type { ActionId }
 
 export interface BoundAction {
 	decode: (raw: string) => unknown
+	sensitive?: boolean
 	handler: (
 		session: SessionData,
 		payload: unknown,
@@ -43,6 +44,7 @@ export function buildActions(
 
 		result[id] = {
 			decode: def.decode,
+			sensitive: def.sensitive,
 			handler: async (session, payload) => {
 				const end = botActionDuration.startTimer({ action: name })
 				try {

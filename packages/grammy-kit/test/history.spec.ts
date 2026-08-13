@@ -209,6 +209,94 @@ describe('recordPage with a page entry', () => {
 	})
 })
 
+describe('recordPage with a sensitive page', () => {
+	const enterSensitive = (session: SessionData, actionId: string) => {
+		recordPage(
+			session,
+			{ actionId, payload: undefined },
+			{
+				type: EffectType.NAVIGATE,
+				page: { ...makePage(actionId), sensitive: true },
+			},
+		)
+	}
+
+	it('keeps no render of it, so the secret never reaches session storage', () => {
+		const session = makeSession()
+
+		enter(session, 'export-key-warning')
+		enterSensitive(session, 'export-key')
+
+		expect(session.lastNavigatedPage).toBeNull()
+	})
+
+	it('stays off the trail, so no back press can return to the secret', () => {
+		const session = makeSession()
+
+		enter(session, 'wallet')
+		enter(session, 'export-key-warning')
+		enterSensitive(session, 'export-key')
+
+		expect(session.history).toEqual([
+			actionEntry('wallet'),
+			actionEntry('export-key-warning'),
+		])
+	})
+
+	it('leaves past the page that warned about it', () => {
+		const session = makeSession()
+
+		enter(session, 'wallet')
+		enter(session, 'export-key-warning')
+		enterSensitive(session, 'export-key')
+
+		expect(goBack(session)).toEqual(actionEntry('wallet'))
+	})
+})
+
+describe('recordPage with a sensitive action', () => {
+	const SECRET = '0xprivatekey'
+
+	const submitSecret = (session: SessionData, clears = false) => {
+		recordPage(
+			session,
+			{ actionId: 'import-key', payload: SECRET },
+			{
+				type: EffectType.NAVIGATE,
+				page: makePage('home'),
+				history: clears ? { clears: true } : undefined,
+			},
+			{ actionIsSensitive: true },
+		)
+	}
+
+	it('keeps the typed secret out of the trail', () => {
+		const session = makeSession()
+
+		enter(session, 'welcome')
+		submitSecret(session)
+
+		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+	})
+
+	it('keeps it out even when the page it lands on starts a fresh trail', () => {
+		const session = makeSession()
+
+		enter(session, 'welcome')
+		submitSecret(session, true)
+
+		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+	})
+
+	it('still shows the page it landed on, since only the payload is secret', () => {
+		const session = makeSession()
+
+		submitSecret(session)
+
+		expect(session.lastNavigatedPage?.message.text).toBe('home')
+	})
+})
+
 describe('recordPage clearing the history', () => {
 	it('leaves the page as the only one, so there is nowhere to go back to', () => {
 		const session = makeSession()

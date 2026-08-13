@@ -6,11 +6,17 @@ type AnySession = SessionData
 export interface PayloadCodec<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
+
+	/** The payload is a secret, so it is never kept in the session. */
+	sensitive?: boolean
 }
 
 export interface ActionDef<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
+
+	/** The payload is a secret, so it is never kept in the session. */
+	sensitive?: boolean
 	// Session typed as `any`-based to allow app-specific Flow types in handlers.
 	handler: (
 		session: AnySession,
@@ -46,6 +52,7 @@ export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
 	return {
 		encode: codec.encode,
 		decode: codec.decode,
+		sensitive: codec.sensitive,
 		handler: (session, payload) =>
 			handler(session as SessionData<F>, payload),
 	}

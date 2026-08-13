@@ -68,6 +68,7 @@ export const submitImportKey: ActionDef<string> = withPayload(
 	{
 		encode: (privateKey) => privateKey,
 		decode: (raw) => parseEvmPrivateKey(raw),
+		sensitive: true,
 	},
 	async (session, privateKey) => {
 		const { telegramId } = session

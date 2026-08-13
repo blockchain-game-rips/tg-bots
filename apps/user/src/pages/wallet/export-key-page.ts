@@ -16,6 +16,6 @@ export const ExportKeyPage = {
 
 		keyboard.appendNavButtons()
 
-		return { message: joinLines(lines), keyboard }
+		return { message: joinLines(lines), keyboard, sensitive: true }
 	},
 }

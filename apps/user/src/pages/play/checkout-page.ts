@@ -227,8 +227,6 @@ function buildKeyboard(
 			const { currency } = balance
 			const chainName = currencyToChainName(currency)
 
-			// TODO: deposit back-nav should return to this checkout,
-			// not the deposit flow's choose-token step.
 			keyboard
 				.text(
 					`Deposit ${chainName} ${currency.symbol}`,

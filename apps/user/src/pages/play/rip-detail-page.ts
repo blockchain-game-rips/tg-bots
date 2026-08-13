@@ -207,9 +207,5 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 			.row()
 	}
 
-	// TODO: back button — this page can be opened from multiple sources
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openMyRips,
-	})
+	return keyboard.appendNavButtons()
 }

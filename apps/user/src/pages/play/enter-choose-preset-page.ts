@@ -53,8 +53,5 @@ function buildKeyboard(levels: EntryLevel[]): InlineKeyboard {
 			.row()
 	}
 
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openHome,
-	})
+	return keyboard.appendNavButtons()
 }

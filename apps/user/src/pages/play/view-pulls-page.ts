@@ -34,7 +34,7 @@ export const ViewPullsPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: buildKeyboard(rip, payouts),
+			keyboard: buildKeyboard(payouts),
 		}
 	},
 }
@@ -141,17 +141,12 @@ function payoutAmount(rip: RipDtoOutput, payout: PayoutDtoOutput): string {
 	})
 }
 
-function buildKeyboard(
-	rip: RipDtoOutput,
-	payouts: PayoutDtoOutput[],
-): InlineKeyboard {
+function buildKeyboard(payouts: PayoutDtoOutput[]): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 
 	const hasUnopenedPulls = payouts.some((payout) => !payout.revealed)
 
 	if (hasUnopenedPulls) {
-		// TODO: openOpenPulls is not rip-scoped and resets the flow, so Back
-		// from the reveal hub lands on Home instead of returning here.
 		keyboard
 			.text(
 				'🎁 Open Pulls',
@@ -165,9 +160,5 @@ function buildKeyboard(
 		buildActionData(actionIds.openChoosePreset, undefined),
 	)
 
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openRipStatus,
-		parentPayload: rip.id,
-	})
+	return keyboard.appendNavButtons()
 }

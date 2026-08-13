@@ -115,8 +115,5 @@ function buildKeyboard(
 			'Referral Tiers',
 			buildActionData(actionIds.openReferralTiers, undefined),
 		)
-		.appendNavButtons({
-			parent: actionIds.openHome,
-			home: actionIds.openHome,
-		})
+		.appendNavButtons()
 }

@@ -21,10 +21,7 @@ export const WithdrawChooseCurrencyPage = {
 		const keyboard = buildCurrencyKeyboard(
 			args.currencies,
 			actionIds.openWithdrawFromCurrency,
-		).appendNavButtons({
-			parent: actionIds.openWithdrawChooseChain,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},

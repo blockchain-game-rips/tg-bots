@@ -96,8 +96,5 @@ function buildKeyboard(
 		)
 	}
 
-	return keyboard.appendNavButtons({
-		parent: actionIds.openReferral,
-		home: actionIds.openHome,
-	})
+	return keyboard.appendNavButtons()
 }

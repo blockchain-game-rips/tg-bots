@@ -16,10 +16,7 @@ export const WithdrawChooseChainPage = {
 		const keyboard = buildChainKeyboard(
 			args.chains,
 			actionIds.openWithdrawChooseCurrency,
-		).appendNavButtons({
-			parent: actionIds.openWallet,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},

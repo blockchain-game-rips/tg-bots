@@ -53,10 +53,7 @@ function buildKeyboard(
 		buildActionData(actionIds.openFinalizedRips, !mineOnly),
 	)
 
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openMyRips,
-	})
+	return keyboard.appendNavButtons()
 }
 
 export const FinalizedRipsPage = {

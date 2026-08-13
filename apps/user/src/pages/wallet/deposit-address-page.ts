@@ -65,11 +65,7 @@ export const DepositAddressPage = {
 				buildActionData(refreshAction, currency.chainAddress),
 			)
 
-		keyboard.appendNavButtons({
-			parent: actionIds.openDepositChooseCurrency,
-			parentPayload: chain,
-			home: actionIds.openHome,
-		})
+		keyboard.appendNavButtons()
 
 		return {
 			message: joinLines(lines),

@@ -217,19 +217,10 @@ function buildKeyboard(
 	args: ResolvedArgs,
 	insufficientAmounts: CurrencyAmountDtoOutput[],
 ): InlineKeyboard {
-	const { currencyBalance } = args
-	const chain = currencyToChain(currencyBalance.currency)
-
 	const keyboard = new InlineKeyboard()
 
-	const navButtons = {
-		home: actionIds.openHome,
-		parent: actionIds.openWithdrawChooseCurrency,
-		parentPayload: chain,
-	}
-
 	if (isEmptyBalance(args)) {
-		return keyboard.appendNavButtons(navButtons)
+		return keyboard.appendNavButtons()
 	}
 
 	if (args.kind === 'quoted' && isSufficientAmounts(insufficientAmounts)) {
@@ -253,7 +244,7 @@ function buildKeyboard(
 			'Enter Recipient',
 			buildActionData(actionIds.promptWithdrawRecipient, undefined),
 		)
-		.appendNavButtons(navButtons)
+		.appendNavButtons()
 }
 
 function appendDepositButton(

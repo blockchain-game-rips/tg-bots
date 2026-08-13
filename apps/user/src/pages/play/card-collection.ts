@@ -54,10 +54,7 @@ export const CardCollectionPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: keyboard.appendNavButtons({
-				parent: actionIds.openHome,
-				home: actionIds.openHome,
-			}),
+			keyboard: keyboard.appendNavButtons(),
 		}
 	},
 }

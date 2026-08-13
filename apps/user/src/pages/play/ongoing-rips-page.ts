@@ -171,10 +171,7 @@ function buildKeyboard(entries: Entry[]): InlineKeyboard {
 
 	addRipDetailsButtons(keyboard, rips)
 
-	return keyboard.appendNavButtons({
-		home: actionIds.openHome,
-		parent: actionIds.openMyRips,
-	})
+	return keyboard.appendNavButtons()
 }
 
 // A rip that is still filling can be joined, so it offers an Enter button

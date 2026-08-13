@@ -21,12 +21,6 @@ export type Context = GrammyContext &
 
 export type EffectLoading = _EffectLoading<Flow>
 
-export interface NavIds {
-	home: string
-	parent: string
-	parentPayload?: string
-}
-
 export type Row = 'row'
 
 export interface StaticButton {

@@ -2,7 +2,6 @@ import { GetTierTablesResponseDtoOutput } from '@rips/api-client'
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -88,10 +87,7 @@ export const ReferralTiersPage = {
 
 		return {
 			message: joinLines(lines),
-			keyboard: new InlineKeyboard().appendNavButtons({
-				parent: actionIds.openReferral,
-				home: actionIds.openHome,
-			}),
+			keyboard: new InlineKeyboard().appendNavButtons(),
 		}
 	},
 }

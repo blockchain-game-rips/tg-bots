@@ -120,8 +120,5 @@ function buildKeyboard(): InlineKeyboard {
 			buildActionData(actionIds.openChoosePreset, undefined),
 		)
 		.row()
-		.appendNavButtons({
-			home: actionIds.openHome,
-			parent: actionIds.openHome,
-		})
+		.appendNavButtons()
 }

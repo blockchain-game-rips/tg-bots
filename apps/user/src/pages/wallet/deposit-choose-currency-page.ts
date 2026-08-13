@@ -21,10 +21,7 @@ export const DepositChooseCurrencyPage = {
 		const keyboard = buildCurrencyKeyboard(
 			args.currencies,
 			actionIds.openDepositAddress,
-		).appendNavButtons({
-			parent: actionIds.openDeposit,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},

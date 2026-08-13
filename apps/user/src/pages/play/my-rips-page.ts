@@ -44,10 +44,7 @@ export const MyRipsPage = {
 				'🏁 Finalized Rips',
 				buildActionData(actionIds.openFinalizedRips, false),
 			)
-			.appendNavButtons({
-				home: actionIds.openHome,
-				parent: actionIds.openHome,
-			})
+			.appendNavButtons()
 
 		return { message: joinLines(lines), keyboard }
 	},

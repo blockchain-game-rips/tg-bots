@@ -12,10 +12,7 @@ export const DepositChooseChainPage = {
 		const keyboard = buildChainKeyboard(
 			args.chains,
 			actionIds.openDepositChooseCurrency,
-		).appendNavButtons({
-			parent: actionIds.openWallet,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},

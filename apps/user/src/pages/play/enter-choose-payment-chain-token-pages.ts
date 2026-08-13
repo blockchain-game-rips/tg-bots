@@ -36,10 +36,7 @@ export const EnterChoosePaymentChainPage = {
 		const keyboard = buildChainKeyboard(
 			chains,
 			actionIds.openEnterChoosePaymentToken,
-		).appendNavButtons({
-			parent: actionIds.openEnterPaymentOptions,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},
@@ -69,10 +66,7 @@ export const EnterChoosePaymentTokenPage = {
 		const keyboard = buildCurrencyKeyboard(
 			currencies,
 			actionIds.openEnterCheckoutFromPaymentToken,
-		).appendNavButtons({
-			parent: actionIds.openEnterChoosePaymentChain,
-			home: actionIds.openHome,
-		})
+		).appendNavButtons()
 
 		return { message, keyboard }
 	},

@@ -4,7 +4,6 @@ import {
 	buildActionData,
 	FormattedString,
 	joinLines,
-	NavIds,
 } from '@rips/grammy-kit'
 import {
 	currencyAmountDisplayParts,
@@ -21,27 +20,18 @@ export const EnterChooseEntryCountPage = {
 	renderFreshDraft(availablePreset: AvailablePresetDtoOutput): PageContent {
 		return render(availablePreset, {
 			countActionId: actionIds.openEnterPaymentOptionsFromEntryCount,
-			back: {
-				home: actionIds.openHome,
-				parent: actionIds.openChoosePreset,
-			},
 		})
 	},
 
 	renderDraftEdit(availablePreset: AvailablePresetDtoOutput): PageContent {
 		return render(availablePreset, {
 			countActionId: actionIds.openEnterCheckoutFromEntryCount,
-			back: {
-				home: actionIds.openHome,
-				parent: actionIds.openEnterCheckout,
-			},
 		})
 	},
 }
 
 interface EntryCountMode {
 	countActionId: ActionId<number>
-	back: NavIds
 }
 
 function render(
@@ -117,7 +107,7 @@ function buildKeyboard(mode: EntryCountMode): InlineKeyboard {
 		buildActionData(actionIds.promptEntryCount, undefined),
 	)
 
-	return keyboard.appendNavButtons(mode.back)
+	return keyboard.appendNavButtons()
 }
 
 function entryCountLabel(count: number): string {

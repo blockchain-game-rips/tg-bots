@@ -134,10 +134,7 @@ export const WalletPage = {
 			)
 			.row()
 
-		keyboard.appendNavButtons({
-			home: actionIds.openHome,
-			parent: actionIds.openHome,
-		})
+		keyboard.appendNavButtons()
 
 		return { message: joinLines(lines), keyboard }
 	},

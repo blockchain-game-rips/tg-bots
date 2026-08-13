@@ -35,11 +35,7 @@ export const WithdrawChooseAmountPage = {
 			)
 			.row()
 
-		keyboard.appendNavButtons({
-			parent: actionIds.openWithdrawChooseCurrency,
-			parentPayload: chain,
-			home: actionIds.openHome,
-		})
+		keyboard.appendNavButtons()
 
 		return { message: joinLines(lines), keyboard }
 	},

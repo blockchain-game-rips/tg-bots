@@ -65,12 +65,7 @@ export const RevealPayoutsPage = {
 	render(unopenedCount: number): PageContent {
 		const { lines, keyboard } = buildOpenPullsContent(unopenedCount)
 
-		// TODO: Back targets Home, so arriving here from a rip's pulls page loses
-		// the origin. Shared root cause with the Back-origin TODO in view-pulls-page.
-		keyboard.appendNavButtons({
-			home: actionIds.openHome,
-			parent: actionIds.openHome,
-		})
+		keyboard.appendNavButtons()
 
 		return { message: joinLines(lines), keyboard }
 	},

@@ -75,10 +75,7 @@ function buildKeyboard(): InlineKeyboard {
 			'🎁 Open Pulls',
 			buildActionData(actionIds.openOpenPulls, undefined),
 		)
-		.appendNavButtons({
-			home: actionIds.openHome,
-			parent: actionIds.openHome,
-		})
+		.appendNavButtons()
 }
 
 export const AboutPage = {

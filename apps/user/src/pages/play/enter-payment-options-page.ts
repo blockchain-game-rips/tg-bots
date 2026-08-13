@@ -127,10 +127,7 @@ function buildKeyboard(
 		)
 		.row()
 
-	return keyboard.appendNavButtons({
-		parent: actionIds.openEnterChooseEntryCountFromCheckout,
-		home: actionIds.openHome,
-	})
+	return keyboard.appendNavButtons()
 }
 
 function payLabel(balance: CurrencyAmountDtoOutput): string {

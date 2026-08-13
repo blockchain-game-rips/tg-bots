@@ -20,10 +20,7 @@ export const ExportKeyWarningPage = {
 			)
 			.row()
 
-		keyboard.appendNavButtons({
-			home: actionIds.openHome,
-			parent: actionIds.openWallet,
-		})
+		keyboard.appendNavButtons()
 
 		return { message: joinLines(lines), keyboard }
 	},

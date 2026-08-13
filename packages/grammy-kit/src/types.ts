@@ -80,14 +80,6 @@ export interface TextPage extends PageContentBase {
 
 export type PageContent = PhotoPage | TextPage
 
-export type NavIds =
-	| { home: ActionId; parent: ActionId }
-	| {
-			home: ActionId
-			parent: ActionId<unknown>
-			parentPayload: unknown
-	  }
-
 export interface PromptContent {
 	message: FormattedString
 	placeholder: string

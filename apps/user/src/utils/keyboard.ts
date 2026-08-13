@@ -1,4 +1,4 @@
-import { buildActionData, NavIds } from '@rips/grammy-kit'
+import { BACK_ACTION_ID, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 
@@ -8,7 +8,7 @@ const HOME_BUTTON_TEXT = '🏠 Home'
 declare module 'grammy' {
 	interface InlineKeyboard {
 		appendHomeButton(): this
-		appendNavButtons(ids: NavIds): this
+		appendNavButtons(): this
 	}
 }
 
@@ -20,19 +20,9 @@ export function installKeyboardExtensions(): void {
 		)
 	}
 
-	InlineKeyboard.prototype.appendNavButtons = function (ids: NavIds) {
-		const parentPayload =
-			'parentPayload' in ids ? ids.parentPayload : undefined
-
-		this.row().text(
-			BACK_BUTTON_TEXT,
-			buildActionData(ids.parent, parentPayload),
-		)
-
-		if (ids.home !== ids.parent) {
-			this.appendHomeButton()
-		}
-
-		return this
+	InlineKeyboard.prototype.appendNavButtons = function () {
+		return this.row()
+			.text(BACK_BUTTON_TEXT, BACK_ACTION_ID)
+			.appendHomeButton()
 	}
 }

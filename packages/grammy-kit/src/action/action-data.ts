@@ -4,7 +4,8 @@ export const COMMAND_SEPARATOR = ':'
 
 /**
  * Reserved id for the back button. Action ids are base-36 registry indices, so
- * a non-alphanumeric id can never collide with one.
+ * a non-alphanumeric id can never collide with one. Back carries no payload, so
+ * this is the whole callback data rather than a prefix.
  */
 export const BACK_ACTION_ID = '-'
 

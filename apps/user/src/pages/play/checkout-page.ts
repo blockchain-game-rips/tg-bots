@@ -241,6 +241,11 @@ function buildKeyboard(
 
 	keyboard
 		.text(
+			'Update balance & quote',
+			buildActionData(actionIds.refreshEnterCheckout, undefined),
+		)
+		.row()
+		.text(
 			'Change entry count',
 			buildActionData(
 				actionIds.openEnterChooseEntryCountFromCheckout,

@@ -39,8 +39,8 @@ export const DepositAddressPage = {
 		const showingQr = qr !== undefined
 
 		const refreshAction = showingQr
-			? actionIds.openDepositAddressQr
-			: actionIds.openDepositAddress
+			? actionIds.refreshDepositBalanceQr
+			: actionIds.refreshDepositBalance
 
 		const qrToggle = showingQr
 			? {

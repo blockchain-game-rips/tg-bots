@@ -4,32 +4,37 @@ import { SUPPORTED_CHAINS } from '../../../constants'
 import { toHold, toReset } from '../../../flows'
 import { SwapChooseSrcChainPage } from '../../../pages/swap/swap-choose-src-chain-page'
 import { EffectType } from '../../../types'
+import { currencyCache } from '../../../cache/currency-cache'
 
-export const openSwapChooseSrcChain: ActionDef<void> = noPayload((session) => {
-	const chains = [...SUPPORTED_CHAINS]
+export const openSwapChooseSrcChain: ActionDef<void> = noPayload(
+	async (session) => {
+		const chains = [...SUPPORTED_CHAINS]
 
-	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcCurrencyBalance, dstCurrency, amountIn } = session.flow.data
+		if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
+			const { srcChainAddress, dstCurrency, amountIn } = session.flow.data
+
+			const srcCurrency = await currencyCache.getOne(srcChainAddress)
+
+			return {
+				flow: toHold(),
+				effect: {
+					type: EffectType.NAVIGATE,
+					page: SwapChooseSrcChainPage.renderDraftEdit({
+						chains,
+						srcCurrency,
+						dstCurrency,
+						amountIn,
+					}),
+				},
+			}
+		}
 
 		return {
-			flow: toHold(),
+			flow: toReset(),
 			effect: {
 				type: EffectType.NAVIGATE,
-				page: SwapChooseSrcChainPage.renderDraftEdit({
-					chains,
-					srcCurrency: srcCurrencyBalance.currency,
-					dstCurrency,
-					amountIn,
-				}),
+				page: SwapChooseSrcChainPage.renderFreshDraft({ chains }),
 			},
 		}
-	}
-
-	return {
-		flow: toReset(),
-		effect: {
-			type: EffectType.NAVIGATE,
-			page: SwapChooseSrcChainPage.renderFreshDraft({ chains }),
-		},
-	}
-})
+	},
+)

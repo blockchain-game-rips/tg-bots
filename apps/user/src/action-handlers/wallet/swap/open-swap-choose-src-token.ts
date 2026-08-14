@@ -4,19 +4,20 @@ import { ActionDef, withPayload } from '../../../action-def'
 import { toHold } from '../../../flows'
 import { SwapChooseSrcTokenPage } from '../../../pages/swap/swap-choose-src-token-page'
 import { EffectType } from '../../../types'
-import { fetchCurrencies } from '../../../utils/api/wrappers'
+import { currencyCache } from '../../../cache/currency-cache'
 import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 
 export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 	chainCodec,
 	async (session, srcChain) => {
-		const currencies = await fetchCurrencies(
+		const currencies = await currencyCache.get(
 			getCurrenciesForChain(srcChain),
 		)
 
 		if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-			const { srcCurrencyBalance, dstCurrency, amountIn } =
-				session.flow.data
+			const { srcChainAddress, dstCurrency, amountIn } = session.flow.data
+
+			const srcCurrency = await currencyCache.getOne(srcChainAddress)
 
 			return {
 				flow: toHold(),
@@ -25,7 +26,7 @@ export const openSwapChooseSrcToken: ActionDef<Chain> = withPayload(
 					page: SwapChooseSrcTokenPage.renderDraftEdit({
 						srcChain,
 						currencies,
-						srcCurrency: srcCurrencyBalance.currency,
+						srcCurrency,
 						dstCurrency,
 						amountIn,
 					}),

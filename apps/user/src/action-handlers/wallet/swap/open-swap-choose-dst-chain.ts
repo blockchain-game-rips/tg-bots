@@ -1,7 +1,7 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
-import { nativeChainAddress, SUPPORTED_CHAINS } from '../../../constants'
+import { SUPPORTED_CHAINS } from '../../../constants'
 import { Flow, toFlow, toHold } from '../../../flows'
 import { SwapChooseDstChainPage } from '../../../pages/swap/swap-choose-dst-chain-page'
 import { EffectType, HandlerResult } from '../../../types'
@@ -18,14 +18,19 @@ async function handler(
 	const dstChains = [...SUPPORTED_CHAINS]
 
 	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcCurrencyBalance, amountIn } = session.flow.data
+		const { srcChainAddress: chosenSrc, amountIn } = session.flow.data
+
+		const srcBalance = await balanceCache.getOne(
+			session.telegramId,
+			chosenSrc,
+		)
 
 		return {
 			flow: toHold(),
 			effect: {
 				type: EffectType.NAVIGATE,
 				page: SwapChooseDstChainPage.renderDraftEdit({
-					srcBalance: srcCurrencyBalance,
+					srcBalance,
 					dstChains,
 					amountIn,
 				}),
@@ -33,16 +38,13 @@ async function handler(
 		}
 	}
 
-	const { srcCurrencyBalance, nativeCurrencyBalance } = await getBalances(
-		srcChainAddress,
+	const srcCurrencyBalance = await balanceCache.getOne(
 		session.telegramId,
+		srcChainAddress,
 	)
 
 	return {
-		flow: toFlow('swap', 'src-chosen', {
-			srcCurrencyBalance,
-			nativeCurrencyBalance,
-		}),
+		flow: toFlow('swap', 'src-chosen', { srcChainAddress }),
 		effect: {
 			type: EffectType.NAVIGATE,
 			page: SwapChooseDstChainPage.renderFreshDraft({
@@ -51,20 +53,4 @@ async function handler(
 			}),
 		},
 	}
-}
-
-async function getBalances(
-	srcChainAddress: ChainAddressDtoOutput,
-	telegramId: string,
-) {
-	const nativeChainAddressDto = nativeChainAddress(srcChainAddress.chain)
-
-	const [srcCurrencyBalance, nativeCurrencyBalance] =
-		await balanceCache.getPair(
-			telegramId,
-			srcChainAddress,
-			nativeChainAddressDto,
-		)
-
-	return { srcCurrencyBalance, nativeCurrencyBalance }
 }

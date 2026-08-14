@@ -26,13 +26,13 @@ import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
 import { EffectType, HandlerResult } from '../../../types'
 import { balanceCache } from '../../../cache/balance-cache'
-import { fetchCurrency } from '../../../utils/api/wrappers'
+import { currencyCache } from '../../../cache/currency-cache'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
+/** Only what the user chose — every balance is read fresh at render time. */
 interface CheckoutDraft {
-	srcCurrencyBalance: CurrencyAmountDtoOutput
-	nativeCurrencyBalance: CurrencyAmountDtoOutput
+	srcChainAddress: ChainAddressDtoOutput
 	dstCurrency: CurrencyDtoOutput
 	amountIn: bigint
 }
@@ -50,22 +50,22 @@ export const openSwapCheckoutFromSrc: ActionDef<ChainAddressDtoOutput> =
 		const {
 			dstCurrency,
 			amountIn,
-			srcCurrencyBalance: prevSrcBalance,
+			srcChainAddress: prevSrcChainAddress,
 		} = session.flow.data
 
-		const balances = await fetchSrcAndNativeBalances(
-			session.telegramId,
-			srcChainAddress,
-		)
+		const [prevSrcCurrency, srcCurrency] = await Promise.all([
+			currencyCache.getOne(prevSrcChainAddress),
+			currencyCache.getOne(srcChainAddress),
+		])
 
 		const rescaledAmountIn = rescaleAmount(
 			amountIn,
-			prevSrcBalance.currency.decimals,
-			balances.srcCurrencyBalance.currency.decimals,
+			prevSrcCurrency.decimals,
+			srcCurrency.decimals,
 		)
 
 		return renderCheckout(session.telegramId, {
-			...balances,
+			srcChainAddress,
 			dstCurrency,
 			amountIn: rescaledAmountIn,
 		})
@@ -75,14 +75,12 @@ export const openSwapCheckoutFromDst: ActionDef<ChainAddressDtoOutput> =
 	withPayload(currencyChainAddressCodec, async (session, dstChainAddress) => {
 		assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
-		const { srcCurrencyBalance, nativeCurrencyBalance, amountIn } =
-			session.flow.data
+		const { srcChainAddress, amountIn } = session.flow.data
 
-		const dstCurrency = await fetchCurrency(dstChainAddress)
+		const dstCurrency = await currencyCache.getOne(dstChainAddress)
 
 		return renderCheckout(session.telegramId, {
-			srcCurrencyBalance,
-			nativeCurrencyBalance,
+			srcChainAddress,
 			dstCurrency,
 			amountIn,
 		})
@@ -93,8 +91,12 @@ export const openSwapCheckoutFromAmount: ActionDef<AmountPayload> = withPayload(
 	async (session, amountPayload) => {
 		assertFlow(session, 'swap', 'src-dst-chosen', 'src-dst-amount-chosen')
 
-		const { srcCurrencyBalance, nativeCurrencyBalance, dstCurrency } =
-			session.flow.data
+		const { srcChainAddress, dstCurrency } = session.flow.data
+
+		const srcCurrencyBalance = await balanceCache.getOne(
+			session.telegramId,
+			srcChainAddress,
+		)
 
 		const amountIn = await resolveAmountIn(
 			session.telegramId,
@@ -104,8 +106,7 @@ export const openSwapCheckoutFromAmount: ActionDef<AmountPayload> = withPayload(
 		)
 
 		return renderCheckout(session.telegramId, {
-			srcCurrencyBalance,
-			nativeCurrencyBalance,
+			srcChainAddress,
 			dstCurrency,
 			amountIn,
 		})
@@ -171,12 +172,22 @@ function sumNativeFees(
 	}, 0n)
 }
 
+/**
+ * Reads balances through the cache on every render, so a replay of this handler
+ * from the back trail cannot show what the balances were when it first ran.
+ */
 async function renderCheckout(
 	telegramId: string,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {
-	const { srcCurrencyBalance, nativeCurrencyBalance, dstCurrency, amountIn } =
-		draft
+	const { srcChainAddress, dstCurrency, amountIn } = draft
+
+	const [srcCurrencyBalance, nativeCurrencyBalance] =
+		await balanceCache.getPair(
+			telegramId,
+			srcChainAddress,
+			nativeChainAddress(srcChainAddress.chain),
+		)
 
 	const amountInDto = toCurrencyAmount(amountIn, srcCurrencyBalance.currency)
 
@@ -195,22 +206,6 @@ async function renderCheckout(
 			}),
 		},
 	}
-}
-
-async function fetchSrcAndNativeBalances(
-	telegramId: string,
-	srcChainAddress: ChainAddressDtoOutput,
-) {
-	const nativeChainAddressDto = nativeChainAddress(srcChainAddress.chain)
-
-	const [srcCurrencyBalance, nativeCurrencyBalance] =
-		await balanceCache.getPair(
-			telegramId,
-			srcChainAddress,
-			nativeChainAddressDto,
-		)
-
-	return { srcCurrencyBalance, nativeCurrencyBalance }
 }
 
 type SwapQuote =

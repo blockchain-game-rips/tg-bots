@@ -16,6 +16,7 @@ import { withNative } from '../../../constants'
 import { Flow, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
 import { EffectType, HandlerResult } from '../../../types'
+import { currencyCache } from '../../../cache/currency-cache'
 
 const SWAP_POLL_INTERVAL_MS = 2000
 const SWAP_POLL_TIMEOUT_MS = 60000
@@ -25,20 +26,21 @@ type SwapSuccess = NonNullable<GetSwapResultResponseDtoOutput['success']>
 export const executeSwap: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
-	const { srcCurrencyBalance, dstCurrency, amountIn } = session.flow.data
-
-	const amountInDto = toCurrencyAmount(amountIn, srcCurrencyBalance.currency)
+	const { srcChainAddress, dstCurrency, amountIn } = session.flow.data
 
 	return {
 		effect: {
 			type: EffectType.LOADING,
 			message: fmt`Swapping...`,
-			next: () =>
-				executeSwapRequest(
+			next: async () => {
+				const srcCurrency = await currencyCache.getOne(srcChainAddress)
+
+				return executeSwapRequest(
 					session.telegramId,
-					amountInDto,
+					toCurrencyAmount(amountIn, srcCurrency),
 					dstCurrency,
-				),
+				)
+			},
 		},
 	}
 })

@@ -1,10 +1,11 @@
 import { Chain } from '@rips/shared'
 import { assertFlow, isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
+import { balanceCache } from '../../../cache/balance-cache'
 import { Flow, toHold } from '../../../flows'
 import { SwapChooseDstTokenPage } from '../../../pages/swap/swap-choose-dst-token-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchCurrencies } from '../../../utils/api/wrappers'
+import { currencyCache } from '../../../cache/currency-cache'
 import { chainCodec, getCurrenciesForChain } from '../../../utils/chain'
 
 export const openSwapChooseDstToken: ActionDef<Chain> = withPayload(
@@ -16,21 +17,24 @@ async function handler(
 	session: SessionData<Flow>,
 	dstChain: Chain,
 ): Promise<HandlerResult<Flow>> {
-	const dstCurrencies = await fetchCurrencies(getCurrenciesForChain(dstChain))
+	const dstCurrencies = await currencyCache.get(
+		getCurrenciesForChain(dstChain),
+	)
 
 	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcCurrencyBalance, amountIn } = session.flow.data
+		const { srcChainAddress, amountIn } = session.flow.data
+
+		const srcBalance = await balanceCache.getOne(
+			session.telegramId,
+			srcChainAddress,
+		)
 
 		return {
 			flow: toHold(),
 			effect: {
 				type: EffectType.NAVIGATE,
 				page: SwapChooseDstTokenPage.renderDraftEdit(
-					{
-						srcBalance: srcCurrencyBalance,
-						dstChain,
-						dstCurrencies,
-					},
+					{ srcBalance, dstChain, dstCurrencies },
 					amountIn,
 				),
 			},
@@ -39,14 +43,19 @@ async function handler(
 
 	assertFlow(session, 'swap', 'src-chosen', 'src-dst-chosen')
 
-	const { srcCurrencyBalance } = session.flow.data
+	const { srcChainAddress } = session.flow.data
+
+	const srcBalance = await balanceCache.getOne(
+		session.telegramId,
+		srcChainAddress,
+	)
 
 	return {
 		flow: toHold(),
 		effect: {
 			type: EffectType.NAVIGATE,
 			page: SwapChooseDstTokenPage.renderFreshDraft({
-				srcBalance: srcCurrencyBalance,
+				srcBalance,
 				dstChain,
 				dstCurrencies,
 			}),

@@ -24,27 +24,26 @@ import { AmountPayload, amountCodec } from '../../utils/codecs'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { isFlow } from '@rips/grammy-kit'
 
+/** Only what the user chose — every balance is read fresh at render time. */
 interface WithdrawDraft {
-	currencyBalance: CurrencyAmountDtoOutput
-	nativeBalance: CurrencyAmountDtoOutput
+	chainAddress: ChainAddressDtoOutput
 	amount?: bigint
 	recipientAddress?: string
 }
 
 export const openWithdrawFromCurrency: ActionDef<ChainAddressDtoOutput> =
-	withPayload(currencyChainAddressCodec, async (session, chainAddress) => {
-		const balances = await fetchCurrencyAndNativeBalances(
-			session.telegramId,
-			chainAddress,
-		)
-
-		//keep recipient and amount, update balances
+	withPayload(currencyChainAddressCodec, (session, chainAddress) => {
+		//keep recipient and amount, switch the currency
 		if (isFlow(session, 'withdraw', 'withdraw-page')) {
 			const draft = session.flow.data
-			return renderWithdraw(session.telegramId, { ...draft, ...balances })
+
+			return renderWithdraw(session.telegramId, {
+				...draft,
+				chainAddress,
+			})
 		}
 
-		return renderWithdraw(session.telegramId, { ...balances })
+		return renderWithdraw(session.telegramId, { chainAddress })
 	})
 
 export const openWithdrawFromAmount: ActionDef<AmountPayload> = withPayload(
@@ -54,10 +53,15 @@ export const openWithdrawFromAmount: ActionDef<AmountPayload> = withPayload(
 
 		const draft = session.flow.data
 
+		const currencyBalance = await balanceCache.getOne(
+			session.telegramId,
+			draft.chainAddress,
+		)
+
 		const amount = await resolveAmount(
 			session.telegramId,
 			amountPayload,
-			draft.currencyBalance,
+			currencyBalance,
 			draft.recipientAddress,
 		)
 
@@ -126,13 +130,23 @@ async function resolveNativeMaxAmount(
 	return balance > reserved ? balance - reserved : 0n
 }
 
+/**
+ * Reads balances through the cache on every render, so a replay of this handler
+ * from the back trail cannot show what the balances were when it first ran.
+ */
 async function renderWithdraw(
 	telegramId: string,
 	draft: WithdrawDraft,
 ): Promise<HandlerResult<Flow>> {
 	const flow = toFlow('withdraw', 'withdraw-page', draft)
 
-	const { currencyBalance, nativeBalance, amount, recipientAddress } = draft
+	const { chainAddress, amount, recipientAddress } = draft
+
+	const [currencyBalance, nativeBalance] = await balanceCache.getPair(
+		telegramId,
+		chainAddress,
+		nativeChainAddress(chainAddress.chain),
+	)
 
 	if (amount === undefined || recipientAddress === undefined) {
 		return {
@@ -189,19 +203,4 @@ async function quoteWithdraw(
 	})
 
 	return data
-}
-
-async function fetchCurrencyAndNativeBalances(
-	telegramId: string,
-	chainAddress: ChainAddressDtoOutput,
-): Promise<WithdrawDraft> {
-	const nativeChainAddressDto = nativeChainAddress(chainAddress.chain)
-
-	const [currencyBalance, nativeBalance] = await balanceCache.getPair(
-		telegramId,
-		chainAddress,
-		nativeChainAddressDto,
-	)
-
-	return { currencyBalance, nativeBalance }
 }

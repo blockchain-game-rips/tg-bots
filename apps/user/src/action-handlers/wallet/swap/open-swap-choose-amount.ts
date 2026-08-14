@@ -1,10 +1,11 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { assertFlow, isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
+import { balanceCache } from '../../../cache/balance-cache'
 import { Flow, toHold, toStep } from '../../../flows'
 import { SwapChooseAmountPage } from '../../../pages/swap/swap-choose-amount-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchCurrency } from '../../../utils/api/wrappers'
+import { currencyCache } from '../../../cache/currency-cache'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
 export const openSwapChooseAmount: ActionDef<ChainAddressDtoOutput> =
@@ -15,38 +16,39 @@ async function handler(
 	dstChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcCurrencyBalance, dstCurrency } = session.flow.data
+		const { srcChainAddress, dstCurrency } = session.flow.data
+
+		const srcBalance = await balanceCache.getOne(
+			session.telegramId,
+			srcChainAddress,
+		)
 
 		return {
 			flow: toHold(),
 			effect: {
 				type: EffectType.NAVIGATE,
-				page: SwapChooseAmountPage.render({
-					srcBalance: srcCurrencyBalance,
-					dstCurrency,
-				}),
+				page: SwapChooseAmountPage.render({ srcBalance, dstCurrency }),
 			},
 		}
 	}
 
 	assertFlow(session, 'swap', 'src-chosen', 'src-dst-chosen')
 
-	const { srcCurrencyBalance, nativeCurrencyBalance } = session.flow.data
+	const { srcChainAddress } = session.flow.data
 
-	const dstCurrency = await fetchCurrency(dstChainAddress)
+	const [srcBalance, dstCurrency] = await Promise.all([
+		balanceCache.getOne(session.telegramId, srcChainAddress),
+		currencyCache.getOne(dstChainAddress),
+	])
 
 	return {
 		flow: toStep(session.flow, 'src-dst-chosen', {
-			srcCurrencyBalance,
-			nativeCurrencyBalance,
+			srcChainAddress,
 			dstCurrency,
 		}),
 		effect: {
 			type: EffectType.NAVIGATE,
-			page: SwapChooseAmountPage.render({
-				srcBalance: srcCurrencyBalance,
-				dstCurrency,
-			}),
+			page: SwapChooseAmountPage.render({ srcBalance, dstCurrency }),
 		},
 	}
 }

@@ -6,20 +6,21 @@ import { withNative } from '../../constants'
 import { toReset } from '../../flows'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'
+import { currencyCache } from '../../cache/currency-cache'
 import { toCurrencyAmount } from '@rips/shared'
 
 export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 	assertFlow(session, 'withdraw', 'withdraw-page')
 
-	const { currencyBalance, amount, recipientAddress } = session.flow.data
-
-	const { currency } = currencyBalance
+	const { chainAddress, amount, recipientAddress } = session.flow.data
 
 	if (amount === undefined || recipientAddress === undefined) {
 		throw new Error(
 			'Amount and recipient are required to confirm withdrawal',
 		)
 	}
+
+	const currency = await currencyCache.getOne(chainAddress)
 
 	const currencyAmount = toCurrencyAmount(amount, currency)
 

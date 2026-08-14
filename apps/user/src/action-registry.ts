@@ -10,6 +10,7 @@ import { executeEnter } from './action-handlers/play/enter/execute-enter'
 import {
 	openEnterCheckout,
 	openEnterCheckoutFromEntryCount,
+	refreshEnterCheckout,
 	openEnterCheckoutFromPaymentToken,
 } from './action-handlers/play/enter/open-enter-checkout'
 import {
@@ -49,6 +50,8 @@ import { openDeposit } from './action-handlers/wallet/open-deposit'
 import {
 	openDepositAddress,
 	openDepositAddressQr,
+	refreshDepositBalance,
+	refreshDepositBalanceQr,
 } from './action-handlers/wallet/open-deposit-address'
 import { openDepositChooseCurrency } from './action-handlers/wallet/open-deposit-choose-currency'
 import {
@@ -103,6 +106,7 @@ export const actionRegistry = {
 	openEnterCheckout,
 	openEnterCheckoutFromPaymentToken,
 	openEnterCheckoutFromEntryCount,
+	refreshEnterCheckout,
 	executeEnter,
 
 	// Open RIPs / rips
@@ -127,6 +131,8 @@ export const actionRegistry = {
 	openDepositChooseCurrency,
 	openDepositAddress,
 	openDepositAddressQr,
+	refreshDepositBalance,
+	refreshDepositBalanceQr,
 	openExportKeyWarning,
 	openExportKey,
 

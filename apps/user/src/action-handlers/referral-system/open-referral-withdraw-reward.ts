@@ -11,7 +11,7 @@ import {
 } from '../../domain/referral-reward'
 import { ClaimRewardPage } from '../../pages/referral-system/claim-reward-page'
 import { EffectType } from '../../types'
-import { fetchNativeBalance } from '../../utils/api/wrappers'
+import { balanceCache } from '../../cache/balance-cache'
 import { openReferral } from './open-referral'
 
 export const openReferralWithdrawReward: ActionDef<void> = noPayload(
@@ -27,7 +27,7 @@ export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 					headers,
 					body: { currencyAddress: NATIVE_ON_BASE.address },
 				}),
-				fetchNativeBalance(telegramId),
+				balanceCache.getOne(telegramId, NATIVE_ON_BASE),
 			])
 
 		const state = findNativeOnBase(referrerData.states, 'referrer state')

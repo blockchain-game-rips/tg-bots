@@ -1,18 +1,14 @@
 import {
 	ChainAddressDtoOutput,
 	createQuerySerializer,
-	CurrencyAmountDtoOutput,
 	currencyControllerGetCurrencies,
 	ripsControllerGetCardCollection,
 	ripsControllerGetCardDefinitions,
 	ripsControllerGetPayouts,
-	ripsControllerGetPresets,
-	RipsControllerGetPresetsResponse,
 	ripsControllerGetRips,
 	RipsControllerGetRipsResponse,
 	walletsControllerGetBalances,
 } from '@rips/api-client'
-import { NATIVE_ON_BASE } from '../../constants'
 import {
 	buildCardCollection,
 	CardCollection,
@@ -44,21 +40,6 @@ export async function fetchBalances(
 	return data.balances
 }
 
-export function getBalance(
-	balances: CurrencyAmountDtoOutput[],
-	chainAddress: ChainAddressDtoOutput,
-): CurrencyAmountDtoOutput {
-	const balance = balances.find((b) =>
-		isSameChainAddress(b.currency.chainAddress, chainAddress),
-	)
-
-	if (balance === undefined) {
-		throw new Error(`Balance not found for ${toCurrencyId(chainAddress)}`)
-	}
-
-	return balance
-}
-
 export async function fetchCurrencies(chainAddresses: string[]) {
 	const { data } = await currencyControllerGetCurrencies({
 		query: { chainAddress: chainAddresses },
@@ -80,12 +61,6 @@ export async function fetchCurrency(chainAddress: ChainAddressDtoOutput) {
 	}
 
 	return currency
-}
-
-export async function fetchNativeBalance(telegramId: string) {
-	const balances = await fetchBalances(telegramId, [NATIVE_ON_BASE])
-
-	return getBalance(balances, NATIVE_ON_BASE)
 }
 
 export async function fetchRips(
@@ -122,29 +97,12 @@ export async function fetchRipPayouts(telegramId: string, ripId: number) {
 	return data.payouts
 }
 
-export async function fetchPresets(): Promise<
-	RipsControllerGetPresetsResponse['availablePresets']
-> {
-	const { data } = await ripsControllerGetPresets()
-
-	return data.availablePresets
-}
-
 export async function fetchUnrevealedPayouts(telegramId: string) {
 	const { data } = await ripsControllerGetPayouts({
 		headers: { 'x-telegram-id': telegramId },
 	})
 
 	return data.payouts.filter((p) => !p.revealed)
-}
-
-export async function fetchSingleBalance(
-	telegramId: string,
-	chainAddress: ChainAddressDtoOutput,
-) {
-	const balances = await fetchBalances(telegramId, [chainAddress])
-
-	return getBalance(balances, chainAddress)
 }
 
 export async function fetchCardCollection(
@@ -174,18 +132,4 @@ export async function fetchCardCollectionWithCounts(
 		collection: buildCardCollection(definitions, collection),
 		copiesBefore: copiesByCardId(collection),
 	}
-}
-
-export async function fetchPreset(
-	presetId: number,
-): Promise<RipsControllerGetPresetsResponse['availablePresets'][number]> {
-	const { data } = await ripsControllerGetPresets()
-
-	const preset = data.availablePresets.find((s) => s.preset.id === presetId)
-
-	if (preset === undefined) {
-		throw new Error(`Preset with id ${presetId.toString()} not found`)
-	}
-
-	return preset
 }

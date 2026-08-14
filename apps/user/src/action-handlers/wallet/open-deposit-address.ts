@@ -3,7 +3,7 @@ import { ActionDef, withPayload } from '../../action-def'
 import { Flow, toHold } from '../../flows'
 import { DepositAddressPage } from '../../pages/wallet/deposit-address-page'
 import { EffectType, HandlerResult } from '../../types'
-import { fetchSingleBalance } from '../../utils/api/wrappers'
+import { balanceCache } from '../../cache/balance-cache'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { addressQrInputFile } from '../../utils/qr'
 import { evmAddressFromUser } from '../../utils/wallet'
@@ -14,7 +14,7 @@ async function renderDepositAddress(
 	showQr: boolean,
 ): Promise<HandlerResult<Flow>> {
 	const [balance, { data: user }] = await Promise.all([
-		fetchSingleBalance(telegramId, currencyChainAddress),
+		balanceCache.getOne(telegramId, currencyChainAddress),
 		usersControllerGetUser({ path: { telegramId } }),
 	])
 
@@ -41,3 +41,31 @@ export const openDepositAddressQr: ActionDef<ChainAddressDtoOutput> =
 	withPayload(currencyChainAddressCodec, (session, currencyChainAddress) =>
 		renderDepositAddress(session.telegramId, currencyChainAddress, true),
 	)
+
+/**
+ * The only signal the bot gets that a deposit landed, since nothing tells it
+ * when funds arrive on chain. Only the currency on screen is dropped: it is the
+ * one the user was told to send, and the only one this page shows.
+ */
+function refreshDepositAddress(
+	showQr: boolean,
+): ActionDef<ChainAddressDtoOutput> {
+	return withPayload(
+		currencyChainAddressCodec,
+		async (session, currencyChainAddress) => {
+			await balanceCache.invalidate(session.telegramId, [
+				currencyChainAddress,
+			])
+
+			return renderDepositAddress(
+				session.telegramId,
+				currencyChainAddress,
+				showQr,
+			)
+		},
+	)
+}
+
+export const refreshDepositBalance = refreshDepositAddress(false)
+
+export const refreshDepositBalanceQr = refreshDepositAddress(true)

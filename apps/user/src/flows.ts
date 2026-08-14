@@ -1,5 +1,5 @@
 import {
-	AvailablePresetDtoOutput,
+	ChainAddressDtoOutput,
 	CurrencyAmountDtoOutput,
 	CurrencyDtoOutput,
 } from '@rips/api-client'
@@ -9,25 +9,23 @@ export type EnterFlow =
 	| {
 			flowType: 'enter'
 			step: 'choosing-entry-count'
-			data: { availablePreset: AvailablePresetDtoOutput }
+			data: { presetId: number }
 	  }
 	| {
 			flowType: 'enter'
 			step: 'choosing-payment-token'
 			data: {
-				availablePreset: AvailablePresetDtoOutput
+				presetId: number
 				entryCount: number
-				balances: CurrencyAmountDtoOutput[]
 			}
 	  }
 	| {
 			flowType: 'enter'
 			step: 'at-checkout'
 			data: {
-				availablePreset: AvailablePresetDtoOutput
+				presetId: number
 				entryCount: number
-				balances: CurrencyAmountDtoOutput[]
-				payCurrencyBalance: CurrencyAmountDtoOutput
+				payChainAddress: ChainAddressDtoOutput
 			}
 	  }
 

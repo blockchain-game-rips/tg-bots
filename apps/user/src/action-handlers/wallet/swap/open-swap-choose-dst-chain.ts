@@ -5,7 +5,7 @@ import { nativeChainAddress, SUPPORTED_CHAINS } from '../../../constants'
 import { Flow, toFlow, toHold } from '../../../flows'
 import { SwapChooseDstChainPage } from '../../../pages/swap/swap-choose-dst-chain-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchBalances, getBalance } from '../../../utils/api/wrappers'
+import { balanceCache } from '../../../cache/balance-cache'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
 export const openSwapChooseDstChain: ActionDef<ChainAddressDtoOutput> =
@@ -59,13 +59,12 @@ async function getBalances(
 ) {
 	const nativeChainAddressDto = nativeChainAddress(srcChainAddress.chain)
 
-	const balances = await fetchBalances(telegramId, [
-		srcChainAddress,
-		nativeChainAddressDto,
-	])
-
-	const srcCurrencyBalance = getBalance(balances, srcChainAddress)
-	const nativeCurrencyBalance = getBalance(balances, nativeChainAddressDto)
+	const [srcCurrencyBalance, nativeCurrencyBalance] =
+		await balanceCache.getPair(
+			telegramId,
+			srcChainAddress,
+			nativeChainAddressDto,
+		)
 
 	return { srcCurrencyBalance, nativeCurrencyBalance }
 }

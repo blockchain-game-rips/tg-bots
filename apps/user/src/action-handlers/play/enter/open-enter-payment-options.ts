@@ -1,19 +1,19 @@
-import { AvailablePresetDtoOutput } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
+import { balanceCache } from '../../../cache/balance-cache'
+import { presetCache } from '../../../cache/preset-cache'
 import { SUPPORTED_CURRENCIES } from '../../../constants'
 import { Flow, toFlow } from '../../../flows'
 import { EnterPaymentOptionsPage } from '../../../pages/play/enter-payment-options-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchBalances } from '../../../utils/api/wrappers'
 import { entryCountCodec } from '../../../utils/codecs'
 
 export const openEnterPaymentOptions: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'enter', 'choosing-payment-token', 'at-checkout')
 
-	const { availablePreset, entryCount } = session.flow.data
+	const { presetId, entryCount } = session.flow.data
 
-	return renderPaymentOptions(session.telegramId, availablePreset, entryCount)
+	return renderPaymentOptions(session.telegramId, presetId, entryCount)
 })
 
 export const openEnterPaymentOptionsFromEntryCount: ActionDef<number> =
@@ -26,27 +26,25 @@ export const openEnterPaymentOptionsFromEntryCount: ActionDef<number> =
 			'at-checkout',
 		)
 
-		const { availablePreset } = session.flow.data
+		const { presetId } = session.flow.data
 
-		return renderPaymentOptions(
-			session.telegramId,
-			availablePreset,
-			entryCount,
-		)
+		return renderPaymentOptions(session.telegramId, presetId, entryCount)
 	})
 
 async function renderPaymentOptions(
 	telegramId: string,
-	availablePreset: AvailablePresetDtoOutput,
+	presetId: number,
 	entryCount: number,
 ): Promise<HandlerResult<Flow>> {
-	const balances = await fetchBalances(telegramId, SUPPORTED_CURRENCIES)
+	const [availablePreset, balances] = await Promise.all([
+		presetCache.getOne(presetId),
+		balanceCache.get(telegramId, SUPPORTED_CURRENCIES),
+	])
 
 	return {
 		flow: toFlow('enter', 'choosing-payment-token', {
-			availablePreset,
+			presetId,
 			entryCount,
-			balances,
 		}),
 		effect: {
 			type: EffectType.NAVIGATE,

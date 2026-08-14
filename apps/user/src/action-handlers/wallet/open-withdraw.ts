@@ -19,7 +19,7 @@ import {
 import { Flow, toFlow } from '../../flows'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
 import { EffectType, HandlerResult } from '../../types'
-import { fetchBalances, getBalance } from '../../utils/api/wrappers'
+import { balanceCache } from '../../cache/balance-cache'
 import { AmountPayload, amountCodec } from '../../utils/codecs'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { isFlow } from '@rips/grammy-kit'
@@ -197,13 +197,11 @@ async function fetchCurrencyAndNativeBalances(
 ): Promise<WithdrawDraft> {
 	const nativeChainAddressDto = nativeChainAddress(chainAddress.chain)
 
-	const balances = await fetchBalances(telegramId, [
+	const [currencyBalance, nativeBalance] = await balanceCache.getPair(
+		telegramId,
 		chainAddress,
 		nativeChainAddressDto,
-	])
+	)
 
-	return {
-		currencyBalance: getBalance(balances, chainAddress),
-		nativeBalance: getBalance(balances, nativeChainAddressDto),
-	}
+	return { currencyBalance, nativeBalance }
 }

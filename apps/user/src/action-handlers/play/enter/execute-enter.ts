@@ -12,6 +12,9 @@ import {
 import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
+import { balanceCache } from '../../../cache/balance-cache'
+import { presetCache } from '../../../cache/preset-cache'
+import { NATIVE_ON_BASE } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toReset } from '../../../flows'
 import {
@@ -38,37 +41,41 @@ interface PurchaseOutcome {
 export const executeEnter: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'enter', 'at-checkout')
 
-	const { availablePreset, entryCount, payCurrencyBalance } =
-		session.flow.data
+	const { presetId, entryCount, payChainAddress } = session.flow.data
 
 	const body: BuyEntriesZapBodyDto = {
-		presetId: availablePreset.preset.id,
+		presetId,
 		entryCount,
-		paymentCurrencyChainAddress: payCurrencyBalance.currency.chainAddress,
+		paymentCurrencyChainAddress: payChainAddress,
 	}
 
 	return {
 		effect: {
 			type: EffectType.LOADING,
 			message: fmt`Entering...`,
-			next: () =>
-				executeEnterRequest(session.telegramId, availablePreset, body),
+			next: () => executeEnterRequest(session.telegramId, body),
 		},
 	}
 })
 
 async function executeEnterRequest(
 	telegramId: string,
-	availablePreset: AvailablePresetDtoOutput,
 	body: BuyEntriesZapBodyDto,
 ): Promise<HandlerResult<Flow>> {
 	const headers = { 'x-telegram-id': telegramId }
+
+	const availablePreset = await presetCache.getOne(body.presetId)
 
 	const outcome = await buyEntries(
 		resolvePaymentRoute(body.paymentCurrencyChainAddress),
 		headers,
 		body,
 	)
+
+	await balanceCache.invalidateSpent(telegramId, [
+		body.paymentCurrencyChainAddress,
+		NATIVE_ON_BASE,
+	])
 
 	return {
 		flow: toReset(),

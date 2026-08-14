@@ -25,11 +25,8 @@ import {
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
 import { EffectType, HandlerResult } from '../../../types'
-import {
-	fetchBalances,
-	fetchCurrency,
-	getBalance,
-} from '../../../utils/api/wrappers'
+import { balanceCache } from '../../../cache/balance-cache'
+import { fetchCurrency } from '../../../utils/api/wrappers'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
@@ -206,15 +203,14 @@ async function fetchSrcAndNativeBalances(
 ) {
 	const nativeChainAddressDto = nativeChainAddress(srcChainAddress.chain)
 
-	const balances = await fetchBalances(telegramId, [
-		srcChainAddress,
-		nativeChainAddressDto,
-	])
+	const [srcCurrencyBalance, nativeCurrencyBalance] =
+		await balanceCache.getPair(
+			telegramId,
+			srcChainAddress,
+			nativeChainAddressDto,
+		)
 
-	return {
-		srcCurrencyBalance: getBalance(balances, srcChainAddress),
-		nativeCurrencyBalance: getBalance(balances, nativeChainAddressDto),
-	}
+	return { srcCurrencyBalance, nativeCurrencyBalance }
 }
 
 type SwapQuote =

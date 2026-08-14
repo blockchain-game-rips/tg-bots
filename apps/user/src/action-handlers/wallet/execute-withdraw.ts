@@ -1,6 +1,7 @@
 import { walletsControllerCreateWithdrawal } from '@rips/api-client'
 import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../action-def'
+import { balanceCache } from '../../cache/balance-cache'
 import { toReset } from '../../flows'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
 import { EffectType } from '../../types'
@@ -32,6 +33,10 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 			recipientAddress,
 		},
 	})
+
+	await balanceCache.invalidateSpent(session.telegramId, [
+		currency.chainAddress,
+	])
 
 	return {
 		flow: toReset(),

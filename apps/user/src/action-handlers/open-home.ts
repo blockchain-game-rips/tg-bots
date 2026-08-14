@@ -7,16 +7,15 @@ import {
 import { parseEvmPrivateKey } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
+import { balanceCache } from '../cache/balance-cache'
+import { NATIVE_ON_BASE } from '../constants'
 import { toHold, toReset, type Flow } from '../flows'
 import { HomePage } from '../pages/home-page'
 import { WelcomePage } from '../pages/onboarding/welcome-page'
 import { ImportKeyPrompt } from '../prompts/import-key-prompt'
 import { EffectType, HandlerResult } from '../types'
 import { isApiErrorWithStatus } from '../utils/api/error'
-import {
-	fetchNativeBalance,
-	fetchUnrevealedPayouts,
-} from '../utils/api/wrappers'
+import { fetchUnrevealedPayouts } from '../utils/api/wrappers'
 
 const NOT_FOUND_STATUS = 404
 
@@ -82,7 +81,7 @@ export const submitImportKey: ActionDef<string> = withPayload(
 async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
 	const [baseBalance, unrevealedPayouts, { data: referrerData }] =
 		await Promise.all([
-			fetchNativeBalance(telegramId),
+			balanceCache.getOne(telegramId, NATIVE_ON_BASE),
 			fetchUnrevealedPayouts(telegramId),
 			referralSystemControllerGetReferrer({
 				headers: { 'x-telegram-id': telegramId },

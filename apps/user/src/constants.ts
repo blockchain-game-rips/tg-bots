@@ -51,6 +51,12 @@ export function nativeChainAddress(
 	return { address: NATIVE_ADDRESS, chain }
 }
 
+export function withNative(
+	chainAddress: ChainAddressDtoOutput,
+): ChainAddressDtoOutput[] {
+	return [chainAddress, nativeChainAddress(chainAddress.chain)]
+}
+
 export function isNativeChainAddress(
 	chainAddress: ChainAddressDtoOutput,
 ): boolean {

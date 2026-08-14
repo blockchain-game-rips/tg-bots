@@ -12,6 +12,7 @@ import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
 import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
+import { withNative } from '../../../constants'
 import { Flow, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
 import { EffectType, HandlerResult } from '../../../types'
@@ -57,8 +58,8 @@ async function executeSwapRequest(
 		? await swapSamechain(headers, body)
 		: await swapCrosschain(headers, body)
 
-	await balanceCache.invalidateSpent(telegramId, [
-		amountIn.currency.chainAddress,
+	await balanceCache.invalidate(telegramId, [
+		...withNative(amountIn.currency.chainAddress),
 		dstCurrency.chainAddress,
 	])
 

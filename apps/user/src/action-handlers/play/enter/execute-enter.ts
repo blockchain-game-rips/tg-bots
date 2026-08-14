@@ -14,7 +14,7 @@ import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { presetCache } from '../../../cache/preset-cache'
-import { NATIVE_ON_BASE } from '../../../constants'
+import { NATIVE_ON_BASE, withNative } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toReset } from '../../../flows'
 import {
@@ -72,8 +72,8 @@ async function executeEnterRequest(
 		body,
 	)
 
-	await balanceCache.invalidateSpent(telegramId, [
-		body.paymentCurrencyChainAddress,
+	await balanceCache.invalidate(telegramId, [
+		...withNative(body.paymentCurrencyChainAddress),
 		NATIVE_ON_BASE,
 	])
 

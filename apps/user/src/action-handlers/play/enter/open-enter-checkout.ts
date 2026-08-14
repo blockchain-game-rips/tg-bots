@@ -11,7 +11,7 @@ import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { presetCache } from '../../../cache/preset-cache'
-import { NATIVE_ON_BASE } from '../../../constants'
+import { NATIVE_ON_BASE, withNative } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toFlow } from '../../../flows'
 import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
@@ -71,8 +71,8 @@ export const refreshEnterCheckout: ActionDef<void> = noPayload(
 
 		const { payChainAddress } = session.flow.data
 
-		await balanceCache.invalidateSpent(session.telegramId, [
-			payChainAddress,
+		await balanceCache.invalidate(session.telegramId, [
+			...withNative(payChainAddress),
 			NATIVE_ON_BASE,
 		])
 

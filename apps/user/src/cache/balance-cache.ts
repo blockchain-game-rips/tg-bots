@@ -4,7 +4,6 @@ import {
 } from '@rips/api-client'
 import { TtlCache } from '@rips/grammy-kit'
 import { isSameChainAddress, toCurrencyId } from '@rips/shared'
-import { nativeChainAddress } from '../constants'
 import { fetchBalances } from '../utils/api/wrappers'
 
 /**
@@ -94,21 +93,6 @@ export class BalanceCache {
 		}
 
 		return balance
-	}
-
-	/**
-	 * Drops the currencies a transaction moved along with the gas that paid for
-	 * it, which is always spent whether or not it was the currency being moved.
-	 */
-	async invalidateSpent(
-		telegramId: string,
-		chainAddresses: ChainAddressDtoOutput[],
-	): Promise<void> {
-		const natives = chainAddresses.map(({ chain }) =>
-			nativeChainAddress(chain),
-		)
-
-		await this.invalidate(telegramId, [...chainAddresses, ...natives])
 	}
 
 	async invalidate(

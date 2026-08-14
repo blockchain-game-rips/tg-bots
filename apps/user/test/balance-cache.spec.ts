@@ -1,7 +1,12 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { BalanceCache } from '../src/cache/balance-cache'
-import { BASE_CHAIN, ETHEREUM_CHAIN, NATIVE_ON_BASE } from '../src/constants'
+import {
+	BASE_CHAIN,
+	ETHEREUM_CHAIN,
+	NATIVE_ON_BASE,
+	withNative,
+} from '../src/constants'
 
 const fetchBalances = vi.hoisted(() => vi.fn())
 
@@ -147,10 +152,10 @@ describe('BalanceCache', () => {
 		expect(fetchBalances).toHaveBeenCalledOnce()
 	})
 
-	it('drops the gas alongside the currency that was spent', async () => {
+	it('drops the native currency alongside the one that was spent', async () => {
 		await cache.get(ALICE, [USDC_ON_BASE, NATIVE_ON_BASE])
 
-		await cache.invalidateSpent(ALICE, [USDC_ON_BASE])
+		await cache.invalidate(ALICE, withNative(USDC_ON_BASE))
 
 		await cache.get(ALICE, [USDC_ON_BASE, NATIVE_ON_BASE])
 

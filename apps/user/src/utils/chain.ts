@@ -1,4 +1,4 @@
-import { CurrencyDtoOutput } from '@rips/api-client'
+import { ChainAddressDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { PayloadCodec } from '@rips/grammy-kit'
 import {
 	Chain,
@@ -6,7 +6,6 @@ import {
 	findChainIndex as findChainIndexIn,
 	isSameChain,
 	parseChain,
-	toCurrencyId,
 } from '@rips/shared'
 import {
 	SUPPORTED_CHAINS as SUPPORTED_CHAINS_LIST,
@@ -33,8 +32,6 @@ export const chainCodec: PayloadCodec<Chain> = {
 	decode: (raw) => parseChain(raw, SUPPORTED_CHAINS_LIST),
 }
 
-export function getCurrenciesForChain(chain: Chain): string[] {
-	return SUPPORTED_CURRENCIES.filter((c) => isSameChain(c.chain, chain)).map(
-		toCurrencyId,
-	)
+export function getCurrenciesForChain(chain: Chain): ChainAddressDtoOutput[] {
+	return SUPPORTED_CURRENCIES.filter((c) => isSameChain(c.chain, chain))
 }

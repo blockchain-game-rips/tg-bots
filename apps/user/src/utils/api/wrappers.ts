@@ -49,20 +49,6 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 	return data.currencies
 }
 
-export async function fetchCurrency(chainAddress: ChainAddressDtoOutput) {
-	const currencies = await fetchCurrencies([toCurrencyId(chainAddress)])
-
-	const currency = currencies.find((c) =>
-		isSameChainAddress(c.chainAddress, chainAddress),
-	)
-
-	if (currency === undefined) {
-		throw new Error(`Currency not found for ${toCurrencyId(chainAddress)}`)
-	}
-
-	return currency
-}
-
 export async function fetchRips(
 	ids: number[],
 ): Promise<RipsControllerGetRipsResponse['rips']> {

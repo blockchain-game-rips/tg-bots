@@ -1,5 +1,6 @@
 export { FormattedString, fmt } from '@grammyjs/parse-mode'
 export * from './action'
+export * from './cache/ttl-cache'
 export * from './effects'
 export * from './format/lines'
 export * from './handlers'

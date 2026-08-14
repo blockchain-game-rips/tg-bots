@@ -13,6 +13,7 @@
 		"@grammyjs/parse-mode": "^2.3.0",
 		"dotenv": "^17.3.1",
 		"grammy": "^1.40.1",
+		"keyv": "^5.6.0",
 		"pino": "^10.3.1",
 		"prom-client": "^15.1.3"
 	}

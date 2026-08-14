@@ -78,3 +78,17 @@ _Avoid_: Payment wallet page, choose payment method page
 **Payment route**:
 Which of the three ways an entry purchase reaches Base — `direct` (paying in Base ETH, no bridge or swap), `samechain` (zapping from another token on Base), or `crosschain` (zapping from another chain). Determined solely by the payment token, so it is derived wherever it is needed rather than carried through the flow. Decides the quote endpoint, the buy endpoint, and which variant of the Enter success page is rendered. An internal name — it never appears in UI copy.
 _Avoid_: Payment method, payment path, entry method
+
+## State
+
+**Draft**:
+What one user has chosen so far in a flow and has not yet committed — an entry count, a payment token, a recipient. Belongs to the flow it is being assembled in and dies with it. Never holds fetched data: a balance kept beside a choice looks current long after it stopped being true.
+_Avoid_: Flow data, form state, wizard state
+
+**Cache**:
+Fetched data held so a page need not ask for it again — balances per user, presets for everyone. Read through on every render, so a page always states what the cache currently says rather than what it said when the page was first opened. Kept fresh by explicit invalidation wherever the bot moves funds, with a TTL as the floor under everything it cannot see.
+_Avoid_: Store, snapshot
+
+**Session**:
+Everything the bot remembers about one chat between updates — the current flow with its draft, and the back trail. In memory only, so nothing outlives a restart.
+_Avoid_: Context, user state

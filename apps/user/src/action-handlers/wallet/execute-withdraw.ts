@@ -5,9 +5,10 @@ import { ActionDef, noPayload } from '../../action-def'
 import { balanceCache } from '../../cache/balance-cache'
 import { currencyCache } from '../../cache/currency-cache'
 import { withNative } from '../../constants'
-import { toReset } from '../../flows'
+import { WITHDRAW_FRAME } from '../../domain/loading-frames'
+import { Flow, toReset } from '../../flows'
 import { WithdrawSuccessPage } from '../../pages/wallet/withdraw-success-page'
-import { EffectType } from '../../types'
+import { EffectType, HandlerResult } from '../../types'
 import { callOrUnknown } from '../../utils/api/call-or-unknown'
 import { errorOnFreshPage } from '../../utils/display/error-on-fresh-page'
 import {
@@ -17,11 +18,11 @@ import {
 import { failureMessage } from '../../utils/display/transaction-status'
 import { renderWithdrawPage, WithdrawDraft } from './open-withdraw'
 
-export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
+export const executeWithdraw: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'withdraw', 'withdraw-page')
 
 	const draft = session.flow.data
-	const { chainAddress, amount, recipientAddress } = draft
+	const { amount, recipientAddress } = draft
 
 	if (amount === undefined || recipientAddress === undefined) {
 		throw new Error(
@@ -29,13 +30,36 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 		)
 	}
 
-	const currency = await currencyCache.getOne(chainAddress)
+	return {
+		effect: {
+			type: EffectType.LOADING,
+			message: WITHDRAW_FRAME,
+			next: () =>
+				executeWithdrawRequest(session.telegramId, draft, {
+					amount,
+					recipientAddress,
+				}),
+		},
+	}
+})
+
+interface ConfirmedWithdrawal {
+	amount: bigint
+	recipientAddress: string
+}
+
+async function executeWithdrawRequest(
+	telegramId: string,
+	draft: WithdrawDraft,
+	{ amount, recipientAddress }: ConfirmedWithdrawal,
+): Promise<HandlerResult<Flow>> {
+	const currency = await currencyCache.getOne(draft.chainAddress)
 
 	const currencyAmount = toCurrencyAmount(amount, currency)
 
 	const response = await callOrUnknown(() =>
 		walletsControllerCreateWithdrawal({
-			headers: { 'x-telegram-id': session.telegramId },
+			headers: { 'x-telegram-id': telegramId },
 			body: {
 				amountIn: {
 					amount: amount.toString(),
@@ -47,14 +71,11 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 		}),
 	)
 
-	await balanceCache.invalidate(
-		session.telegramId,
-		withNative(currency.chainAddress),
-	)
+	await balanceCache.invalidate(telegramId, withNative(currency.chainAddress))
 
 	if (response === null) {
 		throw await toWithdrawError(
-			session.telegramId,
+			telegramId,
 			draft,
 			unknownMessage(withdrawNouns),
 		)
@@ -64,7 +85,7 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 
 	if (withdrawal.status !== 'succeeded') {
 		throw await toWithdrawError(
-			session.telegramId,
+			telegramId,
 			draft,
 			failureMessage(withdrawal, withdrawNouns),
 		)
@@ -82,7 +103,7 @@ export const executeWithdraw: ActionDef<void> = noPayload(async (session) => {
 			history: { kind: 'page' },
 		},
 	}
-})
+}
 
 function toWithdrawError(
 	telegramId: string,

@@ -23,6 +23,7 @@ import {
 	NATIVE_MAX_MARGIN_USD,
 	nativeChainAddress,
 } from '../../../constants'
+import { QUOTE_FRAME } from '../../../domain/loading-frames'
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
 import { EffectType, HandlerResult, PageContent } from '../../../types'
@@ -41,11 +42,13 @@ interface CheckoutDraft {
 export const openSwapCheckout: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
-	return renderCheckout(session.telegramId, session.flow.data)
+	const draft = session.flow.data
+
+	return whileQuoting(() => renderCheckout(session.telegramId, draft))
 })
 
 export const openSwapCheckoutFromSrc: ActionDef<ChainAddressDtoOutput> =
-	withPayload(currencyChainAddressCodec, async (session, srcChainAddress) => {
+	withPayload(currencyChainAddressCodec, (session, srcChainAddress) => {
 		assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
 		const {
@@ -54,65 +57,88 @@ export const openSwapCheckoutFromSrc: ActionDef<ChainAddressDtoOutput> =
 			srcChainAddress: prevSrcChainAddress,
 		} = session.flow.data
 
-		const [prevSrcCurrency, srcCurrency] = await Promise.all([
-			currencyCache.getOne(prevSrcChainAddress),
-			currencyCache.getOne(srcChainAddress),
-		])
+		return whileQuoting(async () => {
+			const [prevSrcCurrency, srcCurrency] = await Promise.all([
+				currencyCache.getOne(prevSrcChainAddress),
+				currencyCache.getOne(srcChainAddress),
+			])
 
-		const rescaledAmountIn = rescaleAmount(
-			amountIn,
-			prevSrcCurrency.decimals,
-			srcCurrency.decimals,
-		)
+			const rescaledAmountIn = rescaleAmount(
+				amountIn,
+				prevSrcCurrency.decimals,
+				srcCurrency.decimals,
+			)
 
-		return renderCheckout(session.telegramId, {
-			srcChainAddress,
-			dstCurrency,
-			amountIn: rescaledAmountIn,
+			return renderCheckout(session.telegramId, {
+				srcChainAddress,
+				dstCurrency,
+				amountIn: rescaledAmountIn,
+			})
 		})
 	})
 
 export const openSwapCheckoutFromDst: ActionDef<ChainAddressDtoOutput> =
-	withPayload(currencyChainAddressCodec, async (session, dstChainAddress) => {
+	withPayload(currencyChainAddressCodec, (session, dstChainAddress) => {
 		assertFlow(session, 'swap', 'src-dst-amount-chosen')
 
 		const { srcChainAddress, amountIn } = session.flow.data
 
-		const dstCurrency = await currencyCache.getOne(dstChainAddress)
+		return whileQuoting(async () => {
+			const dstCurrency = await currencyCache.getOne(dstChainAddress)
 
-		return renderCheckout(session.telegramId, {
-			srcChainAddress,
-			dstCurrency,
-			amountIn,
+			return renderCheckout(session.telegramId, {
+				srcChainAddress,
+				dstCurrency,
+				amountIn,
+			})
 		})
 	})
 
 export const openSwapCheckoutFromAmount: ActionDef<AmountPayload> = withPayload(
 	amountCodec,
-	async (session, amountPayload) => {
+	(session, amountPayload) => {
 		assertFlow(session, 'swap', 'src-dst-chosen', 'src-dst-amount-chosen')
 
 		const { srcChainAddress, dstCurrency } = session.flow.data
 
-		const srcCurrencyBalance = await balanceCache.getOne(
-			session.telegramId,
-			srcChainAddress,
-		)
+		return whileQuoting(async () => {
+			const srcCurrencyBalance = await balanceCache.getOne(
+				session.telegramId,
+				srcChainAddress,
+			)
 
-		const amountIn = await resolveAmountIn(
-			session.telegramId,
-			amountPayload,
-			srcCurrencyBalance,
-			dstCurrency,
-		)
+			const amountIn = await resolveAmountIn(
+				session.telegramId,
+				amountPayload,
+				srcCurrencyBalance,
+				dstCurrency,
+			)
 
-		return renderCheckout(session.telegramId, {
-			srcChainAddress,
-			dstCurrency,
-			amountIn,
+			return renderCheckout(session.telegramId, {
+				srcChainAddress,
+				dstCurrency,
+				amountIn,
+			})
 		})
 	},
 )
+
+/**
+ * Every route into this checkout waits on a remote quote, and the max-amount
+ * path spends a probe quote before it even knows the amount, so the frame goes
+ * up before any of that work starts rather than around the quote alone.
+ */
+function whileQuoting(
+	next: () => Promise<HandlerResult<Flow>>,
+): HandlerResult<Flow> {
+	return {
+		effect: {
+			type: EffectType.LOADING,
+			message: QUOTE_FRAME,
+			next,
+		},
+	}
+}
 
 async function resolveAmountIn(
 	telegramId: number,

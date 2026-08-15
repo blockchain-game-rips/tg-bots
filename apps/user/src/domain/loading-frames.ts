@@ -25,6 +25,12 @@ export const ENTER_FRAME = fmt`🎮 Entering the rip...`
 export const ENTER_SENDING_FRAME = fmt`🎮 Sending your entry...`
 
 /**
+ * Shown while a checkout waits on a remote quote. Tied to the quote rather
+ * than to the checkout: paying in Base ETH quotes locally and stays instant.
+ */
+export const QUOTE_FRAME = fmt`⏳ Getting the best price...`
+
+/**
  * The source leg only — the destination transaction does not exist yet. Shown
  * as a copyable code block rather than a button because loading frames carry
  * no keyboard: a tap here would race the operation still in flight.

@@ -13,6 +13,7 @@ import { balanceCache } from '../../../cache/balance-cache'
 import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { presetCache } from '../../../cache/preset-cache'
 import { NATIVE_ON_BASE, withNative } from '../../../constants'
+import { QUOTE_FRAME } from '../../../domain/loading-frames'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toFlow } from '../../../flows'
 import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
@@ -82,10 +83,32 @@ export const refreshEnterCheckout: ActionDef<void> = noPayload(
 )
 
 /**
+ * A zap quote is a remote call over a bridge or a swap, so it waits behind a
+ * loading frame. The direct route prices an entry from presets already cached
+ * and navigates straight there, where a frame would only add a delay.
+ */
+async function renderCheckout(
+	telegramId: number,
+	draft: CheckoutDraft,
+): Promise<HandlerResult<Flow>> {
+	if (resolvePaymentRoute(draft.payChainAddress) === 'direct') {
+		return navigateToCheckout(telegramId, draft)
+	}
+
+	return {
+		effect: {
+			type: EffectType.LOADING,
+			message: QUOTE_FRAME,
+			next: () => navigateToCheckout(telegramId, draft),
+		},
+	}
+}
+
+/**
  * Reads balances through the cache on every render, so a replay of this handler
  * from the back trail cannot show what the balances were when it first ran.
  */
-async function renderCheckout(
+async function navigateToCheckout(
 	telegramId: number,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {

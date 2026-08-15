@@ -2,6 +2,7 @@ import {
 	AvailablePresetDtoOutput,
 	BuyEntriesPurchaseResponseDtoOutput,
 	BuyEntriesZapResponseDtoOutput,
+	ChainAddressDtoOutput,
 	ConfigDtoOutput,
 	CurrencyAmountDtoOutput,
 	GetCardCollectionResponseDtoOutput,
@@ -23,8 +24,11 @@ import {
 	TransactionDtoOutput,
 	WithdrawRewardResponseDtoOutput,
 } from '@rips/api-client'
+import { EIP155_NAMESPACE } from '../../src/constants'
 
 const MOCK_SENDER_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678'
+
+const PREVIEW_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const mockChainAddress = {
 	address: '0x0000000000000000000000000000000000000000',
@@ -2230,3 +2234,96 @@ export const mockRevealPayoutEpic: PayoutDtoOutput = mockPayout(
 	true,
 	{ id: 64, name: 'The Degenerate', tier: 4 },
 )
+
+const ETHEREUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '1' }
+const BNB_CHAIN = { namespace: EIP155_NAMESPACE, reference: '56' }
+const ARBITRUM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '42161' }
+const OPTIMISM_CHAIN = { namespace: EIP155_NAMESPACE, reference: '10' }
+const BASE_CHAIN = { namespace: EIP155_NAMESPACE, reference: '8453' }
+
+/**
+ * The production bot reads its supported set from the backend. These fixtures
+ * stand in for that list so the preview bot can render currency and chain
+ * keyboards without one; the chains it offers are derived from these, exactly as
+ * they are in production.
+ */
+export const PREVIEW_CURRENCIES: ChainAddressDtoOutput[] = [
+	// Ethereum
+	{ address: PREVIEW_NATIVE_ADDRESS, chain: ETHEREUM_CHAIN },
+	{
+		address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+		chain: ETHEREUM_CHAIN,
+	}, // WBTC
+	{
+		address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+		chain: ETHEREUM_CHAIN,
+	}, // WETH
+	{
+		address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+		chain: ETHEREUM_CHAIN,
+	}, // USDC
+	{
+		address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+		chain: ETHEREUM_CHAIN,
+	}, // USDT
+
+	// BNB
+	{ address: PREVIEW_NATIVE_ADDRESS, chain: BNB_CHAIN },
+	{ address: '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c', chain: BNB_CHAIN }, // WBTC
+	{ address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', chain: BNB_CHAIN }, // WBNB
+	{ address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', chain: BNB_CHAIN }, // USDC
+	{ address: '0x55d398326f99059fF775485246999027B3197955', chain: BNB_CHAIN }, // USDT
+
+	// Arbitrum
+	{ address: PREVIEW_NATIVE_ADDRESS, chain: ARBITRUM_CHAIN },
+	{
+		address: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+		chain: ARBITRUM_CHAIN,
+	}, // WBTC
+	{
+		address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+		chain: ARBITRUM_CHAIN,
+	}, // WETH
+	{
+		address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+		chain: ARBITRUM_CHAIN,
+	}, // USDC
+	{
+		address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+		chain: ARBITRUM_CHAIN,
+	}, // USDT
+
+	// Optimism
+	{ address: PREVIEW_NATIVE_ADDRESS, chain: OPTIMISM_CHAIN },
+	{
+		address: '0x68f180fcCe6836688e9084f035309E29Bf0A2095',
+		chain: OPTIMISM_CHAIN,
+	}, // WBTC
+	{
+		address: '0x4200000000000000000000000000000000000006',
+		chain: OPTIMISM_CHAIN,
+	}, // WETH
+	{
+		address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+		chain: OPTIMISM_CHAIN,
+	}, // USDC
+	{
+		address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+		chain: OPTIMISM_CHAIN,
+	}, // USDT
+
+	// Base
+	{ address: PREVIEW_NATIVE_ADDRESS, chain: BASE_CHAIN },
+	{
+		address: '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c',
+		chain: BASE_CHAIN,
+	}, // WBTC
+	{
+		address: '0x4200000000000000000000000000000000000006',
+		chain: BASE_CHAIN,
+	}, // WETH
+	{
+		address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+		chain: BASE_CHAIN,
+	}, // USDC
+]

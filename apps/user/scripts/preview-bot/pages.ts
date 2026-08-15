@@ -1,7 +1,7 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
+import { getSupportedChains } from '../../src/supported-currencies'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
 import { currencyToChain, resolveConfig, RipStatusGroup } from '@rips/shared'
-import { SUPPORTED_CHAINS } from '../../src/constants'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
 import { AboutPage } from '../../src/pages/about/about-page'
@@ -496,7 +496,7 @@ export const pages: Record<string, PageEntry> = {
 		render: () =>
 			EnterChoosePaymentChainPage.render({
 				availablePreset: mockAvailablePreset0,
-				chains: [...SUPPORTED_CHAINS],
+				chains: getSupportedChains(),
 			}),
 	},
 	'enter-choose-payment-token': {
@@ -620,7 +620,7 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'First step of the withdraw flow. Choose a chain to withdraw from.',
 		render: () =>
-			WithdrawChooseChainPage.render({ chains: [...SUPPORTED_CHAINS] }),
+			WithdrawChooseChainPage.render({ chains: getSupportedChains() }),
 	},
 	'withdraw-choose-currency': {
 		description:
@@ -712,7 +712,7 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'First step of the deposit flow. Choose a chain to deposit to. Opened from Wallet.',
 		render: () =>
-			DepositChooseChainPage.render({ chains: [...SUPPORTED_CHAINS] }),
+			DepositChooseChainPage.render({ chains: getSupportedChains() }),
 	},
 	'deposit-choose-currency': {
 		description:
@@ -745,7 +745,7 @@ export const pages: Record<string, PageEntry> = {
 			'First step of the swap flow. Choose a source chain. The "fresh-draft" variant is opened from Wallet and starts a new swap; the "draft-edit" variant is opened from swap checkout via Change Source and shows the already chosen destination and amount, back leads to checkout.',
 		variants: ['fresh-draft', 'draft-edit'],
 		render(variant) {
-			const chains = [...SUPPORTED_CHAINS]
+			const chains = getSupportedChains()
 
 			if (resolveVariant(this, variant) === 'fresh-draft')
 				return SwapChooseSrcChainPage.renderFreshDraft({ chains })
@@ -787,7 +787,7 @@ export const pages: Record<string, PageEntry> = {
 		variants: ['fresh-draft', 'draft-edit'],
 		render(variant) {
 			const srcBalance = mockUsdcArbWithdrawAmount
-			const dstChains = [...SUPPORTED_CHAINS]
+			const dstChains = getSupportedChains()
 
 			if (resolveVariant(this, variant) === 'fresh-draft')
 				return SwapChooseDstChainPage.renderFreshDraft({

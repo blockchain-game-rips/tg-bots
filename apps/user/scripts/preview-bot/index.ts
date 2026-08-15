@@ -1,8 +1,12 @@
 import { PageSection, runPreviewBot } from '@rips/grammy-kit'
+import { setSupportedCurrencies } from '../../src/supported-currencies'
 import { installKeyboardExtensions } from '../../src/utils/keyboard'
 import { pages } from './pages'
+import { PREVIEW_CURRENCIES } from './static-data'
 
 installKeyboardExtensions()
+
+setSupportedCurrencies(PREVIEW_CURRENCIES)
 
 const sections: PageSection[] = [
 	{ title: '👋 Onboarding', prefixes: ['onboarding-'] },

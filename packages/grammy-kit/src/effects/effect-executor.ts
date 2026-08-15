@@ -16,7 +16,7 @@ import {
 	PageContent,
 	SessionData,
 } from '../types'
-import { fireAndForget } from '../utils/common'
+import { fireAndForget, wait } from '../utils/common'
 import { resolveActionEffect } from './resolve-effect'
 import {
 	composePageContentWithError,
@@ -26,6 +26,13 @@ import {
 } from './error-to-render'
 
 const MESSAGE_NOT_MODIFIED = 'message is not modified'
+
+/**
+ * A floor, not a duration: work that outlasts it is unaffected, so frames with
+ * their own pacing keep it. It exists so a frame wrapping fast work is still
+ * read rather than flickering past.
+ */
+const MIN_LOADING_FRAME_MS = 500
 
 function isMessageNotModifiedError(error: unknown): boolean {
 	return (
@@ -87,7 +94,12 @@ async function performEffect(
 			keyboard: new InlineKeyboard(),
 		})
 
-		result = await result.effect.next()
+		const [next] = await Promise.all([
+			result.effect.next(),
+			wait(MIN_LOADING_FRAME_MS),
+		])
+
+		result = next
 	}
 
 	const { effect, flow } = result

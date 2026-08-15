@@ -8,8 +8,9 @@ import {
 	ripsControllerGetZapResult,
 	RipDtoOutput,
 	TelegramIdHeaderDto,
+	TransactionDtoOutput,
 } from '@rips/api-client'
-import { assertFlow, ErrorToRender, fmt, wait } from '@rips/grammy-kit'
+import { assertFlow, fmt, wait } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
@@ -24,11 +25,27 @@ import {
 import { EffectType, HandlerResult } from '../../../types'
 import { fetchRip } from '../../../utils/api/wrappers'
 import { TransactionOutcome } from '../../../utils/display/transaction-outcome'
+import {
+	cancelledMessage,
+	enterNouns,
+	refundedMessage,
+	unknownMessage,
+} from '../../../utils/display/transaction-outcome-copy'
+import { failureMessage } from '../../../utils/display/transaction-status'
+import { callOrUnknown } from '../../../utils/api/call-or-unknown'
+import { errorOnFreshPage } from '../../../utils/display/error-on-fresh-page'
+import { renderCheckoutPage } from './open-enter-checkout'
 
 const ZAP_POLL_INTERVAL_MS = 2000
 const ZAP_POLL_TIMEOUT_MS = 60000
 
 type ZapSuccess = NonNullable<GetZapResultResponseDtoOutput['success']>
+
+interface EntryResult {
+	ripId: number
+	entryCount: number
+	startEntryIndex: number
+}
 
 /** The parts of a buy response every route returns. */
 interface PurchaseOutcome {
@@ -77,22 +94,51 @@ async function executeEnterRequest(
 		NATIVE_ON_BASE,
 	])
 
+	if (outcome.kind === 'failed') {
+		throw await toEnterError(telegramId, body, outcome.message)
+	}
+
 	return {
 		flow: toReset(),
 		effect: {
 			type: EffectType.NAVIGATE,
 			page: EnterSuccessPage.render(
-				await toSuccessArgs(availablePreset, outcome),
+				await toSuccessArgs(availablePreset, outcome.purchase),
 			),
+			history: { kind: 'page' },
 		},
 	}
+}
+
+function toEnterError(
+	telegramId: string,
+	body: BuyEntriesZapBodyDto,
+	message: string,
+) {
+	return errorOnFreshPage(
+		() =>
+			renderCheckoutPage(telegramId, {
+				presetId: body.presetId,
+				entryCount: body.entryCount,
+				payChainAddress: body.paymentCurrencyChainAddress,
+			}),
+		message,
+	)
+}
+
+type BuyResult =
+	| { kind: 'bought'; purchase: PurchaseOutcome }
+	| { kind: 'failed'; message: string }
+
+function failed(message: string): BuyResult {
+	return { kind: 'failed', message }
 }
 
 async function buyEntries(
 	route: ReturnType<typeof resolvePaymentRoute>,
 	headers: TelegramIdHeaderDto,
 	body: BuyEntriesZapBodyDto,
-): Promise<PurchaseOutcome> {
+): Promise<BuyResult> {
 	if (route === 'direct') return buyDirect(headers, body)
 
 	if (route === 'samechain') return buySamechain(headers, body)
@@ -103,32 +149,50 @@ async function buyEntries(
 async function buyDirect(
 	headers: TelegramIdHeaderDto,
 	body: BuyEntriesZapBodyDto,
-): Promise<PurchaseOutcome> {
-	const { data } = await ripsControllerBuyEntriesPurchase({ headers, body })
+): Promise<BuyResult> {
+	const response = await callOrUnknown(() =>
+		ripsControllerBuyEntriesPurchase({ headers, body }),
+	)
 
-	return {
-		...data,
-		transactions: {
-			kind: 'singleChain',
-			transaction: data.transaction,
-		},
+	if (response === null) return failed(unknownMessage(enterNouns))
+
+	const { purchase } = response.data
+
+	if (purchase.status !== 'succeeded') {
+		return failed(failureMessage(purchase, enterNouns))
 	}
+
+	return boughtOnOneChain(purchase.result, purchase.transaction)
 }
 
 async function buySamechain(
 	headers: TelegramIdHeaderDto,
 	body: BuyEntriesZapBodyDto,
-): Promise<PurchaseOutcome> {
-	const { data } = await ripsControllerBuyEntriesZapSamechain({
-		headers,
-		body,
-	})
+): Promise<BuyResult> {
+	const response = await callOrUnknown(() =>
+		ripsControllerBuyEntriesZapSamechain({ headers, body }),
+	)
 
+	if (response === null) return failed(unknownMessage(enterNouns))
+
+	const { enter } = response.data
+
+	if (enter.status !== 'succeeded') {
+		return failed(failureMessage(enter, enterNouns))
+	}
+
+	return boughtOnOneChain(enter.result, enter.transaction)
+}
+
+function boughtOnOneChain(
+	result: EntryResult,
+	transaction: TransactionDtoOutput,
+): BuyResult {
 	return {
-		...data,
-		transactions: {
-			kind: 'singleChain',
-			transaction: data.transaction,
+		kind: 'bought',
+		purchase: {
+			...result,
+			transactions: { kind: 'singleChain', transaction },
 		},
 	}
 }
@@ -136,40 +200,77 @@ async function buySamechain(
 async function buyCrosschain(
 	headers: TelegramIdHeaderDto,
 	body: BuyEntriesZapBodyDto,
-): Promise<PurchaseOutcome> {
-	const { data: submit } = await ripsControllerBuyEntriesZapCrosschain({
-		headers,
-		body,
-	})
+): Promise<BuyResult> {
+	const response = await callOrUnknown(() =>
+		ripsControllerBuyEntriesZapCrosschain({ headers, body }),
+	)
 
-	const result = await pollZapResult(submit.zapId)
+	if (response === null) return failed(unknownMessage(enterNouns))
+
+	const { zap } = response.data
+
+	if (zap.status !== 'succeeded') {
+		return failed(failureMessage(zap, enterNouns))
+	}
+
+	const result = await pollZapResult(zap.result.zapId)
+
+	if (result.kind !== 'success') return failed(result.message)
 
 	return {
-		ripId: result.ripId,
-		entryCount: result.entryCount,
-		startEntryIndex: result.startEntryIndex,
-		transactions: {
-			kind: 'crosschain',
-			srcTransaction: submit.srcTransaction,
-			dstTransaction: result.dstTransaction,
+		kind: 'bought',
+		purchase: {
+			ripId: result.success.ripId,
+			entryCount: result.success.entryCount,
+			startEntryIndex: result.success.startEntryIndex,
+			transactions: {
+				kind: 'crosschain',
+				srcTransaction: zap.transaction,
+				dstTransaction: result.success.dstTransaction,
+			},
 		},
 	}
 }
 
-async function pollZapResult(zapId: string): Promise<ZapSuccess> {
+type PollResult =
+	| { kind: 'success'; success: ZapSuccess }
+	| { kind: 'failed'; message: string }
+
+/**
+ * Retries through thrown errors until the deadline, so a transient blip does
+ * not discard a zap that is still in flight. Only the deadline ends the loop.
+ */
+async function pollZapResult(zapId: string): Promise<PollResult> {
 	const deadline = Date.now() + ZAP_POLL_TIMEOUT_MS
 
 	while (Date.now() < deadline) {
-		const { data } = await ripsControllerGetZapResult({ query: { zapId } })
+		const response = await callOrUnknown(() =>
+			ripsControllerGetZapResult({ query: { zapId } }),
+		)
 
-		if (data.success !== null) return data.success
+		const data = response?.data
 
-		if (data.pending === null) throw new ErrorToRender('Entry failed')
+		if (data !== undefined) {
+			if (data.success !== null) {
+				return { kind: 'success', success: data.success }
+			}
+
+			if (data.failed !== null) {
+				return {
+					kind: 'failed',
+					message: refundedMessage(enterNouns, data.failed.refund),
+				}
+			}
+
+			if (data.cancelled !== null) {
+				return { kind: 'failed', message: cancelledMessage(enterNouns) }
+			}
+		}
 
 		await wait(ZAP_POLL_INTERVAL_MS)
 	}
 
-	throw new ErrorToRender('Entry timed out')
+	return { kind: 'failed', message: unknownMessage(enterNouns) }
 }
 
 /**

@@ -1,9 +1,4 @@
-import {
-	CurrencyAmountDtoOutput,
-	GetSwapResultResponseDtoOutput,
-	SwapResponseDtoOutput,
-	SwapSamechainResponseDtoOutput,
-} from '@rips/api-client'
+import { CurrencyAmountDtoOutput, TransactionDtoOutput } from '@rips/api-client'
 import { joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
@@ -16,13 +11,15 @@ import {
 
 interface SamechainResult {
 	kind: 'samechain'
-	result: SwapSamechainResponseDtoOutput
+	amountOut: CurrencyAmountDtoOutput
+	transaction: TransactionDtoOutput
 }
 
 interface CrosschainResult {
 	kind: 'crosschain'
-	swapResponse: SwapResponseDtoOutput
-	result: NonNullable<GetSwapResultResponseDtoOutput['success']>
+	amountOut: CurrencyAmountDtoOutput
+	srcTransaction: TransactionDtoOutput
+	dstTransaction: TransactionDtoOutput
 }
 
 type SwapSuccessResult = SamechainResult | CrosschainResult
@@ -48,17 +45,17 @@ export const SwapSuccessPage = {
 }
 
 function amountOut(result: SwapSuccessResult): CurrencyAmountDtoOutput {
-	return result.result.amountOut
+	return result.amountOut
 }
 
 function toTransactionOutcome(result: SwapSuccessResult): TransactionOutcome {
 	if (result.kind === 'samechain') {
-		return { kind: 'singleChain', transaction: result.result.transaction }
+		return { kind: 'singleChain', transaction: result.transaction }
 	}
 
 	return {
 		kind: 'crosschain',
-		srcTransaction: result.swapResponse.srcTransaction,
-		dstTransaction: result.result.dstTransaction,
+		srcTransaction: result.srcTransaction,
+		dstTransaction: result.dstTransaction,
 	}
 }

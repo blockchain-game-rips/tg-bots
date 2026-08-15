@@ -7,6 +7,9 @@ export interface FlowBase {
 	data: unknown
 }
 
+const INACTIVE_FLOW_MESSAGE =
+	'This is no longer available. Send /start to begin again.'
+
 type ActiveFlow<F extends FlowBase | null> = NonNullable<F>
 
 type FlowByType<
@@ -48,7 +51,7 @@ export function assertFlow<
 		(steps as ActiveFlow<F>['step'][]).includes(flow.step)
 
 	if (!stepMatches) {
-		throw new ErrorToRender('Invalid session state')
+		throw new ErrorToRender(INACTIVE_FLOW_MESSAGE)
 	}
 }
 

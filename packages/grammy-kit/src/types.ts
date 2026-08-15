@@ -88,6 +88,9 @@ interface PageContentBase {
 
 	/** Holds a secret, so it is never kept in the session. */
 	sensitive?: boolean
+
+	/** Supersedes the entry on screen when it holds the same slot. */
+	trailSlot?: string
 }
 
 export interface PhotoPage extends PageContentBase {

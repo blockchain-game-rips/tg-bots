@@ -122,5 +122,16 @@ function recordPageEntry(session: SessionData, page: PageContent): void {
 	// too much memory consumption for saving image in history
 	if (page.photo !== undefined) return
 
+	if (holdsSlotOf(currentEntry(session), page)) session.history.pop()
+
 	push(session, { kind: 'page', page })
+}
+
+/** Whether the entry on screen is the one this page supersedes. */
+function holdsSlotOf(entry: HistoryEntry | null, page: PageContent): boolean {
+	return (
+		entry?.kind === 'page' &&
+		page.trailSlot !== undefined &&
+		entry.page.trailSlot === page.trailSlot
+	)
 }

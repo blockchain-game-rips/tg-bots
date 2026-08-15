@@ -70,6 +70,7 @@ async function revealBatch(telegramId: string): Promise<HandlerResult<Flow>> {
 					currency: rip.currency,
 					summary,
 				}),
+				history: { kind: 'page' },
 			},
 		}
 	})

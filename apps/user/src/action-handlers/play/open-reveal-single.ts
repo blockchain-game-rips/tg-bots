@@ -87,6 +87,7 @@ async function renderResult(
 				},
 				copiesOwned: copiesOwnedAfterReveal(copiesBefore, cardId),
 			}),
+			history: { kind: 'page' },
 		},
 	}
 }

@@ -168,17 +168,31 @@ function resolveBasePage(
 	return session.lastNavigatedPage ?? fallbackPage
 }
 
-export async function executeEffectOrDisplayError(
-	api: Api,
-	chatId: number,
-	telegramId: number,
-	message: Message | null,
-	session: SessionData,
-	actions: Record<string, BoundAction | undefined>,
-	action: ActionData,
-	fallbackPage: PageContent,
-	messagesToDelete: number[] = [],
-): Promise<void> {
+export type EffectRequest = {
+	api: Api
+	chatId: number
+	telegramId: number
+	/** the message the page replaces, or null to send a new one */
+	message: Message | null
+	session: SessionData
+	actions: Record<string, BoundAction | undefined>
+	action: ActionData
+	/** the page an error is shown on when the session has no page on screen */
+	fallbackPage: PageContent
+	messagesToDelete?: number[]
+}
+
+export async function executeEffectOrDisplayError({
+	api,
+	chatId,
+	telegramId,
+	message,
+	session,
+	actions,
+	action,
+	fallbackPage,
+	messagesToDelete = [],
+}: EffectRequest): Promise<void> {
 	try {
 		const result = await resolveActionEffect(
 			session,

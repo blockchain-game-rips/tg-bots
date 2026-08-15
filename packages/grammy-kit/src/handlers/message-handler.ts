@@ -25,17 +25,17 @@ export function createMessageHandler(
 		const { ask, submit } = askAndSubmit
 		const messagesToDelete = [ask.messageId, submit.messageId]
 
-		await executeEffectOrDisplayError(
-			bot.api,
-			ctx.chat.id,
-			ctx.from.id,
-			ask.message,
-			ctx.session,
+		await executeEffectOrDisplayError({
+			api: bot.api,
+			chatId: ctx.chat.id,
+			telegramId: ctx.from.id,
+			message: ask.message,
+			session: ctx.session,
 			actions,
-			{ actionId: ask.onSubmit, payload: submit.message },
-			EMPTY_PAGE,
+			action: { actionId: ask.onSubmit, payload: submit.message },
+			fallbackPage: EMPTY_PAGE,
 			messagesToDelete,
-		)
+		})
 	}
 }
 

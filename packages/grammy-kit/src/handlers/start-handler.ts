@@ -21,15 +21,15 @@ export function createStartHandler(
 	homeActionId: ActionId,
 ): (ctx: StartContext) => Promise<void> {
 	return async function handleStart(ctx: StartContext): Promise<void> {
-		await executeEffectOrDisplayError(
-			ctx.api,
-			ctx.chat.id,
-			ctx.from.id,
-			null,
-			ctx.session,
+		await executeEffectOrDisplayError({
+			api: ctx.api,
+			chatId: ctx.chat.id,
+			telegramId: ctx.from.id,
+			message: null,
+			session: ctx.session,
 			actions,
-			{ actionId: homeActionId, payload: undefined },
-			EMPTY_PAGE,
-		)
+			action: { actionId: homeActionId, payload: undefined },
+			fallbackPage: EMPTY_PAGE,
+		})
 	}
 }

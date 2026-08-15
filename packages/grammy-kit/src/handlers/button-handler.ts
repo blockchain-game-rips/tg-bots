@@ -50,17 +50,17 @@ export function createButtonHandler(
 				return
 			}
 
-			await executeEffectOrDisplayError(
-				ctx.api,
-				message.chat.id,
-				ctx.from.id,
-				toMessage(message),
-				ctx.session,
+			await executeEffectOrDisplayError({
+				api: ctx.api,
+				chatId: message.chat.id,
+				telegramId: ctx.from.id,
+				message: toMessage(message),
+				session: ctx.session,
 				actions,
 				action,
-				recoverPage(message),
+				fallbackPage: recoverPage(message),
 				messagesToDelete,
-			)
+			})
 		} catch (error) {
 			if (error instanceof GrammyError) throw error
 			logger.error(error)

@@ -127,17 +127,17 @@ const run = (
 	actionId = 'w',
 	messagesToDelete: number[] = [],
 ) =>
-	executeEffectOrDisplayError(
-		fake.api,
-		CHAT_ID,
-		TELEGRAM_ID,
+	executeEffectOrDisplayError({
+		api: fake.api,
+		chatId: CHAT_ID,
+		telegramId: TELEGRAM_ID,
 		message,
 		session,
 		actions,
-		{ actionId, payload: undefined },
-		makePage('fallback'),
+		action: { actionId, payload: undefined },
+		fallbackPage: makePage('fallback'),
 		messagesToDelete,
-	)
+	})
 
 describe('executing a render', () => {
 	it('sends the page and records it as the page on screen', async () => {
@@ -213,13 +213,13 @@ describe('executing an action with a secret payload', () => {
 
 		enter(session, 'welcome')
 
-		await executeEffectOrDisplayError(
-			fake.api,
-			CHAT_ID,
-			TELEGRAM_ID,
+		await executeEffectOrDisplayError({
+			api: fake.api,
+			chatId: CHAT_ID,
+			telegramId: TELEGRAM_ID,
 			message,
 			session,
-			{
+			actions: {
 				imp: {
 					decode: (raw: string) => raw,
 					handler: () =>
@@ -232,10 +232,9 @@ describe('executing an action with a secret payload', () => {
 						}),
 				},
 			},
-			{ actionId: 'imp', payload: SECRET },
-			makePage('fallback'),
-			[],
-		)
+			action: { actionId: 'imp', payload: SECRET },
+			fallbackPage: makePage('fallback'),
+		})
 
 		expect(fake.editedTexts).toEqual(['home'])
 		expect(JSON.stringify(session.history)).not.toContain(SECRET)

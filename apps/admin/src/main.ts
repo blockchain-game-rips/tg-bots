@@ -54,7 +54,6 @@ bot.use((ctx, next) => {
 
 function initial(): SessionData<Flow> {
 	return {
-		telegramId: '',
 		lastAsk: null,
 		flow: null,
 		lastNavigatedPage: null,
@@ -63,11 +62,6 @@ function initial(): SessionData<Flow> {
 }
 
 bot.use(session({ initial }))
-
-bot.use((ctx, next) => {
-	ctx.session.telegramId = String(ctx.from.id)
-	return next()
-})
 
 const handleButton = createButtonHandler(actions)
 const handleMessage = createMessageHandler(actions)

@@ -1,5 +1,5 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
-import { assertFlow, isFlow, SessionData } from '@rips/grammy-kit'
+import { assertFlow, isFlow, ActionContext } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { Flow, toHold, toStep } from '../../../flows'
@@ -12,14 +12,14 @@ export const openSwapChooseAmount: ActionDef<ChainAddressDtoOutput> =
 	withPayload(currencyChainAddressCodec, handler)
 
 async function handler(
-	session: SessionData<Flow>,
+	actionContext: ActionContext<Flow>,
 	dstChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
-	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcChainAddress, dstCurrency } = session.flow.data
+	if (isFlow(actionContext, 'swap', 'src-dst-amount-chosen')) {
+		const { srcChainAddress, dstCurrency } = actionContext.flow.data
 
 		const srcBalance = await balanceCache.getOne(
-			session.telegramId,
+			actionContext.telegramId,
 			srcChainAddress,
 		)
 
@@ -32,17 +32,17 @@ async function handler(
 		}
 	}
 
-	assertFlow(session, 'swap', 'src-chosen', 'src-dst-chosen')
+	assertFlow(actionContext, 'swap', 'src-chosen', 'src-dst-chosen')
 
-	const { srcChainAddress } = session.flow.data
+	const { srcChainAddress } = actionContext.flow.data
 
 	const [srcBalance, dstCurrency] = await Promise.all([
-		balanceCache.getOne(session.telegramId, srcChainAddress),
+		balanceCache.getOne(actionContext.telegramId, srcChainAddress),
 		currencyCache.getOne(dstChainAddress),
 	])
 
 	return {
-		flow: toStep(session.flow, 'src-dst-chosen', {
+		flow: toStep(actionContext.flow, 'src-dst-chosen', {
 			srcChainAddress,
 			dstCurrency,
 		}),

@@ -1,3 +1,4 @@
+import { ActionContext } from '../action/action-def'
 import { ErrorToRender } from '../effects/error-to-render'
 import { SessionData } from '../types'
 
@@ -39,11 +40,11 @@ export function assertFlow<
 	FT extends ActiveFlow<F>['flowType'],
 	S extends StepOf<F, FT>,
 >(
-	session: SessionData<F>,
+	actionContext: ActionContext<F>,
 	flowType: FT,
 	...steps: S[]
-): asserts session is SessionData<FlowByTypeAndStep<F, FT, S>> {
-	const { flow } = session
+): asserts actionContext is ActionContext<FlowByTypeAndStep<F, FT, S>> {
+	const { flow } = actionContext
 
 	const stepMatches =
 		flow !== null &&
@@ -60,11 +61,11 @@ export function isFlow<
 	FT extends ActiveFlow<F>['flowType'],
 	S extends StepOf<F, FT>,
 >(
-	session: SessionData<F>,
+	actionContext: ActionContext<F>,
 	flowType: FT,
 	...steps: S[]
-): session is SessionData<FlowByTypeAndStep<F, FT, S>> {
-	const { flow } = session
+): actionContext is ActionContext<FlowByTypeAndStep<F, FT, S>> {
+	const { flow } = actionContext
 
 	return (
 		flow !== null &&

@@ -1,5 +1,5 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
-import { isFlow, SessionData } from '@rips/grammy-kit'
+import { isFlow, ActionContext } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
 import { getSupportedChains } from '../../../supported-currencies'
 import { Flow, toFlow, toHold } from '../../../flows'
@@ -12,16 +12,16 @@ export const openSwapChooseDstChain: ActionDef<ChainAddressDtoOutput> =
 	withPayload(currencyChainAddressCodec, handler)
 
 async function handler(
-	session: SessionData<Flow>,
+	actionContext: ActionContext<Flow>,
 	srcChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	const dstChains = getSupportedChains()
 
-	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
-		const { srcChainAddress: chosenSrc, amountIn } = session.flow.data
+	if (isFlow(actionContext, 'swap', 'src-dst-amount-chosen')) {
+		const { srcChainAddress: chosenSrc, amountIn } = actionContext.flow.data
 
 		const srcBalance = await balanceCache.getOne(
-			session.telegramId,
+			actionContext.telegramId,
 			chosenSrc,
 		)
 
@@ -39,7 +39,7 @@ async function handler(
 	}
 
 	const srcCurrencyBalance = await balanceCache.getOne(
-		session.telegramId,
+		actionContext.telegramId,
 		srcChainAddress,
 	)
 

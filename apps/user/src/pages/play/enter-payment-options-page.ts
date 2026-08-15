@@ -15,6 +15,7 @@ import { NATIVE_ON_BASE } from '../../constants'
 import { PageContent } from '../../types'
 import { chainToEmoji, chainToName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
+import * as labels from '../../utils/button-labels'
 
 export const EnterPaymentOptionsPage = {
 	render(args: {
@@ -122,7 +123,7 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Pay from another chain',
+			labels.PAY_FROM_ANOTHER_CHAIN,
 			buildActionData(actionIds.openEnterChoosePaymentChain, undefined),
 		)
 		.row()

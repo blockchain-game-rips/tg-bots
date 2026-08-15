@@ -12,6 +12,7 @@ import { actionIds } from '../../actions'
 import { RevealSummary } from '../../domain/reveal-summary'
 import { REVEAL_RESULT_SLOT } from './reveal-result-slot'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
 
@@ -113,12 +114,12 @@ export const RevealAllPage = {
 function buildKeyboard(): InlineKeyboard {
 	return new InlineKeyboard()
 		.text(
-			'View Collection',
+			labels.VIEW_COLLECTION,
 			buildActionData(actionIds.openCardCollection, undefined),
 		)
 		.row()
 		.text(
-			'Enter Again',
+			labels.ENTER_AGAIN,
 			buildActionData(actionIds.openChoosePreset, undefined),
 		)
 		.row()

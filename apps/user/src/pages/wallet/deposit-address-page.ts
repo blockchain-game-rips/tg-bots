@@ -12,6 +12,7 @@ import { PageContent } from '../../types'
 import { currencyToChain } from '@rips/shared'
 import { chainToName } from '../../utils/chain'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'
+import * as labels from '../../utils/button-labels'
 
 interface RenderArgs {
 	balance: CurrencyAmountDtoOutput
@@ -44,16 +45,16 @@ export const DepositAddressPage = {
 
 		const qrToggle = showingQr
 			? {
-					label: 'Hide QR',
+					label: labels.HIDE_QR,
 					action: actionIds.openDepositAddress,
 				}
 			: {
-					label: 'Show QR',
+					label: labels.SHOW_QR,
 					action: actionIds.openDepositAddressQr,
 				}
 
 		const keyboard = new InlineKeyboard()
-			.copyText('Copy Address', depositAddress)
+			.copyText(labels.COPY_ADDRESS, depositAddress)
 			.row()
 			.text(
 				qrToggle.label,
@@ -61,7 +62,7 @@ export const DepositAddressPage = {
 			)
 			.row()
 			.text(
-				'Refresh Balance',
+				labels.REFRESH_BALANCE,
 				buildActionData(refreshAction, currency.chainAddress),
 			)
 

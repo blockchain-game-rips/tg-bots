@@ -7,6 +7,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 const TITLE = '🎁 Open Pulls'
 
@@ -33,7 +34,7 @@ function buildOpenPullsContent(unopenedCount: number): {
 	if (unopenedCount === 0) {
 		keyboard
 			.text(
-				'Enter Rips',
+				labels.ENTER_RIPS,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
@@ -51,11 +52,14 @@ function buildOpenPullsContent(unopenedCount: number): {
 
 	keyboard
 		.text(
-			'Reveal Next',
+			labels.REVEAL_NEXT,
 			buildActionData(actionIds.openRevealSingle, undefined),
 		)
 		.row()
-		.text('Reveal All', buildActionData(actionIds.openRevealAll, undefined))
+		.text(
+			labels.REVEAL_ALL,
+			buildActionData(actionIds.openRevealAll, undefined),
+		)
 		.row()
 
 	return { lines, keyboard }

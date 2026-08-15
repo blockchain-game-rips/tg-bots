@@ -1,7 +1,6 @@
 import { InlineKeyboard } from 'grammy'
-
-const PLAY_BUTTON_LABEL = '🎮 Play Rips'
+import { PLAY_RIPS } from '../../utils/button-labels'
 
 export function playRipsKeyboard(playLink: string): InlineKeyboard {
-	return new InlineKeyboard().url(PLAY_BUTTON_LABEL, playLink)
+	return new InlineKeyboard().url(PLAY_RIPS, playLink)
 }

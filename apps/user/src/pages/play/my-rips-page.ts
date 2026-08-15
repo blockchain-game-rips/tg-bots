@@ -8,6 +8,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 interface MyRipsPageArgs {
 	unopenedPulls: number
@@ -38,17 +39,17 @@ export const MyRipsPage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'🎁 Open Pulls',
+				labels.OPEN_PULLS,
 				buildActionData(actionIds.openOpenPulls, undefined),
 			)
 			.row()
 			.text(
-				'⏳ Ongoing Rips',
+				labels.ONGOING_RIPS,
 				buildActionData(actionIds.openOngoingRips, undefined),
 			)
 			.row()
 			.text(
-				'🏁 Finalized Rips',
+				labels.FINALIZED_RIPS,
 				buildActionData(actionIds.openFinalizedRips, false),
 			)
 			.appendNavButtons()

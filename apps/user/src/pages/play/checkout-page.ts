@@ -22,6 +22,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { currencyToChainName } from '../../utils/chain'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -213,8 +214,8 @@ function buildKeyboard(
 
 	if (isSufficient(insufficientAmounts)) {
 		const buttonText = isCrosschain(quote)
-			? 'Confirm Bridge & Enter'
-			: 'Confirm Entry'
+			? labels.CONFIRM_BRIDGE_AND_ENTER
+			: labels.CONFIRM_ENTRY
 
 		keyboard
 			.text(
@@ -229,7 +230,7 @@ function buildKeyboard(
 
 			keyboard
 				.text(
-					`Deposit ${chainName} ${currency.symbol}`,
+					labels.depositListRowLabel(chainName, currency.symbol),
 					buildActionData(
 						actionIds.openDepositAddress,
 						currency.chainAddress,
@@ -241,12 +242,12 @@ function buildKeyboard(
 
 	keyboard
 		.text(
-			'Update balance & quote',
+			labels.UPDATE_BALANCE_AND_QUOTE,
 			buildActionData(actionIds.refreshEnterCheckout, undefined),
 		)
 		.row()
 		.text(
-			'Change entry count',
+			labels.CHANGE_ENTRY_COUNT,
 			buildActionData(
 				actionIds.openEnterChooseEntryCountFromCheckout,
 				undefined,
@@ -254,7 +255,7 @@ function buildKeyboard(
 		)
 		.row()
 		.text(
-			'Change payment token',
+			labels.CHANGE_PAYMENT_TOKEN,
 			buildActionData(actionIds.openEnterPaymentOptions, undefined),
 		)
 		.row()

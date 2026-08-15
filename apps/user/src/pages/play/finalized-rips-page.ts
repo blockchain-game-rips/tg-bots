@@ -15,6 +15,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { addRipDetailsButtons } from '../../utils/rip-details-buttons'
+import * as labels from '../../utils/button-labels'
 
 const COMPLETED_LABEL = '✅ Completed'
 const REFUNDED_LABEL = '↩️ Refunded'
@@ -49,7 +50,7 @@ function buildKeyboard(
 	addRipDetailsButtons(keyboard, rips)
 
 	keyboard.text(
-		mineOnly ? 'Show All' : 'Show Mine',
+		mineOnly ? labels.SHOW_ALL : labels.SHOW_MINE,
 		buildActionData(actionIds.openFinalizedRips, !mineOnly),
 	)
 

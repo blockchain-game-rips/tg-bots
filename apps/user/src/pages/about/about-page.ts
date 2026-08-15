@@ -15,6 +15,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 const HOW_IT_WORKS_STEPS = [
 	'Choose an entry level',
@@ -67,12 +68,12 @@ function buildMessage(levels: EntryLevel[]): FormattedString {
 function buildKeyboard(): InlineKeyboard {
 	return new InlineKeyboard()
 		.text(
-			'🎮 Enter Rips',
+			labels.ENTER_RIPS,
 			buildActionData(actionIds.openChoosePreset, undefined),
 		)
 		.row()
 		.text(
-			'🎁 Open Pulls',
+			labels.OPEN_PULLS,
 			buildActionData(actionIds.openOpenPulls, undefined),
 		)
 		.appendNavButtons()

@@ -10,6 +10,7 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { bestPull, bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
 import { tierByIndex } from '../../utils/tiers'
@@ -149,14 +150,14 @@ function buildKeyboard(payouts: PayoutDtoOutput[]): InlineKeyboard {
 	if (hasUnopenedPulls) {
 		keyboard
 			.text(
-				'🎁 Open Pulls',
+				labels.OPEN_PULLS,
 				buildActionData(actionIds.openOpenPulls, undefined),
 			)
 			.row()
 	}
 
 	keyboard.text(
-		'Enter Again',
+		labels.ENTER_AGAIN,
 		buildActionData(actionIds.openChoosePreset, undefined),
 	)
 

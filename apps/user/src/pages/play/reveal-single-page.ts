@@ -9,6 +9,7 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { row } from '../../utils/page-row'
 import { REVEAL_RESULT_SLOT } from './reveal-result-slot'
 import { tierByIndex } from '../../utils/tiers'
@@ -93,19 +94,19 @@ function buildKeyboard(unopenedCount: number): InlineKeyboard {
 	if (unopenedCount > 0) {
 		keyboard
 			.text(
-				'Reveal Next',
+				labels.REVEAL_NEXT,
 				buildActionData(actionIds.openRevealSingle, undefined),
 			)
 			.row()
 			.text(
-				'Reveal All',
+				labels.REVEAL_ALL,
 				buildActionData(actionIds.openRevealAll, undefined),
 			)
 			.row()
 	} else {
 		keyboard
 			.text(
-				'Enter Rips',
+				labels.ENTER_RIPS,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
@@ -113,7 +114,7 @@ function buildKeyboard(unopenedCount: number): InlineKeyboard {
 
 	keyboard
 		.text(
-			'View Collection',
+			labels.VIEW_COLLECTION,
 			buildActionData(actionIds.openCardCollection, undefined),
 		)
 		.row()

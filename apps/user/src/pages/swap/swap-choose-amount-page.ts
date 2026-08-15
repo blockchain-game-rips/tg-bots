@@ -11,6 +11,7 @@ import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
+import * as labels from '../../utils/button-labels'
 
 interface Draft {
 	srcBalance: CurrencyAmountDtoOutput
@@ -57,14 +58,14 @@ function formatAmount(amount: CurrencyAmountDtoOutput): string {
 function buildKeyboard(): InlineKeyboard {
 	const keyboard = new InlineKeyboard()
 		.text(
-			'Max',
+			labels.MAX,
 			buildActionData(actionIds.openSwapCheckoutFromAmount, {
 				kind: 'max',
 			}),
 		)
 		.row()
 		.text(
-			'Custom amount',
+			labels.CUSTOM_AMOUNT,
 			buildActionData(actionIds.promptSwapAmount, undefined),
 		)
 

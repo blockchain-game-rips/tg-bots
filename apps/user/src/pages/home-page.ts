@@ -10,6 +10,7 @@ import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../actions'
 import { PageContent } from '../types'
+import * as labels from '../utils/button-labels'
 
 const WELCOME_HEADER = fmt`👋 ${FormattedString.b('Welcome to Rips')}`
 
@@ -70,33 +71,36 @@ export const HomePage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'🎮 Enter Rips',
+				labels.ENTER_RIPS,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
 			.text(
-				'🎁 Open Pulls',
+				labels.OPEN_PULLS,
 				buildActionData(actionIds.openOpenPulls, undefined),
 			)
 			.row()
 			.text(
-				'📊 My Rips',
+				labels.MY_RIPS,
 				buildActionData(actionIds.openMyRips, undefined),
 			)
 			.row()
 			.text(
-				'🃏 Collection',
+				labels.COLLECTION,
 				buildActionData(actionIds.openCardCollection, undefined),
 			)
 			.row()
-			.text('💼 Wallet', buildActionData(actionIds.openWallet, undefined))
+			.text(
+				labels.WALLET,
+				buildActionData(actionIds.openWallet, undefined),
+			)
 			.row()
 			.text(
-				'👥 Referrals',
+				labels.REFERRALS,
 				buildActionData(actionIds.openReferral, undefined),
 			)
 			.row()
-			.text('ℹ️ About', buildActionData(actionIds.openAbout, undefined))
+			.text(labels.ABOUT, buildActionData(actionIds.openAbout, undefined))
 
 		return { message: joinLines(lines), keyboard }
 	},

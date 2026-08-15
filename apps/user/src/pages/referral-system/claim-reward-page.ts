@@ -10,6 +10,7 @@ import { currencyAmountDisplayParts, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { currencyToChainName } from '../../utils/chain'
 import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -81,14 +82,14 @@ function buildKeyboard(
 
 	if (isFeeCovered) {
 		keyboard.text(
-			'Claim',
+			labels.CLAIM,
 			buildActionData(actionIds.executeReferralWithdrawReward, undefined),
 		)
 	} else {
 		const { currency } = args.nativeBalance
 
 		keyboard.text(
-			`Deposit ${currencyLabel(currency)}`,
+			labels.depositCurrencyLabel(currencyLabel(currency)),
 			buildActionData(
 				actionIds.openDepositAddress,
 				currency.chainAddress,

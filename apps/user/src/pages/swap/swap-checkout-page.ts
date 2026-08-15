@@ -21,6 +21,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -185,8 +186,8 @@ function buildKeyboard(
 
 	if (isSufficientAmounts(insufficientAmounts)) {
 		const buttonText = isSamechain(args.quote)
-			? 'Confirm Swap'
-			: 'Confirm Bridge'
+			? labels.CONFIRM_SWAP
+			: labels.CONFIRM_BRIDGE
 
 		keyboard
 			.text(buttonText, buildActionData(actionIds.executeSwap, undefined))
@@ -195,7 +196,7 @@ function buildKeyboard(
 
 	return keyboard
 		.text(
-			'Change Amount',
+			labels.CHANGE_AMOUNT,
 			buildActionData(
 				actionIds.openSwapChooseAmount,
 				dstCurrency.chainAddress,
@@ -203,7 +204,7 @@ function buildKeyboard(
 		)
 		.row()
 		.text(
-			'Change Destination',
+			labels.CHANGE_DESTINATION,
 			buildActionData(
 				actionIds.openSwapChooseDstChain,
 				srcBalance.currency.chainAddress,
@@ -211,7 +212,7 @@ function buildKeyboard(
 		)
 		.row()
 		.text(
-			'Change Source',
+			labels.CHANGE_SOURCE,
 			buildActionData(actionIds.openSwapChooseSrcChain, undefined),
 		)
 		.row()

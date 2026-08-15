@@ -2,6 +2,7 @@ import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 export const ExportKeyWarningPage = {
 	render(): PageContent {
@@ -15,7 +16,7 @@ export const ExportKeyWarningPage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'I Understand, Show Private Key',
+				labels.SHOW_PRIVATE_KEY,
 				buildActionData(actionIds.openExportKey, undefined),
 			)
 			.row()

@@ -9,6 +9,7 @@ import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 export const UserCompletedRipPage = {
 	render(rip: RipDtoOutput): PageContent {
@@ -21,7 +22,7 @@ export const UserCompletedRipPage = {
 		]
 
 		const keyboard = new InlineKeyboard().text(
-			'🎁 Open Pulls',
+			labels.OPEN_PULLS,
 			buildActionData(actionIds.openOpenPullsNoBack, undefined),
 		)
 

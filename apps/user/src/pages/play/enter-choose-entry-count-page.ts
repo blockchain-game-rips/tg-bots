@@ -15,6 +15,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
+import * as labels from '../../utils/button-labels'
 
 export const EnterChooseEntryCountPage = {
 	renderFreshDraft(availablePreset: AvailablePresetDtoOutput): PageContent {
@@ -103,7 +104,7 @@ function buildKeyboard(mode: EntryCountMode): InlineKeyboard {
 			.row()
 
 	keyboard.text(
-		'Custom Amount',
+		labels.CUSTOM_AMOUNT,
 		buildActionData(actionIds.promptEntryCount, undefined),
 	)
 

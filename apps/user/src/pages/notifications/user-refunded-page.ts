@@ -9,6 +9,7 @@ import { configName } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 export const UserRefundedRipPage = {
 	render(rip: RipDtoOutput): PageContent {
@@ -22,7 +23,7 @@ export const UserRefundedRipPage = {
 		]
 
 		const keyboard = new InlineKeyboard().text(
-			'💼 Wallet',
+			labels.WALLET,
 			buildActionData(actionIds.openWallet, undefined),
 		)
 

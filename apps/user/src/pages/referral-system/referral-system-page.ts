@@ -11,6 +11,7 @@ import {
 	hasClaimableReward,
 } from '../../domain/referral-reward'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { referralBreadcrumb } from '../../utils/display/breadcrumb'
 
 const INTRO =
@@ -93,15 +94,15 @@ function buildKeyboard(
 	const shareUrl = `${TELEGRAM_SHARE_URL}?url=${encodeURIComponent(referralLink)}`
 
 	const keyboard = new InlineKeyboard()
-		.copyText('Copy Referral Link', referralLink)
+		.copyText(labels.COPY_REFERRAL_LINK, referralLink)
 		.row()
-		.url('Share Referral Link', shareUrl)
+		.url(labels.SHARE_REFERRAL_LINK, shareUrl)
 		.row()
 
 	if (isClaimable) {
 		keyboard
 			.text(
-				'Claim Rewards',
+				labels.CLAIM_REWARDS,
 				buildActionData(
 					actionIds.openReferralWithdrawReward,
 					undefined,
@@ -112,7 +113,7 @@ function buildKeyboard(
 
 	return keyboard
 		.text(
-			'Referral Tiers',
+			labels.REFERRAL_TIERS,
 			buildActionData(actionIds.openReferralTiers, undefined),
 		)
 		.appendNavButtons()

@@ -17,6 +17,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { bestPull, bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
 
@@ -178,7 +179,7 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 	if (variant.group === RipStatusGroup.FILLING) {
 		keyboard
 			.text(
-				'Enter Rip',
+				labels.ENTER_RIP,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
@@ -187,12 +188,12 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 	if (variant.group === RipStatusGroup.COMPLETED) {
 		keyboard
 			.text(
-				'View Pulls',
+				labels.VIEW_PULLS,
 				buildActionData(actionIds.openViewPulls, rip.id),
 			)
 			.row()
 			.text(
-				'Enter Again',
+				labels.ENTER_AGAIN,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()
@@ -201,7 +202,7 @@ function buildKeyboard(variant: RipDetailVariant): InlineKeyboard {
 	if (variant.group === RipStatusGroup.REFUNDED) {
 		keyboard
 			.text(
-				'Enter Again',
+				labels.ENTER_AGAIN,
 				buildActionData(actionIds.openChoosePreset, undefined),
 			)
 			.row()

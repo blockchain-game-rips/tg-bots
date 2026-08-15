@@ -4,6 +4,7 @@ import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 import {
 	TransactionOutcome,
@@ -71,16 +72,19 @@ function statusLine(filledEntries: number, entryCap: number): string {
 function buildKeyboard(ripId: number): InlineKeyboard {
 	return new InlineKeyboard()
 		.text(
-			'View Rip Status',
+			labels.VIEW_RIP_STATUS,
 			buildActionData(actionIds.openRipStatus, ripId),
 		)
 		.row()
 		.text(
-			'Enter Again',
+			labels.ENTER_AGAIN,
 			buildActionData(actionIds.openChoosePreset, undefined),
 		)
 		.row()
-		.text('Open Pulls', buildActionData(actionIds.openOpenPulls, undefined))
+		.text(
+			labels.OPEN_PULLS,
+			buildActionData(actionIds.openOpenPulls, undefined),
+		)
 		.row()
 		.appendHomeButton()
 }

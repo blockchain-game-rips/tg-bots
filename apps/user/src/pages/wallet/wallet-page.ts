@@ -12,6 +12,7 @@ import { actionIds } from '../../actions'
 import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
 import { PageContent } from '../../types'
 import { currencyToChain } from '@rips/shared'
+import * as labels from '../../utils/button-labels'
 import { chainToEmoji, chainToName } from '../../utils/chain'
 
 function isZeroAmount(balance: CurrencyAmountDtoOutput): boolean {
@@ -111,25 +112,28 @@ export const WalletPage = {
 		]
 
 		const keyboard = new InlineKeyboard()
-			.text('Deposit', buildActionData(actionIds.openDeposit, undefined))
+			.text(
+				labels.DEPOSIT,
+				buildActionData(actionIds.openDeposit, undefined),
+			)
 			.row()
 			.text(
-				'Withdraw',
+				labels.WITHDRAW,
 				buildActionData(actionIds.openWithdrawChooseChain, undefined),
 			)
 			.row()
 			.text(
-				'Bridge / Swap',
+				labels.BRIDGE_SWAP,
 				buildActionData(actionIds.openSwapChooseSrcChain, undefined),
 			)
 			.row()
 			.text(
-				'Export Private Key',
+				labels.EXPORT_PRIVATE_KEY,
 				buildActionData(actionIds.openExportKeyWarning, undefined),
 			)
 			.row()
 			.text(
-				'Refresh Balances',
+				labels.REFRESH_BALANCES,
 				buildActionData(actionIds.openWallet, undefined),
 			)
 			.row()

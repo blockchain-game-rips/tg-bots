@@ -7,6 +7,7 @@ import { PageContent } from '../../types'
 import { currencyToChain } from '@rips/shared'
 import { chainToName } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
+import * as labels from '../../utils/button-labels'
 
 export const WithdrawChooseAmountPage = {
 	render(balance: CurrencyAmountDtoOutput): PageContent {
@@ -23,14 +24,14 @@ export const WithdrawChooseAmountPage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'Withdraw Max',
+				labels.WITHDRAW_MAX,
 				buildActionData(actionIds.openWithdrawFromAmount, {
 					kind: 'max',
 				}),
 			)
 			.row()
 			.text(
-				'Custom amount',
+				labels.CUSTOM_AMOUNT,
 				buildActionData(actionIds.promptWithdrawAmount, undefined),
 			)
 			.row()

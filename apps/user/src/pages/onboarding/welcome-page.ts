@@ -7,6 +7,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 
 export const WelcomePage = {
 	render(): PageContent {
@@ -23,12 +24,12 @@ export const WelcomePage = {
 
 		const keyboard = new InlineKeyboard()
 			.text(
-				'Create new account',
+				labels.CREATE_NEW_ACCOUNT,
 				buildActionData(actionIds.chooseCreateAccount, undefined),
 			)
 			.row()
 			.text(
-				'Import private key',
+				labels.IMPORT_PRIVATE_KEY,
 				buildActionData(actionIds.startImportKey, undefined),
 			)
 

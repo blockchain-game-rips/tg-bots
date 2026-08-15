@@ -20,6 +20,7 @@ import {
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
+import * as labels from '../../utils/button-labels'
 import { chainToName, currencyToChainName } from '../../utils/chain'
 import { withdrawBreadcrumb } from '../../utils/display/breadcrumb'
 
@@ -226,7 +227,7 @@ function buildKeyboard(
 	if (args.kind === 'quoted' && isSufficientAmounts(insufficientAmounts)) {
 		keyboard
 			.text(
-				'Confirm Withdrawal',
+				labels.CONFIRM_WITHDRAWAL,
 				buildActionData(actionIds.executeWithdraw, undefined),
 			)
 			.row()
@@ -236,12 +237,12 @@ function buildKeyboard(
 
 	return keyboard
 		.text(
-			'Enter Amount',
+			labels.ENTER_AMOUNT,
 			buildActionData(actionIds.openWithdrawChooseAmount, undefined),
 		)
 		.row()
 		.text(
-			'Enter Recipient',
+			labels.ENTER_RECIPIENT,
 			buildActionData(actionIds.promptWithdrawRecipient, undefined),
 		)
 		.appendNavButtons()
@@ -263,7 +264,7 @@ function appendDepositButton(
 
 	keyboard
 		.text(
-			`Deposit ${currencyLabel(currency)}`,
+			labels.depositCurrencyLabel(currencyLabel(currency)),
 			buildActionData(
 				actionIds.openDepositAddress,
 				currency.chainAddress,

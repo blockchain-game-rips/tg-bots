@@ -608,7 +608,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionDto_Output"
+                  "$ref": "#/components/schemas/CreateWithdrawalResponseDto_Output"
                 }
               }
             }
@@ -1806,7 +1806,85 @@
         "type": "object",
         "properties": {
           "transaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
@@ -2188,6 +2266,96 @@
           "recipientAddress"
         ]
       },
+      "CreateWithdrawalResponseDto_Output": {
+        "type": "object",
+        "properties": {
+          "withdrawal": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
+          }
+        },
+        "required": [
+          "withdrawal"
+        ],
+        "additionalProperties": false
+      },
       "QuoteSwapBodyDto": {
         "type": "object",
         "properties": {
@@ -2367,44 +2535,384 @@
       "SwapResponseDto_Output": {
         "type": "object",
         "properties": {
-          "zapId": {
-            "type": "string"
+          "approval": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ],
+            "nullable": true
           },
-          "srcTransaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
-          },
-          "amountIn": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
-          },
-          "fee": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
-          },
-          "durationMs": {
-            "type": "number"
+          "zap": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "zapId": {
+                        "type": "string"
+                      },
+                      "amountIn": {
+                        "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                      },
+                      "fee": {
+                        "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                      },
+                      "durationMs": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "zapId",
+                      "amountIn",
+                      "fee",
+                      "durationMs"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "zapId",
-          "srcTransaction",
-          "amountIn",
-          "fee",
-          "durationMs"
+          "approval",
+          "zap"
         ],
         "additionalProperties": false
       },
       "SwapSamechainResponseDto_Output": {
         "type": "object",
         "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
+          "approval": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ],
+            "nullable": true
           },
-          "amountOut": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+          "swap": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "amountOut": {
+                        "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                      }
+                    },
+                    "required": [
+                      "amountOut"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "transaction",
-          "amountOut"
+          "approval",
+          "swap"
         ],
         "additionalProperties": false
       },
@@ -2889,25 +3397,112 @@
       "BuyEntriesPurchaseResponseDto_Output": {
         "type": "object",
         "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
-          },
-          "ripId": {
-            "type": "number"
-          },
-          "entryCount": {
-            "type": "number"
-          },
-          "startEntryIndex": {
-            "type": "number",
-            "description": "Index of the first entry bought. This purchase owns entries startEntryIndex through startEntryIndex + entryCount - 1."
+          "purchase": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "ripId": {
+                        "type": "number"
+                      },
+                      "entryCount": {
+                        "type": "number"
+                      },
+                      "startEntryIndex": {
+                        "type": "number",
+                        "description": "Index of the first entry bought. This purchase owns entries startEntryIndex through startEntryIndex + entryCount - 1."
+                      }
+                    },
+                    "required": [
+                      "ripId",
+                      "entryCount",
+                      "startEntryIndex"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "transaction",
-          "ripId",
-          "entryCount",
-          "startEntryIndex"
+          "purchase"
         ],
         "additionalProperties": false
       },
@@ -3020,53 +3615,393 @@
       "BuyEntriesZapResponseDto_Output": {
         "type": "object",
         "properties": {
-          "zapId": {
-            "type": "string"
+          "approval": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ],
+            "nullable": true
           },
-          "srcTransaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
-          },
-          "amountIn": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
-          },
-          "fee": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
-          },
-          "durationMs": {
-            "type": "number"
+          "zap": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "zapId": {
+                        "type": "string"
+                      },
+                      "amountIn": {
+                        "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                      },
+                      "fee": {
+                        "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                      },
+                      "durationMs": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "zapId",
+                      "amountIn",
+                      "fee",
+                      "durationMs"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "zapId",
-          "srcTransaction",
-          "amountIn",
-          "fee",
-          "durationMs"
+          "approval",
+          "zap"
         ],
         "additionalProperties": false
       },
       "BuyEntriesZapSamechainResponseDto_Output": {
         "type": "object",
         "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
+          "approval": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ],
+            "nullable": true
           },
-          "ripId": {
-            "type": "number"
-          },
-          "entryCount": {
-            "type": "number"
-          },
-          "startEntryIndex": {
-            "type": "number",
-            "description": "Index of the first entry bought. This purchase owns entries startEntryIndex through startEntryIndex + entryCount - 1."
+          "enter": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "ripId": {
+                        "type": "number"
+                      },
+                      "entryCount": {
+                        "type": "number"
+                      },
+                      "startEntryIndex": {
+                        "type": "number",
+                        "description": "Index of the first entry bought. This purchase owns entries startEntryIndex through startEntryIndex + entryCount - 1."
+                      }
+                    },
+                    "required": [
+                      "ripId",
+                      "entryCount",
+                      "startEntryIndex"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "transaction",
-          "ripId",
-          "entryCount",
-          "startEntryIndex"
+          "approval",
+          "enter"
         ],
         "additionalProperties": false
       },
@@ -3605,16 +4540,94 @@
       "WithdrawRewardResponseDto_Output": {
         "type": "object",
         "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionDto_Output"
-          },
-          "amount": {
-            "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+          "withdrawal": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "not-sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Nothing reached the chain. No gas was spent. Safe to retry."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "succeeded"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/CurrencyAmountDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction",
+                  "result"
+                ],
+                "additionalProperties": false,
+                "description": "Mined successfully."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "reverted"
+                    ]
+                  },
+                  "transaction": {
+                    "$ref": "#/components/schemas/TransactionDto_Output"
+                  }
+                },
+                "required": [
+                  "status",
+                  "transaction"
+                ],
+                "additionalProperties": false,
+                "description": "Mined and reverted. The gas was spent."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  "transactionId": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "status",
+                  "transactionId"
+                ],
+                "additionalProperties": false,
+                "description": "The outcome was lost. Reconcile against the chain before retrying."
+              }
+            ]
           }
         },
         "required": [
-          "transaction",
-          "amount"
+          "withdrawal"
         ],
         "additionalProperties": false
       },

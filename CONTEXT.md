@@ -93,6 +93,10 @@ _Avoid_: Flow data, form state, wizard state
 Fetched data held so a page need not ask for it again — balances per user, presets for everyone. Read through on every render, so a page always states what the cache currently says rather than what it said when the page was first opened. Kept fresh by explicit invalidation wherever the bot moves funds, with a TTL as the floor under everything it cannot see.
 _Avoid_: Store, snapshot
 
+**Workspace**:
+Everything the bot remembers behind one of its messages — the flow with its draft, the back trail, and any prompt awaiting a reply. Identified by the message it lives behind, so a chat can hold several at once and each carries its own flow: one message assembling a withdrawal while another browses rips. Independent to the point that two can await typed input at the same time.
+_Avoid_: Tab, window, message state
+
 **Session**:
-Everything the bot remembers about one chat between updates — the current flow with its draft, and the back trail. In memory only, so nothing outlives a restart.
+Every workspace one chat holds, up to a fixed few. A workspace is born with the message a `/start` sends — the only gesture that opens one, since buttons edit the message they sit on — and the least recently used is dropped to make room once the chat is full. In memory only, so nothing outlives a restart. Dropping is silent: pressing a button on a message whose workspace is gone starts an empty one behind it, which reads like the bot was reloaded, so the press lands on the home page and anything mid-flow says it is no longer available.
 _Avoid_: Context, user state

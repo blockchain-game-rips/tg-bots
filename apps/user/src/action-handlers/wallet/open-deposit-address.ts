@@ -1,5 +1,7 @@
 import { ChainAddressDtoOutput, usersControllerGetUser } from '@rips/api-client'
+import { buildActionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../action-def'
+import { actionIds } from '../../actions'
 import { Flow, toHold } from '../../flows'
 import { DepositAddressPage } from '../../pages/wallet/deposit-address-page'
 import { EffectType, HandlerResult } from '../../types'
@@ -8,6 +10,12 @@ import { currencyChainAddressCodec } from '../../utils/currency'
 import { addressQrInputFile } from '../../utils/qr'
 import { evmAddressFromUser } from '../../utils/wallet'
 
+/**
+ * Showing, hiding and refreshing the QR are states of one page, so all four
+ * actions record the same entry and dedupe against each other. Without this the
+ * back trail grows by one entry per toggle and back walks those instead of
+ * leaving the page.
+ */
 async function renderDepositAddress(
 	telegramId: string,
 	currencyChainAddress: ChainAddressDtoOutput,
@@ -27,6 +35,12 @@ async function renderDepositAddress(
 		effect: {
 			type: EffectType.NAVIGATE,
 			page: DepositAddressPage.render({ balance, depositAddress, qr }),
+			history: {
+				replayWith: buildActionData(
+					actionIds.openDepositAddress,
+					currencyChainAddress,
+				),
+			},
 		},
 	}
 }

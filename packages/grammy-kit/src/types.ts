@@ -31,13 +31,28 @@ export enum EffectType {
 	LOADING,
 }
 
+/**
+ * How a navigation is written to the back trail. A page entry stores the
+ * rendered page, so `replayWith` is meaningless there and the union forbids it.
+ */
+export type HistoryOptions =
+	| { kind: 'page'; clears?: boolean }
+	| {
+			kind?: 'action'
+			clears?: boolean
+
+			/**
+			 * Records this action instead of the one that ran, so back
+			 * re-renders the page without repeating a mutation or replaying a
+			 * secret payload.
+			 */
+			replayWith?: ActionId
+	  }
+
 export interface EffectNavigate {
 	type: EffectType.NAVIGATE
 	page: PageContent
-	history?: {
-		kind?: 'action' | 'page'
-		clears?: boolean
-	}
+	history?: HistoryOptions
 }
 
 export interface EffectAsk {

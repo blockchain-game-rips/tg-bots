@@ -129,14 +129,13 @@ async function performEffect(
 function commitSessionChange(
 	session: SessionData,
 	change: SessionChange,
-	actionIsSensitive: boolean,
 ): void {
 	if (change.kind !== 'stay') applyFlowTransition(session, change.flow)
 
 	session.lastAsk = change.kind === 'ask' ? change.lastAsk : null
 
 	if (change.kind === 'page') {
-		recordPage(session, change.action, change.effect, { actionIsSensitive })
+		recordPage(session, change.action, change.effect)
 	}
 }
 
@@ -184,11 +183,7 @@ export async function executeEffectOrDisplayError(
 
 		const change = await performEffect(api, chatId, message, result, action)
 
-		commitSessionChange(
-			session,
-			change,
-			actions[action.actionId]?.sensitive === true,
-		)
+		commitSessionChange(session, change)
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 
@@ -196,7 +191,7 @@ export async function executeEffectOrDisplayError(
 
 		fireAndForget(deliverPage(api, chatId, message, errorPage))
 
-		commitSessionChange(session, STAYED_PUT, false)
+		commitSessionChange(session, STAYED_PUT)
 	} finally {
 		if (messagesToDelete.length !== 0) {
 			fireAndForget(api.deleteMessages(chatId, messagesToDelete))

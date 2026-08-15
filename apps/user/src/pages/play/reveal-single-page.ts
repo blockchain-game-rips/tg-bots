@@ -10,6 +10,7 @@ import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { PageContent } from '../../types'
 import { row } from '../../utils/page-row'
+import { REVEAL_RESULT_SLOT } from './reveal-result-slot'
 import { tierByIndex } from '../../utils/tiers'
 
 const FLAVOUR_COPY = '🔥 Nice pull'
@@ -81,6 +82,7 @@ export const RevealSinglePage = {
 		return {
 			message: joinLines(lines),
 			keyboard: buildKeyboard(unopenedCount),
+			trailSlot: REVEAL_RESULT_SLOT,
 		}
 	},
 }

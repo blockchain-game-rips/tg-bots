@@ -10,6 +10,7 @@ import { currencyAmountDisplayParts, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
 import { actionIds } from '../../actions'
 import { RevealSummary } from '../../domain/reveal-summary'
+import { REVEAL_RESULT_SLOT } from './reveal-result-slot'
 import { PageContent } from '../../types'
 import { bestPullLabel } from '../../utils/best-pull'
 import { row } from '../../utils/page-row'
@@ -104,6 +105,7 @@ export const RevealAllPage = {
 		return {
 			message: joinLines(lines),
 			keyboard: buildKeyboard(),
+			trailSlot: REVEAL_RESULT_SLOT,
 		}
 	},
 }

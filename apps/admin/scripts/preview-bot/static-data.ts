@@ -248,25 +248,33 @@ export const mockReferrerData: GetReferrerResponseDtoOutput = {
 }
 
 export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
-	transaction: {
-		id: '0xghi789',
-		cost: { currency: mockEth, amount: '210000000000000' },
-		chain: mockChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	withdrawal: {
+		status: 'succeeded',
+		transaction: {
+			id: '0xghi789',
+			cost: { currency: mockEth, amount: '210000000000000' },
+			chain: mockChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: { currency: mockEth, amount: '12000000000000000' },
 	},
-	amount: { currency: mockEth, amount: '12000000000000000' },
 }
 
 export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
-	transaction: {
-		id: '0xabc123',
-		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
-		chain: mockChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	purchase: {
+		status: 'succeeded',
+		transaction: {
+			id: '0xabc123',
+			cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
+			chain: mockChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: {
+			ripId: 1,
+			entryCount: 3,
+			startEntryIndex: 0,
+		},
 	},
-	ripId: 1,
-	entryCount: 3,
-	startEntryIndex: 0,
 }
 
 const mockUsdc = {

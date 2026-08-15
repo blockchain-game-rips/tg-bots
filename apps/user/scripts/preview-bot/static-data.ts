@@ -1304,26 +1304,37 @@ const mockSwapSrcTxId = '0xecc4a1c2b3d4e5f60718293a4b5c6d7e8f9012345678d3bf'
 const mockSwapDstTxId = '0x1a2b3c4d5e6f708192a3b4c5d6e7f80912345678aabbccdd'
 
 export const mockSwapSamechainResult: SwapSamechainResponseDtoOutput = {
-	transaction: {
-		id: mockSwapSrcTxId,
-		cost: mockEthArbNetworkFee,
-		chain: mockArbNativeChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	approval: null,
+	swap: {
+		status: 'succeeded',
+		transaction: {
+			id: mockSwapSrcTxId,
+			cost: mockEthArbNetworkFee,
+			chain: mockArbNativeChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		// ~24.9 USDC on Arbitrum
+		result: { amountOut: { currency: mockUsdcArb, amount: '24900000' } },
 	},
-	amountOut: { currency: mockUsdcArb, amount: '24900000' }, // ~24.9 USDC on Arbitrum
 }
 
 export const mockSwapCrosschainResponse: SwapResponseDtoOutput = {
-	zapId: 'swap_abc123',
-	srcTransaction: {
-		id: mockSwapSrcTxId,
-		cost: mockEthArbNetworkFee,
-		chain: mockArbNativeChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	approval: null,
+	zap: {
+		status: 'succeeded',
+		transaction: {
+			id: mockSwapSrcTxId,
+			cost: mockEthArbNetworkFee,
+			chain: mockArbNativeChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: {
+			zapId: 'swap_abc123',
+			amountIn: mockUsdcArbWithdrawAmount,
+			fee: mockSwapBridgeFee,
+			durationMs: SWAP_DURATION_MS,
+		},
 	},
-	amountIn: mockUsdcArbWithdrawAmount,
-	fee: mockSwapBridgeFee,
-	durationMs: SWAP_DURATION_MS,
 }
 
 export const mockSwapCrosschainSuccessResult: NonNullable<
@@ -1411,25 +1422,33 @@ export const mockEthBalanceBelowRewardFee: CurrencyAmountDtoOutput = {
 }
 
 export const mockWithdrawRewardResponse: WithdrawRewardResponseDtoOutput = {
-	transaction: {
-		id: '0xghi789',
-		cost: { currency: mockEth, amount: '210000000000000' },
-		chain: mockChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	withdrawal: {
+		status: 'succeeded',
+		transaction: {
+			id: '0xghi789',
+			cost: { currency: mockEth, amount: '210000000000000' },
+			chain: mockChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: { currency: mockEth, amount: '12000000000000000' },
 	},
-	amount: { currency: mockEth, amount: '12000000000000000' },
 }
 
 export const mockPurchase: BuyEntriesPurchaseResponseDtoOutput = {
-	transaction: {
-		id: '0xabc123',
-		cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
-		chain: mockChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	purchase: {
+		status: 'succeeded',
+		transaction: {
+			id: '0xabc123',
+			cost: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH gas
+			chain: mockChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: {
+			ripId: 1,
+			entryCount: 3,
+			startEntryIndex: 0,
+		},
 	},
-	ripId: 1,
-	entryCount: 3,
-	startEntryIndex: 0,
 }
 
 // Samechain settles in a single Base transaction like a direct purchase; a
@@ -1498,19 +1517,63 @@ export const mockZapSuccessResult: NonNullable<
 	startEntryIndex: 0,
 }
 
+/**
+ * The previews only ever show the happy path, so each fixture's succeeded
+ * branch is unwrapped once here rather than at every render site.
+ */
+function isSucceeded<T extends { status: string }>(
+	step: T,
+): step is Extract<T, { status: 'succeeded' }> {
+	return step.status === 'succeeded'
+}
+
+function succeeded<T extends { status: string }>(
+	step: T,
+): Extract<T, { status: 'succeeded' }> {
+	if (!isSucceeded(step)) {
+		throw new Error(
+			`Expected a succeeded preview fixture, got ${step.status}`,
+		)
+	}
+
+	return step
+}
+
+export const mockPurchaseSucceeded = succeeded(mockPurchase.purchase)
+
+export const mockWithdrawRewardSucceeded = succeeded(
+	mockWithdrawRewardResponse.withdrawal,
+)
+
+export const mockSwapSamechainSucceeded = succeeded(
+	mockSwapSamechainResult.swap,
+)
+
+export const mockSwapCrosschainSucceeded = succeeded(
+	mockSwapCrosschainResponse.zap,
+)
+
 // Crosschain zap submit — source tx on Arbitrum, paid in Arbitrum USDC.
 export const mockZapSubmit: BuyEntriesZapResponseDtoOutput = {
-	zapId: 'zap-1',
-	srcTransaction: {
-		id: '0x789abc',
-		cost: { currency: mockEthArb, amount: '100000000000000' },
-		chain: mockArbNativeChainAddress.chain,
-		senderAddress: MOCK_SENDER_ADDRESS,
+	approval: null,
+	zap: {
+		status: 'succeeded',
+		transaction: {
+			id: '0x789abc',
+			cost: { currency: mockEthArb, amount: '100000000000000' },
+			chain: mockArbNativeChainAddress.chain,
+			senderAddress: MOCK_SENDER_ADDRESS,
+		},
+		result: {
+			zapId: 'zap-1',
+			amountIn: { currency: mockUsdcArb, amount: '13500000' },
+			fee: { currency: mockEthArb, amount: '1000000000000000' },
+			durationMs: 45000,
+		},
 	},
-	amountIn: { currency: mockUsdcArb, amount: '13500000' },
-	fee: { currency: mockEthArb, amount: '1000000000000000' },
-	durationMs: 45000,
 }
+
+export const mockZapSucceeded = succeeded(mockZapSubmit.zap)
 
 export const mockPurchaseQuote: QuotePurchaseResponseDtoOutput = {
 	blockchainFee: { currency: mockEth, amount: '210000000000000' }, // ~0.00021 ETH

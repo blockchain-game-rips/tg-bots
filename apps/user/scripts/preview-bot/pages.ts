@@ -79,7 +79,7 @@ import {
 	mockOngoingAvailablePresets,
 	mockOngoingRips,
 	mockPaymentTokenBalances,
-	mockPurchase,
+	mockPurchaseSucceeded,
 	mockPurchaseQuote,
 	mockReceiverAddress,
 	mockReferrerData,
@@ -94,10 +94,10 @@ import {
 	mockRip,
 	mockSufficientBalance,
 	mockSwapCrosschainQuote,
-	mockSwapCrosschainResponse,
+	mockSwapCrosschainSucceeded,
 	mockSwapCrosschainSuccessResult,
 	mockSwapSamechainQuote,
-	mockSwapSamechainResult,
+	mockSwapSamechainSucceeded,
 	mockTierTables,
 	mockUsdcArb,
 	mockUsdcArbBalance,
@@ -112,7 +112,7 @@ import {
 	mockWalletBalances,
 	mockWithdrawAmount,
 	mockWithdrawRewardQuote,
-	mockWithdrawRewardResponse,
+	mockWithdrawRewardSucceeded,
 	mockWithdrawTransaction,
 	mockZapCurrencyInBalance,
 	mockZapQuote,
@@ -122,7 +122,7 @@ import {
 	mockZapSamechainTransaction,
 	mockZapSrcBalanceInsufficient,
 	mockZapSrcBalanceSufficient,
-	mockZapSubmit,
+	mockZapSucceeded,
 	mockZapSuccessResult,
 	mockZeroBalance,
 } from './static-data'
@@ -166,14 +166,14 @@ function mockTransactions(variant: string): TransactionOutcome {
 	if (variant === 'crosschain')
 		return {
 			kind: 'crosschain',
-			srcTransaction: mockZapSubmit.srcTransaction,
+			srcTransaction: mockZapSucceeded.transaction,
 			dstTransaction: mockZapSuccessResult.dstTransaction,
 		}
 
 	const transaction =
 		variant === 'samechain'
 			? mockZapSamechainTransaction
-			: mockPurchase.transaction
+			: mockPurchaseSucceeded.transaction
 
 	return { kind: 'singleChain', transaction }
 }
@@ -482,9 +482,10 @@ export const pages: Record<string, PageEntry> = {
 				entryPrice: config.entryPrice,
 				entryCap: config.entryCap,
 				filledEntries:
-					mockPurchase.startEntryIndex + mockPurchase.entryCount,
-				ripId: mockPurchase.ripId,
-				entryCount: mockPurchase.entryCount,
+					mockPurchaseSucceeded.result.startEntryIndex +
+					mockPurchaseSucceeded.result.entryCount,
+				ripId: mockPurchaseSucceeded.result.ripId,
+				entryCount: mockPurchaseSucceeded.result.entryCount,
 				transactions: mockTransactions(resolvedVariant),
 			})
 		},
@@ -884,13 +885,15 @@ export const pages: Record<string, PageEntry> = {
 			if (resolveVariant(this, variant) === 'samechain')
 				return SwapSuccessPage.render({
 					kind: 'samechain',
-					result: mockSwapSamechainResult,
+					amountOut: mockSwapSamechainSucceeded.result.amountOut,
+					transaction: mockSwapSamechainSucceeded.transaction,
 				})
 
 			return SwapSuccessPage.render({
 				kind: 'crosschain',
-				swapResponse: mockSwapCrosschainResponse,
-				result: mockSwapCrosschainSuccessResult,
+				amountOut: mockSwapCrosschainSuccessResult.amountOut,
+				srcTransaction: mockSwapCrosschainSucceeded.transaction,
+				dstTransaction: mockSwapCrosschainSuccessResult.dstTransaction,
 			})
 		},
 	},
@@ -932,7 +935,10 @@ export const pages: Record<string, PageEntry> = {
 		description:
 			'Confirms a successful reward claim — shows amount, blockchain fee, and the transaction id. Home is the only navigation.',
 		render: () =>
-			WithdrawRewardSuccessPage.render(mockWithdrawRewardResponse),
+			WithdrawRewardSuccessPage.render({
+				amount: mockWithdrawRewardSucceeded.result,
+				transaction: mockWithdrawRewardSucceeded.transaction,
+			}),
 	},
 	'onboarding-welcome': {
 		description:

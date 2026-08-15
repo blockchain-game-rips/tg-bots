@@ -16,6 +16,10 @@ _Avoid_: Secret page, private page, ephemeral page
 The action a navigation records in the back trail in place of the one that actually ran, set as `replayWith` on the effect's `history`. The back trail stores actions to re-run rather than rendered pages, so an action that must not run twice — one that creates an account, or one whose payload holds a secret the user typed — names an idempotent action to stand in for it. Back then re-renders the same page with fresh data instead of repeating the mutation or replaying the secret. Declared per navigation, since only the handler knows what a safe stand-in is; a page entry (`kind: 'page'`) is the alternative when the rendered page itself should be replayed. The counterpart to a Sensitive page: one protects what is shown, the other what was typed.
 _Avoid_: Sensitive action, redirect, back target
 
+**Trail slot**:
+The position in the back trail a page occupies, declared as `trailSlot` on the page it renders. A page recorded onto another holding the same slot takes its place rather than stacking, so a screen that reopens with fresh data leaves one entry behind instead of a pile of stale ones — three reveals in a row leave one, and back reaches the hub that launched them. Shared by pages that are interchangeable as a back destination, which is why it names the slot and not the page. Only the entry currently on screen is superseded: a page reopened after navigating away is a genuine second visit and stacks. The third way a navigation shapes back, beside Sensitive page and Replay target — those decide whether an entry is written, this decides which one it lands on.
+_Avoid_: Page id, history key, dedupe key
+
 **FormattedString**:
 The canonical representation of message text: plain text plus formatting entities, from `@grammyjs/parse-mode`. Bots never build HTML markup strings; formatting is expressed as entities.
 _Avoid_: HTML string, markup string

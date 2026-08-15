@@ -2,7 +2,7 @@ import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { presetCache } from '../../../cache/preset-cache'
-import { SUPPORTED_CURRENCIES } from '../../../constants'
+import { getSupportedCurrencies } from '../../../supported-currencies'
 import { Flow, toFlow } from '../../../flows'
 import { EnterPaymentOptionsPage } from '../../../pages/play/enter-payment-options-page'
 import { EffectType, HandlerResult } from '../../../types'
@@ -38,7 +38,7 @@ async function renderPaymentOptions(
 ): Promise<HandlerResult<Flow>> {
 	const [availablePreset, balances] = await Promise.all([
 		presetCache.getOne(presetId),
-		balanceCache.get(telegramId, SUPPORTED_CURRENCIES),
+		balanceCache.get(telegramId, getSupportedCurrencies()),
 	])
 
 	return {

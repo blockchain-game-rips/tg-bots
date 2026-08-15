@@ -14,6 +14,7 @@ import { actionIds, actions } from './actions'
 import { botStartLink, setBotUsername } from './bot-identity'
 import { Flow } from './flows'
 import { Notifier } from './notifier'
+import { initSupportedCurrencies } from './supported-currencies'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
 import { installKeyboardExtensions } from './utils/keyboard'
@@ -80,6 +81,8 @@ bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
 async function start() {
+	await initSupportedCurrencies()
+
 	const me = await bot.api.getMe()
 
 	setBotUsername(me.username)

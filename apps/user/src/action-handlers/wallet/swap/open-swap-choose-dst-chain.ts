@@ -1,7 +1,7 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
 import { isFlow, SessionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../../action-def'
-import { SUPPORTED_CHAINS } from '../../../constants'
+import { getSupportedChains } from '../../../supported-currencies'
 import { Flow, toFlow, toHold } from '../../../flows'
 import { SwapChooseDstChainPage } from '../../../pages/swap/swap-choose-dst-chain-page'
 import { EffectType, HandlerResult } from '../../../types'
@@ -15,7 +15,7 @@ async function handler(
 	session: SessionData<Flow>,
 	srcChainAddress: ChainAddressDtoOutput,
 ): Promise<HandlerResult<Flow>> {
-	const dstChains = [...SUPPORTED_CHAINS]
+	const dstChains = getSupportedChains()
 
 	if (isFlow(session, 'swap', 'src-dst-amount-chosen')) {
 		const { srcChainAddress: chosenSrc, amountIn } = session.flow.data

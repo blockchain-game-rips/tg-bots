@@ -8,30 +8,26 @@ import {
 	parseChain,
 } from '@rips/shared'
 import {
-	SUPPORTED_CHAINS as SUPPORTED_CHAINS_LIST,
-	SUPPORTED_CURRENCIES,
-} from '../constants'
+	getSupportedChains,
+	getSupportedCurrencies,
+} from '../supported-currencies'
 import { chainToName } from './chain-display'
 
-export {
-	chainToEmoji,
-	chainToName,
-	chainToNameOrReference,
-} from './chain-display'
+export { chainToEmoji, chainToName } from './chain-display'
 
 export function currencyToChainName(currency: CurrencyDtoOutput): string {
 	return chainToName(currencyToChain(currency))
 }
 
 export function findChainIndex(chain: Chain): number {
-	return findChainIndexIn(chain, SUPPORTED_CHAINS_LIST)
+	return findChainIndexIn(chain, getSupportedChains())
 }
 
 export const chainCodec: PayloadCodec<Chain> = {
 	encode: (chain) => findChainIndex(chain).toString(),
-	decode: (raw) => parseChain(raw, SUPPORTED_CHAINS_LIST),
+	decode: (raw) => parseChain(raw, getSupportedChains()),
 }
 
 export function getCurrenciesForChain(chain: Chain): ChainAddressDtoOutput[] {
-	return SUPPORTED_CURRENCIES.filter((c) => isSameChain(c.chain, chain))
+	return getSupportedCurrencies().filter((c) => isSameChain(c.chain, chain))
 }

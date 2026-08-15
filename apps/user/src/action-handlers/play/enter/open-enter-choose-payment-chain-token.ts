@@ -3,7 +3,7 @@ import { assertFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { currencyCache } from '../../../cache/currency-cache'
 import { presetCache } from '../../../cache/preset-cache'
-import { SUPPORTED_CHAINS } from '../../../constants'
+import { getSupportedChains } from '../../../supported-currencies'
 import { toHold } from '../../../flows'
 import {
 	EnterChoosePaymentTokenPage,
@@ -26,7 +26,7 @@ export const openEnterChoosePaymentChain: ActionDef<void> = noPayload(
 				type: EffectType.NAVIGATE,
 				page: EnterChoosePaymentChainPage.render({
 					availablePreset,
-					chains: [...SUPPORTED_CHAINS],
+					chains: getSupportedChains(),
 				}),
 			},
 		}

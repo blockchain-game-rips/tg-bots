@@ -2,6 +2,7 @@ import {
 	ChainAddressDtoOutput,
 	createQuerySerializer,
 	currencyControllerGetCurrencies,
+	currencyControllerGetSupportedCurrencies,
 	ripsControllerGetCardCollection,
 	ripsControllerGetCardDefinitions,
 	ripsControllerGetPayouts,
@@ -45,6 +46,12 @@ export async function fetchCurrencies(chainAddresses: string[]) {
 		query: { chainAddress: chainAddresses },
 		querySerializer: chainAddressQuerySerializer,
 	})
+
+	return data.currencies
+}
+
+export async function fetchSupportedCurrencies() {
+	const { data } = await currencyControllerGetSupportedCurrencies()
 
 	return data.currencies
 }

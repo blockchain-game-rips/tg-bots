@@ -4,14 +4,14 @@ import {
 	findCurrencyIndexByAddress,
 	parseCurrencyChainAddress,
 } from '@rips/shared'
-import { SUPPORTED_CURRENCIES } from '../constants'
+import { getSupportedCurrencies } from '../supported-currencies'
 
 export function findCurrencyIndex(value: ChainAddressDtoOutput): number {
-	return findCurrencyIndexByAddress(SUPPORTED_CURRENCIES, value)
+	return findCurrencyIndexByAddress(getSupportedCurrencies(), value)
 }
 
 export const currencyChainAddressCodec: PayloadCodec<ChainAddressDtoOutput> = {
 	encode: (currencyChainAddress) =>
 		findCurrencyIndex(currencyChainAddress).toString(),
-	decode: (raw) => parseCurrencyChainAddress(raw, SUPPORTED_CURRENCIES),
+	decode: (raw) => parseCurrencyChainAddress(raw, getSupportedCurrencies()),
 }

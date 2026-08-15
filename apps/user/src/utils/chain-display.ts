@@ -10,6 +10,7 @@ const CHAIN_NAMES: Record<string, Record<string, string | undefined>> = {
 	[EIP155_NAMESPACE]: {
 		'1': 'Ethereum',
 		'56': 'BSC',
+		'137': 'Polygon',
 		'42161': 'Arbitrum',
 		'10': 'Optimism',
 		'8453': 'Base',
@@ -20,6 +21,7 @@ const CHAIN_EMOJIS: Record<string, Record<string, string | undefined>> = {
 	[EIP155_NAMESPACE]: {
 		'1': '⚫',
 		'56': '🟡',
+		'137': '🟣',
 		'42161': '🔷',
 		'10': '🔴',
 		'8453': '🔵',

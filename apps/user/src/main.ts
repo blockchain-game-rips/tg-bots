@@ -35,19 +35,6 @@ bot.use((ctx, next) => {
 bot.api.config.use(autoRetry())
 bot.api.config.use(createTelegramMetricsTransformer())
 
-const IGNORE_OLD_THRESHOLD_SECONDS = 1
-const botStartTime = Math.floor(Date.now() / 1000)
-
-bot.use((ctx, next) => {
-	const date = ctx.message?.date ?? ctx.callbackQuery?.message?.date
-
-	if (date === undefined) return next()
-
-	if (botStartTime - date > IGNORE_OLD_THRESHOLD_SECONDS) return
-
-	return next()
-})
-
 function initial(): SessionData<Flow> {
 	return {
 		telegramId: '',
@@ -80,12 +67,30 @@ bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
+const LAST_UPDATE_ONLY_OFFSET = -1
+
+async function dropPendingUpdates() {
+	const [lastUpdate] = await bot.api.getUpdates({
+		offset: LAST_UPDATE_ONLY_OFFSET,
+		timeout: 0,
+	})
+
+	if (lastUpdate === undefined) return
+
+	await bot.api.getUpdates({
+		offset: lastUpdate.update_id + 1,
+		timeout: 0,
+	})
+}
+
 async function start() {
 	await initSupportedCurrencies()
 
 	const me = await bot.api.getMe()
 
 	setBotUsername(me.username)
+
+	await dropPendingUpdates()
 
 	run(bot)
 

@@ -13,6 +13,7 @@ import {
 	fetchCardCollectionWithCounts,
 	fetchRip,
 	fetchUnrevealedPayouts,
+	toTelegramIdHeader,
 } from '../../utils/api/wrappers'
 import { playFrames } from './reveal-animation-chain'
 
@@ -32,7 +33,7 @@ export const openRevealSingle: ActionDef<void> = noPayload((session) => {
  * Reveal All, which defers here when only a single pull remains.
  */
 export async function revealSingleFrom(
-	telegramId: string,
+	telegramId: number,
 ): Promise<HandlerResult<Flow>> {
 	// Fetched before revealing: the reveal increments collection counts
 	// server-side, making new-vs-duplicate unrecoverable afterwards.
@@ -40,7 +41,7 @@ export async function revealSingleFrom(
 		await fetchCardCollectionWithCounts(telegramId)
 
 	const { data: revealData } = await ripsControllerRevealPayouts({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 		body: { revealAll: false },
 	})
 
@@ -57,7 +58,7 @@ export async function revealSingleFrom(
 }
 
 async function renderResult(
-	telegramId: string,
+	telegramId: number,
 	revealedPayout: PayoutDtoOutput,
 	preRevealCollection: CardCollection,
 	copiesBefore: Map<number, number>,

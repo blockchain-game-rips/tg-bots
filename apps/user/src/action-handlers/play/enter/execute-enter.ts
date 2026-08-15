@@ -28,7 +28,7 @@ import {
 	EnterSuccessPage,
 } from '../../../pages/play/enter-success-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchRip } from '../../../utils/api/wrappers'
+import { fetchRip, toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { TransactionOutcome } from '../../../utils/display/transaction-outcome'
 import {
 	cancelledMessage,
@@ -103,7 +103,7 @@ export const executeEnter: ActionDef<void> = noPayload((session) => {
 })
 
 async function invalidateEnterBalances(
-	telegramId: string,
+	telegramId: number,
 	body: BuyEntriesZapBodyDto,
 ): Promise<void> {
 	await balanceCache.invalidate(telegramId, [
@@ -129,12 +129,12 @@ async function toEnterSuccess(
 }
 
 async function executeOnOneChain(
-	telegramId: string,
+	telegramId: number,
 	route: Exclude<ReturnType<typeof resolvePaymentRoute>, 'crosschain'>,
 	body: BuyEntriesZapBodyDto,
 	availablePreset: AvailablePresetDtoOutput,
 ): Promise<HandlerResult<Flow>> {
-	const headers = { 'x-telegram-id': telegramId }
+	const headers = toTelegramIdHeader(telegramId)
 
 	const outcome =
 		route === 'direct'
@@ -156,13 +156,13 @@ async function executeOnOneChain(
  * the in-flight entry is about to change again.
  */
 async function sendCrosschainEnter(
-	telegramId: string,
+	telegramId: number,
 	body: BuyEntriesZapBodyDto,
 	availablePreset: AvailablePresetDtoOutput,
 ): Promise<HandlerResult<Flow>> {
 	const response = await callOrUnknown(() =>
 		ripsControllerBuyEntriesZapCrosschain({
-			headers: { 'x-telegram-id': telegramId },
+			headers: toTelegramIdHeader(telegramId),
 			body,
 		}),
 	)
@@ -202,7 +202,7 @@ async function sendCrosschainEnter(
 }
 
 async function awaitCrosschainEnter(
-	telegramId: string,
+	telegramId: number,
 	body: BuyEntriesZapBodyDto,
 	availablePreset: AvailablePresetDtoOutput,
 	zapId: string,
@@ -229,7 +229,7 @@ async function awaitCrosschainEnter(
 }
 
 function toEnterError(
-	telegramId: string,
+	telegramId: number,
 	body: BuyEntriesZapBodyDto,
 	message: string,
 ) {

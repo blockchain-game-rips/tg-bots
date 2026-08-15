@@ -3,6 +3,7 @@ import {
 	CurrencyAmountDtoOutput,
 	walletsControllerQuoteWithdraw,
 } from '@rips/api-client'
+import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { assertFlow } from '@rips/grammy-kit'
 import {
 	parseCurrencyAmount,
@@ -87,7 +88,7 @@ export const openWithdrawFromRecipient: ActionDef<string> = withPayload(
 )
 
 async function resolveAmount(
-	telegramId: string,
+	telegramId: number,
 	amountPayload: AmountPayload,
 	currencyBalance: CurrencyAmountDtoOutput,
 	recipientAddress: string | undefined,
@@ -108,7 +109,7 @@ async function resolveAmount(
 }
 
 async function resolveNativeMaxAmount(
-	telegramId: string,
+	telegramId: number,
 	currencyBalance: CurrencyAmountDtoOutput,
 	recipientAddress: string | undefined,
 ): Promise<bigint> {
@@ -135,7 +136,7 @@ async function resolveNativeMaxAmount(
  * from the back trail cannot show what the balances were when it first ran.
  */
 async function renderWithdraw(
-	telegramId: string,
+	telegramId: number,
 	draft: WithdrawDraft,
 ): Promise<HandlerResult<Flow>> {
 	return {
@@ -148,7 +149,7 @@ async function renderWithdraw(
 }
 
 export async function renderWithdrawPage(
-	telegramId: string,
+	telegramId: number,
 	draft: WithdrawDraft,
 ): Promise<PageContent> {
 	const { chainAddress, amount, recipientAddress } = draft
@@ -185,12 +186,12 @@ export async function renderWithdrawPage(
 }
 
 async function quoteWithdraw(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	recipientAddress: string,
 ) {
 	const { data } = await walletsControllerQuoteWithdraw({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 		body: {
 			amountIn: {
 				currencyChainAddress: amountIn.currency.chainAddress,

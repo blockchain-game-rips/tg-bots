@@ -21,8 +21,13 @@ const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
 })
 
+/** The api carries the telegram id as a string, the bot as a number. */
+export function toTelegramIdHeader(telegramId: number) {
+	return { 'x-telegram-id': telegramId.toString() }
+}
+
 export async function fetchBalances(
-	telegramId: string,
+	telegramId: number,
 	chainAddresses: ChainAddressDtoOutput[],
 ) {
 	const uniqueChainAddresses = chainAddresses.filter(
@@ -33,7 +38,7 @@ export async function fetchBalances(
 	)
 
 	const { data } = await walletsControllerGetBalances({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 		query: { chainAddress: uniqueChainAddresses.map(toCurrencyId) },
 		querySerializer: chainAddressQuerySerializer,
 	})
@@ -81,25 +86,25 @@ export async function fetchRip(
 	return rip
 }
 
-export async function fetchRipPayouts(telegramId: string, ripId: number) {
+export async function fetchRipPayouts(telegramId: number, ripId: number) {
 	const { data } = await ripsControllerGetPayouts({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 		query: { ripId },
 	})
 
 	return data.payouts
 }
 
-export async function fetchUnrevealedPayouts(telegramId: string) {
+export async function fetchUnrevealedPayouts(telegramId: number) {
 	const { data } = await ripsControllerGetPayouts({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 	})
 
 	return data.payouts.filter((p) => !p.revealed)
 }
 
 export async function fetchCardCollection(
-	telegramId: string,
+	telegramId: number,
 ): Promise<CardCollection> {
 	return (await fetchCardCollectionWithCounts(telegramId)).collection
 }
@@ -109,12 +114,12 @@ export async function fetchCardCollection(
  * response is returned alongside it.
  */
 export async function fetchCardCollectionWithCounts(
-	telegramId: string,
+	telegramId: number,
 ): Promise<{
 	collection: CardCollection
 	copiesBefore: Map<number, number>
 }> {
-	const headers = { 'x-telegram-id': telegramId }
+	const headers = toTelegramIdHeader(telegramId)
 
 	const [{ data: definitions }, { data: collection }] = await Promise.all([
 		ripsControllerGetCardDefinitions({ headers }),

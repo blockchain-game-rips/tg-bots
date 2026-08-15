@@ -15,7 +15,7 @@ export const openMyRips: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const { data: user } = await usersControllerGetUser({
-		path: { telegramId },
+		path: { telegramId: telegramId.toString() },
 	})
 
 	const userEvmAddress = evmAddressFromUser(user)

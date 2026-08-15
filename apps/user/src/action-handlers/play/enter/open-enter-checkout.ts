@@ -10,6 +10,7 @@ import { assertFlow } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
+import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { presetCache } from '../../../cache/preset-cache'
 import { NATIVE_ON_BASE, withNative } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
@@ -85,7 +86,7 @@ export const refreshEnterCheckout: ActionDef<void> = noPayload(
  * from the back trail cannot show what the balances were when it first ran.
  */
 async function renderCheckout(
-	telegramId: string,
+	telegramId: number,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {
 	return {
@@ -98,7 +99,7 @@ async function renderCheckout(
 }
 
 export async function renderCheckoutPage(
-	telegramId: string,
+	telegramId: number,
 	draft: CheckoutDraft,
 ): Promise<PageContent> {
 	const { presetId, entryCount, payChainAddress } = draft
@@ -123,13 +124,13 @@ export async function renderCheckoutPage(
 }
 
 async function fetchCheckoutQuote(
-	telegramId: string,
+	telegramId: number,
 	availablePreset: AvailablePresetDtoOutput,
 	draft: CheckoutDraft,
 ): Promise<CheckoutQuote> {
 	const { entryCount, payChainAddress } = draft
 
-	const headers = { 'x-telegram-id': telegramId }
+	const headers = toTelegramIdHeader(telegramId)
 	const body = {
 		presetId: availablePreset.preset.id,
 		entryCount,

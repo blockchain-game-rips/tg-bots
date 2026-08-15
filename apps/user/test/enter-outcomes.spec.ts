@@ -43,7 +43,12 @@ import { NATIVE_ON_BASE } from '../src/constants'
 
 vi.mock('../src/cache/preset-cache', () => ({ presetCache }))
 vi.mock('../src/cache/balance-cache', () => ({ balanceCache }))
-vi.mock('../src/utils/api/wrappers', () => ({ fetchRip: vi.fn() }))
+vi.mock('../src/utils/api/wrappers', () => ({
+	fetchRip: vi.fn(),
+	toTelegramIdHeader: (telegramId: number) => ({
+		'x-telegram-id': telegramId.toString(),
+	}),
+}))
 
 import { executeEnter } from '../src/action-handlers/play/enter/execute-enter'
 
@@ -72,8 +77,9 @@ const fakeApi = {
 	deleteMessages: () => Promise.resolve(true),
 }
 
+const TELEGRAM_ID = 1
+
 const session = (payChainAddress: object): SessionData => ({
-	telegramId: '1',
 	lastAsk: null,
 	flow: {
 		flowType: 'enter',
@@ -98,15 +104,16 @@ async function runEnter(
 		},
 	}
 
-	await executeEffectOrDisplayError(
-		fakeApi as unknown as Api,
-		CHAT_ID,
+	await executeEffectOrDisplayError({
+		api: fakeApi as unknown as Api,
+		chatId: CHAT_ID,
+		telegramId: TELEGRAM_ID,
 		message,
-		session(payChainAddress),
+		session: session(payChainAddress),
 		actions,
-		{ actionId: 'enter', payload: undefined },
-		page('fallback'),
-	)
+		action: { actionId: 'enter', payload: undefined },
+		fallbackPage: page('fallback'),
+	})
 
 	// the error page is delivered without being awaited
 	await Promise.resolve()

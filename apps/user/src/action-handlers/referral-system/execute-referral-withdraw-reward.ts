@@ -1,4 +1,5 @@
 import { referralSystemControllerWithdrawReward } from '@rips/api-client'
+import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { ActionDef, noPayload } from '../../action-def'
 import { balanceCache } from '../../cache/balance-cache'
 import { NATIVE_ON_BASE } from '../../constants'
@@ -26,11 +27,11 @@ export const executeReferralWithdrawReward: ActionDef<void> = noPayload(
 )
 
 async function executeClaimRequest(
-	telegramId: string,
+	telegramId: number,
 ): Promise<HandlerResult<Flow>> {
 	const response = await callOrUnknown(() =>
 		referralSystemControllerWithdrawReward({
-			headers: { 'x-telegram-id': telegramId },
+			headers: toTelegramIdHeader(telegramId),
 			body: { currencyAddress: NATIVE_ON_BASE.address },
 		}),
 	)
@@ -63,6 +64,6 @@ async function executeClaimRequest(
 	}
 }
 
-function toClaimError(telegramId: string, message: string) {
+function toClaimError(telegramId: number, message: string) {
 	return errorOnFreshPage(() => renderClaimRewardPage(telegramId), message)
 }

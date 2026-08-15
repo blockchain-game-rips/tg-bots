@@ -12,6 +12,7 @@ import {
 	fetchCardCollection,
 	fetchRip,
 	fetchUnrevealedPayouts,
+	toTelegramIdHeader,
 } from '../../utils/api/wrappers'
 import { revealSingleFrom } from './open-reveal-single'
 import { playFrames } from './reveal-animation-chain'
@@ -33,7 +34,7 @@ export const openRevealAll: ActionDef<void> = noPayload((session) => {
  * animation for one card is absurd, and the result page is the better screen
  * for a single result.
  */
-async function revealBatch(telegramId: string): Promise<HandlerResult<Flow>> {
+async function revealBatch(telegramId: number): Promise<HandlerResult<Flow>> {
 	const unopenedBefore = await fetchUnrevealedPayouts(telegramId)
 
 	if (unopenedBefore.length === SINGLE_PULL) {
@@ -45,7 +46,7 @@ async function revealBatch(telegramId: string): Promise<HandlerResult<Flow>> {
 	const preRevealCollection = await fetchCardCollection(telegramId)
 
 	const { data: revealData } = await ripsControllerRevealPayouts({
-		headers: { 'x-telegram-id': telegramId },
+		headers: toTelegramIdHeader(telegramId),
 		body: { revealAll: true },
 	})
 

@@ -15,14 +15,19 @@ import { WelcomePage } from '../pages/onboarding/welcome-page'
 import { ImportKeyPrompt } from '../prompts/import-key-prompt'
 import { EffectType, HandlerResult } from '../types'
 import { isApiErrorWithStatus } from '../utils/api/error'
-import { fetchUnrevealedPayouts } from '../utils/api/wrappers'
+import {
+	fetchUnrevealedPayouts,
+	toTelegramIdHeader,
+} from '../utils/api/wrappers'
 
 const NOT_FOUND_STATUS = 404
 
 export const openHome: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const isNewUser = await usersControllerGetUser({ path: { telegramId } })
+	const isNewUser = await usersControllerGetUser({
+		path: { telegramId: telegramId.toString() },
+	})
 		.then(() => false)
 		.catch((error: unknown) => {
 			if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) return true
@@ -48,7 +53,9 @@ export const chooseCreateAccount: ActionDef<void> = noPayload(
 	async (session) => {
 		const { telegramId } = session
 
-		await usersControllerCreateUser({ body: { telegramId } })
+		await usersControllerCreateUser({
+			body: { telegramId: telegramId.toString() },
+		})
 
 		return renderHome(telegramId)
 	},
@@ -71,7 +78,9 @@ export const submitImportKey: ActionDef<string> = withPayload(
 	async (session, privateKey) => {
 		const { telegramId } = session
 
-		await usersControllerImportUser({ body: { telegramId, privateKey } })
+		await usersControllerImportUser({
+			body: { telegramId: telegramId.toString(), privateKey },
+		})
 
 		return renderHome(telegramId)
 	},
@@ -83,13 +92,13 @@ export const submitImportKey: ActionDef<string> = withPayload(
  * that already exists, and replaying `submitImportKey` would put the typed
  * private key in the back trail. Removing `replayWith` reintroduces both.
  */
-async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
+async function renderHome(telegramId: number): Promise<HandlerResult<Flow>> {
 	const [baseBalance, unrevealedPayouts, { data: referrerData }] =
 		await Promise.all([
 			balanceCache.getOne(telegramId, NATIVE_ON_BASE),
 			fetchUnrevealedPayouts(telegramId),
 			referralSystemControllerGetReferrer({
-				headers: { 'x-telegram-id': telegramId },
+				headers: toTelegramIdHeader(telegramId),
 			}),
 		])
 

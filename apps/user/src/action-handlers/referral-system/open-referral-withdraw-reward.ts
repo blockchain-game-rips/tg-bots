@@ -2,6 +2,7 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerQuoteWithdrawReward,
 } from '@rips/api-client'
+import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { toReset } from '../../flows'
@@ -34,9 +35,9 @@ export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 
 /** Null when there is nothing left to claim, so there is no page to show. */
 export async function renderClaimRewardPage(
-	telegramId: string,
+	telegramId: number,
 ): Promise<PageContent | null> {
-	const headers = { 'x-telegram-id': telegramId }
+	const headers = toTelegramIdHeader(telegramId)
 
 	const [{ data: referrerData }, { data: quote }, nativeBalance] =
 		await Promise.all([

@@ -7,13 +7,13 @@ const fetchBalances = vi.hoisted(() => vi.fn())
 
 vi.mock('../src/utils/api/wrappers', () => ({ fetchBalances }))
 
-const ALICE = '111'
+const ALICE = 111
 
 const EMPTY = '0'
 const DEPOSITED = '1000'
 
 function balancesOf(amount: string) {
-	return (_telegramId: string, chainAddresses: ChainAddressDtoOutput[]) =>
+	return (_telegramId: number, chainAddresses: ChainAddressDtoOutput[]) =>
 		Promise.resolve(
 			chainAddresses.map((chainAddress) => ({
 				amount,

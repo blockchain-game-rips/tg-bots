@@ -36,9 +36,9 @@ export const openFinalizedRips: ActionDef<boolean> = withPayload(
 	},
 )
 
-async function fetchUserEvmAddress(telegramId: string): Promise<string> {
+async function fetchUserEvmAddress(telegramId: number): Promise<string> {
 	const { data: user } = await usersControllerGetUser({
-		path: { telegramId },
+		path: { telegramId: telegramId.toString() },
 	})
 
 	return evmAddressFromUser(user)

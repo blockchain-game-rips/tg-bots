@@ -13,6 +13,7 @@ import { assertFlow, wait } from '@rips/grammy-kit'
 import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
+import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { currencyCache } from '../../../cache/currency-cache'
 import { withNative } from '../../../constants'
 import {
@@ -73,7 +74,7 @@ interface SwapDraft {
 }
 
 async function invalidateSwapBalances(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
 ): Promise<void> {
@@ -95,14 +96,14 @@ function toSwapSuccess(page: PageContent): HandlerResult<Flow> {
 }
 
 async function executeSamechainSwap(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	draft: SwapDraft,
 ): Promise<HandlerResult<Flow>> {
 	const { dstCurrency } = draft
 
 	const outcome = await swapSamechain(
-		{ 'x-telegram-id': telegramId },
+		toTelegramIdHeader(telegramId),
 		toSwapBody(amountIn, dstCurrency),
 	)
 
@@ -121,7 +122,7 @@ async function executeSamechainSwap(
  * the in-flight swap is about to change again.
  */
 async function sendCrosschainSwap(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	draft: SwapDraft,
 ): Promise<HandlerResult<Flow>> {
@@ -129,7 +130,7 @@ async function sendCrosschainSwap(
 
 	const response = await callOrUnknown(() =>
 		walletsControllerSwapCrosschain({
-			headers: { 'x-telegram-id': telegramId },
+			headers: toTelegramIdHeader(telegramId),
 			body: toSwapBody(amountIn, dstCurrency),
 		}),
 	)
@@ -169,7 +170,7 @@ async function sendCrosschainSwap(
 }
 
 async function awaitCrosschainSwap(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	draft: SwapDraft,
 	zapId: string,
@@ -195,7 +196,7 @@ async function awaitCrosschainSwap(
 	)
 }
 
-function toSwapError(telegramId: string, draft: SwapDraft, message: string) {
+function toSwapError(telegramId: number, draft: SwapDraft, message: string) {
 	return errorOnFreshPage(
 		() => renderSwapCheckoutPage(telegramId, draft),
 		message,

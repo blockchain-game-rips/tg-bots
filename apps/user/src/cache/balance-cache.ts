@@ -14,13 +14,13 @@ import { fetchBalances } from '../utils/api/wrappers'
 const BALANCE_TTL_MS = 5 * 60 * 1000
 
 interface BalanceKey {
-	telegramId: string
+	telegramId: number
 	chainAddress: ChainAddressDtoOutput
 }
 
 /** Lowercased so that a differently cased address is not cached twice. */
 function toBalanceKey({ telegramId, chainAddress }: BalanceKey): string {
-	return `${telegramId}:${toCurrencyId(chainAddress).toLowerCase()}`
+	return `${telegramId.toString()}:${toCurrencyId(chainAddress).toLowerCase()}`
 }
 
 export class BalanceCache {
@@ -35,7 +35,7 @@ export class BalanceCache {
 	 * than a shorter list that would misalign with what the caller asked for.
 	 */
 	async get(
-		telegramId: string,
+		telegramId: number,
 		chainAddresses: ChainAddressDtoOutput[],
 	): Promise<CurrencyAmountDtoOutput[]> {
 		const balances = await this.cache.get(
@@ -64,7 +64,7 @@ export class BalanceCache {
 	 * destructure it without widening either balance to undefined.
 	 */
 	async getPair(
-		telegramId: string,
+		telegramId: number,
 		first: ChainAddressDtoOutput,
 		second: ChainAddressDtoOutput,
 	): Promise<[CurrencyAmountDtoOutput, CurrencyAmountDtoOutput]> {
@@ -81,7 +81,7 @@ export class BalanceCache {
 	}
 
 	async getOne(
-		telegramId: string,
+		telegramId: number,
 		chainAddress: ChainAddressDtoOutput,
 	): Promise<CurrencyAmountDtoOutput> {
 		const [balance] = await this.get(telegramId, [chainAddress])
@@ -96,7 +96,7 @@ export class BalanceCache {
 	}
 
 	async invalidate(
-		telegramId: string,
+		telegramId: number,
 		chainAddresses: ChainAddressDtoOutput[],
 	): Promise<void> {
 		await this.cache.invalidate(

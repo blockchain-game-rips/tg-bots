@@ -21,7 +21,7 @@ export const openRipStatus: ActionDef<number> = withPayload(
 		const [rip, { data: user }] = await Promise.all([
 			fetchRip(ripId),
 			usersControllerGetUser({
-				path: { telegramId },
+				path: { telegramId: telegramId.toString() },
 			}),
 		])
 
@@ -42,7 +42,7 @@ export const openRipStatus: ActionDef<number> = withPayload(
 async function buildVariant(
 	rip: RipDtoOutput,
 	userAddress: string,
-	telegramId: string,
+	telegramId: number,
 ): Promise<RipDetailVariant> {
 	const group = groupRipStatus(rip.status)
 

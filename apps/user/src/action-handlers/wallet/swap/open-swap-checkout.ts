@@ -17,6 +17,7 @@ import {
 	usdToTokenUnits,
 } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
+import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import {
 	isNativeChainAddress,
 	NATIVE_MAX_MARGIN_USD,
@@ -114,7 +115,7 @@ export const openSwapCheckoutFromAmount: ActionDef<AmountPayload> = withPayload(
 )
 
 async function resolveAmountIn(
-	telegramId: string,
+	telegramId: number,
 	amountPayload: AmountPayload,
 	srcCurrencyBalance: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
@@ -136,7 +137,7 @@ async function resolveAmountIn(
 }
 
 async function resolveNativeMaxAmount(
-	telegramId: string,
+	telegramId: number,
 	srcCurrencyBalance: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
 ): Promise<bigint> {
@@ -177,7 +178,7 @@ function sumNativeFees(
  * from the back trail cannot show what the balances were when it first ran.
  */
 async function renderCheckout(
-	telegramId: string,
+	telegramId: number,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {
 	return {
@@ -190,7 +191,7 @@ async function renderCheckout(
 }
 
 export async function renderSwapCheckoutPage(
-	telegramId: string,
+	telegramId: number,
 	draft: CheckoutDraft,
 ): Promise<PageContent> {
 	const { srcChainAddress, dstCurrency, amountIn } = draft
@@ -220,11 +221,11 @@ type SwapQuote =
 	| { kind: 'samechain'; quote: QuoteSwapSamechainResponseDtoOutput }
 
 async function fetchSwapQuote(
-	telegramId: string,
+	telegramId: number,
 	amountIn: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
 ): Promise<SwapQuote> {
-	const headers = { 'x-telegram-id': telegramId }
+	const headers = toTelegramIdHeader(telegramId)
 	const body = {
 		currencyInChainAddress: amountIn.currency.chainAddress,
 		currencyOutChainAddress: dstCurrency.chainAddress,

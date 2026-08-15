@@ -2,6 +2,7 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerGetTierTables,
 } from '@rips/api-client'
+import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { ActionDef, noPayload } from '../../action-def'
 import { botStartLink } from '../../bot-identity'
 import { toReset } from '../../flows'
@@ -11,11 +12,11 @@ import { EffectType } from '../../types'
 export const openReferral: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const referralLink = botStartLink(telegramId)
+	const referralLink = botStartLink(telegramId.toString())
 
 	const [{ data: referrerData }, { data: tierTables }] = await Promise.all([
 		referralSystemControllerGetReferrer({
-			headers: { 'x-telegram-id': telegramId },
+			headers: toTelegramIdHeader(telegramId),
 		}),
 		referralSystemControllerGetTierTables(),
 	])

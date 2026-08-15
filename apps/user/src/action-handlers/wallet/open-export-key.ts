@@ -16,7 +16,9 @@ export const openExportKeyWarning: ActionDef<void> = noPayload(() => ({
 export const openExportKey: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
-	const { data } = await usersControllerExportKey({ path: { telegramId } })
+	const { data } = await usersControllerExportKey({
+		path: { telegramId: telegramId.toString() },
+	})
 
 	return {
 		flow: toReset(),

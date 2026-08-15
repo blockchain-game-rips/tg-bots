@@ -32,7 +32,7 @@ export const openEnterPaymentOptionsFromEntryCount: ActionDef<number> =
 	})
 
 async function renderPaymentOptions(
-	telegramId: string,
+	telegramId: number,
 	presetId: number,
 	entryCount: number,
 ): Promise<HandlerResult<Flow>> {

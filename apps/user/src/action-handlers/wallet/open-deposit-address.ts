@@ -17,13 +17,13 @@ import { evmAddressFromUser } from '../../utils/wallet'
  * leaving the page.
  */
 async function renderDepositAddress(
-	telegramId: string,
+	telegramId: number,
 	currencyChainAddress: ChainAddressDtoOutput,
 	showQr: boolean,
 ): Promise<HandlerResult<Flow>> {
 	const [balance, { data: user }] = await Promise.all([
 		balanceCache.getOne(telegramId, currencyChainAddress),
-		usersControllerGetUser({ path: { telegramId } }),
+		usersControllerGetUser({ path: { telegramId: telegramId.toString() } }),
 	])
 
 	const depositAddress = evmAddressFromUser(user)

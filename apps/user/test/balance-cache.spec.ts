@@ -12,8 +12,8 @@ const fetchBalances = vi.hoisted(() => vi.fn())
 
 vi.mock('../src/utils/api/wrappers', () => ({ fetchBalances }))
 
-const ALICE = '111'
-const BOB = '222'
+const ALICE = 111
+const BOB = 222
 
 const USDC_ON_BASE: ChainAddressDtoOutput = {
 	address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
@@ -31,7 +31,7 @@ function balanceOf(chainAddress: ChainAddressDtoOutput, amount: string) {
 
 /** Echoes back a balance for every address asked for. */
 function respondWithAmount(amount: string) {
-	return (_telegramId: string, chainAddresses: ChainAddressDtoOutput[]) =>
+	return (_telegramId: number, chainAddresses: ChainAddressDtoOutput[]) =>
 		Promise.resolve(
 			chainAddresses.map((chainAddress) =>
 				balanceOf(chainAddress, amount),
@@ -181,7 +181,7 @@ describe('BalanceCache', () => {
 
 	it('throws rather than shifting values when one is missing', async () => {
 		fetchBalances.mockImplementation(
-			(_telegramId: string, chainAddresses: ChainAddressDtoOutput[]) =>
+			(_telegramId: number, chainAddresses: ChainAddressDtoOutput[]) =>
 				Promise.resolve(
 					chainAddresses
 						.filter(

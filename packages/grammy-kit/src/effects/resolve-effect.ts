@@ -1,3 +1,4 @@
+import { ActionContext } from '../action'
 import { BoundAction } from '../action/actions'
 import { Navigation, resolveNavigation } from '../session/history'
 import { toHold } from '../session/session-utils'
@@ -17,6 +18,7 @@ const NO_HISTORY_MESSAGE = 'Nothing to go back to'
 
 export async function resolveActionEffect(
 	session: SessionData,
+	telegramId: number,
 	actions: Record<string, BoundAction | undefined>,
 	action: ActionData,
 ): Promise<AnyHandlerResult> {
@@ -37,9 +39,19 @@ export async function resolveActionEffect(
 	const { payload } = entry.action
 
 	return await boundAction.handler(
-		session,
+		buildActionContext(session, telegramId),
 		payload !== undefined ? boundAction.decode(payload) : undefined,
 	)
+}
+
+function buildActionContext(
+	session: SessionData,
+	telegramId: number,
+): ActionContext {
+	return {
+		flow: session.flow,
+		telegramId,
+	}
 }
 
 function entryToRender(navigation: Navigation): HistoryEntry {

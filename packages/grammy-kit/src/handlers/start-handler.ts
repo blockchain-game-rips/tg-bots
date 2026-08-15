@@ -4,8 +4,10 @@ import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { FlowBase } from '../session/session-utils'
 import { ActionId, SessionData } from '../types'
 import { EMPTY_PAGE } from './empty-page'
+import { User } from 'grammy/types'
 
-type BaseContext = GrammyContext & SessionFlavor<SessionData<FlowBase | null>>
+type BaseContext = GrammyContext &
+	SessionFlavor<SessionData<FlowBase | null>> & { from: User }
 
 type StartContext = CommandContext<BaseContext>
 
@@ -22,6 +24,7 @@ export function createStartHandler(
 		await executeEffectOrDisplayError(
 			ctx.api,
 			ctx.chat.id,
+			ctx.from.id,
 			null,
 			ctx.session,
 			actions,

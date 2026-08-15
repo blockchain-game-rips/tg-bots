@@ -53,6 +53,7 @@ export function createButtonHandler(
 			await executeEffectOrDisplayError(
 				ctx.api,
 				message.chat.id,
+				ctx.from.id,
 				toMessage(message),
 				ctx.session,
 				actions,

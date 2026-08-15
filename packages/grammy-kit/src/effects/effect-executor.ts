@@ -171,6 +171,7 @@ function resolveBasePage(
 export async function executeEffectOrDisplayError(
 	api: Api,
 	chatId: number,
+	telegramId: number,
 	message: Message | null,
 	session: SessionData,
 	actions: Record<string, BoundAction | undefined>,
@@ -179,7 +180,12 @@ export async function executeEffectOrDisplayError(
 	messagesToDelete: number[] = [],
 ): Promise<void> {
 	try {
-		const result = await resolveActionEffect(session, actions, action)
+		const result = await resolveActionEffect(
+			session,
+			telegramId,
+			actions,
+			action,
+		)
 
 		const change = await performEffect(api, chatId, message, result, action)
 

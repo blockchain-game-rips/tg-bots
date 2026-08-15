@@ -14,7 +14,6 @@ export type HistoryEntry =
 	| { kind: 'page'; page: PageContent }
 
 export interface SessionData<F extends FlowBase | null = any> {
-	telegramId: string
 	lastAsk: {
 		onSubmit: ActionId<unknown>
 		message: Message | null

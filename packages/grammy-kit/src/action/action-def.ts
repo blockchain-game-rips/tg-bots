@@ -1,7 +1,10 @@
 import { FlowBase } from '../session/session-utils'
-import { HandlerResult, SessionData } from '../types'
+import { HandlerResult } from '../types'
 
-type AnySession = SessionData
+export type ActionContext<F extends FlowBase | null = any> = {
+	telegramId: number
+	flow: F
+}
 
 export interface PayloadCodec<P> {
 	encode: (value: P) => string
@@ -11,10 +14,8 @@ export interface PayloadCodec<P> {
 export interface ActionDef<P> {
 	encode: (value: P) => string
 	decode: (raw: string) => P
-
-	// Session typed as `any`-based to allow app-specific Flow types in handlers.
 	handler: (
-		session: AnySession,
+		actionContext: ActionContext,
 		payload: P,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	) => Promise<HandlerResult<any>> | HandlerResult<any>
@@ -27,27 +28,27 @@ export type AnyActionDef = ActionDef<any>
 
 export function noPayload<F extends FlowBase | null = FlowBase | null>(
 	handler: (
-		session: SessionData<F>,
+		actionContext: ActionContext<F>,
 	) => Promise<HandlerResult<F>> | HandlerResult<F>,
 ): ActionDef<void> {
 	return {
 		encode: () => '',
 		decode: (): void => undefined,
-		handler: (session) => handler(session as SessionData<F>),
+		handler: (actionContext) => handler(actionContext as ActionContext<F>),
 	}
 }
 
 export function withPayload<P, F extends FlowBase | null = FlowBase | null>(
 	codec: PayloadCodec<P>,
 	handler: (
-		session: SessionData<F>,
+		actionContext: ActionContext<F>,
 		payload: P,
 	) => Promise<HandlerResult<F>> | HandlerResult<F>,
 ): ActionDef<P> {
 	return {
 		encode: codec.encode,
 		decode: codec.decode,
-		handler: (session, payload) =>
-			handler(session as SessionData<F>, payload),
+		handler: (actionContext, payload) =>
+			handler(actionContext as ActionContext<F>, payload),
 	}
 }

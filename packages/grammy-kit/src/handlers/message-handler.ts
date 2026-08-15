@@ -28,6 +28,7 @@ export function createMessageHandler(
 		await executeEffectOrDisplayError(
 			bot.api,
 			ctx.chat.id,
+			ctx.from.id,
 			ask.message,
 			ctx.session,
 			actions,

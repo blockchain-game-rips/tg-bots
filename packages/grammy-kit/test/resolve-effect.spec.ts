@@ -13,8 +13,9 @@ import {
 } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 
+const TELEGRAM_ID = 1
+
 const makeSession = (): SessionData => ({
-	telegramId: '1',
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,
@@ -54,6 +55,7 @@ describe('resolveActionEffect', () => {
 
 		const { effect } = await resolveActionEffect(
 			session,
+			TELEGRAM_ID,
 			{ w: boundAction({ type: EffectType.NAVIGATE, page }) },
 			{ actionId: 'w', payload: undefined },
 		)
@@ -71,6 +73,7 @@ describe('resolveActionEffect', () => {
 
 		const { effect } = await resolveActionEffect(
 			session,
+			TELEGRAM_ID,
 			{ a: boundAction({ type: EffectType.ASK, prompt, onSubmit }) },
 			{ actionId: 'a', payload: undefined },
 		)
@@ -83,6 +86,7 @@ describe('resolveActionEffect', () => {
 		await expect(
 			resolveActionEffect(
 				makeSession(),
+				TELEGRAM_ID,
 				{},
 				{ actionId: 'nope', payload: undefined },
 			),
@@ -95,7 +99,7 @@ describe('resolveActionEffect', () => {
 		enter(session, 'home')
 
 		await expect(
-			resolveActionEffect(session, {}, back),
+			resolveActionEffect(session, TELEGRAM_ID, {}, back),
 		).rejects.toBeInstanceOf(ErrorToRender)
 	})
 
@@ -104,10 +108,11 @@ describe('resolveActionEffect', () => {
 
 		await resolveActionEffect(
 			makeSession(),
+			TELEGRAM_ID,
 			{
 				w: {
 					decode: (raw) => Number(raw),
-					handler: (_session, payload) => {
+					handler: (_actionContext, payload) => {
 						seen.push(payload)
 
 						return {
@@ -136,6 +141,7 @@ describe('resolveActionEffect', () => {
 
 		const { effect } = await resolveActionEffect(
 			session,
+			TELEGRAM_ID,
 			{ home: boundAction({ type: EffectType.NAVIGATE, page }) },
 			back,
 		)
@@ -152,6 +158,7 @@ describe('resolveActionEffect', () => {
 
 		await resolveActionEffect(
 			session,
+			TELEGRAM_ID,
 			{
 				w: boundAction({
 					type: EffectType.NAVIGATE,
@@ -170,6 +177,7 @@ describe('resolveActionEffect', () => {
 
 		const { effect } = await resolveActionEffect(
 			makeSession(),
+			TELEGRAM_ID,
 			{
 				l: boundAction({
 					type: EffectType.LOADING,
@@ -199,6 +207,7 @@ describe('resolveActionEffect', () => {
 
 		const { effect } = await resolveActionEffect(
 			makeSession(),
+			TELEGRAM_ID,
 			{
 				l: boundAction({
 					type: EffectType.LOADING,
@@ -231,6 +240,7 @@ describe('resolveActionEffect', () => {
 
 		const result = await resolveActionEffect(
 			session,
+			TELEGRAM_ID,
 			{
 				w: {
 					decode: (raw) => raw,

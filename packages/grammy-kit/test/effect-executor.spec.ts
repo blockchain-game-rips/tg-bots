@@ -17,10 +17,10 @@ import {
 import { Api, InlineKeyboard } from 'grammy'
 
 const CHAT_ID = 100
+const TELEGRAM_ID = 1
 const MESSAGE_ID = 7
 
 const makeSession = (): SessionData => ({
-	telegramId: '1',
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,
@@ -130,6 +130,7 @@ const run = (
 	executeEffectOrDisplayError(
 		fake.api,
 		CHAT_ID,
+		TELEGRAM_ID,
 		message,
 		session,
 		actions,
@@ -215,6 +216,7 @@ describe('executing an action with a secret payload', () => {
 		await executeEffectOrDisplayError(
 			fake.api,
 			CHAT_ID,
+			TELEGRAM_ID,
 			message,
 			session,
 			{

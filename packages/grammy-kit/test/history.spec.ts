@@ -14,7 +14,6 @@ import {
 import { InlineKeyboard, InputFile } from 'grammy'
 
 const makeSession = (): SessionData => ({
-	telegramId: '1',
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,

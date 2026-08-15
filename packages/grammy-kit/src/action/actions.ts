@@ -1,14 +1,14 @@
 import { botActionDuration } from '../metrics/registry'
-import { ActionId, AnyHandlerResult, SessionData } from '../types'
+import { ActionId, AnyHandlerResult } from '../types'
 import { registerEncoder } from './action-data'
-import { ActionDef, AnyActionDef } from './action-def'
+import { ActionContext, ActionDef, AnyActionDef } from './action-def'
 
 export type { ActionId }
 
 export interface BoundAction {
 	decode: (raw: string) => unknown
 	handler: (
-		session: SessionData,
+		actionContext: ActionContext,
 		payload: unknown,
 	) => Promise<AnyHandlerResult> | AnyHandlerResult
 }
@@ -43,10 +43,10 @@ export function buildActions(
 
 		result[id] = {
 			decode: def.decode,
-			handler: async (session, payload) => {
+			handler: async (actionContext, payload) => {
 				const end = botActionDuration.startTimer({ action: name })
 				try {
-					return await def.handler(session, payload)
+					return await def.handler(actionContext, payload)
 				} finally {
 					end()
 				}

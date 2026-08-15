@@ -520,7 +520,7 @@ describe('going back', () => {
 		const lastEdit = fake.editedTexts[fake.editedTexts.length - 1] ?? ''
 
 		expect(lastEdit).toContain('home')
-		expect(lastEdit).toContain('No history')
+		expect(lastEdit).toContain('Nothing to go back to')
 	})
 
 	it('tells the user their menu is stale when the action no longer exists', async () => {

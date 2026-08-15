@@ -13,7 +13,7 @@ import { ErrorToRender } from './error-to-render'
 const STALE_MENU_MESSAGE =
 	'This menu is out of date. Send /start for a fresh one.'
 
-const NO_HISTORY_MESSAGE = 'No history'
+const NO_HISTORY_MESSAGE = 'Nothing to go back to'
 
 export async function resolveActionEffect(
 	session: SessionData,

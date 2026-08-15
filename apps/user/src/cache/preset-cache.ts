@@ -8,7 +8,7 @@ import { TtlCache } from '@rips/grammy-kit'
  * Presets change on the backend, which the bot gets no signal about, so time is
  * the only thing that can bound their staleness.
  */
-export const PRESET_CACHE_TTL_MS = 5 * 60 * 1000
+export const PRESET_CACHE_TTL_MS = 5 * 1000
 
 type AvailablePreset =
 	RipsControllerGetPresetsResponse['availablePresets'][number]

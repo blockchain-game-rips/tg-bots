@@ -209,6 +209,97 @@ describe('recordPage with a page entry', () => {
 
 		expect(currentEntry(session)).toEqual(actionEntry('reveal'))
 	})
+
+	it('stacks pages that claim no trail slot, since nothing marks them alike', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterWithoutAction(session, makePage('first'))
+		enterWithoutAction(session, makePage('second'))
+
+		expect(session.history).toHaveLength(3)
+	})
+})
+
+describe('recordPage with a trail slot', () => {
+	const SLOT = 'reveal-result'
+
+	const enterSlot = (session: SessionData, text: string, slot = SLOT) => {
+		enterWithoutAction(session, { ...makePage(text), trailSlot: slot })
+	}
+
+	it('supersedes the page holding the slot, keeping only the latest', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'first card')
+		enterSlot(session, 'second card')
+		enterSlot(session, 'third card')
+
+		expect(session.history).toEqual([
+			actionEntry('hub'),
+			{
+				kind: 'page',
+				page: { ...makePage('third card'), trailSlot: SLOT },
+			},
+		])
+	})
+
+	it('leaves for the page behind it, however many times it refreshed', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'first card')
+		enterSlot(session, 'second card')
+		enterSlot(session, 'third card')
+
+		expect(goBack(session)).toEqual(actionEntry('hub'))
+	})
+
+	it('lets a different page claim the same slot, so either supersedes the other', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'single reveal')
+		enterSlot(session, 'batch reveal')
+
+		expect(goBack(session)).toEqual(actionEntry('hub'))
+	})
+
+	it('stacks against a page holding a different slot', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'reveal')
+		enterSlot(session, 'summary', 'reveal-summary')
+
+		expect(session.history).toHaveLength(3)
+	})
+
+	it('keeps a page opened on top of it, so back returns to the latest', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'first card')
+		enterSlot(session, 'second card')
+		enter(session, 'collection')
+
+		expect(goBack(session)).toEqual({
+			kind: 'page',
+			page: { ...makePage('second card'), trailSlot: SLOT },
+		})
+	})
+
+	it('stacks a revisit made after leaving, since the trail moved on', () => {
+		const session = makeSession()
+
+		enter(session, 'hub')
+		enterSlot(session, 'first card')
+		enter(session, 'collection')
+		enterSlot(session, 'second card')
+
+		expect(session.history).toHaveLength(4)
+	})
 })
 
 describe('recordPage with a sensitive page', () => {

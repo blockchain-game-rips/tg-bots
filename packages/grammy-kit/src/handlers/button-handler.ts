@@ -11,12 +11,11 @@ import { parseActionData } from '../action/action-data'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
-import { FlowBase } from '../session/session-utils'
+import { resolveWorkspace } from '../session/workspaces'
 import { Message, PageContent, SessionData } from '../types'
 import { fireAndForget } from '../utils/common'
 
-type BaseContext = GrammyContext &
-	SessionFlavor<SessionData<FlowBase | null>> & { from: User }
+type BaseContext = GrammyContext & SessionFlavor<SessionData> & { from: User }
 
 type ButtonContext = Filter<BaseContext, 'callback_query:data'>
 
@@ -34,14 +33,16 @@ export function createButtonHandler(
 		try {
 			fireAndForget(ctx.answerCallbackQuery())
 
-			const lastAsk = ctx.session.lastAsk
-			const messagesToDelete =
-				lastAsk === null ? [] : [lastAsk.promptMessageId]
-
 			const message = ctx.callbackQuery.message
 
 			if (message === undefined)
 				throw new Error('No message id on callback query')
+
+			const workspace = resolveWorkspace(ctx.session, message.message_id)
+
+			const { lastAsk } = workspace
+			const messagesToDelete =
+				lastAsk === null ? [] : [lastAsk.promptMessageId]
 
 			const action = parseActionData(ctx.callbackQuery.data)
 
@@ -55,7 +56,7 @@ export function createButtonHandler(
 				chatId: message.chat.id,
 				telegramId: ctx.from.id,
 				message: toMessage(message),
-				session: ctx.session,
+				workspace,
 				actions,
 				action,
 				fallbackPage: recoverPage(message),

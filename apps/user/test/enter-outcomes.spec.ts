@@ -3,7 +3,7 @@ import {
 	executeEffectOrDisplayError,
 	Message,
 	PageContent,
-	SessionData,
+	Workspace,
 } from '@rips/grammy-kit'
 import { FormattedString } from '@grammyjs/parse-mode'
 import { Api, InlineKeyboard } from 'grammy'
@@ -79,7 +79,9 @@ const fakeApi = {
 
 const TELEGRAM_ID = 1
 
-const session = (payChainAddress: object): SessionData => ({
+const workspace = (payChainAddress: object): Workspace => ({
+	messageId: MESSAGE_ID,
+	lastInteraction: 0,
 	lastAsk: null,
 	flow: {
 		flowType: 'enter',
@@ -109,7 +111,7 @@ async function runEnter(
 		chatId: CHAT_ID,
 		telegramId: TELEGRAM_ID,
 		message,
-		session: session(payChainAddress),
+		workspace: workspace(payChainAddress),
 		actions,
 		action: { actionId: 'enter', payload: undefined },
 		fallbackPage: page('fallback'),

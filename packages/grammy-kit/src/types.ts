@@ -13,7 +13,10 @@ export type HistoryEntry =
 	| { kind: 'action'; action: ActionData }
 	| { kind: 'page'; page: PageContent }
 
-export interface SessionData<F extends FlowBase | null = any> {
+export interface Workspace<F extends FlowBase | null = any> {
+	/** the bot message this workspace lives behind */
+	messageId: number
+	lastInteraction: number
 	lastAsk: {
 		onSubmit: ActionId<unknown>
 		message: Message | null
@@ -22,6 +25,10 @@ export interface SessionData<F extends FlowBase | null = any> {
 	flow: F
 	lastNavigatedPage: PageContent | null
 	history: HistoryEntry[]
+}
+
+export interface SessionData<F extends FlowBase | null = FlowBase | null> {
+	workspaces: Workspace<F>[]
 }
 
 export enum EffectType {
@@ -77,7 +84,7 @@ export type HandlerResult<F extends FlowBase | null> =
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyHandlerResult = HandlerResult<any>
 
-export type LastAsk = NonNullable<SessionData['lastAsk']>
+export type LastAsk = NonNullable<Workspace['lastAsk']>
 
 export type Line = string | FormattedString
 

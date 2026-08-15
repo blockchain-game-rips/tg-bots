@@ -9,13 +9,16 @@ import {
 	PageContent,
 	resolveActionEffect,
 	recordPage,
-	SessionData,
+	Workspace,
 } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
 
 const TELEGRAM_ID = 1
+const MESSAGE_ID = 7
 
-const makeSession = (): SessionData => ({
+const makeWorkspace = (): Workspace => ({
+	messageId: MESSAGE_ID,
+	lastInteraction: 0,
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,
@@ -38,9 +41,9 @@ const boundAction = (effect: Effect | (() => Effect)): BoundAction => ({
 	},
 })
 
-const enter = (session: SessionData, actionId: string) => {
+const enter = (workspace: Workspace, actionId: string) => {
 	recordPage(
-		session,
+		workspace,
 		{ actionId, payload: undefined },
 		{ type: EffectType.NAVIGATE, page: makePage(actionId) },
 	)
@@ -50,11 +53,11 @@ const back = { actionId: BACK_ACTION_ID, payload: undefined }
 
 describe('resolveActionEffect', () => {
 	it('returns the render the action handler asked for', async () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const page = makePage('wallet')
 
 		const { effect } = await resolveActionEffect(
-			session,
+			workspace,
 			TELEGRAM_ID,
 			{ w: boundAction({ type: EffectType.NAVIGATE, page }) },
 			{ actionId: 'w', payload: undefined },
@@ -64,7 +67,7 @@ describe('resolveActionEffect', () => {
 	})
 
 	it('returns an ask without sending anything', async () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const prompt = {
 			message: new FormattedString('amount?', []),
 			placeholder: '0.1',
@@ -72,20 +75,20 @@ describe('resolveActionEffect', () => {
 		const onSubmit = 'submit' as ActionId<unknown>
 
 		const { effect } = await resolveActionEffect(
-			session,
+			workspace,
 			TELEGRAM_ID,
 			{ a: boundAction({ type: EffectType.ASK, prompt, onSubmit }) },
 			{ actionId: 'a', payload: undefined },
 		)
 
 		expect(effect).toEqual({ type: EffectType.ASK, prompt, onSubmit })
-		expect(session.lastAsk).toBeNull()
+		expect(workspace.lastAsk).toBeNull()
 	})
 
 	it('tells the user their menu is stale when the action is gone', async () => {
 		await expect(
 			resolveActionEffect(
-				makeSession(),
+				makeWorkspace(),
 				TELEGRAM_ID,
 				{},
 				{ actionId: 'nope', payload: undefined },
@@ -94,12 +97,12 @@ describe('resolveActionEffect', () => {
 	})
 
 	it('tells the user there is no history when back hits the root', async () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
+		enter(workspace, 'home')
 
 		await expect(
-			resolveActionEffect(session, TELEGRAM_ID, {}, back),
+			resolveActionEffect(workspace, TELEGRAM_ID, {}, back),
 		).rejects.toBeInstanceOf(ErrorToRender)
 	})
 
@@ -107,7 +110,7 @@ describe('resolveActionEffect', () => {
 		const seen: unknown[] = []
 
 		await resolveActionEffect(
-			makeSession(),
+			makeWorkspace(),
 			TELEGRAM_ID,
 			{
 				w: {
@@ -132,15 +135,15 @@ describe('resolveActionEffect', () => {
 	})
 
 	it('re-runs the handler of the action behind the current page on back', async () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
-		enter(session, 'wallet')
+		enter(workspace, 'home')
+		enter(workspace, 'wallet')
 
 		const page = makePage('home again')
 
 		const { effect } = await resolveActionEffect(
-			session,
+			workspace,
 			TELEGRAM_ID,
 			{ home: boundAction({ type: EffectType.NAVIGATE, page }) },
 			back,
@@ -149,15 +152,15 @@ describe('resolveActionEffect', () => {
 		expect(effect).toMatchObject({ type: EffectType.NAVIGATE, page })
 	})
 
-	it('writes nothing to the session while resolving a render', async () => {
-		const session = makeSession()
+	it('writes nothing to the workspace while resolving a render', async () => {
+		const workspace = makeWorkspace()
 		const before = structuredClone({
-			lastNavigatedPage: session.lastNavigatedPage,
-			history: session.history,
+			lastNavigatedPage: workspace.lastNavigatedPage,
+			history: workspace.history,
 		})
 
 		await resolveActionEffect(
-			session,
+			workspace,
 			TELEGRAM_ID,
 			{
 				w: boundAction({
@@ -168,15 +171,15 @@ describe('resolveActionEffect', () => {
 			{ actionId: 'w', payload: undefined },
 		)
 
-		expect(session.lastNavigatedPage).toEqual(before.lastNavigatedPage)
-		expect(session.history).toEqual(before.history)
+		expect(workspace.lastNavigatedPage).toEqual(before.lastNavigatedPage)
+		expect(workspace.history).toEqual(before.history)
 	})
 
 	it('returns loading without resolving what comes after it', async () => {
 		let nextRan = false
 
 		const { effect } = await resolveActionEffect(
-			makeSession(),
+			makeWorkspace(),
 			TELEGRAM_ID,
 			{
 				l: boundAction({
@@ -206,7 +209,7 @@ describe('resolveActionEffect', () => {
 		const page = makePage('done')
 
 		const { effect } = await resolveActionEffect(
-			makeSession(),
+			makeWorkspace(),
 			TELEGRAM_ID,
 			{
 				l: boundAction({
@@ -232,14 +235,14 @@ describe('resolveActionEffect', () => {
 	})
 
 	it('returns the flow the handler asked for without applying it', async () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const flow = {
 			kind: 'set' as const,
 			flow: { flowType: 'topup', step: 'amount', data: {} },
 		}
 
 		const result = await resolveActionEffect(
-			session,
+			workspace,
 			TELEGRAM_ID,
 			{
 				w: {
@@ -257,6 +260,6 @@ describe('resolveActionEffect', () => {
 		)
 
 		expect(result.flow).toEqual(flow)
-		expect(session.flow).toBeNull()
+		expect(workspace.flow).toBeNull()
 	})
 })

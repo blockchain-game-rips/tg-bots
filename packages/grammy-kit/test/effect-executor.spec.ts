@@ -12,7 +12,7 @@ import {
 	Message,
 	PageContent,
 	recordPage,
-	SessionData,
+	Workspace,
 } from '@rips/grammy-kit'
 import { Api, InlineKeyboard } from 'grammy'
 
@@ -20,7 +20,9 @@ const CHAT_ID = 100
 const TELEGRAM_ID = 1
 const MESSAGE_ID = 7
 
-const makeSession = (): SessionData => ({
+const makeWorkspace = (): Workspace => ({
+	messageId: MESSAGE_ID,
+	lastInteraction: 0,
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,
@@ -112,9 +114,9 @@ const boundAction = (effect: Effect): BoundAction => ({
 	handler: () => holding(effect),
 })
 
-const enter = (session: SessionData, actionId: string) => {
+const enter = (workspace: Workspace, actionId: string) => {
 	recordPage(
-		session,
+		workspace,
 		{ actionId, payload: undefined },
 		{ type: EffectType.NAVIGATE, page: makePage(actionId) },
 	)
@@ -122,7 +124,7 @@ const enter = (session: SessionData, actionId: string) => {
 
 const run = (
 	fake: FakeApi,
-	session: SessionData,
+	workspace: Workspace,
 	actions: Record<string, BoundAction | undefined>,
 	actionId = 'w',
 	messagesToDelete: number[] = [],
@@ -132,7 +134,7 @@ const run = (
 		chatId: CHAT_ID,
 		telegramId: TELEGRAM_ID,
 		message,
-		session,
+		workspace,
 		actions,
 		action: { actionId, payload: undefined },
 		fallbackPage: makePage('fallback'),
@@ -142,11 +144,11 @@ const run = (
 describe('executing a render', () => {
 	it('sends the page and records it as the page on screen', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				w: boundAction({
 					type: EffectType.NAVIGATE,
@@ -157,8 +159,8 @@ describe('executing a render', () => {
 		)
 
 		expect(fake.editedTexts).toEqual(['wallet'])
-		expect(session.lastNavigatedPage?.message.text).toBe('wallet')
-		expect(session.history).toEqual([
+		expect(workspace.lastNavigatedPage?.message.text).toBe('wallet')
+		expect(workspace.history).toEqual([
 			{ kind: 'action', action: { actionId: 'w', payload: undefined } },
 		])
 	})
@@ -169,11 +171,11 @@ describe('executing a render of a sensitive page', () => {
 
 	it('shows a later error on the fallback, never re-rendering the secret', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				key: boundAction({
 					type: EffectType.NAVIGATE,
@@ -185,7 +187,7 @@ describe('executing a render of a sensitive page', () => {
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				boom: {
 					decode: (raw: string) => raw,
@@ -209,16 +211,16 @@ describe('executing an action with a secret payload', () => {
 
 	it('keeps the typed secret out of the trail it lands on', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'welcome')
+		enter(workspace, 'welcome')
 
 		await executeEffectOrDisplayError({
 			api: fake.api,
 			chatId: CHAT_ID,
 			telegramId: TELEGRAM_ID,
 			message,
-			session,
+			workspace,
 			actions: {
 				imp: {
 					decode: (raw: string) => raw,
@@ -237,18 +239,18 @@ describe('executing an action with a secret payload', () => {
 		})
 
 		expect(fake.editedTexts).toEqual(['home'])
-		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+		expect(JSON.stringify(workspace.history)).not.toContain(SECRET)
 	})
 })
 
 describe('executing an ask', () => {
 	it('sends the prompt and remembers where the answer goes', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				a: boundAction({
 					type: EffectType.ASK,
@@ -263,18 +265,18 @@ describe('executing an ask', () => {
 		)
 
 		expect(fake.sentPrompts).toEqual(['amount?'])
-		expect(session.lastAsk).toMatchObject({ onSubmit: 'submit' })
+		expect(workspace.lastAsk).toMatchObject({ onSubmit: 'submit' })
 	})
 
 	it('leaves the page on screen untouched, so it is not a step in the trail', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'wallet')
+		enter(workspace, 'wallet')
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				a: boundAction({
 					type: EffectType.ASK,
@@ -288,7 +290,7 @@ describe('executing an ask', () => {
 			'a',
 		)
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			{
 				kind: 'action',
 				action: { actionId: 'wallet', payload: undefined },
@@ -316,11 +318,11 @@ describe('executing loading', () => {
 
 	it('shows the loading screen, then the real page', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{ l: boundAction(loadingThen(['loading'], 'done')) },
 			'l',
 		)
@@ -330,54 +332,54 @@ describe('executing loading', () => {
 
 	it('records only the real page, never the loading screen', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{ l: boundAction(loadingThen(['loading'], 'done')) },
 			'l',
 		)
 
-		expect(session.lastNavigatedPage?.message.text).toBe('done')
-		expect(session.history).toEqual([
+		expect(workspace.lastNavigatedPage?.message.text).toBe('done')
+		expect(workspace.history).toEqual([
 			{ kind: 'action', action: { actionId: 'l', payload: undefined } },
 		])
 	})
 
 	it('walks a chain of loading frames without recording any of them', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{ l: boundAction(loadingThen(['one', 'two', 'three'], 'done')) },
 			'l',
 		)
 
 		expect(fake.editedTexts).toEqual(['one', 'two', 'three', 'done'])
-		expect(session.history).toHaveLength(1)
-		expect(session.lastNavigatedPage?.message.text).toBe('done')
+		expect(workspace.history).toHaveLength(1)
+		expect(workspace.lastNavigatedPage?.message.text).toBe('done')
 	})
 
 	it('never leaves a loading frame as the page an error would render over', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const seenWhileLoading: (string | undefined)[] = []
 
-		enter(session, 'wallet')
+		enter(workspace, 'wallet')
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				l: boundAction({
 					type: EffectType.LOADING,
 					message: new FormattedString('loading', []),
 					next: () => {
 						seenWhileLoading.push(
-							session.lastNavigatedPage?.message.text,
+							workspace.lastNavigatedPage?.message.text,
 						)
 
 						return Promise.resolve({
@@ -398,7 +400,7 @@ describe('executing loading', () => {
 
 	it('leaves the flow untouched until the chain reaches its last page', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const seenWhileLoading: unknown[] = []
 
 		const settled = {
@@ -406,7 +408,7 @@ describe('executing loading', () => {
 			flow: { flowType: 'topup', step: 'done', data: {} },
 		}
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => ({
@@ -414,7 +416,7 @@ describe('executing loading', () => {
 						type: EffectType.LOADING,
 						message: new FormattedString('step one', []),
 						next: () => {
-							seenWhileLoading.push(session.flow)
+							seenWhileLoading.push(workspace.flow)
 
 							return Promise.resolve({
 								effect: {
@@ -424,7 +426,7 @@ describe('executing loading', () => {
 										[],
 									),
 									next: () => {
-										seenWhileLoading.push(session.flow)
+										seenWhileLoading.push(workspace.flow)
 
 										return Promise.resolve({
 											flow: settled,
@@ -443,18 +445,18 @@ describe('executing loading', () => {
 		})
 
 		expect(seenWhileLoading).toEqual([null, null])
-		expect(session.flow).toEqual(settled.flow)
+		expect(workspace.flow).toEqual(settled.flow)
 	})
 
 	it('shows the error over the page from before loading started', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'wallet')
+		enter(workspace, 'wallet')
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				l: boundAction({
 					type: EffectType.LOADING,
@@ -476,7 +478,7 @@ describe('executing loading', () => {
 describe('going back', () => {
 	it('re-runs the action behind the page on screen and pops the trail', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const actions = {
 			home: boundAction({
@@ -489,12 +491,12 @@ describe('going back', () => {
 			}),
 		}
 
-		await run(fake, session, actions, 'home')
-		await run(fake, session, actions, 'wallet')
-		await run(fake, session, actions, BACK_ACTION_ID)
+		await run(fake, workspace, actions, 'home')
+		await run(fake, workspace, actions, 'wallet')
+		await run(fake, workspace, actions, BACK_ACTION_ID)
 
 		expect(fake.editedTexts).toEqual(['home', 'wallet', 'home'])
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			{
 				kind: 'action',
 				action: { actionId: 'home', payload: undefined },
@@ -504,7 +506,7 @@ describe('going back', () => {
 
 	it('tells the user there is no history at the root of the trail', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const actions = {
 			home: boundAction({
@@ -513,8 +515,8 @@ describe('going back', () => {
 			}),
 		}
 
-		await run(fake, session, actions, 'home')
-		await run(fake, session, actions, BACK_ACTION_ID)
+		await run(fake, workspace, actions, 'home')
+		await run(fake, workspace, actions, BACK_ACTION_ID)
 
 		await Promise.resolve()
 
@@ -526,7 +528,7 @@ describe('going back', () => {
 
 	it('tells the user their menu is stale when the action no longer exists', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const actions = {
 			home: boundAction({
@@ -535,8 +537,8 @@ describe('going back', () => {
 			}),
 		}
 
-		await run(fake, session, actions, 'home')
-		await run(fake, session, actions, 'removed')
+		await run(fake, workspace, actions, 'home')
+		await run(fake, workspace, actions, 'removed')
 
 		await Promise.resolve()
 
@@ -547,7 +549,7 @@ describe('going back', () => {
 
 	it('replays a stored page instead of re-running an action', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const actions = {
 			receipt: boundAction({
@@ -561,9 +563,9 @@ describe('going back', () => {
 			}),
 		}
 
-		await run(fake, session, actions, 'receipt')
-		await run(fake, session, actions, 'next')
-		await run(fake, session, actions, BACK_ACTION_ID)
+		await run(fake, workspace, actions, 'receipt')
+		await run(fake, workspace, actions, 'next')
+		await run(fake, workspace, actions, BACK_ACTION_ID)
 
 		expect(fake.editedTexts).toEqual(['receipt', 'next', 'receipt'])
 	})
@@ -579,11 +581,11 @@ describe('failing with a page to render', () => {
 
 	it('renders the page the error carries instead of the one on screen', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'stale')
+		enter(workspace, 'stale')
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: failWith(
 				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
 			),
@@ -600,28 +602,28 @@ describe('failing with a page to render', () => {
 
 	it('keeps the flow and writes no step to the trail', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'checkout')
+		enter(workspace, 'checkout')
 
-		const before = [...session.history]
+		const before = [...workspace.history]
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: failWith(
 				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
 			),
 		})
 
-		expect(session.history).toEqual(before)
+		expect(workspace.history).toEqual(before)
 	})
 
 	it('shows no error id, since the failure is one the bot expected', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'checkout')
+		enter(workspace, 'checkout')
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: failWith(
 				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
 			),
@@ -636,11 +638,11 @@ describe('failing with a page to render', () => {
 
 	it('still falls back to the page on screen for an error carrying none', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'checkout')
+		enter(workspace, 'checkout')
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: failWith(new ErrorToRender('Your entry failed')),
 		})
 
@@ -653,7 +655,7 @@ describe('failing with a page to render', () => {
 	})
 })
 
-describe('committing the session', () => {
+describe('committing the workspace', () => {
 	const topup = {
 		kind: 'set' as const,
 		flow: { flowType: 'topup', step: 'amount', data: {} },
@@ -661,9 +663,9 @@ describe('committing the session', () => {
 
 	it('applies the flow the handler asked for once the page is on screen', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => ({
@@ -676,14 +678,14 @@ describe('committing the session', () => {
 			},
 		})
 
-		expect(session.flow).toEqual(topup.flow)
+		expect(workspace.flow).toEqual(topup.flow)
 	})
 
 	it('applies the flow the handler asked for once the prompt is sent', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => ({
@@ -700,16 +702,16 @@ describe('committing the session', () => {
 			},
 		})
 
-		expect(session.flow).toEqual(topup.flow)
+		expect(workspace.flow).toEqual(topup.flow)
 	})
 
 	it('leaves the flow alone when the page never reaches the user', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		fake.failNextEdit()
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => ({
@@ -722,20 +724,20 @@ describe('committing the session', () => {
 			},
 		})
 
-		expect(session.flow).toBeNull()
+		expect(workspace.flow).toBeNull()
 	})
 
 	it('drops a pending ask when the action fails, since its prompt is gone', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		session.lastAsk = {
+		workspace.lastAsk = {
 			onSubmit: 'submit' as ActionId<unknown>,
 			message,
 			promptMessageId: 9,
 		}
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => {
@@ -744,21 +746,21 @@ describe('committing the session', () => {
 			},
 		})
 
-		expect(session.lastAsk).toBeNull()
+		expect(workspace.lastAsk).toBeNull()
 	})
 
 	it('leaves the trail and the flow alone when the action fails', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'wallet')
+		enter(workspace, 'wallet')
 
 		const before = {
-			history: [...session.history],
-			page: session.lastNavigatedPage,
+			history: [...workspace.history],
+			page: workspace.lastNavigatedPage,
 		}
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: {
 				decode: (raw: string) => raw,
 				handler: () => {
@@ -767,41 +769,41 @@ describe('committing the session', () => {
 			},
 		})
 
-		expect(session.flow).toBeNull()
-		expect(session.history).toEqual(before.history)
-		expect(session.lastNavigatedPage).toBe(before.page)
+		expect(workspace.flow).toBeNull()
+		expect(workspace.history).toEqual(before.history)
+		expect(workspace.lastNavigatedPage).toBe(before.page)
 	})
 
 	it('clears a pending ask once the next page renders', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		session.lastAsk = {
+		workspace.lastAsk = {
 			onSubmit: 'submit' as ActionId<unknown>,
 			message,
 			promptMessageId: 9,
 		}
 
-		await run(fake, session, {
+		await run(fake, workspace, {
 			w: boundAction({
 				type: EffectType.NAVIGATE,
 				page: makePage('wallet'),
 			}),
 		})
 
-		expect(session.lastAsk).toBeNull()
+		expect(workspace.lastAsk).toBeNull()
 	})
 })
 
 describe('cleaning up', () => {
 	it('deletes the messages it was told to, even when the action fails', async () => {
 		const fake = makeApi()
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const promptMessageId = 55
 
 		await run(
 			fake,
-			session,
+			workspace,
 			{
 				bad: {
 					decode: (raw: string) => raw,

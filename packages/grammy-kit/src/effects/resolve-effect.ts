@@ -7,7 +7,7 @@ import {
 	AnyHandlerResult,
 	EffectType,
 	HistoryEntry,
-	SessionData,
+	Workspace,
 } from '../types'
 import { ErrorToRender } from './error-to-render'
 
@@ -17,12 +17,12 @@ const STALE_MENU_MESSAGE =
 const NO_HISTORY_MESSAGE = 'Nothing to go back to'
 
 export async function resolveActionEffect(
-	session: SessionData,
+	workspace: Workspace,
 	telegramId: number,
 	actions: Record<string, BoundAction | undefined>,
 	action: ActionData,
 ): Promise<AnyHandlerResult> {
-	const entry = entryToRender(resolveNavigation(session, action))
+	const entry = entryToRender(resolveNavigation(workspace, action))
 
 	// a page entry has no handler to re-run, so it is replayed as it was rendered
 	if (entry.kind === 'page') {
@@ -39,17 +39,17 @@ export async function resolveActionEffect(
 	const { payload } = entry.action
 
 	return await boundAction.handler(
-		buildActionContext(session, telegramId),
+		buildActionContext(workspace, telegramId),
 		payload !== undefined ? boundAction.decode(payload) : undefined,
 	)
 }
 
 function buildActionContext(
-	session: SessionData,
+	workspace: Workspace,
 	telegramId: number,
 ): ActionContext {
 	return {
-		flow: session.flow,
+		flow: workspace.flow,
 		telegramId,
 	}
 }

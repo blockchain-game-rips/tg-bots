@@ -4,7 +4,7 @@ import {
 	EffectNavigate,
 	HistoryEntry,
 	PageContent,
-	SessionData,
+	Workspace,
 } from '../types'
 
 export const MAX_HISTORY_DEPTH = 20
@@ -19,12 +19,12 @@ export type Navigation =
 	| { kind: 'at-root' }
 
 export function resolveNavigation(
-	session: SessionData,
+	workspace: Workspace,
 	action: ActionData,
 ): Navigation {
 	if (action.actionId !== BACK_ACTION_ID) return { kind: 'forward', action }
 
-	const to = previousEntry(session)
+	const to = previousEntry(workspace)
 
 	if (to === null) return { kind: 'at-root' }
 
@@ -39,44 +39,44 @@ function isSameAction(entry: HistoryEntry, action: ActionData): boolean {
 	)
 }
 
-function push(session: SessionData, entry: HistoryEntry): void {
-	session.history.push(entry)
+function push(workspace: Workspace, entry: HistoryEntry): void {
+	workspace.history.push(entry)
 
-	if (session.history.length > MAX_HISTORY_DEPTH) session.history.shift()
+	if (workspace.history.length > MAX_HISTORY_DEPTH) workspace.history.shift()
 }
 
 /** The page currently on screen, or null before the first one is entered. */
-function currentEntry(session: SessionData): HistoryEntry | null {
-	return session.history[session.history.length - 1] ?? null
+function currentEntry(workspace: Workspace): HistoryEntry | null {
+	return workspace.history[workspace.history.length - 1] ?? null
 }
 
-function previousEntry(session: SessionData): HistoryEntry | null {
-	return session.history[session.history.length - 2] ?? null
+function previousEntry(workspace: Workspace): HistoryEntry | null {
+	return workspace.history[workspace.history.length - 2] ?? null
 }
 
 export function recordPage(
-	session: SessionData,
+	workspace: Workspace,
 	action: ActionData,
 	effect: EffectNavigate,
 ): void {
 	if (effect.page.sensitive === true) {
-		session.lastNavigatedPage = null
+		workspace.lastNavigatedPage = null
 
 		return
 	}
 
-	session.lastNavigatedPage = effect.page
+	workspace.lastNavigatedPage = effect.page
 
 	if (action.actionId === BACK_ACTION_ID) {
-		session.history.pop()
+		workspace.history.pop()
 
 		return
 	}
 
-	if (effect.history?.clears === true) session.history = []
+	if (effect.history?.clears === true) workspace.history = []
 
 	const entry = resolveEntry(action, effect)
-	recordEntry(session, entry)
+	recordEntry(workspace, entry)
 }
 
 function resolveEntry(
@@ -95,36 +95,36 @@ function resolveEntry(
 	return { action, kind: 'action' }
 }
 
-function recordEntry(session: SessionData, entry: HistoryEntry) {
+function recordEntry(workspace: Workspace, entry: HistoryEntry) {
 	switch (entry.kind) {
 		case 'action': {
-			recordActionEntry(session, entry.action)
+			recordActionEntry(workspace, entry.action)
 			return
 		}
 
 		case 'page': {
-			recordPageEntry(session, entry.page)
+			recordPageEntry(workspace, entry.page)
 			return
 		}
 	}
 }
 
-function recordActionEntry(session: SessionData, action: ActionData): void {
-	const current = currentEntry(session)
+function recordActionEntry(workspace: Workspace, action: ActionData): void {
+	const current = currentEntry(workspace)
 
 	// opening the same page shouldn't be saved to history or back button will lead at the same page
 	if (current !== null && isSameAction(current, action)) return
 
-	push(session, { kind: 'action', action })
+	push(workspace, { kind: 'action', action })
 }
 
-function recordPageEntry(session: SessionData, page: PageContent): void {
+function recordPageEntry(workspace: Workspace, page: PageContent): void {
 	// too much memory consumption for saving image in history
 	if (page.photo !== undefined) return
 
-	if (holdsSlotOf(currentEntry(session), page)) session.history.pop()
+	if (holdsSlotOf(currentEntry(workspace), page)) workspace.history.pop()
 
-	push(session, { kind: 'page', page })
+	push(workspace, { kind: 'page', page })
 }
 
 /** Whether the entry on screen is the one this page supersedes. */

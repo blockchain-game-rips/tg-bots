@@ -6,6 +6,7 @@ import {
 	createMessageHandler,
 	createStartHandler,
 	createTelegramMetricsTransformer,
+	initialSession,
 	startMetricsServer,
 } from '@rips/grammy-kit'
 import { getEnvSafe } from '@rips/shared'
@@ -52,14 +53,7 @@ bot.use((ctx, next) => {
 	return next()
 })
 
-function initial(): SessionData<Flow> {
-	return {
-		lastAsk: null,
-		flow: null,
-		lastNavigatedPage: null,
-		history: [],
-	}
-}
+const initial = (): SessionData<Flow> => initialSession<Flow>()
 
 bot.use(session({ initial }))
 

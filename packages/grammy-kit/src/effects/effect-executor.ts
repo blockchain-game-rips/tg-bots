@@ -5,6 +5,7 @@ import { replacePage, sendMessage } from '../messaging/page-delivery'
 import { sendPrompt } from '../messaging/prompt-delivery'
 import { recordPage } from '../session/history'
 import { applyFlowTransition, FlowTransition } from '../session/session-utils'
+import { claimMessage } from '../session/workspaces'
 import {
 	ActionData,
 	AnyHandlerResult,
@@ -14,7 +15,7 @@ import {
 	LastAsk,
 	Message,
 	PageContent,
-	SessionData,
+	Workspace,
 } from '../types'
 import { fireAndForget, wait } from '../utils/common'
 import { resolveActionEffect } from './resolve-effect'
@@ -54,6 +55,7 @@ type SessionChange =
 			flow: AnyFlowTransition
 			action: ActionData
 			effect: EffectNavigate
+			message: Message
 	  }
 	| { kind: 'ask'; flow: AnyFlowTransition; lastAsk: LastAsk }
 	| { kind: 'stay' }
@@ -108,7 +110,7 @@ async function performEffect(
 		case EffectType.NAVIGATE:
 			message = await deliverPage(api, chatId, message, effect.page)
 
-			return { kind: 'page', flow, action, effect }
+			return { kind: 'page', flow, action, effect, message }
 
 		case EffectType.ASK: {
 			const promptMessageId = await sendPrompt(api, chatId, effect.prompt)
@@ -127,20 +129,21 @@ async function performEffect(
 }
 
 function commitSessionChange(
-	session: SessionData,
+	workspace: Workspace,
 	change: SessionChange,
 ): void {
-	if (change.kind !== 'stay') applyFlowTransition(session, change.flow)
+	if (change.kind !== 'stay') applyFlowTransition(workspace, change.flow)
 
-	session.lastAsk = change.kind === 'ask' ? change.lastAsk : null
+	workspace.lastAsk = change.kind === 'ask' ? change.lastAsk : null
 
 	if (change.kind === 'page') {
-		recordPage(session, change.action, change.effect)
+		claimMessage(workspace, change.message.messageId)
+		recordPage(workspace, change.action, change.effect)
 	}
 }
 
 function resolveErrorPage(
-	session: SessionData,
+	workspace: Workspace,
 	error: unknown,
 	fallbackPage: PageContent,
 ): PageContent {
@@ -152,20 +155,20 @@ function resolveErrorPage(
 	}
 
 	return composePageContentWithError(
-		resolveBasePage(session, error, fallbackPage),
+		resolveBasePage(workspace, error, fallbackPage),
 		error,
 		errorId,
 	)
 }
 
 function resolveBasePage(
-	session: SessionData,
+	workspace: Workspace,
 	error: unknown,
 	fallbackPage: PageContent,
 ): PageContent {
 	if (error instanceof ErrorPageToRender) return error.pageToRender
 
-	return session.lastNavigatedPage ?? fallbackPage
+	return workspace.lastNavigatedPage ?? fallbackPage
 }
 
 export interface EffectRequest {
@@ -174,10 +177,10 @@ export interface EffectRequest {
 	telegramId: number
 	/** the message the page replaces, or null to send a new one */
 	message: Message | null
-	session: SessionData
+	workspace: Workspace
 	actions: Record<string, BoundAction | undefined>
 	action: ActionData
-	/** the page an error is shown on when the session has no page on screen */
+	/** the page an error is shown on when the workspace has no page on screen */
 	fallbackPage: PageContent
 	messagesToDelete?: number[]
 }
@@ -187,7 +190,7 @@ export async function executeEffectOrDisplayError({
 	chatId,
 	telegramId,
 	message,
-	session,
+	workspace,
 	actions,
 	action,
 	fallbackPage,
@@ -195,7 +198,7 @@ export async function executeEffectOrDisplayError({
 }: EffectRequest): Promise<void> {
 	try {
 		const result = await resolveActionEffect(
-			session,
+			workspace,
 			telegramId,
 			actions,
 			action,
@@ -203,15 +206,15 @@ export async function executeEffectOrDisplayError({
 
 		const change = await performEffect(api, chatId, message, result, action)
 
-		commitSessionChange(session, change)
+		commitSessionChange(workspace, change)
 	} catch (error) {
 		if (isMessageNotModifiedError(error)) return
 
-		const errorPage = resolveErrorPage(session, error, fallbackPage)
+		const errorPage = resolveErrorPage(workspace, error, fallbackPage)
 
 		fireAndForget(deliverPage(api, chatId, message, errorPage))
 
-		commitSessionChange(session, STAYED_PUT)
+		commitSessionChange(workspace, STAYED_PUT)
 	} finally {
 		if (messagesToDelete.length !== 0) {
 			fireAndForget(api.deleteMessages(chatId, messagesToDelete))

@@ -6,6 +6,7 @@ import {
 	createMessageHandler,
 	createStartHandler,
 	createTelegramMetricsTransformer,
+	initialSession,
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
@@ -35,14 +36,7 @@ bot.use((ctx, next) => {
 bot.api.config.use(autoRetry())
 bot.api.config.use(createTelegramMetricsTransformer())
 
-function initial(): SessionData<Flow> {
-	return {
-		lastAsk: null,
-		flow: null,
-		lastNavigatedPage: null,
-		history: [],
-	}
-}
+const initial = (): SessionData<Flow> => initialSession<Flow>()
 
 bot.use(session({ initial }))
 

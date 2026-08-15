@@ -9,11 +9,15 @@ import {
 	PageContent,
 	recordPage,
 	resolveNavigation,
-	SessionData,
+	Workspace,
 } from '@rips/grammy-kit'
 import { InlineKeyboard, InputFile } from 'grammy'
 
-const makeSession = (): SessionData => ({
+const MESSAGE_ID = 7
+
+const makeWorkspace = (): Workspace => ({
+	messageId: MESSAGE_ID,
+	lastInteraction: 0,
 	lastAsk: null,
 	flow: null,
 	lastNavigatedPage: null,
@@ -30,28 +34,28 @@ const actionEntry = (actionId: string, payload?: string): HistoryEntry => ({
 	action: { actionId, payload },
 })
 
-const currentEntry = (session: SessionData): HistoryEntry | null =>
-	session.history[session.history.length - 1] ?? null
+const currentEntry = (workspace: Workspace): HistoryEntry | null =>
+	workspace.history[workspace.history.length - 1] ?? null
 
-const enter = (session: SessionData, actionId: string, payload?: string) => {
+const enter = (workspace: Workspace, actionId: string, payload?: string) => {
 	recordPage(
-		session,
+		workspace,
 		{ actionId, payload },
 		{ type: EffectType.NAVIGATE, page: makePage(actionId) },
 	)
 }
 
-const enterWithoutAction = (session: SessionData, page: PageContent) => {
+const enterWithoutAction = (workspace: Workspace, page: PageContent) => {
 	recordPage(
-		session,
+		workspace,
 		{ actionId: 'unused', payload: undefined },
 		{ type: EffectType.NAVIGATE, page, history: { kind: 'page' } },
 	)
 }
 
-const enterAsRoot = (session: SessionData, actionId: string) => {
+const enterAsRoot = (workspace: Workspace, actionId: string) => {
 	recordPage(
-		session,
+		workspace,
 		{ actionId, payload: undefined },
 		{
 			type: EffectType.NAVIGATE,
@@ -65,8 +69,8 @@ const enterAsRoot = (session: SessionData, actionId: string) => {
  * Goes back the way the executor does: resolve the entry to render, then record
  * the rendered page under the back action.
  */
-const goBack = (session: SessionData): HistoryEntry | null => {
-	const navigation = resolveNavigation(session, {
+const goBack = (workspace: Workspace): HistoryEntry | null => {
+	const navigation = resolveNavigation(workspace, {
 		actionId: BACK_ACTION_ID,
 		payload: undefined,
 	})
@@ -78,7 +82,7 @@ const goBack = (session: SessionData): HistoryEntry | null => {
 	const page = entry.kind === 'page' ? entry.page : makePage('rerun')
 
 	recordPage(
-		session,
+		workspace,
 		{ actionId: BACK_ACTION_ID, payload: undefined },
 		{ type: EffectType.NAVIGATE, page },
 	)
@@ -88,72 +92,72 @@ const goBack = (session: SessionData): HistoryEntry | null => {
 
 describe('recordPage', () => {
 	it('puts the page on screen at the top of the history', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
+		enter(workspace, 'home')
 
-		expect(currentEntry(session)).toEqual(actionEntry('home'))
+		expect(currentEntry(workspace)).toEqual(actionEntry('home'))
 	})
 
 	it('keeps the rendered page for error messages', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const page = makePage('home')
 
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'home', payload: undefined },
 			{ type: EffectType.NAVIGATE, page },
 		)
 
-		expect(session.lastNavigatedPage).toBe(page)
+		expect(workspace.lastNavigatedPage).toBe(page)
 	})
 
 	it('keeps the pages behind the one on screen, in the order visited', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
-		enter(session, 'preset')
+		enter(workspace, 'home')
+		enter(workspace, 'preset')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('home'),
 			actionEntry('preset'),
 		])
 	})
 
 	it('keeps the payload, so two views of the same page stay distinct', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'rip', '1')
-		enter(session, 'rip', '2')
+		enter(workspace, 'rip', '1')
+		enter(workspace, 'rip', '2')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('rip', '1'),
 			actionEntry('rip', '2'),
 		])
 	})
 
 	it('replaces the page on screen when it refreshes itself', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
-		enter(session, 'wallet')
-		enter(session, 'wallet')
-		enter(session, 'wallet')
+		enter(workspace, 'home')
+		enter(workspace, 'wallet')
+		enter(workspace, 'wallet')
+		enter(workspace, 'wallet')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('home'),
 			actionEntry('wallet'),
 		])
 	})
 
 	it('keeps both visits of a genuine there-and-back-again', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'a')
-		enter(session, 'b')
-		enter(session, 'a')
+		enter(workspace, 'a')
+		enter(workspace, 'b')
+		enter(workspace, 'a')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('a'),
 			actionEntry('b'),
 			actionEntry('a'),
@@ -161,81 +165,81 @@ describe('recordPage', () => {
 	})
 
 	it('drops the oldest page once the history is full', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const visits = MAX_HISTORY_DEPTH + 5
 
 		for (let index = 0; index < visits; index++) {
-			enter(session, `page-${String(index)}`)
+			enter(workspace, `page-${String(index)}`)
 		}
 
-		expect(session.history).toHaveLength(MAX_HISTORY_DEPTH)
-		expect(session.history[0]).toEqual(actionEntry('page-5'))
+		expect(workspace.history).toHaveLength(MAX_HISTORY_DEPTH)
+		expect(workspace.history[0]).toEqual(actionEntry('page-5'))
 	})
 })
 
 describe('recordPage with a page entry', () => {
 	it('keeps the render, since no action would reproduce it', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const page = makePage('you won')
 
-		enter(session, 'reveal')
-		enterWithoutAction(session, page)
+		enter(workspace, 'reveal')
+		enterWithoutAction(workspace, page)
 
-		expect(currentEntry(session)).toEqual({ kind: 'page', page })
+		expect(currentEntry(workspace)).toEqual({ kind: 'page', page })
 	})
 
 	it('keeps the pages behind it reachable', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'rip', '7')
-		enter(session, 'reveal')
-		enterWithoutAction(session, makePage('you won'))
+		enter(workspace, 'rip', '7')
+		enter(workspace, 'reveal')
+		enterWithoutAction(workspace, makePage('you won'))
 
-		goBack(session)
+		goBack(workspace)
 
-		expect(currentEntry(session)).toEqual(actionEntry('reveal'))
+		expect(currentEntry(workspace)).toEqual(actionEntry('reveal'))
 	})
 
 	it('ignores a photo page rather than holding its image buffer', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'reveal')
-		enterWithoutAction(session, {
+		enter(workspace, 'reveal')
+		enterWithoutAction(workspace, {
 			...makePage('you won'),
 			photo: new InputFile(Buffer.from('image')),
 		})
 
-		expect(currentEntry(session)).toEqual(actionEntry('reveal'))
+		expect(currentEntry(workspace)).toEqual(actionEntry('reveal'))
 	})
 
 	it('stacks pages that claim no trail slot, since nothing marks them alike', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterWithoutAction(session, makePage('first'))
-		enterWithoutAction(session, makePage('second'))
+		enter(workspace, 'hub')
+		enterWithoutAction(workspace, makePage('first'))
+		enterWithoutAction(workspace, makePage('second'))
 
-		expect(session.history).toHaveLength(3)
+		expect(workspace.history).toHaveLength(3)
 	})
 })
 
 describe('recordPage with a trail slot', () => {
 	const SLOT = 'reveal-result'
 
-	const enterSlot = (session: SessionData, text: string, slot = SLOT) => {
-		enterWithoutAction(session, { ...makePage(text), trailSlot: slot })
+	const enterSlot = (workspace: Workspace, text: string, slot = SLOT) => {
+		enterWithoutAction(workspace, { ...makePage(text), trailSlot: slot })
 	}
 
 	it('supersedes the page holding the slot, keeping only the latest', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'first card')
-		enterSlot(session, 'second card')
-		enterSlot(session, 'third card')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'first card')
+		enterSlot(workspace, 'second card')
+		enterSlot(workspace, 'third card')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('hub'),
 			{
 				kind: 'page',
@@ -245,66 +249,66 @@ describe('recordPage with a trail slot', () => {
 	})
 
 	it('leaves for the page behind it, however many times it refreshed', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'first card')
-		enterSlot(session, 'second card')
-		enterSlot(session, 'third card')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'first card')
+		enterSlot(workspace, 'second card')
+		enterSlot(workspace, 'third card')
 
-		expect(goBack(session)).toEqual(actionEntry('hub'))
+		expect(goBack(workspace)).toEqual(actionEntry('hub'))
 	})
 
 	it('lets a different page claim the same slot, so either supersedes the other', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'single reveal')
-		enterSlot(session, 'batch reveal')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'single reveal')
+		enterSlot(workspace, 'batch reveal')
 
-		expect(goBack(session)).toEqual(actionEntry('hub'))
+		expect(goBack(workspace)).toEqual(actionEntry('hub'))
 	})
 
 	it('stacks against a page holding a different slot', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'reveal')
-		enterSlot(session, 'summary', 'reveal-summary')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'reveal')
+		enterSlot(workspace, 'summary', 'reveal-summary')
 
-		expect(session.history).toHaveLength(3)
+		expect(workspace.history).toHaveLength(3)
 	})
 
 	it('keeps a page opened on top of it, so back returns to the latest', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'first card')
-		enterSlot(session, 'second card')
-		enter(session, 'collection')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'first card')
+		enterSlot(workspace, 'second card')
+		enter(workspace, 'collection')
 
-		expect(goBack(session)).toEqual({
+		expect(goBack(workspace)).toEqual({
 			kind: 'page',
 			page: { ...makePage('second card'), trailSlot: SLOT },
 		})
 	})
 
 	it('stacks a revisit made after leaving, since the trail moved on', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'hub')
-		enterSlot(session, 'first card')
-		enter(session, 'collection')
-		enterSlot(session, 'second card')
+		enter(workspace, 'hub')
+		enterSlot(workspace, 'first card')
+		enter(workspace, 'collection')
+		enterSlot(workspace, 'second card')
 
-		expect(session.history).toHaveLength(4)
+		expect(workspace.history).toHaveLength(4)
 	})
 })
 
 describe('recordPage with a sensitive page', () => {
-	const enterSensitive = (session: SessionData, actionId: string) => {
+	const enterSensitive = (workspace: Workspace, actionId: string) => {
 		recordPage(
-			session,
+			workspace,
 			{ actionId, payload: undefined },
 			{
 				type: EffectType.NAVIGATE,
@@ -313,36 +317,36 @@ describe('recordPage with a sensitive page', () => {
 		)
 	}
 
-	it('keeps no render of it, so the secret never reaches session storage', () => {
-		const session = makeSession()
+	it('keeps no render of it, so the secret never reaches workspace storage', () => {
+		const workspace = makeWorkspace()
 
-		enter(session, 'export-key-warning')
-		enterSensitive(session, 'export-key')
+		enter(workspace, 'export-key-warning')
+		enterSensitive(workspace, 'export-key')
 
-		expect(session.lastNavigatedPage).toBeNull()
+		expect(workspace.lastNavigatedPage).toBeNull()
 	})
 
 	it('stays off the trail, so no back press can return to the secret', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'wallet')
-		enter(session, 'export-key-warning')
-		enterSensitive(session, 'export-key')
+		enter(workspace, 'wallet')
+		enter(workspace, 'export-key-warning')
+		enterSensitive(workspace, 'export-key')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('wallet'),
 			actionEntry('export-key-warning'),
 		])
 	})
 
 	it('leaves past the page that warned about it', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'wallet')
-		enter(session, 'export-key-warning')
-		enterSensitive(session, 'export-key')
+		enter(workspace, 'wallet')
+		enter(workspace, 'export-key-warning')
+		enterSensitive(workspace, 'export-key')
 
-		expect(goBack(session)).toEqual(actionEntry('wallet'))
+		expect(goBack(workspace)).toEqual(actionEntry('wallet'))
 	})
 })
 
@@ -353,9 +357,9 @@ describe('recordPage with replayWith', () => {
 
 	const CURRENCY = '7'
 
-	const submitSecret = (session: SessionData, clears = false) => {
+	const submitSecret = (workspace: Workspace, clears = false) => {
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'import-key', payload: SECRET },
 			{
 				type: EffectType.NAVIGATE,
@@ -366,11 +370,11 @@ describe('recordPage with replayWith', () => {
 	}
 
 	it('records the named action instead of the one that ran', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'checkout')
+		enter(workspace, 'checkout')
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'buy-entries', payload: undefined },
 			{
 				type: EffectType.NAVIGATE,
@@ -379,15 +383,15 @@ describe('recordPage with replayWith', () => {
 			},
 		)
 
-		expect(currentEntry(session)).toEqual(actionEntry('home'))
+		expect(currentEntry(workspace)).toEqual(actionEntry('home'))
 	})
 
 	it('goes back to it rather than repeating the action that ran', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'checkout')
+		enter(workspace, 'checkout')
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'buy-entries', payload: undefined },
 			{
 				type: EffectType.NAVIGATE,
@@ -395,43 +399,43 @@ describe('recordPage with replayWith', () => {
 				history: { replayWith: REPLAY_ACTION },
 			},
 		)
-		enter(session, 'collection')
+		enter(workspace, 'collection')
 
-		expect(goBack(session)).toEqual(actionEntry('home'))
+		expect(goBack(workspace)).toEqual(actionEntry('home'))
 	})
 
 	it('keeps the typed secret out of the trail', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'welcome')
-		submitSecret(session)
+		enter(workspace, 'welcome')
+		submitSecret(workspace)
 
-		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+		expect(JSON.stringify(workspace.history)).not.toContain(SECRET)
 	})
 
 	it('keeps it out even when the page it lands on starts a fresh trail', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'welcome')
-		submitSecret(session, true)
+		enter(workspace, 'welcome')
+		submitSecret(workspace, true)
 
-		expect(JSON.stringify(session.history)).not.toContain(SECRET)
+		expect(JSON.stringify(workspace.history)).not.toContain(SECRET)
 	})
 
 	it('still shows the page it landed on, since only the payload is secret', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		submitSecret(session)
+		submitSecret(workspace)
 
-		expect(session.lastNavigatedPage?.message.text).toBe('home')
+		expect(workspace.lastNavigatedPage?.message.text).toBe('home')
 	})
 
 	it('carries a payload the replayed action needs to render', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'choose-currency')
+		enter(workspace, 'choose-currency')
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'deposit-qr', payload: CURRENCY },
 			{
 				type: EffectType.NAVIGATE,
@@ -442,15 +446,17 @@ describe('recordPage with replayWith', () => {
 			},
 		)
 
-		expect(currentEntry(session)).toEqual(actionEntry('deposit', CURRENCY))
+		expect(currentEntry(workspace)).toEqual(
+			actionEntry('deposit', CURRENCY),
+		)
 	})
 
 	it('collapses states of one page so back leaves it', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
 		const showState = (actionId: string) => {
 			recordPage(
-				session,
+				workspace,
 				{ actionId, payload: CURRENCY },
 				{
 					type: EffectType.NAVIGATE,
@@ -462,52 +468,52 @@ describe('recordPage with replayWith', () => {
 			)
 		}
 
-		enter(session, 'choose-currency')
+		enter(workspace, 'choose-currency')
 		showState('deposit')
 		showState('deposit-qr')
 		showState('deposit')
 		showState('deposit-qr')
 
-		expect(goBack(session)).toEqual(actionEntry('choose-currency'))
+		expect(goBack(workspace)).toEqual(actionEntry('choose-currency'))
 	})
 })
 
 describe('recordPage clearing the history', () => {
 	it('leaves the page as the only one, so there is nowhere to go back to', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'a')
-		enter(session, 'b')
-		enterAsRoot(session, 'home')
+		enter(workspace, 'a')
+		enter(workspace, 'b')
+		enterAsRoot(workspace, 'home')
 
-		expect(session.history).toEqual([actionEntry('home')])
-		expect(goBack(session)).toBeNull()
+		expect(workspace.history).toEqual([actionEntry('home')])
+		expect(goBack(workspace)).toBeNull()
 	})
 
 	it('starts a fresh trail that goes back to it', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enterAsRoot(session, 'home')
-		enter(session, 'wallet')
+		enterAsRoot(workspace, 'home')
+		enter(workspace, 'wallet')
 
-		expect(goBack(session)).toEqual(actionEntry('home'))
+		expect(goBack(workspace)).toEqual(actionEntry('home'))
 	})
 
 	it('seeds an empty history, so the first page needs no special casing', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enterAsRoot(session, 'home')
+		enterAsRoot(workspace, 'home')
 
-		expect(session.history).toEqual([actionEntry('home')])
+		expect(workspace.history).toEqual([actionEntry('home')])
 	})
 
 	it('keeps the render when the page is also the start of the trail', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 		const page = makePage('welcome')
 
-		enter(session, 'a')
+		enter(workspace, 'a')
 		recordPage(
-			session,
+			workspace,
 			{ actionId: 'welcome', payload: undefined },
 			{
 				type: EffectType.NAVIGATE,
@@ -516,7 +522,7 @@ describe('recordPage clearing the history', () => {
 			},
 		)
 
-		expect(session.history).toEqual([{ kind: 'page', page }])
+		expect(workspace.history).toEqual([{ kind: 'page', page }])
 	})
 })
 
@@ -524,33 +530,33 @@ describe('resolveNavigation', () => {
 	const back = { actionId: BACK_ACTION_ID, payload: undefined }
 
 	it('sends a normal action forward to its own handler', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
+		enter(workspace, 'home')
 
 		const action = { actionId: 'wallet', payload: undefined }
 
-		expect(resolveNavigation(session, action)).toEqual({
+		expect(resolveNavigation(workspace, action)).toEqual({
 			kind: 'forward',
 			action,
 		})
 	})
 
 	it('reports at-root when there is nowhere to go back to', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
+		enter(workspace, 'home')
 
-		expect(resolveNavigation(session, back)).toEqual({ kind: 'at-root' })
+		expect(resolveNavigation(workspace, back)).toEqual({ kind: 'at-root' })
 	})
 
 	it('points back at the page behind the one on screen', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
-		enter(session, 'wallet')
+		enter(workspace, 'home')
+		enter(workspace, 'wallet')
 
-		expect(resolveNavigation(session, back)).toEqual({
+		expect(resolveNavigation(workspace, back)).toEqual({
 			kind: 'back',
 			to: actionEntry('home'),
 		})
@@ -559,46 +565,46 @@ describe('resolveNavigation', () => {
 
 describe('going back', () => {
 	it('returns null when the first page is the only one', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
+		enter(workspace, 'home')
 
-		expect(goBack(session)).toBeNull()
+		expect(goBack(workspace)).toBeNull()
 	})
 
 	it('returns null when nothing has been entered yet', () => {
-		expect(goBack(makeSession())).toBeNull()
+		expect(goBack(makeWorkspace())).toBeNull()
 	})
 
 	it('returns the page behind the one on screen', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'home')
-		enter(session, 'preset')
+		enter(workspace, 'home')
+		enter(workspace, 'preset')
 
-		expect(goBack(session)).toEqual(actionEntry('home'))
+		expect(goBack(workspace)).toEqual(actionEntry('home'))
 	})
 
 	it('unwinds one page per press, in reverse order of visiting', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'a')
-		enter(session, 'b')
-		enter(session, 'e')
+		enter(workspace, 'a')
+		enter(workspace, 'b')
+		enter(workspace, 'e')
 
-		expect(goBack(session)).toEqual(actionEntry('b'))
-		expect(goBack(session)).toEqual(actionEntry('a'))
-		expect(goBack(session)).toBeNull()
+		expect(goBack(workspace)).toEqual(actionEntry('b'))
+		expect(goBack(workspace)).toEqual(actionEntry('a'))
+		expect(goBack(workspace)).toBeNull()
 	})
 
 	it('follows the path actually taken when a page has several entrances', () => {
-		const viaHome = makeSession()
+		const viaHome = makeWorkspace()
 
 		enter(viaHome, 'a')
 		enter(viaHome, 'b')
 		enter(viaHome, 'e')
 
-		const viaWallet = makeSession()
+		const viaWallet = makeWorkspace()
 
 		enter(viaWallet, 'd')
 		enter(viaWallet, 'b')
@@ -612,19 +618,19 @@ describe('going back', () => {
 	})
 
 	it('leaves the page it returns to on screen, so leaving again moves on', () => {
-		const session = makeSession()
+		const workspace = makeWorkspace()
 
-		enter(session, 'a')
-		enter(session, 'b')
-		enter(session, 'c')
+		enter(workspace, 'a')
+		enter(workspace, 'b')
+		enter(workspace, 'c')
 
-		goBack(session)
+		goBack(workspace)
 
-		expect(currentEntry(session)).toEqual(actionEntry('b'))
+		expect(currentEntry(workspace)).toEqual(actionEntry('b'))
 
-		enter(session, 'c')
+		enter(workspace, 'c')
 
-		expect(session.history).toEqual([
+		expect(workspace.history).toEqual([
 			actionEntry('a'),
 			actionEntry('b'),
 			actionEntry('c'),

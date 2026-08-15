@@ -1,6 +1,6 @@
 import { ActionContext } from '../action/action-def'
 import { ErrorToRender } from '../effects/error-to-render'
-import { SessionData } from '../types'
+import { Workspace } from '../types'
 
 export interface FlowBase {
 	flowType: string
@@ -78,24 +78,24 @@ export function setFlowStep<
 	F extends FlowBase | null,
 	FT extends ActiveFlow<F>['flowType'],
 	S extends StepOf<F, FT>,
->(session: SessionData<FlowByType<F, FT>>, step: S, data: DataOf<F, FT, S>) {
-	session.flow = {
-		flowType: session.flow.flowType,
+>(workspace: Workspace<FlowByType<F, FT>>, step: S, data: DataOf<F, FT, S>) {
+	workspace.flow = {
+		flowType: workspace.flow.flowType,
 		step,
 		data,
 	} as unknown as FlowByType<F, FT>
 }
 
-export function resetFlow<F extends FlowBase | null>(session: SessionData<F>) {
-	session.flow = null as F
+export function resetFlow<F extends FlowBase | null>(workspace: Workspace<F>) {
+	workspace.flow = null as F
 }
 
 export function setFlow<
 	F extends FlowBase | null,
 	FT extends ActiveFlow<F>['flowType'],
 	S extends StepOf<F, FT>,
->(session: SessionData<F>, flowType: FT, step: S, data: DataOf<F, FT, S>) {
-	session.flow = { flowType, step, data } as FlowByTypeAndStep<F, FT, S>
+>(workspace: Workspace<F>, flowType: FT, step: S, data: DataOf<F, FT, S>) {
+	workspace.flow = { flowType, step, data } as FlowByTypeAndStep<F, FT, S>
 }
 
 const SET = 'set'
@@ -164,7 +164,7 @@ export function createFlowTransitions<F extends FlowBase | null>() {
 }
 
 export function applyFlowTransition<F extends FlowBase | null>(
-	session: SessionData<F>,
+	workspace: Workspace<F>,
 	transition: FlowTransition<F>,
 ): void {
 	if (transition.kind === HOLD) {
@@ -172,10 +172,10 @@ export function applyFlowTransition<F extends FlowBase | null>(
 	}
 
 	if (transition.kind === SET) {
-		session.flow = transition.flow
+		workspace.flow = transition.flow
 
 		return
 	}
 
-	session.flow = null as F
+	workspace.flow = null as F
 }

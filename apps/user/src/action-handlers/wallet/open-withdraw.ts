@@ -18,14 +18,14 @@ import {
 } from '../../constants'
 import { Flow, toFlow } from '../../flows'
 import { WithdrawPage } from '../../pages/wallet/withdraw-page'
-import { EffectType, HandlerResult } from '../../types'
+import { EffectType, HandlerResult, PageContent } from '../../types'
 import { balanceCache } from '../../cache/balance-cache'
 import { AmountPayload, amountCodec } from '../../utils/codecs'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { isFlow } from '@rips/grammy-kit'
 
 /** Only what the user chose — every balance is read fresh at render time. */
-interface WithdrawDraft {
+export interface WithdrawDraft {
 	chainAddress: ChainAddressDtoOutput
 	amount?: bigint
 	recipientAddress?: string
@@ -138,8 +138,19 @@ async function renderWithdraw(
 	telegramId: string,
 	draft: WithdrawDraft,
 ): Promise<HandlerResult<Flow>> {
-	const flow = toFlow('withdraw', 'withdraw-page', draft)
+	return {
+		flow: toFlow('withdraw', 'withdraw-page', draft),
+		effect: {
+			type: EffectType.NAVIGATE,
+			page: await renderWithdrawPage(telegramId, draft),
+		},
+	}
+}
 
+export async function renderWithdrawPage(
+	telegramId: string,
+	draft: WithdrawDraft,
+): Promise<PageContent> {
 	const { chainAddress, amount, recipientAddress } = draft
 
 	const [currencyBalance, nativeBalance] = await balanceCache.getPair(
@@ -149,18 +160,12 @@ async function renderWithdraw(
 	)
 
 	if (amount === undefined || recipientAddress === undefined) {
-		return {
-			flow,
-			effect: {
-				type: EffectType.NAVIGATE,
-				page: WithdrawPage.render({
-					kind: 'pending',
-					currencyBalance,
-					amount,
-					recipientAddress,
-				}),
-			},
-		}
+		return WithdrawPage.render({
+			kind: 'pending',
+			currencyBalance,
+			amount,
+			recipientAddress,
+		})
 	}
 
 	const withdrawQuote = await quoteWithdraw(
@@ -169,20 +174,14 @@ async function renderWithdraw(
 		recipientAddress,
 	)
 
-	return {
-		flow,
-		effect: {
-			type: EffectType.NAVIGATE,
-			page: WithdrawPage.render({
-				kind: 'quoted',
-				currencyBalance,
-				nativeBalance,
-				amount,
-				recipientAddress,
-				withdrawQuote,
-			}),
-		},
-	}
+	return WithdrawPage.render({
+		kind: 'quoted',
+		currencyBalance,
+		nativeBalance,
+		amount,
+		recipientAddress,
+		withdrawQuote,
+	})
 }
 
 async function quoteWithdraw(

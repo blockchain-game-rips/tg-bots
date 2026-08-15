@@ -24,7 +24,7 @@ import {
 } from '../../../constants'
 import { Flow, toFlow } from '../../../flows'
 import { SwapCheckoutPage } from '../../../pages/swap/swap-checkout-page'
-import { EffectType, HandlerResult } from '../../../types'
+import { EffectType, HandlerResult, PageContent } from '../../../types'
 import { balanceCache } from '../../../cache/balance-cache'
 import { currencyCache } from '../../../cache/currency-cache'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
@@ -180,6 +180,19 @@ async function renderCheckout(
 	telegramId: string,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {
+	return {
+		flow: toFlow('swap', 'src-dst-amount-chosen', draft),
+		effect: {
+			type: EffectType.NAVIGATE,
+			page: await renderSwapCheckoutPage(telegramId, draft),
+		},
+	}
+}
+
+export async function renderSwapCheckoutPage(
+	telegramId: string,
+	draft: CheckoutDraft,
+): Promise<PageContent> {
 	const { srcChainAddress, dstCurrency, amountIn } = draft
 
 	const [srcCurrencyBalance, nativeCurrencyBalance] =
@@ -193,19 +206,13 @@ async function renderCheckout(
 
 	const quote = await fetchSwapQuote(telegramId, amountInDto, dstCurrency)
 
-	return {
-		flow: toFlow('swap', 'src-dst-amount-chosen', draft),
-		effect: {
-			type: EffectType.NAVIGATE,
-			page: SwapCheckoutPage.render({
-				srcBalance: srcCurrencyBalance,
-				nativeBalance: nativeCurrencyBalance,
-				dstCurrency,
-				amountIn,
-				quote,
-			}),
-		},
-	}
+	return SwapCheckoutPage.render({
+		srcBalance: srcCurrencyBalance,
+		nativeBalance: nativeCurrencyBalance,
+		dstCurrency,
+		amountIn,
+		quote,
+	})
 }
 
 type SwapQuote =

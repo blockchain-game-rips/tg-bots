@@ -15,7 +15,7 @@ import { NATIVE_ON_BASE, withNative } from '../../../constants'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toFlow } from '../../../flows'
 import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
-import { EffectType, HandlerResult } from '../../../types'
+import { EffectType, HandlerResult, PageContent } from '../../../types'
 import { entryCountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
 
@@ -88,6 +88,19 @@ async function renderCheckout(
 	telegramId: string,
 	draft: CheckoutDraft,
 ): Promise<HandlerResult<Flow>> {
+	return {
+		flow: toFlow('enter', 'at-checkout', draft),
+		effect: {
+			type: EffectType.NAVIGATE,
+			page: await renderCheckoutPage(telegramId, draft),
+		},
+	}
+}
+
+export async function renderCheckoutPage(
+	telegramId: string,
+	draft: CheckoutDraft,
+): Promise<PageContent> {
 	const { presetId, entryCount, payChainAddress } = draft
 
 	const availablePreset = await presetCache.getOne(presetId)
@@ -100,19 +113,13 @@ async function renderCheckout(
 		quote.quote.blockchainFee.currency.chainAddress,
 	)
 
-	return {
-		flow: toFlow('enter', 'at-checkout', draft),
-		effect: {
-			type: EffectType.NAVIGATE,
-			page: CheckoutPage.render({
-				availablePreset,
-				entryCount,
-				srcBalance: payCurrencyBalance,
-				nativeBalance,
-				quote,
-			}),
-		},
-	}
+	return CheckoutPage.render({
+		availablePreset,
+		entryCount,
+		srcBalance: payCurrencyBalance,
+		nativeBalance,
+		quote,
+	})
 }
 
 async function fetchCheckoutQuote(

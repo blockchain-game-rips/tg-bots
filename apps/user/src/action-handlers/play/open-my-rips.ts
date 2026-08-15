@@ -3,7 +3,7 @@ import {
 	ripsControllerGetOngoingRips,
 	usersControllerGetUser,
 } from '@rips/api-client'
-import { entryCountFor, groupRipStatus, RipStatusGroup } from '@rips/shared'
+import { entryCountFor, isFinalized } from '@rips/shared'
 import { ActionDef, noPayload } from '../../action-def'
 import { toReset } from '../../flows'
 import { MyRipsPage } from '../../pages/play/my-rips-page'
@@ -30,7 +30,7 @@ export const openMyRips: ActionDef<void> = noPayload(async (session) => {
 		])
 
 	const activeEntries = ripsData.rips
-		.filter((rip) => groupRipStatus(rip.status) === RipStatusGroup.FILLING)
+		.filter((rip) => !isFinalized(rip.status))
 		.reduce((total, rip) => total + entryCountFor(rip, userEvmAddress), 0)
 
 	return {

@@ -188,7 +188,7 @@ export const mockSwapNetworkFee: CurrencyAmountDtoOutput = {
 	amount: '210000000000000', // ~0.00021 ETH
 }
 
-// SUPPORTED_CURRENCIES indices: 0 = USDC/Arbitrum, 1 = ETH/Arbitrum, 2 = USDC/Base
+// Indices into the preview swap token list: 0 = USDC/Arbitrum, 1 = ETH/Arbitrum, 2 = USDC/Base
 export const mockSwapTokenInIndex = 1 // ETH on Arbitrum
 export const mockSwapTokenOutIndex = 2 // USDC on Base
 export const mockSwapAmountIn: CurrencyAmountDtoOutput = {

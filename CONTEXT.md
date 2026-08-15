@@ -12,9 +12,9 @@ _Avoid_: Screen, view
 A page whose content holds a secret, such as the exported private key. Never kept in the session: it leaves no render behind for error messages and never joins the back trail, so no back press can return to the secret — leaving one lands on the page before the one that warned about it, and reaching it again means asking for it again. Sensitivity belongs to the content, so the page declares it rather than the handler that opened it.
 _Avoid_: Secret page, private page, ephemeral page
 
-**Sensitive action**:
-An action whose payload holds a secret the user typed, such as the private key submitted when importing a wallet. The page it lands on renders normally, but the action itself never joins the back trail — replaying it would replay the secret. Declared on the payload codec, next to the payload it describes. The counterpart to a Sensitive page: one protects what is shown, the other what was typed.
-_Avoid_: Secret action, private payload
+**Replay target**:
+The action a navigation records in the back trail in place of the one that actually ran, set as `replayWith` on the effect's `history`. The back trail stores actions to re-run rather than rendered pages, so an action that must not run twice — one that creates an account, or one whose payload holds a secret the user typed — names an idempotent action to stand in for it. Back then re-renders the same page with fresh data instead of repeating the mutation or replaying the secret. Declared per navigation, since only the handler knows what a safe stand-in is; a page entry (`kind: 'page'`) is the alternative when the rendered page itself should be replayed. The counterpart to a Sensitive page: one protects what is shown, the other what was typed.
+_Avoid_: Sensitive action, redirect, back target
 
 **FormattedString**:
 The canonical representation of message text: plain text plus formatting entities, from `@grammyjs/parse-mode`. Bots never build HTML markup strings; formatting is expressed as entities.

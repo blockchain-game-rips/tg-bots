@@ -1,6 +1,14 @@
 import { ChainAddressDtoOutput, CurrencyDtoOutput } from '@rips/api-client'
 import { createFlowTransitions } from '@rips/grammy-kit'
 
+/** A referrer is recorded once, when the account is created, so the address
+ * from a referral link only has to survive until then. */
+export interface OnboardingFlow {
+	flowType: 'onboarding'
+	step: 'choosing-account-type'
+	data: { referrerAddress?: string }
+}
+
 export type EnterFlow =
 	| {
 			flowType: 'enter'
@@ -61,6 +69,6 @@ export type SwapFlow =
 			}
 	  }
 
-export type Flow = EnterFlow | WithdrawFlow | SwapFlow | null
+export type Flow = OnboardingFlow | EnterFlow | WithdrawFlow | SwapFlow | null
 
 export const { toFlow, toStep, toHold, toReset } = createFlowTransitions<Flow>()

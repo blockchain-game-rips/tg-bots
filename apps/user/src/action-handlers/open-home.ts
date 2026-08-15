@@ -4,16 +4,18 @@ import {
 	usersControllerGetUser,
 	usersControllerImportUser,
 } from '@rips/api-client'
+import { assertFlow } from '@rips/grammy-kit'
 import { parseEvmPrivateKey } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../action-def'
 import { actionIds } from '../actions'
 import { balanceCache } from '../cache/balance-cache'
 import { NATIVE_ON_BASE } from '../constants'
-import { toHold, toReset, type Flow } from '../flows'
+import { toFlow, toHold, toReset, type Flow } from '../flows'
 import { HomePage } from '../pages/home-page'
 import { WelcomePage } from '../pages/onboarding/welcome-page'
 import { ImportKeyPrompt } from '../prompts/import-key-prompt'
 import { EffectType, HandlerResult } from '../types'
+import { referrerAddressCodec } from '../utils/codecs'
 import { isApiErrorWithStatus } from '../utils/api/error'
 import {
 	fetchUnrevealedPayouts,
@@ -22,39 +24,49 @@ import {
 
 const NOT_FOUND_STATUS = 404
 
-export const openHome: ActionDef<void> = noPayload(async (session) => {
-	const { telegramId } = session
+export const openHome: ActionDef<string | undefined> = withPayload(
+	referrerAddressCodec,
+	async (actionContext, referrerAddress) => {
+		const { telegramId } = actionContext
 
-	const isNewUser = await usersControllerGetUser({
-		path: { telegramId: telegramId.toString() },
-	})
-		.then(() => false)
-		.catch((error: unknown) => {
-			if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) return true
-
-			throw error
+		const isNewUser = await usersControllerGetUser({
+			path: { telegramId: telegramId.toString() },
 		})
+			.then(() => false)
+			.catch((error: unknown) => {
+				if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) return true
 
-	if (isNewUser) {
-		return {
-			flow: toReset(),
-			effect: {
-				type: EffectType.NAVIGATE,
-				page: WelcomePage.render(),
-				history: { clears: true },
-			},
+				throw error
+			})
+
+		if (isNewUser) {
+			return {
+				flow: toFlow('onboarding', 'choosing-account-type', {
+					referrerAddress,
+				}),
+				effect: {
+					type: EffectType.NAVIGATE,
+					page: WelcomePage.render(),
+					history: { clears: true },
+				},
+			}
 		}
-	}
 
-	return renderHome(telegramId)
-})
+		return renderHome(telegramId)
+	},
+)
 
 export const chooseCreateAccount: ActionDef<void> = noPayload(
-	async (session) => {
-		const { telegramId } = session
+	async (actionContext) => {
+		assertFlow(actionContext, 'onboarding', 'choosing-account-type')
+
+		const { telegramId, flow } = actionContext
 
 		await usersControllerCreateUser({
-			body: { telegramId: telegramId.toString() },
+			body: {
+				telegramId: telegramId.toString(),
+				referrerAddress: flow.data.referrerAddress,
+			},
 		})
 
 		return renderHome(telegramId)
@@ -75,11 +87,17 @@ export const submitImportKey: ActionDef<string> = withPayload(
 		encode: (privateKey) => privateKey,
 		decode: (raw) => parseEvmPrivateKey(raw),
 	},
-	async (session, privateKey) => {
-		const { telegramId } = session
+	async (actionContext, privateKey) => {
+		assertFlow(actionContext, 'onboarding', 'choosing-account-type')
+
+		const { telegramId, flow } = actionContext
 
 		await usersControllerImportUser({
-			body: { telegramId: telegramId.toString(), privateKey },
+			body: {
+				telegramId: telegramId.toString(),
+				privateKey,
+				referrerAddress: flow.data.referrerAddress,
+			},
 		})
 
 		return renderHome(telegramId)

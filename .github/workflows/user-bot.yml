@@ -1,4 +1,4 @@
-name: Deploy preview bot
+name: Deploy user bot
 
 on:
   push:
@@ -9,12 +9,11 @@ on:
       - "tools/**"
       - "package.json"
       - "yarn.lock"
-      - "apps/user/Dockerfile.preview-bot"
-      - ".github/workflows/preview-bot.yml"
+      - ".github/workflows/user-bot.yml"
   workflow_dispatch:
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}-preview-bot
+  IMAGE: ghcr.io/${{ github.repository }}-user-bot
 
 jobs:
   build:
@@ -49,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/user/Dockerfile.preview-bot
+          file: apps/user/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -70,6 +69,6 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose pull preview-bot
-            docker compose up -d preview-bot
+            docker compose pull user-bot
+            docker compose up -d user-bot
             docker image prune -f

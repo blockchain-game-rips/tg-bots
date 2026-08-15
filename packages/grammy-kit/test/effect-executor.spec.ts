@@ -203,7 +203,7 @@ describe('executing a render of a sensitive page', () => {
 	})
 })
 
-describe('executing a sensitive action', () => {
+describe('executing an action with a secret payload', () => {
 	const SECRET = '0xprivatekey'
 
 	it('keeps the typed secret out of the trail it lands on', async () => {
@@ -220,11 +220,13 @@ describe('executing a sensitive action', () => {
 			{
 				imp: {
 					decode: (raw: string) => raw,
-					sensitive: true,
 					handler: () =>
 						holding({
 							type: EffectType.NAVIGATE,
 							page: makePage('home'),
+							history: {
+								replayWith: 'home' as ActionId,
+							},
 						}),
 				},
 			},

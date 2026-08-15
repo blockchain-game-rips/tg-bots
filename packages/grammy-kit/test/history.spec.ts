@@ -1,5 +1,6 @@
 import { FormattedString } from '@grammyjs/parse-mode'
 import {
+	ActionId,
 	BACK_ACTION_ID,
 	EffectType,
 	HistoryEntry,
@@ -254,8 +255,10 @@ describe('recordPage with a sensitive page', () => {
 	})
 })
 
-describe('recordPage with a sensitive action', () => {
+describe('recordPage with replayWith', () => {
 	const SECRET = '0xprivatekey'
+
+	const REPLAY_ACTION = 'home' as ActionId
 
 	const submitSecret = (session: SessionData, clears = false) => {
 		recordPage(
@@ -264,11 +267,45 @@ describe('recordPage with a sensitive action', () => {
 			{
 				type: EffectType.NAVIGATE,
 				page: makePage('home'),
-				history: clears ? { clears: true } : undefined,
+				history: { clears, replayWith: REPLAY_ACTION },
 			},
-			{ actionIsSensitive: true },
 		)
 	}
+
+	it('records the named action instead of the one that ran', () => {
+		const session = makeSession()
+
+		enter(session, 'checkout')
+		recordPage(
+			session,
+			{ actionId: 'buy-entries', payload: undefined },
+			{
+				type: EffectType.NAVIGATE,
+				page: makePage('bought'),
+				history: { replayWith: REPLAY_ACTION },
+			},
+		)
+
+		expect(currentEntry(session)).toEqual(actionEntry('home'))
+	})
+
+	it('goes back to it rather than repeating the action that ran', () => {
+		const session = makeSession()
+
+		enter(session, 'checkout')
+		recordPage(
+			session,
+			{ actionId: 'buy-entries', payload: undefined },
+			{
+				type: EffectType.NAVIGATE,
+				page: makePage('bought'),
+				history: { replayWith: REPLAY_ACTION },
+			},
+		)
+		enter(session, 'collection')
+
+		expect(goBack(session)).toEqual(actionEntry('home'))
+	})
 
 	it('keeps the typed secret out of the trail', () => {
 		const session = makeSession()

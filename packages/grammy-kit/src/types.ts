@@ -42,11 +42,13 @@ export type HistoryOptions =
 			clears?: boolean
 
 			/**
-			 * Records this action instead of the one that ran, so back
+			 * Callback data recorded instead of the action that ran, so back
 			 * re-renders the page without repeating a mutation or replaying a
-			 * secret payload.
+			 * secret payload. Build it with `buildActionData` when the recorded
+			 * action needs a payload; pass the bare action id when it does not,
+			 * since dropping the payload is what keeps secrets out of the trail.
 			 */
-			replayWith?: ActionId
+			replayWith?: string
 	  }
 
 export interface EffectNavigate {

@@ -225,7 +225,7 @@ describe('executing an action with a secret payload', () => {
 							type: EffectType.NAVIGATE,
 							page: makePage('home'),
 							history: {
-								replayWith: 'home' as ActionId,
+								replayWith: 'home',
 							},
 						}),
 				},

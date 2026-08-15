@@ -1,4 +1,4 @@
-import { BACK_ACTION_ID } from '../action/action-data'
+import { BACK_ACTION_ID, parseActionData } from '../action/action-data'
 import {
 	ActionData,
 	EffectNavigate,
@@ -89,12 +89,8 @@ function resolveEntry(
 
 	const { replayWith } = effect.history ?? {}
 
-	if (replayWith !== undefined) {
-		return {
-			kind: 'action',
-			action: { actionId: replayWith, payload: undefined },
-		}
-	}
+	if (replayWith !== undefined)
+		return { kind: 'action', action: parseActionData(replayWith) }
 
 	return { action, kind: 'action' }
 }

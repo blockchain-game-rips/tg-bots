@@ -2,6 +2,7 @@ import { FormattedString } from '@grammyjs/parse-mode'
 import {
 	ActionId,
 	BACK_ACTION_ID,
+	COMMAND_SEPARATOR,
 	EffectType,
 	HistoryEntry,
 	MAX_HISTORY_DEPTH,
@@ -260,6 +261,8 @@ describe('recordPage with replayWith', () => {
 
 	const REPLAY_ACTION = 'home' as ActionId
 
+	const CURRENCY = '7'
+
 	const submitSecret = (session: SessionData, clears = false) => {
 		recordPage(
 			session,
@@ -331,6 +334,51 @@ describe('recordPage with replayWith', () => {
 		submitSecret(session)
 
 		expect(session.lastNavigatedPage?.message.text).toBe('home')
+	})
+
+	it('carries a payload the replayed action needs to render', () => {
+		const session = makeSession()
+
+		enter(session, 'choose-currency')
+		recordPage(
+			session,
+			{ actionId: 'deposit-qr', payload: CURRENCY },
+			{
+				type: EffectType.NAVIGATE,
+				page: makePage('deposit'),
+				history: {
+					replayWith: `deposit${COMMAND_SEPARATOR}${CURRENCY}`,
+				},
+			},
+		)
+
+		expect(currentEntry(session)).toEqual(actionEntry('deposit', CURRENCY))
+	})
+
+	it('collapses states of one page so back leaves it', () => {
+		const session = makeSession()
+
+		const showState = (actionId: string) => {
+			recordPage(
+				session,
+				{ actionId, payload: CURRENCY },
+				{
+					type: EffectType.NAVIGATE,
+					page: makePage(actionId),
+					history: {
+						replayWith: `deposit${COMMAND_SEPARATOR}${CURRENCY}`,
+					},
+				},
+			)
+		}
+
+		enter(session, 'choose-currency')
+		showState('deposit')
+		showState('deposit-qr')
+		showState('deposit')
+		showState('deposit-qr')
+
+		expect(goBack(session)).toEqual(actionEntry('choose-currency'))
 	})
 })
 

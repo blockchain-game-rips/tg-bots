@@ -20,6 +20,7 @@ import { fireAndForget } from '../utils/common'
 import { resolveActionEffect } from './resolve-effect'
 import {
 	composePageContentWithError,
+	ErrorPageToRender,
 	ErrorToRender,
 	generateErrorId,
 } from './error-to-render'
@@ -140,10 +141,20 @@ function resolveErrorPage(
 	}
 
 	return composePageContentWithError(
-		session.lastNavigatedPage ?? fallbackPage,
+		resolveBasePage(session, error, fallbackPage),
 		error,
 		errorId,
 	)
+}
+
+function resolveBasePage(
+	session: SessionData,
+	error: unknown,
+	fallbackPage: PageContent,
+): PageContent {
+	if (error instanceof ErrorPageToRender) return error.pageToRender
+
+	return session.lastNavigatedPage ?? fallbackPage
 }
 
 export async function executeEffectOrDisplayError(

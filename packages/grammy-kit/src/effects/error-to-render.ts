@@ -22,6 +22,25 @@ export class ErrorToRender extends Error {
 	}
 }
 
+/**
+ * Carries the page the error should be shown on, rendered after the failure so
+ * its amounts and buttons reflect what is true now rather than what was on
+ * screen when the attempt began.
+ */
+export class ErrorPageToRender extends ErrorToRender {
+	pageToRender: PageContent
+
+	constructor(
+		pageToRender: PageContent,
+		rawMessageToRender: string,
+		message?: string,
+	) {
+		super(rawMessageToRender, message)
+
+		this.pageToRender = pageToRender
+	}
+}
+
 export function generateErrorId(): string {
 	let errorId = ''
 

@@ -6,6 +6,8 @@ import {
 	BoundAction,
 	Effect,
 	EffectType,
+	ErrorPageToRender,
+	ErrorToRender,
 	executeEffectOrDisplayError,
 	Message,
 	PageContent,
@@ -561,6 +563,90 @@ describe('going back', () => {
 		await run(fake, session, actions, BACK_ACTION_ID)
 
 		expect(fake.editedTexts).toEqual(['receipt', 'next', 'receipt'])
+	})
+})
+
+describe('failing with a page to render', () => {
+	const failWith = (error: unknown): BoundAction => ({
+		decode: (raw: string) => raw,
+		handler: () => {
+			throw error
+		},
+	})
+
+	it('renders the page the error carries instead of the one on screen', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		enter(session, 'stale')
+
+		await run(fake, session, {
+			w: failWith(
+				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
+			),
+		})
+
+		await Promise.resolve()
+
+		const lastEdit = fake.editedTexts[fake.editedTexts.length - 1] ?? ''
+
+		expect(lastEdit).toContain('fresh')
+		expect(lastEdit).not.toContain('stale')
+		expect(lastEdit).toContain('Your entry failed')
+	})
+
+	it('keeps the flow and writes no step to the trail', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		enter(session, 'checkout')
+
+		const before = [...session.history]
+
+		await run(fake, session, {
+			w: failWith(
+				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
+			),
+		})
+
+		expect(session.history).toEqual(before)
+	})
+
+	it('shows no error id, since the failure is one the bot expected', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		enter(session, 'checkout')
+
+		await run(fake, session, {
+			w: failWith(
+				new ErrorPageToRender(makePage('fresh'), 'Your entry failed'),
+			),
+		})
+
+		await Promise.resolve()
+
+		const lastEdit = fake.editedTexts[fake.editedTexts.length - 1] ?? ''
+
+		expect(lastEdit).not.toContain('Error ID')
+	})
+
+	it('still falls back to the page on screen for an error carrying none', async () => {
+		const fake = makeApi()
+		const session = makeSession()
+
+		enter(session, 'checkout')
+
+		await run(fake, session, {
+			w: failWith(new ErrorToRender('Your entry failed')),
+		})
+
+		await Promise.resolve()
+
+		const lastEdit = fake.editedTexts[fake.editedTexts.length - 1] ?? ''
+
+		expect(lastEdit).toContain('checkout')
+		expect(lastEdit).toContain('Your entry failed')
 	})
 })
 

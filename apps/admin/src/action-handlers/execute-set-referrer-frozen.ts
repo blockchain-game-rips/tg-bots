@@ -94,15 +94,22 @@ export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
 						},
 					)
 
-					const title = frozen
-						? `Referrer ${address} frozen`
-						: `Referrer ${address} unfrozen`
+					const titles = frozen
+						? {
+								succeeded: `Referrer ${address} frozen`,
+								operation: 'Freezing the referrer',
+							}
+						: {
+								succeeded: `Referrer ${address} unfrozen`,
+								operation: 'Unfreezing the referrer',
+							}
 
 					return {
 						flow: toReset(),
 						effect: {
 							type: EffectType.NAVIGATE,
-							page: TransactionPage.render(title, tx),
+							page: TransactionPage.render(titles, tx),
+							history: { kind: 'page' },
 						},
 					}
 				},

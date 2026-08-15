@@ -57,12 +57,16 @@ export const executeConfirmPaused: ActionDef<void> = noPayload((session) => {
 					headers: adminApiHeader,
 					body: { isPaused },
 				})
-				const title = isPaused ? '⏸ Paused' : '▶ Unpaused'
+				const titles = isPaused
+					? { succeeded: '⏸ Paused', operation: 'Pausing' }
+					: { succeeded: '▶ Unpaused', operation: 'Unpausing' }
+
 				return {
 					flow: toReset(),
 					effect: {
 						type: EffectType.NAVIGATE,
-						page: TransactionPage.render(title, tx),
+						page: TransactionPage.render(titles, tx),
+						history: { kind: 'page' },
 					},
 				}
 			},

@@ -151,9 +151,13 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 					effect: {
 						type: EffectType.NAVIGATE,
 						page: TransactionPage.render(
-							`Preset #${String(presetId)} config updated`,
+							{
+								succeeded: `Preset #${String(presetId)} config updated`,
+								operation: `Updating preset #${String(presetId)} config`,
+							},
 							tx,
 						),
+						history: { kind: 'page' },
 					},
 				}
 			},

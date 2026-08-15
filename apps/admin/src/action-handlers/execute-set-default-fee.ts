@@ -87,9 +87,13 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 						effect: {
 							type: EffectType.NAVIGATE,
 							page: TransactionPage.render(
-								`Default fee set to ${String(bp)} bp`,
+								{
+									succeeded: `Default fee set to ${String(bp)} bp`,
+									operation: 'Setting the default fee',
+								},
 								tx,
 							),
+							history: { kind: 'page' },
 						},
 					}
 				},

@@ -121,9 +121,13 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 				effect: {
 					type: EffectType.NAVIGATE,
 					page: TransactionPage.render(
-						`Referral tiers updated (${String(tiers.length)} tier(s))`,
+						{
+							succeeded: `Referral tiers updated (${String(tiers.length)} tier(s))`,
+							operation: 'Updating referral tiers',
+						},
 						tx,
 					),
+					history: { kind: 'page' },
 				},
 			}
 		},

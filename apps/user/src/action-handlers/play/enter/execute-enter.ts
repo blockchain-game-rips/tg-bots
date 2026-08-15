@@ -10,12 +10,17 @@ import {
 	TelegramIdHeaderDto,
 	TransactionDtoOutput,
 } from '@rips/api-client'
-import { assertFlow, fmt, wait } from '@rips/grammy-kit'
+import { assertFlow, wait } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { presetCache } from '../../../cache/preset-cache'
 import { NATIVE_ON_BASE, withNative } from '../../../constants'
+import {
+	ENTER_FRAME,
+	ENTER_SENDING_FRAME,
+	sentFrame,
+} from '../../../domain/loading-frames'
 import { resolvePaymentRoute } from '../../../domain/payment-route'
 import { Flow, toReset } from '../../../flows'
 import {
@@ -66,48 +71,161 @@ export const executeEnter: ActionDef<void> = noPayload((session) => {
 		paymentCurrencyChainAddress: payChainAddress,
 	}
 
+	const route = resolvePaymentRoute(payChainAddress)
+
+	const isCrosschain = route === 'crosschain'
+
 	return {
 		effect: {
 			type: EffectType.LOADING,
-			message: fmt`Entering...`,
-			next: () => executeEnterRequest(session.telegramId, body),
+			message: isCrosschain ? ENTER_SENDING_FRAME : ENTER_FRAME,
+			next: async () => {
+				// Read before anything is sent: a missing preset throws, and
+				// after a purchase that throw would strand a user whose funds
+				// have already moved.
+				const availablePreset = await presetCache.getOne(presetId)
+
+				return isCrosschain
+					? sendCrosschainEnter(
+							session.telegramId,
+							body,
+							availablePreset,
+						)
+					: executeOnOneChain(
+							session.telegramId,
+							route,
+							body,
+							availablePreset,
+						)
+			},
 		},
 	}
 })
 
-async function executeEnterRequest(
+async function invalidateEnterBalances(
 	telegramId: string,
 	body: BuyEntriesZapBodyDto,
-): Promise<HandlerResult<Flow>> {
-	const headers = { 'x-telegram-id': telegramId }
-
-	const availablePreset = await presetCache.getOne(body.presetId)
-
-	const outcome = await buyEntries(
-		resolvePaymentRoute(body.paymentCurrencyChainAddress),
-		headers,
-		body,
-	)
-
+): Promise<void> {
 	await balanceCache.invalidate(telegramId, [
 		...withNative(body.paymentCurrencyChainAddress),
 		NATIVE_ON_BASE,
 	])
+}
 
-	if (outcome.kind === 'failed') {
-		throw await toEnterError(telegramId, body, outcome.message)
-	}
-
+async function toEnterSuccess(
+	availablePreset: AvailablePresetDtoOutput,
+	purchase: PurchaseOutcome,
+): Promise<HandlerResult<Flow>> {
 	return {
 		flow: toReset(),
 		effect: {
 			type: EffectType.NAVIGATE,
 			page: EnterSuccessPage.render(
-				await toSuccessArgs(availablePreset, outcome.purchase),
+				await toSuccessArgs(availablePreset, purchase),
 			),
 			history: { kind: 'page' },
 		},
 	}
+}
+
+async function executeOnOneChain(
+	telegramId: string,
+	route: Exclude<ReturnType<typeof resolvePaymentRoute>, 'crosschain'>,
+	body: BuyEntriesZapBodyDto,
+	availablePreset: AvailablePresetDtoOutput,
+): Promise<HandlerResult<Flow>> {
+	const headers = { 'x-telegram-id': telegramId }
+
+	const outcome =
+		route === 'direct'
+			? await buyDirect(headers, body)
+			: await buySamechain(headers, body)
+
+	await invalidateEnterBalances(telegramId, body)
+
+	if (outcome.kind === 'failed') {
+		throw await toEnterError(telegramId, body, outcome.message)
+	}
+
+	return toEnterSuccess(availablePreset, outcome.purchase)
+}
+
+/**
+ * Stops at the sent transaction so the second frame can show it. Balances stay
+ * untouched until the zap settles — invalidating here would refetch a balance
+ * the in-flight entry is about to change again.
+ */
+async function sendCrosschainEnter(
+	telegramId: string,
+	body: BuyEntriesZapBodyDto,
+	availablePreset: AvailablePresetDtoOutput,
+): Promise<HandlerResult<Flow>> {
+	const response = await callOrUnknown(() =>
+		ripsControllerBuyEntriesZapCrosschain({
+			headers: { 'x-telegram-id': telegramId },
+			body,
+		}),
+	)
+
+	if (response === null) {
+		await invalidateEnterBalances(telegramId, body)
+
+		throw await toEnterError(telegramId, body, unknownMessage(enterNouns))
+	}
+
+	const { zap } = response.data
+
+	if (zap.status !== 'succeeded') {
+		await invalidateEnterBalances(telegramId, body)
+
+		throw await toEnterError(
+			telegramId,
+			body,
+			failureMessage(zap, enterNouns),
+		)
+	}
+
+	return {
+		effect: {
+			type: EffectType.LOADING,
+			message: sentFrame(zap.transaction, NATIVE_ON_BASE.chain),
+			next: () =>
+				awaitCrosschainEnter(
+					telegramId,
+					body,
+					availablePreset,
+					zap.result.zapId,
+					zap.transaction,
+				),
+		},
+	}
+}
+
+async function awaitCrosschainEnter(
+	telegramId: string,
+	body: BuyEntriesZapBodyDto,
+	availablePreset: AvailablePresetDtoOutput,
+	zapId: string,
+	srcTransaction: TransactionDtoOutput,
+): Promise<HandlerResult<Flow>> {
+	const result = await pollZapResult(zapId)
+
+	await invalidateEnterBalances(telegramId, body)
+
+	if (result.kind !== 'success') {
+		throw await toEnterError(telegramId, body, result.message)
+	}
+
+	return toEnterSuccess(availablePreset, {
+		ripId: result.success.ripId,
+		entryCount: result.success.entryCount,
+		startEntryIndex: result.success.startEntryIndex,
+		transactions: {
+			kind: 'crosschain',
+			srcTransaction,
+			dstTransaction: result.success.dstTransaction,
+		},
+	})
 }
 
 function toEnterError(
@@ -132,18 +250,6 @@ type BuyResult =
 
 function failed(message: string): BuyResult {
 	return { kind: 'failed', message }
-}
-
-async function buyEntries(
-	route: ReturnType<typeof resolvePaymentRoute>,
-	headers: TelegramIdHeaderDto,
-	body: BuyEntriesZapBodyDto,
-): Promise<BuyResult> {
-	if (route === 'direct') return buyDirect(headers, body)
-
-	if (route === 'samechain') return buySamechain(headers, body)
-
-	return buyCrosschain(headers, body)
 }
 
 async function buyDirect(
@@ -193,41 +299,6 @@ function boughtOnOneChain(
 		purchase: {
 			...result,
 			transactions: { kind: 'singleChain', transaction },
-		},
-	}
-}
-
-async function buyCrosschain(
-	headers: TelegramIdHeaderDto,
-	body: BuyEntriesZapBodyDto,
-): Promise<BuyResult> {
-	const response = await callOrUnknown(() =>
-		ripsControllerBuyEntriesZapCrosschain({ headers, body }),
-	)
-
-	if (response === null) return failed(unknownMessage(enterNouns))
-
-	const { zap } = response.data
-
-	if (zap.status !== 'succeeded') {
-		return failed(failureMessage(zap, enterNouns))
-	}
-
-	const result = await pollZapResult(zap.result.zapId)
-
-	if (result.kind !== 'success') return failed(result.message)
-
-	return {
-		kind: 'bought',
-		purchase: {
-			ripId: result.success.ripId,
-			entryCount: result.success.entryCount,
-			startEntryIndex: result.success.startEntryIndex,
-			transactions: {
-				kind: 'crosschain',
-				srcTransaction: zap.transaction,
-				dstTransaction: result.success.dstTransaction,
-			},
 		},
 	}
 }

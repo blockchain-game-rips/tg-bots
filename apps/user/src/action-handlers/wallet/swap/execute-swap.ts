@@ -4,16 +4,22 @@ import {
 	GetSwapResultResponseDtoOutput,
 	SwapBodyDto,
 	TelegramIdHeaderDto,
+	TransactionDtoOutput,
 	walletsControllerGetSwapResult,
 	walletsControllerSwapCrosschain,
 	walletsControllerSwapSamechain,
 } from '@rips/api-client'
-import { assertFlow, fmt, wait } from '@rips/grammy-kit'
+import { assertFlow, wait } from '@rips/grammy-kit'
 import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
 import { currencyCache } from '../../../cache/currency-cache'
 import { withNative } from '../../../constants'
+import {
+	sentFrame,
+	SWAP_FRAME,
+	SWAP_SENDING_FRAME,
+} from '../../../domain/loading-frames'
 import { Flow, toReset } from '../../../flows'
 import { SwapSuccessPage } from '../../../pages/swap/swap-success-page'
 import { EffectType, HandlerResult, PageContent } from '../../../types'
@@ -38,19 +44,23 @@ export const executeSwap: ActionDef<void> = noPayload((session) => {
 	const draft = session.flow.data
 	const { srcChainAddress, dstCurrency, amountIn } = draft
 
+	const isCrosschain = !isSameChain(
+		srcChainAddress.chain,
+		currencyToChain(dstCurrency),
+	)
+
 	return {
 		effect: {
 			type: EffectType.LOADING,
-			message: fmt`Swapping...`,
+			message: isCrosschain ? SWAP_SENDING_FRAME : SWAP_FRAME,
 			next: async () => {
 				const srcCurrency = await currencyCache.getOne(srcChainAddress)
 
-				return executeSwapRequest(
-					session.telegramId,
-					toCurrencyAmount(amountIn, srcCurrency),
-					dstCurrency,
-					draft,
-				)
+				const amount = toCurrencyAmount(amountIn, srcCurrency)
+
+				return isCrosschain
+					? sendCrosschainSwap(session.telegramId, amount, draft)
+					: executeSamechainSwap(session.telegramId, amount, draft)
 			},
 		},
 	}
@@ -62,39 +72,127 @@ interface SwapDraft {
 	amountIn: bigint
 }
 
-async function executeSwapRequest(
+async function invalidateSwapBalances(
 	telegramId: string,
 	amountIn: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
-	draft: SwapDraft,
-): Promise<HandlerResult<Flow>> {
-	const headers = { 'x-telegram-id': telegramId }
-	const body = toSwapBody(amountIn, dstCurrency)
-
-	const outcome = isSameChain(
-		currencyToChain(amountIn.currency),
-		currencyToChain(dstCurrency),
-	)
-		? await swapSamechain(headers, body)
-		: await swapCrosschain(headers, body)
-
+): Promise<void> {
 	await balanceCache.invalidate(telegramId, [
 		...withNative(amountIn.currency.chainAddress),
 		dstCurrency.chainAddress,
 	])
+}
+
+function toSwapSuccess(page: PageContent): HandlerResult<Flow> {
+	return {
+		flow: toReset(),
+		effect: {
+			type: EffectType.NAVIGATE,
+			page,
+			history: { kind: 'page' },
+		},
+	}
+}
+
+async function executeSamechainSwap(
+	telegramId: string,
+	amountIn: CurrencyAmountDtoOutput,
+	draft: SwapDraft,
+): Promise<HandlerResult<Flow>> {
+	const { dstCurrency } = draft
+
+	const outcome = await swapSamechain(
+		{ 'x-telegram-id': telegramId },
+		toSwapBody(amountIn, dstCurrency),
+	)
+
+	await invalidateSwapBalances(telegramId, amountIn, dstCurrency)
 
 	if (outcome.kind === 'failed') {
 		throw await toSwapError(telegramId, draft, outcome.message)
 	}
 
+	return toSwapSuccess(outcome.page)
+}
+
+/**
+ * Stops at the sent transaction so the second frame can show it. Balances stay
+ * untouched until the zap settles — invalidating here would refetch a balance
+ * the in-flight swap is about to change again.
+ */
+async function sendCrosschainSwap(
+	telegramId: string,
+	amountIn: CurrencyAmountDtoOutput,
+	draft: SwapDraft,
+): Promise<HandlerResult<Flow>> {
+	const { dstCurrency } = draft
+
+	const response = await callOrUnknown(() =>
+		walletsControllerSwapCrosschain({
+			headers: { 'x-telegram-id': telegramId },
+			body: toSwapBody(amountIn, dstCurrency),
+		}),
+	)
+
+	if (response === null) {
+		await invalidateSwapBalances(telegramId, amountIn, dstCurrency)
+
+		throw await toSwapError(telegramId, draft, unknownMessage(swapNouns))
+	}
+
+	const { zap } = response.data
+
+	if (zap.status !== 'succeeded') {
+		await invalidateSwapBalances(telegramId, amountIn, dstCurrency)
+
+		throw await toSwapError(
+			telegramId,
+			draft,
+			failureMessage(zap, swapNouns),
+		)
+	}
+
 	return {
-		flow: toReset(),
 		effect: {
-			type: EffectType.NAVIGATE,
-			page: outcome.page,
-			history: { kind: 'page' },
+			type: EffectType.LOADING,
+			message: sentFrame(zap.transaction, currencyToChain(dstCurrency)),
+			next: () =>
+				awaitCrosschainSwap(
+					telegramId,
+					amountIn,
+					draft,
+					zap.result.zapId,
+					zap.transaction,
+				),
 		},
 	}
+}
+
+async function awaitCrosschainSwap(
+	telegramId: string,
+	amountIn: CurrencyAmountDtoOutput,
+	draft: SwapDraft,
+	zapId: string,
+	srcTransaction: TransactionDtoOutput,
+): Promise<HandlerResult<Flow>> {
+	const { dstCurrency } = draft
+
+	const result = await pollSwapResult(zapId)
+
+	await invalidateSwapBalances(telegramId, amountIn, dstCurrency)
+
+	if (result.kind !== 'success') {
+		throw await toSwapError(telegramId, draft, result.message)
+	}
+
+	return toSwapSuccess(
+		SwapSuccessPage.render({
+			kind: 'crosschain',
+			amountOut: result.success.amountOut,
+			srcTransaction,
+			dstTransaction: result.success.dstTransaction,
+		}),
+	)
 }
 
 function toSwapError(telegramId: string, draft: SwapDraft, message: string) {
@@ -145,37 +243,6 @@ async function swapSamechain(
 			kind: 'samechain',
 			amountOut: swap.result.amountOut,
 			transaction: swap.transaction,
-		}),
-	}
-}
-
-async function swapCrosschain(
-	headers: TelegramIdHeaderDto,
-	body: SwapBodyDto,
-): Promise<SwapOutcome> {
-	const response = await callOrUnknown(() =>
-		walletsControllerSwapCrosschain({ headers, body }),
-	)
-
-	if (response === null) return failed(unknownMessage(swapNouns))
-
-	const { zap } = response.data
-
-	if (zap.status !== 'succeeded') {
-		return failed(failureMessage(zap, swapNouns))
-	}
-
-	const result = await pollSwapResult(zap.result.zapId)
-
-	if (result.kind !== 'success') return failed(result.message)
-
-	return {
-		kind: 'swapped',
-		page: SwapSuccessPage.render({
-			kind: 'crosschain',
-			amountOut: result.success.amountOut,
-			srcTransaction: zap.transaction,
-			dstTransaction: result.success.dstTransaction,
 		}),
 	}
 }

@@ -23,10 +23,17 @@ export const MyRipsPage = {
 		const lines: Line[] = [
 			fmt`📊 ${FormattedString.b('My Rips')}`,
 			'',
-			`🎁 Ready to open: ${args.unopenedPulls.toString()} ${pullLabel}`,
-			`⏳ Active entries: ${args.activeEntries.toString()}`,
-			`✅ Completed Rips: ${args.completedRips.toString()}`,
-			`↩️ Refunded Rips: ${args.refundedRips.toString()}`,
+			'🎁 Ready to open:',
+			`${args.unopenedPulls.toString()} ${pullLabel}`,
+			'',
+			'⏳ Active entries:',
+			args.activeEntries.toString(),
+			'',
+			'✅ Completed Rips:',
+			args.completedRips.toString(),
+			'',
+			'↩️ Refunded Rips:',
+			args.refundedRips.toString(),
 		]
 
 		const keyboard = new InlineKeyboard()

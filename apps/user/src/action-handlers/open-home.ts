@@ -67,7 +67,6 @@ export const submitImportKey: ActionDef<string> = withPayload(
 	{
 		encode: (privateKey) => privateKey,
 		decode: (raw) => parseEvmPrivateKey(raw),
-		sensitive: true,
 	},
 	async (session, privateKey) => {
 		const { telegramId } = session
@@ -78,6 +77,12 @@ export const submitImportKey: ActionDef<string> = withPayload(
 	},
 )
 
+/**
+ * Every path here records `openHome` rather than the action that ran, and both
+ * callers depend on it: replaying `chooseCreateAccount` would create an account
+ * that already exists, and replaying `submitImportKey` would put the typed
+ * private key in the back trail. Removing `replayWith` reintroduces both.
+ */
 async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
 	const [baseBalance, unrevealedPayouts, { data: referrerData }] =
 		await Promise.all([
@@ -99,7 +104,7 @@ async function renderHome(telegramId: string): Promise<HandlerResult<Flow>> {
 				baseBalance,
 				referralFee,
 			}),
-			history: { clears: true },
+			history: { clears: true, replayWith: actionIds.openHome },
 		},
 	}
 }

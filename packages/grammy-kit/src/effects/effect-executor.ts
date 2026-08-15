@@ -168,7 +168,7 @@ function resolveBasePage(
 	return session.lastNavigatedPage ?? fallbackPage
 }
 
-export type EffectRequest = {
+export interface EffectRequest {
 	api: Api
 	chatId: number
 	telegramId: number

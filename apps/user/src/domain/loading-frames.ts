@@ -1,7 +1,7 @@
 import { TransactionDtoOutput } from '@rips/api-client'
 import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { Chain } from '@rips/shared'
-import { chainToNameOrReference } from '../utils/chain-display'
+import { chainToName } from '../utils/chain-display'
 
 /**
  * The copy shown while an operation runs. Each flow opens on its own
@@ -36,10 +36,10 @@ export function sentFrame(
 	const lines: Line[] = [
 		'⏳ Transaction sent',
 		'',
-		`Transaction on ${chainToNameOrReference(transaction.chain)}:`,
+		`Transaction on ${chainToName(transaction.chain)}:`,
 		FormattedString.code(transaction.id),
 		'',
-		`Waiting for it to land on ${chainToNameOrReference(destinationChain)}...`,
+		`Waiting for it to land on ${chainToName(destinationChain)}...`,
 	]
 
 	return joinLines(lines)

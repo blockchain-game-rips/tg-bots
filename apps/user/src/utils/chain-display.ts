@@ -1,17 +1,12 @@
-import { EIP155_NAMESPACE, SUPPORTED_CHAINS } from '../constants'
 import { Chain } from '@rips/shared'
+import { EIP155_NAMESPACE } from '../constants'
 
-type SupportedChain = (typeof SUPPORTED_CHAINS)[number]
-type SupportedNamespace = SupportedChain['namespace']
-type ReferencesForNamespace<N extends SupportedNamespace> = Extract<
-	SupportedChain,
-	{ namespace: N }
->['reference']
-
-const CHAIN_NAMES: {
-	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string> &
-		Record<string, string | undefined>
-} = {
+/**
+ * Presentation-only data for the chains the backend is expected to support. It
+ * is deliberately not the source of truth for which chains are offered, so a
+ * chain missing here still renders, using its CAIP-2 identifier.
+ */
+const CHAIN_NAMES: Record<string, Record<string, string | undefined>> = {
 	[EIP155_NAMESPACE]: {
 		'1': 'Ethereum',
 		'56': 'BSC',
@@ -21,9 +16,7 @@ const CHAIN_NAMES: {
 	},
 }
 
-const CHAIN_EMOJIS: {
-	[N in SupportedNamespace]: Record<ReferencesForNamespace<N>, string>
-} = {
+const CHAIN_EMOJIS: Record<string, Record<string, string | undefined>> = {
 	[EIP155_NAMESPACE]: {
 		'1': '⚫',
 		'56': '🟡',
@@ -33,63 +26,31 @@ const CHAIN_EMOJIS: {
 	},
 }
 
-function isSupportedNamespace(value: string): value is SupportedNamespace {
-	return value in CHAIN_NAMES
-}
-
-function isSupportedReference<N extends SupportedNamespace>(
-	namespace: N,
-	reference: string,
-): reference is ReferencesForNamespace<N> {
-	return reference in CHAIN_EMOJIS[namespace]
-}
-
-function chainNotFoundError(kind: string, chain: Chain): Error {
-	return new Error(
-		`Chain ${kind} not found for namespace ${chain.namespace} and reference ${chain.reference}`,
-	)
-}
-
-export function chainToName(chain: Chain): string {
-	if (!isSupportedNamespace(chain.namespace)) {
-		throw chainNotFoundError('name', chain)
-	}
-
-	const chainName = CHAIN_NAMES[chain.namespace][chain.reference]
-
-	if (chainName === undefined) {
-		throw chainNotFoundError('name', chain)
-	}
-
-	return chainName
-}
-
-/**
- * Names a chain without throwing, falling back to the raw CAIP-2 identifier.
- * Receipts for settled transactions must render even when the chain is one the
- * bot does not offer, so an unknown chain degrades the label rather than the
- * whole screen.
- */
-export function chainToNameOrReference(chain: Chain): string {
-	if (!isSupportedNamespace(chain.namespace)) {
-		return toChainId(chain)
-	}
-
-	return CHAIN_NAMES[chain.namespace][chain.reference] ?? toChainId(chain)
-}
+const UNKNOWN_CHAIN_EMOJI = '🔗'
 
 function toChainId(chain: Chain): string {
 	return `${chain.namespace}:${chain.reference}`
 }
 
+function lookupChainName(chain: Chain): string | undefined {
+	return CHAIN_NAMES[chain.namespace]?.[chain.reference]
+}
+
+function lookupChainEmoji(chain: Chain): string | undefined {
+	return CHAIN_EMOJIS[chain.namespace]?.[chain.reference]
+}
+
+export function hasFullChainDisplay(chain: Chain): boolean {
+	return (
+		lookupChainName(chain) !== undefined &&
+		lookupChainEmoji(chain) !== undefined
+	)
+}
+
+export function chainToName(chain: Chain): string {
+	return lookupChainName(chain) ?? toChainId(chain)
+}
+
 export function chainToEmoji(chain: Chain): string {
-	if (!isSupportedNamespace(chain.namespace)) {
-		throw chainNotFoundError('emoji', chain)
-	}
-
-	if (!isSupportedReference(chain.namespace, chain.reference)) {
-		throw chainNotFoundError('emoji', chain)
-	}
-
-	return CHAIN_EMOJIS[chain.namespace][chain.reference]
+	return lookupChainEmoji(chain) ?? UNKNOWN_CHAIN_EMOJI
 }

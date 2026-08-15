@@ -1,6 +1,6 @@
 import { CurrencyAmountDtoOutput } from '@rips/api-client'
 import { formatAmountWithUsd } from '@rips/shared'
-import { chainToNameOrReference } from '../chain-display'
+import { chainToName } from '../chain-display'
 import { currencyToChain } from '@rips/shared'
 
 /**
@@ -65,7 +65,7 @@ export function refundedMessage(
 	nouns: OutcomeNouns,
 	refund: CurrencyAmountDtoOutput,
 ): string {
-	const chain = chainToNameOrReference(currencyToChain(refund.currency))
+	const chain = chainToName(currencyToChain(refund.currency))
 
 	return `${didNotGoThrough(nouns)} ${formatAmountWithUsd(refund)} is on its way back to your wallet on ${chain}.`
 }

@@ -1,7 +1,7 @@
 import { TransactionDtoOutput } from '@rips/api-client'
 import { FormattedString, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
-import { chainToNameOrReference } from '../chain'
+import { chainToName } from '../chain'
 
 interface SingleChainOutcome {
 	kind: 'singleChain'
@@ -41,7 +41,7 @@ function transactionLines(outcome: TransactionOutcome): Line[] {
 
 function transactionOnChainLines(transaction: TransactionDtoOutput): Line[] {
 	return [
-		`Transaction on ${chainToNameOrReference(transaction.chain)}:`,
+		`Transaction on ${chainToName(transaction.chain)}:`,
 		FormattedString.code(transaction.id),
 	]
 }

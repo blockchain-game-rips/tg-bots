@@ -7,6 +7,8 @@ import { toReset } from '../../flows'
 import { FinalizedRipsPage } from '../../pages/play/finalized-rips-page'
 import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'
+import { buildActionData } from '@rips/grammy-kit'
+import { actionIds } from '../../actions'
 
 const FINALIZED_RIPS_LIMIT = 10
 
@@ -31,6 +33,12 @@ export const openFinalizedRips: ActionDef<boolean> = withPayload(
 			effect: {
 				type: EffectType.NAVIGATE,
 				page: FinalizedRipsPage.render(data.rips, mineOnly),
+				history: {
+					replayWith: buildActionData(
+						actionIds.openFinalizedRips,
+						false,
+					),
+				},
 			},
 		}
 	},

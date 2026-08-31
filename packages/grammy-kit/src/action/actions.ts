@@ -15,8 +15,8 @@ export interface BoundAction {
 }
 
 /**
- * Binds each handler under the id its declaration allocated, looked up by
- * name — the registry's own order carries no meaning.
+ * Binds each handler under the id the lockfile allocated to its name — the
+ * registry's own order carries no meaning.
  */
 export function buildActions(
 	actionIds: ActionDeclarations,

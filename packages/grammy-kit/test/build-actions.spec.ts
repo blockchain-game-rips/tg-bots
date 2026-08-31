@@ -13,10 +13,13 @@ const numberCodec = {
 }
 
 describe('buildActions', () => {
-	const actionIds = declareActions({
-		openHome: noPayloadId(),
-		openRip: withPayloadId<number>(),
-	})
+	const actionIds = declareActions(
+		{ ids: { openHome: '0', openRip: '1' }, next: '2' },
+		{
+			openHome: noPayloadId(),
+			openRip: withPayloadId<number>(),
+		},
+	)
 
 	const registry = {
 		openHome: noPayload(() => ({}) as never),

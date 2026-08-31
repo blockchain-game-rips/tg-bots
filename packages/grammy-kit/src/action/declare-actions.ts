@@ -1,7 +1,9 @@
 import { ActionId } from '../types'
 import { ActionDef } from './action-def'
-
-const ID_RADIX = 36
+import {
+	assertLockfileCovers,
+	type ActionIdLockfile,
+} from './action-ids-lockfile'
 
 /**
  * Declares the payload an action's buttons carry. Carries no value — the type
@@ -20,22 +22,28 @@ export type ActionDeclarations = Record<string, ActionId<unknown>>
 
 export type PayloadOfId<I> = I extends ActionId<infer P> ? P : never
 
-function toActionId(index: number): string {
-	return index.toString(ID_RADIX)
-}
-
 /**
- * Names every action of an app and the payload its button carries. Imports
+ * Resolves each declared action to the id its lockfile allocated. Imports
  * nothing from handlers or pages, so pages can build buttons without pulling
  * the registry — and through it every handler — in behind them.
  */
-export function declareActions<D extends Record<string, ActionId<unknown>>>(
+export function declareActions<D extends ActionDeclarations>(
+	lockfile: ActionIdLockfile,
 	declarations: D,
 ): { [K in keyof D]: ActionId<PayloadOfId<D[K]>> } {
+	const names = Object.keys(declarations)
+
+	assertLockfileCovers(lockfile, names)
+
 	const result: Record<string, string> = {}
 
-	Object.keys(declarations).forEach((name, index) => {
-		result[name] = toActionId(index)
+	names.forEach((name) => {
+		const id = lockfile.ids[name]
+
+		if (id === undefined)
+			throw new Error(`Action "${name}" has no id in the lockfile`)
+
+		result[name] = id
 	})
 
 	// The ids are branded strings with no runtime form, so the payload types

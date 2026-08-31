@@ -1,42 +1,57 @@
 import { describe, expect, it } from 'vitest'
 import { BACK_ACTION_ID } from '../src/action/action-data'
+import type { ActionIdLockfile } from '../src/action/action-ids-lockfile'
 import { declareActions, noPayloadId } from '../src/action/declare-actions'
 
-/** Enough actions that any id the allocator can reach has been issued. */
-const ACTIONS_PAST_THE_BACK_ID = 50
+function lockfileOf(
+	ids: Record<string, string>,
+	next: string,
+): ActionIdLockfile {
+	return { ids, next }
+}
 
 describe('declareActions', () => {
-	it('gives every declared action an id', () => {
-		const actionIds = declareActions({
+	it('gives every declared action the id the lockfile holds for it', () => {
+		const actionIds = declareActions(lockfileOf({ openHome: '7' }, '8'), {
 			openHome: noPayloadId(),
-			openWallet: noPayloadId(),
 		})
 
-		expect(Object.keys(actionIds)).toEqual(['openHome', 'openWallet'])
+		expect(actionIds.openHome).toBe('7')
 	})
 
-	it('gives distinct actions distinct ids', () => {
-		const actionIds = declareActions({
+	it('keeps an id stable when an action is declared before it', () => {
+		const lockfile = lockfileOf({ openHome: '0', inserted: '2' }, '3')
+
+		const actionIds = declareActions(lockfile, {
+			inserted: noPayloadId(),
 			openHome: noPayloadId(),
-			openWallet: noPayloadId(),
-			openAbout: noPayloadId(),
 		})
 
-		const ids = Object.values(actionIds)
-
-		expect(new Set(ids).size).toBe(ids.length)
+		expect(actionIds.openHome).toBe('0')
 	})
 
-	it('never issues the reserved back id', () => {
-		const names = Array.from(
-			{ length: ACTIONS_PAST_THE_BACK_ID },
-			(_unused, index) => `action${String(index)}`,
-		)
+	it('rejects a declared action the lockfile does not cover', () => {
+		expect(() =>
+			declareActions(lockfileOf({ openHome: '0' }, '1'), {
+				openHome: noPayloadId(),
+				openExportKey: noPayloadId(),
+			}),
+		).toThrow(/openExportKey/)
+	})
 
-		const actionIds = declareActions(
-			Object.fromEntries(names.map((name) => [name, noPayloadId()])),
-		)
+	it('rejects a lockfile still holding an action that was undeclared', () => {
+		expect(() =>
+			declareActions(lockfileOf({ openHome: '0', dropped: '1' }, '2'), {
+				openHome: noPayloadId(),
+			}),
+		).toThrow(/dropped/)
+	})
 
-		expect(Object.values(actionIds)).not.toContain(BACK_ACTION_ID)
+	it('never resolves an action to the reserved back id', () => {
+		expect(() =>
+			declareActions(lockfileOf({ openHome: BACK_ACTION_ID }, '1'), {
+				openHome: noPayloadId(),
+			}),
+		).toThrow()
 	})
 })

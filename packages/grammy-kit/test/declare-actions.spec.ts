@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import { BACK_ACTION_ID } from '../src/action/action-data'
 import { declareActions, noPayloadId } from '../src/action/declare-actions'
+
+/** Enough actions that any id the allocator can reach has been issued. */
+const ACTIONS_PAST_THE_BACK_ID = 50
 
 describe('declareActions', () => {
 	it('gives every declared action an id', () => {
@@ -24,15 +28,15 @@ describe('declareActions', () => {
 	})
 
 	it('never issues the reserved back id', () => {
-		const actionIds = declareActions(
-			Object.fromEntries(
-				Array.from({ length: 50 }, (_unused, index) => [
-					`action${String(index)}`,
-					noPayloadId(),
-				]),
-			),
+		const names = Array.from(
+			{ length: ACTIONS_PAST_THE_BACK_ID },
+			(_unused, index) => `action${String(index)}`,
 		)
 
-		expect(Object.values(actionIds)).not.toContain('-')
+		const actionIds = declareActions(
+			Object.fromEntries(names.map((name) => [name, noPayloadId()])),
+		)
+
+		expect(Object.values(actionIds)).not.toContain(BACK_ACTION_ID)
 	})
 })

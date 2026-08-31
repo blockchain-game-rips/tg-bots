@@ -10,11 +10,13 @@ import { MyRipsPage } from '../../pages/play/my-rips-page'
 import { EffectType } from '../../types'
 import { fetchUnrevealedPayouts } from '../../utils/api/wrappers'
 import { evmAddressFromUser } from '../../utils/wallet'
+import { userApiKey } from '../../utils/api/key'
 
 export const openMyRips: ActionDef<void> = noPayload(async (session) => {
 	const { telegramId } = session
 
 	const { data: user } = await usersControllerGetUser({
+		headers: { 'x-user-key': userApiKey() },
 		path: { telegramId: telegramId.toString() },
 	})
 

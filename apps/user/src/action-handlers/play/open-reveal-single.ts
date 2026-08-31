@@ -13,9 +13,9 @@ import {
 	fetchCardCollectionWithCounts,
 	fetchRip,
 	fetchUnrevealedPayouts,
-	toTelegramIdHeader,
 } from '../../utils/api/wrappers'
 import { playFrames } from './reveal-animation-chain'
+import { userApiKey } from '../../utils/api/key'
 
 export const openRevealSingle: ActionDef<void> = noPayload((session) => {
 	const { telegramId } = session
@@ -41,7 +41,10 @@ export async function revealSingleFrom(
 		await fetchCardCollectionWithCounts(telegramId)
 
 	const { data: revealData } = await ripsControllerRevealPayouts({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		body: { revealAll: false },
 	})
 

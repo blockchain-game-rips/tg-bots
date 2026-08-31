@@ -3,7 +3,7 @@ import {
 	CurrencyDtoOutput,
 	GetSwapResultResponseDtoOutput,
 	SwapBodyDto,
-	TelegramIdHeaderDto,
+	WalletsControllerSwapSamechainData,
 	TransactionDtoOutput,
 	walletsControllerGetSwapResult,
 	walletsControllerSwapCrosschain,
@@ -13,7 +13,6 @@ import { assertFlow, wait } from '@rips/grammy-kit'
 import { currencyToChain, isSameChain, toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
-import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { currencyCache } from '../../../cache/currency-cache'
 import { withNative } from '../../../constants'
 import {
@@ -33,6 +32,7 @@ import {
 } from '../../../utils/display/transaction-outcome-copy'
 import { failureMessage } from '../../../utils/display/transaction-status'
 import { renderSwapCheckoutPage } from './open-swap-checkout'
+import { userApiKey } from '../../../utils/api/key'
 
 const SWAP_POLL_INTERVAL_MS = 2000
 const SWAP_POLL_TIMEOUT_MS = 60000
@@ -103,7 +103,10 @@ async function executeSamechainSwap(
 	const { dstCurrency } = draft
 
 	const outcome = await swapSamechain(
-		toTelegramIdHeader(telegramId),
+		{
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		toSwapBody(amountIn, dstCurrency),
 	)
 
@@ -130,7 +133,10 @@ async function sendCrosschainSwap(
 
 	const response = await callOrUnknown(() =>
 		walletsControllerSwapCrosschain({
-			headers: toTelegramIdHeader(telegramId),
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
 			body: toSwapBody(amountIn, dstCurrency),
 		}),
 	)
@@ -223,7 +229,7 @@ function failed(message: string): SwapOutcome {
 }
 
 async function swapSamechain(
-	headers: TelegramIdHeaderDto,
+	headers: WalletsControllerSwapSamechainData['headers'],
 	body: SwapBodyDto,
 ): Promise<SwapOutcome> {
 	const response = await callOrUnknown(() =>

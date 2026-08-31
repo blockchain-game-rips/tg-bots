@@ -1,5 +1,4 @@
 import { referralSystemControllerWithdrawReward } from '@rips/api-client'
-import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { ActionDef, noPayload } from '../../action-def'
 import { balanceCache } from '../../cache/balance-cache'
 import { NATIVE_ON_BASE } from '../../constants'
@@ -15,6 +14,7 @@ import {
 } from '../../utils/display/transaction-outcome-copy'
 import { failureMessage } from '../../utils/display/transaction-status'
 import { renderClaimRewardPage } from './open-referral-withdraw-reward'
+import { userApiKey } from '../../utils/api/key'
 
 export const executeReferralWithdrawReward: ActionDef<void> = noPayload(
 	(session) => ({
@@ -31,7 +31,10 @@ async function executeClaimRequest(
 ): Promise<HandlerResult<Flow>> {
 	const response = await callOrUnknown(() =>
 		referralSystemControllerWithdrawReward({
-			headers: toTelegramIdHeader(telegramId),
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
 			body: { currencyAddress: NATIVE_ON_BASE.address },
 		}),
 	)

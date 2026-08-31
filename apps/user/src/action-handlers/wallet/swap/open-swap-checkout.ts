@@ -17,7 +17,6 @@ import {
 	usdToTokenUnits,
 } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
-import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import {
 	isNativeChainAddress,
 	NATIVE_MAX_MARGIN_USD,
@@ -31,6 +30,7 @@ import { balanceCache } from '../../../cache/balance-cache'
 import { currencyCache } from '../../../cache/currency-cache'
 import { AmountPayload, amountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
+import { userApiKey } from '../../../utils/api/key'
 
 /** Only what the user chose — every balance is read fresh at render time. */
 interface CheckoutDraft {
@@ -251,7 +251,10 @@ async function fetchSwapQuote(
 	amountIn: CurrencyAmountDtoOutput,
 	dstCurrency: CurrencyDtoOutput,
 ): Promise<SwapQuote> {
-	const headers = toTelegramIdHeader(telegramId)
+	const headers = {
+		'x-telegram-id': telegramId.toString(),
+		'x-user-key': userApiKey(),
+	}
 	const body = {
 		currencyInChainAddress: amountIn.currency.chainAddress,
 		currencyOutChainAddress: dstCurrency.chainAddress,

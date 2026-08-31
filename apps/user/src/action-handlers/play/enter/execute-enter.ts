@@ -7,7 +7,8 @@ import {
 	ripsControllerBuyEntriesZapSamechain,
 	ripsControllerGetZapResult,
 	RipDtoOutput,
-	TelegramIdHeaderDto,
+	RipsControllerBuyEntriesPurchaseData,
+	RipsControllerBuyEntriesZapSamechainData,
 	TransactionDtoOutput,
 } from '@rips/api-client'
 import { assertFlow, wait } from '@rips/grammy-kit'
@@ -28,7 +29,7 @@ import {
 	EnterSuccessPage,
 } from '../../../pages/play/enter-success-page'
 import { EffectType, HandlerResult } from '../../../types'
-import { fetchRip, toTelegramIdHeader } from '../../../utils/api/wrappers'
+import { fetchRip } from '../../../utils/api/wrappers'
 import { TransactionOutcome } from '../../../utils/display/transaction-outcome'
 import {
 	cancelledMessage,
@@ -40,6 +41,7 @@ import { failureMessage } from '../../../utils/display/transaction-status'
 import { callOrUnknown } from '../../../utils/api/call-or-unknown'
 import { errorOnFreshPage } from '../../../utils/display/error-on-fresh-page'
 import { renderCheckoutPage } from './open-enter-checkout'
+import { userApiKey } from '../../../utils/api/key'
 
 const ZAP_POLL_INTERVAL_MS = 2000
 const ZAP_POLL_TIMEOUT_MS = 60000
@@ -134,7 +136,10 @@ async function executeOnOneChain(
 	body: BuyEntriesZapBodyDto,
 	availablePreset: AvailablePresetDtoOutput,
 ): Promise<HandlerResult<Flow>> {
-	const headers = toTelegramIdHeader(telegramId)
+	const headers = {
+		'x-telegram-id': telegramId.toString(),
+		'x-user-key': userApiKey(),
+	}
 
 	const outcome =
 		route === 'direct'
@@ -162,7 +167,10 @@ async function sendCrosschainEnter(
 ): Promise<HandlerResult<Flow>> {
 	const response = await callOrUnknown(() =>
 		ripsControllerBuyEntriesZapCrosschain({
-			headers: toTelegramIdHeader(telegramId),
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
 			body,
 		}),
 	)
@@ -253,7 +261,7 @@ function failed(message: string): BuyResult {
 }
 
 async function buyDirect(
-	headers: TelegramIdHeaderDto,
+	headers: RipsControllerBuyEntriesPurchaseData['headers'],
 	body: BuyEntriesZapBodyDto,
 ): Promise<BuyResult> {
 	const response = await callOrUnknown(() =>
@@ -272,7 +280,7 @@ async function buyDirect(
 }
 
 async function buySamechain(
-	headers: TelegramIdHeaderDto,
+	headers: RipsControllerBuyEntriesZapSamechainData['headers'],
 	body: BuyEntriesZapBodyDto,
 ): Promise<BuyResult> {
 	const response = await callOrUnknown(() =>

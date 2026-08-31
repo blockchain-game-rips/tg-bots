@@ -1,5 +1,4 @@
 import { walletsControllerCreateWithdrawal } from '@rips/api-client'
-import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { assertFlow } from '@rips/grammy-kit'
 import { toCurrencyAmount } from '@rips/shared'
 import { ActionDef, noPayload } from '../../action-def'
@@ -18,6 +17,7 @@ import {
 } from '../../utils/display/transaction-outcome-copy'
 import { failureMessage } from '../../utils/display/transaction-status'
 import { renderWithdrawPage, WithdrawDraft } from './open-withdraw'
+import { userApiKey } from '../../utils/api/key'
 
 export const executeWithdraw: ActionDef<void> = noPayload((session) => {
 	assertFlow(session, 'withdraw', 'withdraw-page')
@@ -60,7 +60,10 @@ async function executeWithdrawRequest(
 
 	const response = await callOrUnknown(() =>
 		walletsControllerCreateWithdrawal({
-			headers: toTelegramIdHeader(telegramId),
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
 			body: {
 				amountIn: {
 					amount: amount.toString(),

@@ -17,10 +17,8 @@ import { ImportKeyPrompt } from '../prompts/import-key-prompt'
 import { EffectType, HandlerResult } from '../types'
 import { referrerAddressCodec } from '../utils/codecs'
 import { isApiErrorWithStatus } from '../utils/api/error'
-import {
-	fetchUnrevealedPayouts,
-	toTelegramIdHeader,
-} from '../utils/api/wrappers'
+import { fetchUnrevealedPayouts } from '../utils/api/wrappers'
+import { userApiKey } from '../utils/api/key'
 
 const NOT_FOUND_STATUS = 404
 
@@ -30,6 +28,7 @@ export const openHome: ActionDef<string | undefined> = withPayload(
 		const { telegramId } = actionContext
 
 		const isNewUser = await usersControllerGetUser({
+			headers: { 'x-user-key': userApiKey() },
 			path: { telegramId: telegramId.toString() },
 		})
 			.then(() => false)
@@ -63,6 +62,7 @@ export const chooseCreateAccount: ActionDef<void> = noPayload(
 		const { telegramId, flow } = actionContext
 
 		await usersControllerCreateUser({
+			headers: { 'x-user-key': userApiKey() },
 			body: {
 				telegramId: telegramId.toString(),
 				referrerAddress: flow.data.referrerAddress,
@@ -93,6 +93,7 @@ export const submitImportKey: ActionDef<string> = withPayload(
 		const { telegramId, flow } = actionContext
 
 		await usersControllerImportUser({
+			headers: { 'x-user-key': userApiKey() },
 			body: {
 				telegramId: telegramId.toString(),
 				privateKey,
@@ -116,7 +117,10 @@ async function renderHome(telegramId: number): Promise<HandlerResult<Flow>> {
 			balanceCache.getOne(telegramId, NATIVE_ON_BASE),
 			fetchUnrevealedPayouts(telegramId),
 			referralSystemControllerGetReferrer({
-				headers: toTelegramIdHeader(telegramId),
+				headers: {
+					'x-telegram-id': telegramId.toString(),
+					'x-user-key': userApiKey(),
+				},
 			}),
 		])
 

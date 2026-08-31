@@ -3,7 +3,6 @@ import {
 	CurrencyAmountDtoOutput,
 	walletsControllerQuoteWithdraw,
 } from '@rips/api-client'
-import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { assertFlow } from '@rips/grammy-kit'
 import {
 	parseCurrencyAmount,
@@ -24,6 +23,7 @@ import { balanceCache } from '../../cache/balance-cache'
 import { AmountPayload, amountCodec } from '../../utils/codecs'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { isFlow } from '@rips/grammy-kit'
+import { userApiKey } from '../../utils/api/key'
 
 /** Only what the user chose — every balance is read fresh at render time. */
 export interface WithdrawDraft {
@@ -191,7 +191,10 @@ async function quoteWithdraw(
 	recipientAddress: string,
 ) {
 	const { data } = await walletsControllerQuoteWithdraw({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		body: {
 			amountIn: {
 				currencyChainAddress: amountIn.currency.chainAddress,

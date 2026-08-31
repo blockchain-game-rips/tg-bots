@@ -2,7 +2,6 @@ import {
 	referralSystemControllerGetReferrer,
 	referralSystemControllerQuoteWithdrawReward,
 } from '@rips/api-client'
-import { toTelegramIdHeader } from '../../utils/api/wrappers'
 import { ActionDef, noPayload } from '../../action-def'
 import { NATIVE_ON_BASE } from '../../constants'
 import { toReset } from '../../flows'
@@ -14,6 +13,7 @@ import { ClaimRewardPage } from '../../pages/referral-system/claim-reward-page'
 import { EffectType, PageContent } from '../../types'
 import { balanceCache } from '../../cache/balance-cache'
 import { openReferral } from './open-referral'
+import { userApiKey } from '../../utils/api/key'
 
 export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 	async (session) => {
@@ -37,7 +37,10 @@ export const openReferralWithdrawReward: ActionDef<void> = noPayload(
 export async function renderClaimRewardPage(
 	telegramId: number,
 ): Promise<PageContent | null> {
-	const headers = toTelegramIdHeader(telegramId)
+	const headers = {
+		'x-telegram-id': telegramId.toString(),
+		'x-user-key': userApiKey(),
+	}
 
 	const [{ data: referrerData }, { data: quote }, nativeBalance] =
 		await Promise.all([

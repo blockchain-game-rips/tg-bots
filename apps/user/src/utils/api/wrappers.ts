@@ -14,17 +14,13 @@ import {
 	buildCardCollection,
 	CardCollection,
 } from '../../domain/card-collection'
+import { userApiKey } from './key'
 import { copiesByCardId } from '../../domain/reveal-summary'
 import { isSameChainAddress, toCurrencyId } from '@rips/shared'
 
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
 })
-
-/** The api carries the telegram id as a string, the bot as a number. */
-export function toTelegramIdHeader(telegramId: number) {
-	return { 'x-telegram-id': telegramId.toString() }
-}
 
 export async function fetchBalances(
 	telegramId: number,
@@ -38,7 +34,10 @@ export async function fetchBalances(
 	)
 
 	const { data } = await walletsControllerGetBalances({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		query: { chainAddress: uniqueChainAddresses.map(toCurrencyId) },
 		querySerializer: chainAddressQuerySerializer,
 	})
@@ -88,7 +87,10 @@ export async function fetchRip(
 
 export async function fetchRipPayouts(telegramId: number, ripId: number) {
 	const { data } = await ripsControllerGetPayouts({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		query: { ripId },
 	})
 
@@ -97,7 +99,10 @@ export async function fetchRipPayouts(telegramId: number, ripId: number) {
 
 export async function fetchUnrevealedPayouts(telegramId: number) {
 	const { data } = await ripsControllerGetPayouts({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 	})
 
 	return data.payouts.filter((p) => !p.revealed)
@@ -119,11 +124,19 @@ export async function fetchCardCollectionWithCounts(
 	collection: CardCollection
 	copiesBefore: Map<number, number>
 }> {
-	const headers = toTelegramIdHeader(telegramId)
-
 	const [{ data: definitions }, { data: collection }] = await Promise.all([
-		ripsControllerGetCardDefinitions({ headers }),
-		ripsControllerGetCardCollection({ headers }),
+		ripsControllerGetCardDefinitions({
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
+		}),
+		ripsControllerGetCardCollection({
+			headers: {
+				'x-telegram-id': telegramId.toString(),
+				'x-user-key': userApiKey(),
+			},
+		}),
 	])
 
 	return {

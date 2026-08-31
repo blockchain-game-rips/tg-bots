@@ -9,6 +9,7 @@ import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { buildActionData } from '@rips/grammy-kit'
 import { actionIds } from '../../action-ids'
+import { userApiKey } from '../../utils/api/key'
 
 const FINALIZED_RIPS_LIMIT = 10
 
@@ -46,6 +47,7 @@ export const openFinalizedRips: ActionDef<boolean> = withPayload(
 
 async function fetchUserEvmAddress(telegramId: number): Promise<string> {
 	const { data: user } = await usersControllerGetUser({
+		headers: { 'x-user-key': userApiKey() },
 		path: { telegramId: telegramId.toString() },
 	})
 

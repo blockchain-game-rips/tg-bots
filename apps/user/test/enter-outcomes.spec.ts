@@ -43,11 +43,9 @@ import { NATIVE_ON_BASE } from '../src/constants'
 
 vi.mock('../src/cache/preset-cache', () => ({ presetCache }))
 vi.mock('../src/cache/balance-cache', () => ({ balanceCache }))
-vi.mock('../src/utils/api/wrappers', () => ({
-	fetchRip: vi.fn(),
-	toTelegramIdHeader: (telegramId: number) => ({
-		'x-telegram-id': telegramId.toString(),
-	}),
+vi.mock('../src/utils/api/wrappers', () => ({ fetchRip: vi.fn() }))
+vi.mock('../src/utils/api/key', () => ({
+	userApiKey: () => 'test-user-api-key',
 }))
 
 import { executeEnter } from '../src/action-handlers/play/enter/execute-enter'

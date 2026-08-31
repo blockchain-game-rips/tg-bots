@@ -9,6 +9,7 @@ import { balanceCache } from '../../cache/balance-cache'
 import { currencyChainAddressCodec } from '../../utils/currency'
 import { addressQrInputFile } from '../../utils/qr'
 import { evmAddressFromUser } from '../../utils/wallet'
+import { userApiKey } from '../../utils/api/key'
 
 /**
  * Showing, hiding and refreshing the QR are states of one page, so all four
@@ -23,7 +24,10 @@ async function renderDepositAddress(
 ): Promise<HandlerResult<Flow>> {
 	const [balance, { data: user }] = await Promise.all([
 		balanceCache.getOne(telegramId, currencyChainAddress),
-		usersControllerGetUser({ path: { telegramId: telegramId.toString() } }),
+		usersControllerGetUser({
+			headers: { 'x-user-key': userApiKey() },
+			path: { telegramId: telegramId.toString() },
+		}),
 	])
 
 	const depositAddress = evmAddressFromUser(user)

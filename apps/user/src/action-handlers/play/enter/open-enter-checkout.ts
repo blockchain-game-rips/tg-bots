@@ -10,7 +10,6 @@ import { assertFlow } from '@rips/grammy-kit'
 import { resolveConfig } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../../../action-def'
 import { balanceCache } from '../../../cache/balance-cache'
-import { toTelegramIdHeader } from '../../../utils/api/wrappers'
 import { presetCache } from '../../../cache/preset-cache'
 import { NATIVE_ON_BASE, withNative } from '../../../constants'
 import { QUOTE_FRAME } from '../../../domain/loading-frames'
@@ -20,6 +19,7 @@ import { CheckoutPage, CheckoutQuote } from '../../../pages/play/checkout-page'
 import { EffectType, HandlerResult, PageContent } from '../../../types'
 import { entryCountCodec } from '../../../utils/codecs'
 import { currencyChainAddressCodec } from '../../../utils/currency'
+import { userApiKey } from '../../../utils/api/key'
 
 /** Only what the user chose — every balance is read fresh at render time. */
 interface CheckoutDraft {
@@ -153,7 +153,10 @@ async function fetchCheckoutQuote(
 ): Promise<CheckoutQuote> {
 	const { entryCount, payChainAddress } = draft
 
-	const headers = toTelegramIdHeader(telegramId)
+	const headers = {
+		'x-telegram-id': telegramId.toString(),
+		'x-user-key': userApiKey(),
+	}
 	const body = {
 		presetId: availablePreset.preset.id,
 		entryCount,

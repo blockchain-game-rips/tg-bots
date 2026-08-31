@@ -9,6 +9,7 @@ import {
 import { EffectType } from '../../types'
 import { fetchRip, fetchRipPayouts } from '../../utils/api/wrappers'
 import { evmAddressFromUser } from '../../utils/wallet'
+import { userApiKey } from '../../utils/api/key'
 
 export const openRipStatus: ActionDef<number> = withPayload(
 	{
@@ -21,6 +22,7 @@ export const openRipStatus: ActionDef<number> = withPayload(
 		const [rip, { data: user }] = await Promise.all([
 			fetchRip(ripId),
 			usersControllerGetUser({
+				headers: { 'x-user-key': userApiKey() },
 				path: { telegramId: telegramId.toString() },
 			}),
 		])

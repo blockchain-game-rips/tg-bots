@@ -12,10 +12,10 @@ import {
 	fetchCardCollection,
 	fetchRip,
 	fetchUnrevealedPayouts,
-	toTelegramIdHeader,
 } from '../../utils/api/wrappers'
 import { revealSingleFrom } from './open-reveal-single'
 import { playFrames } from './reveal-animation-chain'
+import { userApiKey } from '../../utils/api/key'
 
 const SINGLE_PULL = 1
 
@@ -46,7 +46,10 @@ async function revealBatch(telegramId: number): Promise<HandlerResult<Flow>> {
 	const preRevealCollection = await fetchCardCollection(telegramId)
 
 	const { data: revealData } = await ripsControllerRevealPayouts({
-		headers: toTelegramIdHeader(telegramId),
+		headers: {
+			'x-telegram-id': telegramId.toString(),
+			'x-user-key': userApiKey(),
+		},
 		body: { revealAll: true },
 	})
 

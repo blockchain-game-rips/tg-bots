@@ -7,7 +7,7 @@ import {
 import { assertFlow } from '@rips/grammy-kit'
 import { parseEvmPrivateKey } from '@rips/shared'
 import { ActionDef, noPayload, withPayload } from '../action-def'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { balanceCache } from '../cache/balance-cache'
 import { NATIVE_ON_BASE } from '../constants'
 import { toFlow, toHold, toReset, type Flow } from '../flows'

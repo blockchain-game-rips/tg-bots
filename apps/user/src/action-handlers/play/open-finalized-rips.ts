@@ -8,7 +8,7 @@ import { FinalizedRipsPage } from '../../pages/play/finalized-rips-page'
 import { EffectType } from '../../types'
 import { evmAddressFromUser } from '../../utils/wallet'
 import { buildActionData } from '@rips/grammy-kit'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 
 const FINALIZED_RIPS_LIMIT = 10
 

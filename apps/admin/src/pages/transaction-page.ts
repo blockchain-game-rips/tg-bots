@@ -5,7 +5,7 @@ import {
 import { fmt, FormattedString, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { PageContent } from '../types'
 
 const ERROR_PREFIX = '❌ Error:'

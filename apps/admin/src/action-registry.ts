@@ -1,4 +1,5 @@
-import { AnyActionDef } from '@rips/grammy-kit'
+import { ActionRegistryFor } from '@rips/grammy-kit'
+import { actionIds } from './action-ids'
 import {
 	executeConfirmSetDefaultFee,
 	openSetDefaultFee,
@@ -49,4 +50,4 @@ export const actionRegistry = {
 	openUpdatePresetConfig,
 	submitConfirmUpdatePresetConfig,
 	executeConfirmUpdatePresetConfig,
-} satisfies Record<string, AnyActionDef>
+} satisfies ActionRegistryFor<typeof actionIds>

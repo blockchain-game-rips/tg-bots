@@ -11,7 +11,7 @@ import {
 	soldEntriesFor,
 	toShortDurationFormat,
 } from '@rips/shared'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { EIP155_NAMESPACE } from '../constants'
 import { PageContent } from '../types'
 import { keyboardFromLayout } from '../utils/keyboard'

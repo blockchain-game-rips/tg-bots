@@ -5,7 +5,7 @@ import {
 	Line,
 } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { CardCollection } from '../../domain/card-collection'
 import { PageContent } from '../../types'
 

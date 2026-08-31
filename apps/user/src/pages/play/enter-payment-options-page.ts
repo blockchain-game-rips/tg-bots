@@ -10,7 +10,7 @@ import {
 	resolveConfig,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { NATIVE_ON_BASE } from '../../constants'
 import { PageContent } from '../../types'
 import { chainToEmoji, chainToName } from '../../utils/chain'

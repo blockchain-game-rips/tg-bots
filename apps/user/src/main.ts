@@ -11,7 +11,8 @@ import {
 	startMetricsServer,
 } from '@rips/grammy-kit'
 import { Bot, session } from 'grammy'
-import { actionIds, actions } from './actions'
+import { actionIds } from './action-ids'
+import { actions } from './actions'
 import { botStartLink, setBotUsername } from './bot-identity'
 import { Flow } from './flows'
 import { Notifier } from './notifier'

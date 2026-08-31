@@ -1,6 +1,5 @@
-import { buildActionIds, buildActions } from '@rips/grammy-kit'
+import { buildActions } from '@rips/grammy-kit'
+import { actionIds } from './action-ids'
 import { actionRegistry } from './action-registry'
 
-export const actionIds = buildActionIds(actionRegistry)
-
-export const actions = buildActions(actionRegistry)
+export const actions = buildActions(actionIds, actionRegistry)

@@ -1,6 +1,6 @@
 import { isFlow } from '@rips/grammy-kit'
 import { ActionDef, noPayload } from '../../../action-def'
-import { actionIds } from '../../../actions'
+import { actionIds } from '../../../action-ids'
 import { toHold } from '../../../flows'
 import { CustomEntryAmountPrompt } from '../../../prompts/custom-entry-amount-prompt'
 import { EffectType } from '../../../types'

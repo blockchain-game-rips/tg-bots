@@ -1,5 +1,5 @@
 import { FormattedString, joinLines, Line } from '@rips/grammy-kit'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { ActionId, PageContent } from '../types'
 import { keyboardFromLayout } from '../utils/keyboard'
 

@@ -1,4 +1,7 @@
 export * from './action-data'
 export * from './action-def'
+export * from './action-ids-cli'
+export * from './action-ids-lockfile'
 export * from './declare-actions'
 export * from './actions'
+export * from './sync-action-ids'

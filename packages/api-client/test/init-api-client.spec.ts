@@ -47,6 +47,9 @@ afterEach(async () => {
 
 it('throws ApiError with the response status on a non-2xx response', async () => {
 	await expect(
-		usersControllerGetUser({ path: { telegramId: '1' } }),
+		usersControllerGetUser({
+			headers: { 'x-user-key': 'test-user-api-key' },
+			path: { telegramId: '1' },
+		}),
 	).rejects.toSatisfy((error) => isApiErrorWithStatus(error, NOT_FOUND))
 })

@@ -130,17 +130,17 @@
         "operationId": "AdminController_setReferralTiers",
         "parameters": [
           {
-            "name": "x-admin-api-key",
-            "in": "header",
+            "name": "currency",
             "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "currency",
+            "name": "x-admin-api-key",
+            "in": "header",
             "required": true,
-            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -178,17 +178,17 @@
         "operationId": "AdminController_updatePresetConfig",
         "parameters": [
           {
-            "name": "x-admin-api-key",
-            "in": "header",
+            "name": "presetId",
             "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "presetId",
+            "name": "x-admin-api-key",
+            "in": "header",
             "required": true,
-            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -226,17 +226,17 @@
         "operationId": "AdminController_setReferrerFrozen",
         "parameters": [
           {
-            "name": "x-admin-api-key",
-            "in": "header",
+            "name": "address",
             "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "address",
+            "name": "x-admin-api-key",
+            "in": "header",
             "required": true,
-            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -274,17 +274,17 @@
         "operationId": "AdminController_setReferrerCustomFee",
         "parameters": [
           {
-            "name": "x-admin-api-key",
-            "in": "header",
+            "name": "address",
             "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "address",
+            "name": "x-admin-api-key",
+            "in": "header",
             "required": true,
-            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -384,6 +384,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -406,7 +414,16 @@
     "/users": {
       "post": {
         "operationId": "UsersController_createUser",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -444,6 +461,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -476,7 +501,16 @@
     "/users/import": {
       "post": {
         "operationId": "UsersController_importUser",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -514,6 +548,14 @@
             "in": "path",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -559,6 +601,14 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -588,6 +638,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -631,6 +689,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -670,6 +736,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -713,6 +787,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -752,6 +834,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -824,6 +914,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -909,6 +1007,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -981,6 +1087,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1020,6 +1134,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -1063,6 +1185,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1102,6 +1232,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -1201,6 +1339,14 @@
                 "false"
               ]
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1229,6 +1375,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -1411,6 +1565,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1462,6 +1624,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }
@@ -1517,6 +1687,14 @@
               "pattern": "^\\d+$",
               "type": "string"
             }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1557,6 +1735,14 @@
             "in": "header",
             "schema": {
               "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
               "type": "string"
             }
           }

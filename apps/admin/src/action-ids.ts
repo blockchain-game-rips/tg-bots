@@ -1,28 +1,13 @@
-import { declareActions, noPayloadId, withPayloadId } from '@rips/grammy-kit'
+import { declareActions, toLockfile } from '@rips/grammy-kit'
+import { actionDeclarations } from './action-declarations'
+import actionIdsJson from './action-ids.json'
 
 /**
- * Every action the bot can run, with the payload its buttons carry. Imports
- * nothing from pages or handlers, so a page can build a button without pulling
- * the whole handler graph in behind it.
+ * The id each action's buttons carry, taken from the committed lockfile rather
+ * than the action's position, so adding or removing an action leaves every
+ * other id untouched.
  */
-export const actionIds = declareActions({
-	openHome: noPayloadId(),
-	openState: noPayloadId(),
-	openConfirmPause: noPayloadId(),
-	openConfirmUnpause: noPayloadId(),
-	executeConfirmPaused: noPayloadId(),
-	openSetDefaultFee: noPayloadId(),
-	submitConfirmSetDefaultFee: withPayloadId<string>(),
-	executeConfirmSetDefaultFee: noPayloadId(),
-	openFreezeReferrer: noPayloadId(),
-	submitConfirmFreezeReferrer: withPayloadId<string>(),
-	openUnfreezeReferrer: noPayloadId(),
-	submitConfirmUnfreezeReferrer: withPayloadId<string>(),
-	executeConfirmReferrerFrozen: noPayloadId(),
-	openSetTiers: noPayloadId(),
-	submitConfirmSetTiers: withPayloadId<string>(),
-	executeConfirmSetTiers: noPayloadId(),
-	openUpdatePresetConfig: noPayloadId(),
-	submitConfirmUpdatePresetConfig: withPayloadId<string>(),
-	executeConfirmUpdatePresetConfig: noPayloadId(),
-})
+export const actionIds = declareActions(
+	toLockfile(actionIdsJson),
+	actionDeclarations,
+)

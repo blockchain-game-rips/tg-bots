@@ -1,0 +1,24 @@
+{
+	"ids": {
+		"executeConfirmPaused": "4",
+		"executeConfirmReferrerFrozen": "c",
+		"executeConfirmSetDefaultFee": "7",
+		"executeConfirmSetTiers": "f",
+		"executeConfirmUpdatePresetConfig": "i",
+		"openConfirmPause": "2",
+		"openConfirmUnpause": "3",
+		"openFreezeReferrer": "8",
+		"openHome": "0",
+		"openSetDefaultFee": "5",
+		"openSetTiers": "d",
+		"openState": "1",
+		"openUnfreezeReferrer": "a",
+		"openUpdatePresetConfig": "g",
+		"submitConfirmFreezeReferrer": "9",
+		"submitConfirmSetDefaultFee": "6",
+		"submitConfirmSetTiers": "e",
+		"submitConfirmUnfreezeReferrer": "b",
+		"submitConfirmUpdatePresetConfig": "h"
+	},
+	"next": "j"
+}

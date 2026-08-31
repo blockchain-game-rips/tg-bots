@@ -1,5 +1,5 @@
 import { ChainAddressDtoOutput } from '@rips/api-client'
-import { declareActions, noPayloadId, payload } from '@rips/grammy-kit'
+import { declareActions, noPayloadId, withPayloadId } from '@rips/grammy-kit'
 import { Chain } from '@rips/shared'
 import { AmountPayload } from './utils/codecs'
 
@@ -10,26 +10,26 @@ import { AmountPayload } from './utils/codecs'
  */
 export const actionIds = declareActions({
 	// Home
-	openHome: payload<string | undefined>(),
+	openHome: withPayloadId<string | undefined>(),
 
 	// Onboarding
 	chooseCreateAccount: noPayloadId(),
 	startImportKey: noPayloadId(),
-	submitImportKey: payload<string>(),
+	submitImportKey: withPayloadId<string>(),
 
 	// About
 	openAbout: noPayloadId(),
 
 	// Play
 	openChoosePreset: noPayloadId(),
-	openChooseEntryAmount: payload<number>(),
+	openChooseEntryAmount: withPayloadId<number>(),
 	openEnterChooseEntryCountFromCheckout: noPayloadId(),
 	openEnterPaymentOptions: noPayloadId(),
-	openEnterPaymentOptionsFromEntryCount: payload<number>(),
+	openEnterPaymentOptionsFromEntryCount: withPayloadId<number>(),
 	promptEntryCount: noPayloadId(),
 	openEnterCheckout: noPayloadId(),
-	openEnterCheckoutFromPaymentToken: payload<ChainAddressDtoOutput>(),
-	openEnterCheckoutFromEntryCount: payload<number>(),
+	openEnterCheckoutFromPaymentToken: withPayloadId<ChainAddressDtoOutput>(),
+	openEnterCheckoutFromEntryCount: withPayloadId<number>(),
 	refreshEnterCheckout: noPayloadId(),
 	executeEnter: noPayloadId(),
 
@@ -40,32 +40,32 @@ export const actionIds = declareActions({
 	openRevealSingle: noPayloadId(),
 	openRevealAll: noPayloadId(),
 	openMyRips: noPayloadId(),
-	openRipStatus: payload<number>(),
-	openViewPulls: payload<number>(),
+	openRipStatus: withPayloadId<number>(),
+	openViewPulls: withPayloadId<number>(),
 	openOngoingRips: noPayloadId(),
-	openFinalizedRips: payload<boolean>(),
+	openFinalizedRips: withPayloadId<boolean>(),
 
 	// Card collection
 	openCardCollection: noPayloadId(),
-	openCardCollectionTier: payload<number>(),
+	openCardCollectionTier: withPayloadId<number>(),
 
 	// Wallet
 	openWallet: noPayloadId(),
 	openDeposit: noPayloadId(),
-	openDepositChooseCurrency: payload<Chain>(),
-	openDepositAddress: payload<ChainAddressDtoOutput>(),
-	openDepositAddressQr: payload<ChainAddressDtoOutput>(),
-	refreshDepositBalance: payload<ChainAddressDtoOutput>(),
-	refreshDepositBalanceQr: payload<ChainAddressDtoOutput>(),
+	openDepositChooseCurrency: withPayloadId<Chain>(),
+	openDepositAddress: withPayloadId<ChainAddressDtoOutput>(),
+	openDepositAddressQr: withPayloadId<ChainAddressDtoOutput>(),
+	refreshDepositBalance: withPayloadId<ChainAddressDtoOutput>(),
+	refreshDepositBalanceQr: withPayloadId<ChainAddressDtoOutput>(),
 	openExportKeyWarning: noPayloadId(),
 	openExportKey: noPayloadId(),
 
 	// Withdraw
 	openWithdrawChooseChain: noPayloadId(),
-	openWithdrawChooseCurrency: payload<Chain>(),
-	openWithdrawFromCurrency: payload<ChainAddressDtoOutput>(),
-	openWithdrawFromAmount: payload<AmountPayload>(),
-	openWithdrawFromRecipient: payload<string>(),
+	openWithdrawChooseCurrency: withPayloadId<Chain>(),
+	openWithdrawFromCurrency: withPayloadId<ChainAddressDtoOutput>(),
+	openWithdrawFromAmount: withPayloadId<AmountPayload>(),
+	openWithdrawFromRecipient: withPayloadId<string>(),
 	openWithdrawChooseAmount: noPayloadId(),
 	executeWithdraw: noPayloadId(),
 	promptWithdrawRecipient: noPayloadId(),
@@ -79,18 +79,18 @@ export const actionIds = declareActions({
 
 	// Payment chain / token pickers
 	openEnterChoosePaymentChain: noPayloadId(),
-	openEnterChoosePaymentToken: payload<Chain>(),
+	openEnterChoosePaymentToken: withPayloadId<Chain>(),
 
 	// Swap
 	openSwapChooseSrcChain: noPayloadId(),
-	openSwapChooseSrcToken: payload<Chain>(),
-	openSwapChooseDstChain: payload<ChainAddressDtoOutput>(),
-	openSwapChooseDstToken: payload<Chain>(),
-	openSwapChooseAmount: payload<ChainAddressDtoOutput>(),
+	openSwapChooseSrcToken: withPayloadId<Chain>(),
+	openSwapChooseDstChain: withPayloadId<ChainAddressDtoOutput>(),
+	openSwapChooseDstToken: withPayloadId<Chain>(),
+	openSwapChooseAmount: withPayloadId<ChainAddressDtoOutput>(),
 	promptSwapAmount: noPayloadId(),
 	openSwapCheckout: noPayloadId(),
-	openSwapCheckoutFromSrc: payload<ChainAddressDtoOutput>(),
-	openSwapCheckoutFromDst: payload<ChainAddressDtoOutput>(),
-	openSwapCheckoutFromAmount: payload<AmountPayload>(),
+	openSwapCheckoutFromSrc: withPayloadId<ChainAddressDtoOutput>(),
+	openSwapCheckoutFromDst: withPayloadId<ChainAddressDtoOutput>(),
+	openSwapCheckoutFromAmount: withPayloadId<AmountPayload>(),
 	executeSwap: noPayloadId(),
 })

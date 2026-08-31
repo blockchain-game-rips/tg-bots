@@ -1,4 +1,4 @@
-import { declareActions, noPayloadId, payload } from '@rips/grammy-kit'
+import { declareActions, noPayloadId, withPayloadId } from '@rips/grammy-kit'
 
 /**
  * Every action the bot can run, with the payload its buttons carry. Imports
@@ -12,17 +12,17 @@ export const actionIds = declareActions({
 	openConfirmUnpause: noPayloadId(),
 	executeConfirmPaused: noPayloadId(),
 	openSetDefaultFee: noPayloadId(),
-	submitConfirmSetDefaultFee: payload<string>(),
+	submitConfirmSetDefaultFee: withPayloadId<string>(),
 	executeConfirmSetDefaultFee: noPayloadId(),
 	openFreezeReferrer: noPayloadId(),
-	submitConfirmFreezeReferrer: payload<string>(),
+	submitConfirmFreezeReferrer: withPayloadId<string>(),
 	openUnfreezeReferrer: noPayloadId(),
-	submitConfirmUnfreezeReferrer: payload<string>(),
+	submitConfirmUnfreezeReferrer: withPayloadId<string>(),
 	executeConfirmReferrerFrozen: noPayloadId(),
 	openSetTiers: noPayloadId(),
-	submitConfirmSetTiers: payload<string>(),
+	submitConfirmSetTiers: withPayloadId<string>(),
 	executeConfirmSetTiers: noPayloadId(),
 	openUpdatePresetConfig: noPayloadId(),
-	submitConfirmUpdatePresetConfig: payload<string>(),
+	submitConfirmUpdatePresetConfig: withPayloadId<string>(),
 	executeConfirmUpdatePresetConfig: noPayloadId(),
 })

@@ -4,7 +4,7 @@ import { noPayload, withPayload } from '../src/action/action-def'
 import {
 	declareActions,
 	noPayloadId,
-	payload,
+	withPayloadId,
 } from '../src/action/declare-actions'
 
 const numberCodec = {
@@ -15,7 +15,7 @@ const numberCodec = {
 describe('buildActions', () => {
 	const actionIds = declareActions({
 		openHome: noPayloadId(),
-		openRip: payload<number>(),
+		openRip: withPayloadId<number>(),
 	})
 
 	const registry = {

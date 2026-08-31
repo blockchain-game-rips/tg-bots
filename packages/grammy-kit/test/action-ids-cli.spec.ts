@@ -44,6 +44,36 @@ describe('runActionIdsCli', () => {
 		expect(process.exitCode).toBeUndefined()
 	})
 
+	it('reports success when the check passes', () => {
+		writeFileSync(lockfilePath, IN_SYNC)
+
+		runActionIdsCli(lockfilePath, ['openHome'], ['--check'])
+
+		expect(vi.mocked(console.log).mock.calls.flat().join(' ')).toMatch(
+			/in sync/i,
+		)
+	})
+
+	it('counts the actions it checked so a skipped run is not mistaken for a pass', () => {
+		writeFileSync(lockfilePath, IN_SYNC)
+
+		runActionIdsCli(lockfilePath, ['openHome'], ['--check'])
+
+		expect(vi.mocked(console.log).mock.calls.flat().join(' ')).toContain(
+			'1',
+		)
+	})
+
+	it('reports success when a write leaves the lockfile unchanged', () => {
+		writeFileSync(lockfilePath, IN_SYNC)
+
+		runActionIdsCli(lockfilePath, ['openHome'], [])
+
+		expect(vi.mocked(console.log).mock.calls.flat().join(' ')).toMatch(
+			/in sync/i,
+		)
+	})
+
 	it('exits non-zero when the check finds drift', () => {
 		writeFileSync(lockfilePath, IN_SYNC)
 

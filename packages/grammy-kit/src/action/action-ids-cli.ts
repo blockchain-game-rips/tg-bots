@@ -6,6 +6,9 @@ const CHECK_FLAG = '--check'
  * Entry point for each app's `action-ids` script. Writing by default and
  * verifying under `--check` lets the same script serve both the developer
  * adding an action and the pre-commit hook guarding the lockfile.
+ *
+ * Every outcome is reported, including success: a silent run is otherwise
+ * indistinguishable from one the hook never invoked.
  */
 export function runActionIdsCli(
 	lockfilePath: string,
@@ -21,7 +24,15 @@ export function runActionIdsCli(
 			check,
 		})
 
-		if (changed) console.log(`Updated ${lockfilePath}`)
+		if (changed) {
+			console.log(`Updated ${lockfilePath}`)
+
+			return
+		}
+
+		console.log(
+			`${String(declaredNames.length)} action ids in sync with ${lockfilePath}`,
+		)
 	} catch (error) {
 		console.error(error instanceof Error ? error.message : String(error))
 		process.exitCode = 1

@@ -146,11 +146,12 @@ function isStringRecord(value: unknown): value is Record<string, string> {
 	)
 }
 
-export function toLockfile(parsed: unknown): ActionIdLockfile {
+export function validateLockfile(parsed: unknown): ActionIdLockfile {
 	if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
 		throw new Error('Action id lockfile must be a JSON object')
 
-	const { ids, next } = parsed as { ids?: unknown; next?: unknown }
+	const ids: unknown = 'ids' in parsed ? parsed.ids : undefined
+	const next: unknown = 'next' in parsed ? parsed.next : undefined
 
 	if (!isStringRecord(ids))
 		throw new Error(
@@ -163,8 +164,8 @@ export function toLockfile(parsed: unknown): ActionIdLockfile {
 	return { ids, next }
 }
 
-export function parseLockfile(raw: string | undefined): ActionIdLockfile {
+export function parseLockfileText(raw: string | undefined): ActionIdLockfile {
 	if (raw === undefined) return { ids: {}, next: FIRST_ID }
 
-	return toLockfile(JSON.parse(raw))
+	return validateLockfile(JSON.parse(raw))
 }

@@ -3,7 +3,7 @@ import { BACK_ACTION_ID } from '../src/action/action-data'
 import {
 	allocateActionIds,
 	assertLockfileCovers,
-	parseLockfile,
+	parseLockfileText,
 	serializeLockfile,
 	type ActionIdLockfile,
 } from '../src/action/action-ids-lockfile'
@@ -200,7 +200,7 @@ describe('lockfile serialization', () => {
 	it('round-trips a lockfile through serialize and parse', () => {
 		const lockfile = lockfileOf({ a: '0', b: '1' }, '2')
 
-		expect(parseLockfile(serializeLockfile(lockfile))).toEqual(lockfile)
+		expect(parseLockfileText(serializeLockfile(lockfile))).toEqual(lockfile)
 	})
 
 	it('sorts ids by name so diffs stay readable', () => {
@@ -218,14 +218,14 @@ describe('lockfile serialization', () => {
 	})
 
 	it('parses a missing file as an empty lockfile', () => {
-		expect(parseLockfile(undefined)).toEqual(lockfileOf({}, '0'))
+		expect(parseLockfileText(undefined)).toEqual(lockfileOf({}, '0'))
 	})
 
 	it('rejects a lockfile that is not an object', () => {
-		expect(() => parseLockfile('[]')).toThrow()
+		expect(() => parseLockfileText('[]')).toThrow()
 	})
 
 	it('rejects a lockfile with a non-string id', () => {
-		expect(() => parseLockfile('{"ids":{"a":1},"next":"1"}')).toThrow()
+		expect(() => parseLockfileText('{"ids":{"a":1},"next":"1"}')).toThrow()
 	})
 })

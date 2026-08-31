@@ -1,4 +1,4 @@
-import { declareActions, toLockfile } from '@rips/grammy-kit'
+import { declareActions, validateLockfile } from '@rips/grammy-kit'
 import { actionDeclarations } from './action-declarations'
 import actionIdsJson from './action-ids.json'
 
@@ -8,6 +8,6 @@ import actionIdsJson from './action-ids.json'
  * other id untouched.
  */
 export const actionIds = declareActions(
-	toLockfile(actionIdsJson),
+	validateLockfile(actionIdsJson),
 	actionDeclarations,
 )

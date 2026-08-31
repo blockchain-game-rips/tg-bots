@@ -10,4 +10,4 @@ Adding an action means running `yarn <app> action-ids`; the lockfile is committe
 
 Renaming an action reads as a removal plus an addition: the new name draws a fresh id and buttons carrying the old one go stale, landing on the existing "menu is out of date" message. That is a deliberate trade — no button ever reaches the wrong handler, and preserving an id across a rename stays available by editing the lockfile entry by hand.
 
-Declarations live in `src/action-declarations.ts`, one module further out than `src/action-ids.ts`, which resolves them against the lockfile. The split is what lets the sync script read the action names while the lockfile is still out of date: resolving validates the lockfile and throws on drift, so a script that imported the resolved ids could never be run to repair them.
+Declarations live in `src/action-declarations.ts`, which `src/action-ids.ts` imports and resolves against the lockfile. The split is what lets the sync script read the action names while the lockfile is still out of date: resolving validates the lockfile and throws on drift, so a script that imported the resolved ids could never be run to repair them.

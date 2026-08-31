@@ -25,8 +25,8 @@ The canonical representation of message text: plain text plus formatting entitie
 _Avoid_: HTML string, markup string
 
 **Action id**:
-The short string a button carries in its callback data to name the handler to run. Declared in the app's `action-ids.ts` beside the payload the button carries, which is what lets a page build a button without importing the handler that answers it. Ids are still allocated by position in that declaration, so adding or removing an action shifts every id after it — a button left in an old chat can resolve to a different handler.
-_Avoid_: Callback id, button id
+The short string a button carries in its callback data to name the handler to run. Actions are declared in the app's `action-declarations.ts` beside the payload their buttons carry, which is what lets a page build a button without importing the handler that answers it. Each id is allocated once in the app's `action-ids.json` lockfile and never derived from position, so adding or removing an action leaves every other id untouched and a button left in an old chat can never resolve to a different handler. See `docs/adr/0002-action-ids-from-a-lockfile.md`.
+_Avoid_: Action index, callback id, button id
 
 **Effect**:
 A description of what the bot should do in response to an action (edit a page, ask for input, show loading). Interpreted by the effect executor, which owns all Telegram API calls.

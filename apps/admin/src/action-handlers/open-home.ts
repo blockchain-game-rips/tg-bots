@@ -6,12 +6,14 @@ import { ActionDef, toReset } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
 import { HomePage } from '../pages/home-page'
 import { EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 
 export const openHome: ActionDef<void> = noPayload(async () => {
 	const [{ data: state }, { data: adminWallet }] = await Promise.all([
 		ripsControllerGetRipsState(),
-		adminControllerGetAdminWallet({ headers: adminApiHeader }),
+		adminControllerGetAdminWallet({
+			headers: { 'x-admin-api-key': adminApiKey },
+		}),
 	])
 
 	return {

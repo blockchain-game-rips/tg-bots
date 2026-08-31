@@ -14,7 +14,7 @@ import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 
 const ADDRESS_PROMPT_MESSAGE = fmt`Enter the referrer EVM address to update.`
 const ADDRESS_PLACEHOLDER = '0x...'
@@ -88,7 +88,7 @@ export const executeConfirmReferrerFrozen: ActionDef<void> = noPayload(
 				next: async () => {
 					const { data: tx } = await adminControllerSetReferrerFrozen(
 						{
-							headers: adminApiHeader,
+							headers: { 'x-admin-api-key': adminApiKey },
 							path: { address },
 							body: { frozen },
 						},

@@ -14,7 +14,7 @@ import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 import { parseFeeBp } from '../validation/fee-bp'
 
 const FEE_PROMPT_MESSAGE = joinLines([
@@ -78,7 +78,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 				next: async () => {
 					const { data: tx } =
 						await adminControllerSetDefaultReferralFee({
-							headers: adminApiHeader,
+							headers: { 'x-admin-api-key': adminApiKey },
 							body: { feeBps: bp },
 						})
 

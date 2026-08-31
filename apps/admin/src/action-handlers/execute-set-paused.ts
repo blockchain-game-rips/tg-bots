@@ -13,7 +13,7 @@ import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 
 function openConfirmPaused(isPaused: boolean): ActionDef<void> {
 	const description = isPaused
@@ -54,7 +54,7 @@ export const executeConfirmPaused: ActionDef<void> = noPayload((session) => {
 			message: isPaused ? fmt`Pausing...` : fmt`Unpausing...`,
 			next: async () => {
 				const { data: tx } = await adminControllerSetPaused({
-					headers: adminApiHeader,
+					headers: { 'x-admin-api-key': adminApiKey },
 					body: { isPaused },
 				})
 				const titles = isPaused

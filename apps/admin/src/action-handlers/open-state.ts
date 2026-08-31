@@ -7,13 +7,15 @@ import { ActionDef, toReset } from '@rips/grammy-kit'
 import { noPayload } from '../action-def'
 import { StatePage } from '../pages/state-page'
 import { EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 
 export const openState: ActionDef<void> = noPayload(async () => {
 	const [{ data: state }, { data: adminWallet }, { data: tierTablesRes }] =
 		await Promise.all([
 			ripsControllerGetRipsState(),
-			adminControllerGetAdminWallet({ headers: adminApiHeader }),
+			adminControllerGetAdminWallet({
+				headers: { 'x-admin-api-key': adminApiKey },
+			}),
 			referralSystemControllerGetTierTables(),
 		])
 

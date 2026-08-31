@@ -19,7 +19,7 @@ import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectLoading, EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 import { parseTierList } from '../validation/tier-list'
 
 const TIERS_PROMPT_MESSAGE = joinLines([
@@ -111,7 +111,7 @@ export const executeConfirmSetTiers: ActionDef<void> = noPayload((session) => {
 			}))
 
 			const { data: tx } = await adminControllerSetReferralTiers({
-				headers: adminApiHeader,
+				headers: { 'x-admin-api-key': adminApiKey },
 				path: { currency: NATIVE_ON_BASE.address },
 				body: { tiers: rawTiers },
 			})

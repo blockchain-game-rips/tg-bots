@@ -1,7 +1,7 @@
 import { AdminTransactionResponseDtoOutput } from '@rips/api-client'
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../src/utils/api', () => ({ adminApiHeader: {} }))
+vi.mock('../src/utils/api', () => ({ adminApiKey: 'test-admin-api-key' }))
 
 import { TransactionPage } from '../src/pages/transaction-page'
 

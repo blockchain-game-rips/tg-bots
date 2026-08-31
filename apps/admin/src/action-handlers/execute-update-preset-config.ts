@@ -19,7 +19,7 @@ import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectLoading, EffectType } from '../types'
-import { adminApiHeader } from '../utils/api'
+import { adminApiKey } from '../utils/api'
 import { parsePresetConfig } from '../validation/preset-config'
 
 const CONFIG_PROMPT_MESSAGE = joinLines([
@@ -126,7 +126,7 @@ export const executeConfirmUpdatePresetConfig: ActionDef<void> = noPayload(
 					parseUnits(amount.toString(), decimals).toString()
 
 				const { data: tx } = await adminControllerUpdatePresetConfig({
-					headers: adminApiHeader,
+					headers: { 'x-admin-api-key': adminApiKey },
 					path: { presetId: presetId.toString() },
 					body: {
 						config: {

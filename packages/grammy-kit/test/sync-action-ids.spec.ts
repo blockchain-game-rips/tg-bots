@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { parseLockfile } from '../src/action/action-ids-lockfile'
+import { parseLockfileText } from '../src/action/action-ids-lockfile'
 import { syncActionIds } from '../src/action/sync-action-ids'
 
 describe('syncActionIds', () => {
@@ -14,7 +14,7 @@ describe('syncActionIds', () => {
 	}
 
 	function readLockfile() {
-		return parseLockfile(readFileSync(lockfilePath, 'utf8'))
+		return parseLockfileText(readFileSync(lockfilePath, 'utf8'))
 	}
 
 	beforeEach(() => {
@@ -117,6 +117,18 @@ describe('syncActionIds', () => {
 		}
 
 		expect(readFileSync(lockfilePath, 'utf8')).toBe(before)
+	})
+
+	it('refuses to write over a lockfile whose ids collide', () => {
+		writeLockfile('{"ids":{"openHome":"0","openExportKey":"0"},"next":"1"}')
+
+		expect(() =>
+			syncActionIds({
+				lockfilePath,
+				declaredNames: ['openHome', 'openExportKey'],
+				check: false,
+			}),
+		).toThrow(/duplicate/i)
 	})
 
 	it('fails the check when no lockfile exists yet', () => {

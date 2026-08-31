@@ -7,7 +7,7 @@ import {
 } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard, InputFile } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import { currencyToChain } from '@rips/shared'
 import { chainToName } from '../../utils/chain'

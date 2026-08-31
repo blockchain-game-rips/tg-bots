@@ -8,7 +8,7 @@ import {
 } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts, formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { RevealSummary } from '../../domain/reveal-summary'
 import { REVEAL_RESULT_SLOT } from './reveal-result-slot'
 import { PageContent } from '../../types'

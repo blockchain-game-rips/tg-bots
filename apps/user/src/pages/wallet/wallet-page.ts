@@ -8,7 +8,7 @@ import {
 } from '@rips/grammy-kit'
 import { formatAmountWithUsd } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { BASE_CHAIN, isNativeChainAddress } from '../../constants'
 import { PageContent } from '../../types'
 import { currencyToChain } from '@rips/shared'

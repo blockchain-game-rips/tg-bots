@@ -6,6 +6,8 @@
 	"scripts": {
 		"dev": "tsx watch src/main.ts",
 		"build": "tsc -p tsconfig.build.json",
+		"action-ids": "tsx scripts/action-ids.ts",
+		"action-ids:check": "tsx scripts/action-ids.ts --check",
 		"start": "node dist/src/main.js",
 		"test": "vitest run --project apps/admin --passWithNoTests",
 		"typecheck": "tsc --noEmit"

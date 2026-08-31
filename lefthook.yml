@@ -4,3 +4,7 @@ pre-commit:
       glob: "*.ts"
       run: yarn prettier --write {staged_files}
       stage_fixed: true
+    action-ids:
+      files: "git diff --cached --name-only --diff-filter=ACMR"
+      glob: "apps/*/src/action-{declarations.ts,ids.json}"
+      run: yarn user action-ids:check && yarn admin action-ids:check

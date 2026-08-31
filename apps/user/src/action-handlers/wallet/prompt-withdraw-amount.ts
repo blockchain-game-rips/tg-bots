@@ -1,5 +1,5 @@
 import { ActionDef, noPayload } from '../../action-def'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { toHold } from '../../flows'
 import { CustomWithdrawAmountPrompt } from '../../prompts/custom-withdraw-amount-prompt'
 import { EffectType } from '../../types'

@@ -7,7 +7,7 @@ import {
 } from '@rips/grammy-kit'
 import { currencyAmountDisplayParts } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'

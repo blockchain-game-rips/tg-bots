@@ -1,6 +1,6 @@
 import { BACK_ACTION_ID, buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { BACK, HOME } from './button-labels'
 
 declare module 'grammy' {

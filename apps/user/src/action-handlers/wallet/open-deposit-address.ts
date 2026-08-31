@@ -1,7 +1,7 @@
 import { ChainAddressDtoOutput, usersControllerGetUser } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { ActionDef, withPayload } from '../../action-def'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { Flow, toHold } from '../../flows'
 import { DepositAddressPage } from '../../pages/wallet/deposit-address-page'
 import { EffectType, HandlerResult } from '../../types'

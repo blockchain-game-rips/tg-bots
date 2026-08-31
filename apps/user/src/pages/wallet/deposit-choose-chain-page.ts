@@ -1,6 +1,6 @@
 import { joinLines } from '@rips/grammy-kit'
 import { Chain } from '@rips/shared'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import { buildChainKeyboard } from '../../utils/chain-currency-keyboard'
 import { depositBreadcrumb } from '../../utils/display/breadcrumb'

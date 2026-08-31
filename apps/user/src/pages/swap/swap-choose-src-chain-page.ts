@@ -5,7 +5,7 @@ import {
 	currencyAmountDisplayParts,
 	toCurrencyAmount,
 } from '@rips/shared'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import { currencyToChainName } from '../../utils/chain'
 import { swapBreadcrumb } from '../../utils/display/breadcrumb'

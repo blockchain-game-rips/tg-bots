@@ -1,7 +1,8 @@
 import { botActionDuration } from '../metrics/registry'
 import { ActionId, AnyHandlerResult } from '../types'
 import { registerEncoder } from './action-data'
-import { ActionContext, ActionDef, AnyActionDef } from './action-def'
+import { ActionContext, AnyActionDef } from './action-def'
+import { ActionDeclarations } from './declare-actions'
 
 export type { ActionId }
 
@@ -13,31 +14,21 @@ export interface BoundAction {
 	) => Promise<AnyHandlerResult> | AnyHandlerResult
 }
 
-function toActionId(index: number): ActionId {
-	return index.toString(36) as ActionId
-}
-
-type PayloadOf<D> = D extends ActionDef<infer P> ? P : never
-
-export function buildActionIds<R extends Record<string, AnyActionDef>>(
-	registry: R,
-): { [K in keyof R]: ActionId<PayloadOf<R[K]>> } {
-	const result: Record<string, ActionId<unknown>> = {}
-
-	Object.keys(registry).forEach((key, index) => {
-		result[key] = toActionId(index)
-	})
-
-	return result as { [K in keyof R]: ActionId<PayloadOf<R[K]>> }
-}
-
+/**
+ * Binds each handler under the id the lockfile allocated to its name — the
+ * registry's own order carries no meaning.
+ */
 export function buildActions(
+	actionIds: ActionDeclarations,
 	registry: Record<string, AnyActionDef>,
 ): Record<string, BoundAction | undefined> {
 	const result: Record<string, BoundAction> = {}
 
-	Object.entries(registry).forEach(([name, def], index) => {
-		const id = toActionId(index)
+	Object.entries(registry).forEach(([name, def]) => {
+		const id = actionIds[name]
+
+		if (id === undefined)
+			throw new Error(`Action "${name}" has no declared id`)
 
 		registerEncoder(id, def.encode as (v: unknown) => string)
 

@@ -9,7 +9,7 @@ import {
 } from '@rips/grammy-kit'
 import { parseEvmAddress } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'

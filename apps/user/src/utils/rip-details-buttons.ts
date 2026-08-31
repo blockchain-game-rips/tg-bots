@@ -1,7 +1,7 @@
 import { RipDtoOutput } from '@rips/api-client'
 import { buildActionData } from '@rips/grammy-kit'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { ripDetailsLabel } from './button-labels'
 
 const DETAILS_BUTTONS_PER_ROW = 2

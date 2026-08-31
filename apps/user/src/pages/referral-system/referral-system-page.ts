@@ -5,7 +5,7 @@ import {
 import { buildActionData, joinLines, Line } from '@rips/grammy-kit'
 import { formatAmountWithUsd, formatPercent } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import {
 	findNativeOnBase,
 	hasClaimableReward,

@@ -1,4 +1,5 @@
-import { AnyActionDef } from '@rips/grammy-kit'
+import { ActionRegistryFor } from '@rips/grammy-kit'
+import { actionIds } from './action-ids'
 import { openAbout } from './action-handlers/open-about'
 import {
 	chooseCreateAccount,
@@ -85,7 +86,6 @@ import { promptSwapAmount } from './action-handlers/wallet/swap/prompt-swap-amou
 
 export const actionRegistry = {
 	// Home
-	// SHOULD BE AT THE START DUE TO CIRCULAR DEPS
 	openHome,
 
 	// Onboarding
@@ -169,4 +169,4 @@ export const actionRegistry = {
 	openSwapCheckoutFromDst,
 	openSwapCheckoutFromAmount,
 	executeSwap,
-} satisfies Record<string, AnyActionDef>
+} satisfies ActionRegistryFor<typeof actionIds>

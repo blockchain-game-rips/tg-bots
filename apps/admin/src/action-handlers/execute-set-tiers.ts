@@ -13,7 +13,7 @@ import {
 } from '@rips/grammy-kit'
 import { parseUnits, toCurrencyId } from '@rips/shared'
 import { noPayload, withPayload } from '../action-def'
-import { actionIds } from '../actions'
+import { actionIds } from '../action-ids'
 import { NATIVE_ON_BASE } from '../constants'
 import { Flow } from '../flows'
 import { ConfirmationPage } from '../pages/confirmation-page'

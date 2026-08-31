@@ -20,7 +20,7 @@ import {
 	toShortDurationFormat,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import * as labels from '../../utils/button-labels'
 import { currencyToChainName } from '../../utils/chain'

@@ -7,7 +7,7 @@ import {
 	toEntryLevels,
 } from '@rips/shared'
 import { InlineKeyboard } from 'grammy'
-import { actionIds } from '../../actions'
+import { actionIds } from '../../action-ids'
 import { PageContent } from '../../types'
 import { enterBreadcrumb } from '../../utils/display/breadcrumb'
 

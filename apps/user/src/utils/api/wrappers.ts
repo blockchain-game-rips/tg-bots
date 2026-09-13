@@ -2,6 +2,10 @@ import {
 	ChainAddressDtoOutput,
 	createQuerySerializer,
 	currencyControllerGetCurrencies,
+	eligibilityControllerGetPolicy,
+	eligibilityControllerGetUserEligibility,
+	EligibilityPolicyDtoOutput,
+	UserEligibilityDtoOutput,
 	currencyControllerGetSupportedCurrencies,
 	ripsControllerGetCardCollection,
 	ripsControllerGetCardDefinitions,
@@ -14,6 +18,7 @@ import {
 	buildCardCollection,
 	CardCollection,
 } from '../../domain/card-collection'
+import { isApiErrorWithStatus } from './error'
 import { userApiKey } from './key'
 import { copiesByCardId } from '../../domain/reveal-summary'
 import { isSameChainAddress, toCurrencyId } from '@rips/shared'
@@ -21,6 +26,8 @@ import { isSameChainAddress, toCurrencyId } from '@rips/shared'
 const chainAddressQuerySerializer = createQuerySerializer({
 	allowReserved: true,
 })
+
+const NOT_FOUND_STATUS = 404
 
 export async function fetchBalances(
 	telegramId: number,
@@ -142,5 +149,35 @@ export async function fetchCardCollectionWithCounts(
 	return {
 		collection: buildCardCollection(definitions, collection),
 		copiesBefore: copiesByCardId(collection),
+	}
+}
+
+export async function fetchEligibilityPolicy(): Promise<EligibilityPolicyDtoOutput> {
+	const { data } = await eligibilityControllerGetPolicy({
+		headers: { 'x-user-key': userApiKey() },
+	})
+
+	return data
+}
+
+/**
+ * `undefined` where the user was never gated, which the backend reports as a
+ * 404 — an absent record is a normal state for a user who has not yet passed
+ * the gate, not a failure.
+ */
+export async function fetchUserEligibility(
+	telegramId: number,
+): Promise<UserEligibilityDtoOutput | undefined> {
+	try {
+		const { data } = await eligibilityControllerGetUserEligibility({
+			headers: { 'x-user-key': userApiKey() },
+			path: { telegramId: telegramId.toString() },
+		})
+
+		return data
+	} catch (error) {
+		if (isApiErrorWithStatus(error, NOT_FOUND_STATUS)) return undefined
+
+		throw error
 	}
 }

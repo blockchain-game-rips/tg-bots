@@ -39,6 +39,12 @@ bot.api.config.use(createTelegramMetricsTransformer())
 
 const initial = (): SessionData<Flow> => initialSession<Flow>()
 
+/**
+ * Storage is left to grammy's in-process default deliberately. `createEventHandler`
+ * reaches this same storage without an update, and relies on its reads returning
+ * the live object; a serialising adapter would silently break that. Read the
+ * concurrency note on `createEventHandler` before passing `storage` here.
+ */
 bot.use(session({ initial }))
 
 const handleButton = createButtonHandler(actions)

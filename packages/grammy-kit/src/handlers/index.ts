@@ -1,4 +1,5 @@
 export * from './button-handler'
 export * from './empty-page'
+export * from './event-handler'
 export * from './message-handler'
 export * from './start-handler'

@@ -1875,6 +1875,7 @@ export const mockFinalizedRips: RipDtoOutput[] = [
 			claims: [
 				{
 					userAddress: mockUserEvmAddress,
+					entryCount: 8,
 					amount: '36000000000000000',
 				},
 			],

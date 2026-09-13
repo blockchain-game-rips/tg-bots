@@ -67,6 +67,16 @@ export const HomePage = {
 						actionId: actionIds.openUpdatePresetConfig,
 					},
 				],
+				[
+					{
+						label: 'Blocked Countries',
+						actionId: actionIds.openSetBlockedCountries,
+					},
+					{
+						label: 'Upload Terms',
+						actionId: actionIds.openUploadTerms,
+					},
+				],
 			]),
 		}
 	},

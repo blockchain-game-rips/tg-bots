@@ -68,6 +68,8 @@ bot.on('callback_query:data', async (ctx) => handleButton(ctx))
 
 bot.on('message:text', async (ctx) => handleMessage(ctx, bot))
 
+bot.on('message:document', async (ctx) => handleMessage(ctx, bot))
+
 void bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
 run(bot)

@@ -9,14 +9,89 @@ import { EMPTY_PAGE } from './empty-page'
 
 type BaseContext = GrammyContext & SessionFlavor<SessionData> & { from: User }
 
+/**
+ * A prompt is answered by typing or by uploading a file, so the handler accepts
+ * both. A document is serialised into the same string the payload contract
+ * already carries, leaving fetching the bytes to the action that asked.
+ *
+ * A union of the two filters rather than a filter over a union query: the
+ * latter also asserts the two are mutually exclusive, which would reject a
+ * caller still listening for text alone.
+ */
+type SubmitContext =
+	| Filter<BaseContext, 'message:text'>
+	| Filter<BaseContext, 'message:document'>
+
+/**
+ * A document carries its name alongside its id so a confirmation screen can
+ * say which file was attached. Both travel inside the existing string payload
+ * rather than widening the contract every text prompt also depends on.
+ */
+export interface DocumentPayload {
+	fileId: string
+	fileName: string | null
+}
+
+const DOCUMENT_PAYLOAD_TAG = 'document'
+
+interface TaggedDocumentPayload {
+	tag: typeof DOCUMENT_PAYLOAD_TAG
+	fileId: string
+	fileName: string | null
+}
+
+function isTaggedDocumentPayload(
+	value: unknown,
+): value is TaggedDocumentPayload {
+	if (typeof value !== 'object' || value === null) return false
+
+	if (!('tag' in value) || value.tag !== DOCUMENT_PAYLOAD_TAG) return false
+
+	if (!('fileId' in value) || typeof value.fileId !== 'string') return false
+
+	if (!('fileName' in value)) return false
+
+	return typeof value.fileName === 'string' || value.fileName === null
+}
+
+function encodeDocumentPayload(document: {
+	file_id: string
+	file_name?: string
+}): string {
+	const payload: TaggedDocumentPayload = {
+		tag: DOCUMENT_PAYLOAD_TAG,
+		fileId: document.file_id,
+		fileName: document.file_name ?? null,
+	}
+
+	return JSON.stringify(payload)
+}
+
+/**
+ * Returns null for anything that is not an encoded document, so a typed reply
+ * to a prompt expecting a file is reported rather than mistaken for one.
+ */
+export function parseDocumentPayload(raw: unknown): DocumentPayload | null {
+	if (typeof raw !== 'string') return null
+
+	let parsed: unknown
+
+	try {
+		parsed = JSON.parse(raw)
+	} catch {
+		return null
+	}
+
+	if (!isTaggedDocumentPayload(parsed)) return null
+
+	return { fileId: parsed.fileId, fileName: parsed.fileName }
+}
+
 export function createMessageHandler(
 	actions: Record<string, BoundAction | undefined>,
-): (
-	ctx: Filter<BaseContext, 'message:text'>,
-	bot: { api: Api },
-) => Promise<void> {
+): (ctx: SubmitContext, bot: { api: Api }) => Promise<void> {
 	return async function handleMessage(
-		ctx: Filter<BaseContext, 'message:text'>,
+		ctx: SubmitContext,
 		bot: { api: Api },
 	): Promise<void> {
 		const askAndSubmit = getAskAndSubmit(ctx)
@@ -39,7 +114,17 @@ export function createMessageHandler(
 	}
 }
 
-function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
+function getSubmittedContent(ctx: SubmitContext): string | null {
+	const { text, document } = ctx.message
+
+	if (text !== undefined) return text
+
+	if (document !== undefined) return encodeDocumentPayload(document)
+
+	return null
+}
+
+function getAskAndSubmit(ctx: SubmitContext): {
 	workspace: Workspace<FlowBase | null>
 	ask: {
 		messageId: number
@@ -51,6 +136,10 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 		messageId: number
 	}
 } | null {
+	const content = getSubmittedContent(ctx)
+
+	if (content === null) return null
+
 	const repliedTo = ctx.message.reply_to_message
 
 	if (!repliedTo || repliedTo.from?.id !== ctx.me.id) return null
@@ -71,7 +160,7 @@ function getAskAndSubmit(ctx: Filter<BaseContext, 'message:text'>): {
 			message: lastAsk.message,
 		},
 		submit: {
-			message: ctx.message.text,
+			message: content,
 			messageId: ctx.message.message_id,
 		},
 	}

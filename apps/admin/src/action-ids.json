@@ -2,23 +2,29 @@
 	"ids": {
 		"executeConfirmPaused": "4",
 		"executeConfirmReferrerFrozen": "c",
+		"executeConfirmSetBlockedCountries": "l",
 		"executeConfirmSetDefaultFee": "7",
 		"executeConfirmSetTiers": "f",
 		"executeConfirmUpdatePresetConfig": "i",
+		"executeConfirmUploadTerms": "o",
 		"openConfirmPause": "2",
 		"openConfirmUnpause": "3",
 		"openFreezeReferrer": "8",
 		"openHome": "0",
+		"openSetBlockedCountries": "j",
 		"openSetDefaultFee": "5",
 		"openSetTiers": "d",
 		"openState": "1",
 		"openUnfreezeReferrer": "a",
 		"openUpdatePresetConfig": "g",
+		"openUploadTerms": "m",
 		"submitConfirmFreezeReferrer": "9",
+		"submitConfirmSetBlockedCountries": "k",
 		"submitConfirmSetDefaultFee": "6",
 		"submitConfirmSetTiers": "e",
 		"submitConfirmUnfreezeReferrer": "b",
-		"submitConfirmUpdatePresetConfig": "h"
+		"submitConfirmUpdatePresetConfig": "h",
+		"submitConfirmUploadTerms": "n"
 	},
-	"next": "j"
+	"next": "p"
 }

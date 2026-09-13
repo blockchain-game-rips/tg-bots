@@ -26,4 +26,10 @@ export const actionDeclarations = {
 	openUpdatePresetConfig: noPayloadId(),
 	submitConfirmUpdatePresetConfig: withPayloadId<string>(),
 	executeConfirmUpdatePresetConfig: noPayloadId(),
+	openSetBlockedCountries: noPayloadId(),
+	submitConfirmSetBlockedCountries: withPayloadId<string>(),
+	executeConfirmSetBlockedCountries: noPayloadId(),
+	openUploadTerms: noPayloadId(),
+	submitConfirmUploadTerms: withPayloadId<string>(),
+	executeConfirmUploadTerms: noPayloadId(),
 }

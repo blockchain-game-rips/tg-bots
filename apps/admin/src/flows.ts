@@ -51,6 +51,18 @@ export interface UpdatePresetConfigFlow {
 	}
 }
 
+export interface SetBlockedCountriesFlow {
+	flowType: 'setBlockedCountries'
+	step: 'confirm'
+	data: { countries: string[] }
+}
+
+export interface UploadTermsFlow {
+	flowType: 'uploadTerms'
+	step: 'confirm'
+	data: { fileId: string; fileName: string | null }
+}
+
 export type Flow =
 	| EnterFlow
 	| SetPausedFlow
@@ -58,4 +70,6 @@ export type Flow =
 	| SetDefaultFeeFlow
 	| SetTiersFlow
 	| UpdatePresetConfigFlow
+	| SetBlockedCountriesFlow
+	| UploadTermsFlow
 	| null

@@ -27,6 +27,16 @@ import {
 	openUpdatePresetConfig,
 	submitConfirmUpdatePresetConfig,
 } from './action-handlers/execute-update-preset-config'
+import {
+	executeConfirmSetBlockedCountries,
+	openSetBlockedCountries,
+	submitConfirmSetBlockedCountries,
+} from './action-handlers/execute-set-blocked-countries'
+import {
+	executeConfirmUploadTerms,
+	openUploadTerms,
+	submitConfirmUploadTerms,
+} from './action-handlers/execute-upload-terms'
 import { openHome } from './action-handlers/open-home'
 import { openState } from './action-handlers/open-state'
 
@@ -50,4 +60,10 @@ export const actionRegistry = {
 	openUpdatePresetConfig,
 	submitConfirmUpdatePresetConfig,
 	executeConfirmUpdatePresetConfig,
+	openSetBlockedCountries,
+	submitConfirmSetBlockedCountries,
+	executeConfirmSetBlockedCountries,
+	openUploadTerms,
+	submitConfirmUploadTerms,
+	executeConfirmUploadTerms,
 } satisfies ActionRegistryFor<typeof actionIds>

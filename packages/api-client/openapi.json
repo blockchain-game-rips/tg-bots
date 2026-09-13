@@ -1826,6 +1826,202 @@
           "Notifications"
         ]
       }
+    },
+    "/eligibility/policy": {
+      "get": {
+        "operationId": "EligibilityController_getPolicy",
+        "parameters": [
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibilityPolicyDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
+      },
+      "put": {
+        "operationId": "EligibilityController_setBlockedCountries",
+        "parameters": [
+          {
+            "name": "x-admin-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetBlockedCountriesBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibilityPolicyDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
+      }
+    },
+    "/eligibility/policy/terms": {
+      "post": {
+        "operationId": "EligibilityController_uploadTerms",
+        "parameters": [
+          {
+            "name": "x-admin-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "termsFile"
+                ],
+                "properties": {
+                  "termsFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibilityPolicyDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
+      }
+    },
+    "/eligibility/{telegramId}": {
+      "get": {
+        "operationId": "EligibilityController_getUserEligibility",
+        "parameters": [
+          {
+            "name": "telegramId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "pattern": "^\\d+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserEligibilityDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
+      }
+    },
+    "/eligibility": {
+      "post": {
+        "operationId": "EligibilityController_recordEligibility",
+        "parameters": [
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordEligibilityBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserEligibilityDto_Output"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
+      }
     }
   },
   "info": {
@@ -3416,12 +3612,16 @@
                     "userAddress": {
                       "type": "string"
                     },
+                    "entryCount": {
+                      "type": "number"
+                    },
                     "amount": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "userAddress",
+                    "entryCount",
                     "amount"
                   ],
                   "additionalProperties": false
@@ -4915,6 +5115,90 @@
           "isNotified"
         ],
         "additionalProperties": false
+      },
+      "EligibilityPolicyDto_Output": {
+        "type": "object",
+        "properties": {
+          "blockedCountries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "termsVersion": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "blockedCountries",
+          "termsVersion",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "SetBlockedCountriesBodyDto": {
+        "type": "object",
+        "properties": {
+          "blockedCountries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "blockedCountries"
+        ]
+      },
+      "UserEligibilityDto_Output": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "termsVersion": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "acceptedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "country",
+          "termsVersion",
+          "acceptedAt"
+        ],
+        "additionalProperties": false
+      },
+      "RecordEligibilityBodyDto": {
+        "type": "object",
+        "properties": {
+          "telegramId": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "minLength": 1
+          },
+          "termsVersion": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "maximum": 9007199254740991,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "telegramId",
+          "country",
+          "termsVersion"
+        ]
       },
       "TelegramIdHeaderDto": {
         "type": "object",

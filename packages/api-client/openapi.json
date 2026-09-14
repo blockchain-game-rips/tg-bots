@@ -1942,6 +1942,35 @@
         "tags": [
           "Eligibility"
         ]
+      },
+      "get": {
+        "operationId": "EligibilityController_getTerms",
+        "parameters": [
+          {
+            "name": "x-user-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current terms document.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eligibility"
+        ]
       }
     },
     "/eligibility/{telegramId}": {

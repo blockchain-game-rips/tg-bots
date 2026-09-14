@@ -5,8 +5,12 @@ Telegram bots (user + admin) built on grammy, sharing a message-rendering kit an
 ## Language
 
 **Page**:
-A renderable screen — its message content plus inline keyboard (and optional photo). Produced by a page's `render` function as a `PageContent`.
+A renderable screen — its message content plus inline keyboard (and optional media). Produced by a page's `render` function as a `PageContent`.
 _Avoid_: Screen, view
+
+**Media**:
+What a page attaches to its message — a photo or a document — carried as the file plus the kind Telegram must send it as. A page has media or it has none; text and media are exclusive, because Telegram gives a message either text or a caption, never both. The kind travels with the file rather than being inferred from it, so the same picture can be delivered as a viewable photo or as a downloadable file, and only the point that hands it to Telegram ever asks which.
+_Avoid_: Attachment, file, image
 
 **Sensitive page**:
 A page whose content holds a secret, such as the exported private key. Never kept in the session: it leaves no render behind for error messages and never joins the back trail, so no back press can return to the secret — leaving one lands on the page before the one that warned about it, and reaching it again means asking for it again. Sensitivity belongs to the content, so the page declares it rather than the handler that opened it.

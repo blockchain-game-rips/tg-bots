@@ -4,17 +4,10 @@ import { Buffer } from 'node:buffer'
 import { EligibilityFact, handleGateRequest, HTTP_OK } from './gate-request'
 
 /**
- * The gate's own listener, separate from the metrics server on purpose: this is
- * the only port the tunnel is pointed at, and `/metrics` must never be.
+ * The gate's own listener, separate from the metrics server on purpose: only
+ * this port is ever reachable from outside, and `/metrics` must never be.
  */
 const DEFAULT_GATE_PORT = 8787
-
-/**
- * Bound to loopback so the only way in is the tunnel running beside it. A port
- * open on every interface could be reached directly by anyone who learns the
- * origin's address, and such a caller sets `cf-ipcountry` to whatever they like.
- */
-const LOOPBACK_ADDRESS = '127.0.0.1'
 
 const HTTP_NOT_FOUND = 404
 const HTTP_METHOD_NOT_ALLOWED = 405
@@ -104,7 +97,7 @@ export function startGateServer({
 			})
 	})
 
-	server.listen(port, LOOPBACK_ADDRESS, () => {
+	server.listen(port, () => {
 		logger.info(`Gate server listening on port ${port.toString()}`)
 	})
 }

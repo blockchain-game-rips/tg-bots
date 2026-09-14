@@ -85,7 +85,7 @@ export async function sendMessage(
 	const { keyboard, message, media } = newPage
 
 	if (media !== undefined) {
-		const sent = await sendMedia(api, chatId, media, newPage)
+		const sent = await sendMedia(api, chatId, newPage)
 
 		return sent.message_id
 	}
@@ -98,7 +98,9 @@ export async function sendMessage(
 	return sentMessage.message_id
 }
 
-function sendMedia(api: Api, chatId: number, media: Media, newPage: MediaPage) {
+function sendMedia(api: Api, chatId: number, newPage: MediaPage) {
+	const { media } = newPage
+
 	const other = {
 		...captionArgs(newPage.message),
 		reply_markup: newPage.keyboard,

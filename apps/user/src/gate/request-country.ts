@@ -22,6 +22,13 @@ export interface CountrySource {
  * absent one, since the caller can tell the difference only if we do not invent
  * it. Local development gets the real header by running behind the same tunnel
  * as production rather than by standing something in for it.
+ *
+ * The header is trusted, so this function is only sound while the origin is
+ * unreachable except through Cloudflare: the gate publishes no public port and
+ * is reached over a Cloudflare Tunnel, which `cloudflared` dials outward. Expose
+ * this listener directly and anyone can hand it a `CF-IPCountry` of their
+ * choosing, which silently defeats the country policy. See
+ * `docs/adr/0003-declarative-eligibility-gate-accepted-risks.md`.
  */
 export function requestCountry(request: CountrySource): string | undefined {
 	const header = request.headers[COUNTRY_HEADER]

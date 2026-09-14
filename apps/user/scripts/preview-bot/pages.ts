@@ -5,6 +5,8 @@ import { currencyToChain, resolveConfig, RipStatusGroup } from '@rips/shared'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
 import { AboutPage } from '../../src/pages/about/about-page'
+import { BlockedPage } from '../../src/pages/eligibility/blocked-page'
+import { ConsentPage } from '../../src/pages/eligibility/consent-page'
 import { HomePage } from '../../src/pages/home-page'
 import { GlobalCompletedRipPage } from '../../src/pages/notifications/global-completed-page'
 import { GlobalRefundedRipPage } from '../../src/pages/notifications/global-refunded-page'
@@ -142,6 +144,10 @@ if (mockAvailablePreset0 === undefined)
 const OTHER_USER_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12'
 
 const MOCK_PLAY_LINK = 'https://t.me/RipsBot?start'
+
+const MOCK_GATE_URL = 'https://gate.example.com/eligibility'
+
+const MOCK_TERMS_ACTION_DATA = 'preview-terms'
 
 const [mockCompletedRip, mockRefundedRip] = mockFinalizedRips
 
@@ -939,6 +945,20 @@ export const pages: Record<string, PageEntry> = {
 				amount: mockWithdrawRewardSucceeded.result,
 				transaction: mockWithdrawRewardSucceeded.transaction,
 			}),
+	},
+	'eligibility-consent': {
+		description:
+			'The gate screen. One screen serves all three cases — first-time consent, re-consent after a terms bump, and a blocked user who pressed something. Confirms 18+ and the Terms of Service, and announces the region check so the mini app window does not appear unannounced. "Agree & Continue" opens the region check; "📄 Terms of Service" sends the stored PDF as its own message rather than linking out.',
+		render: () =>
+			ConsentPage.render({
+				gateUrl: MOCK_GATE_URL,
+				termsActionData: MOCK_TERMS_ACTION_DATA,
+			}),
+	},
+	'eligibility-blocked': {
+		description:
+			'The region refusal, shown when the country check fails. States plainly that nothing has happened to the account and any balance stays yours, because gating every action holds funds until the user passes. Offers /start as a bare command with no button, so nobody hammers Try Again in place.',
+		render: () => BlockedPage.render(),
 	},
 	'onboarding-welcome': {
 		description:

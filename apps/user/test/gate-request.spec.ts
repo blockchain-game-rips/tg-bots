@@ -40,16 +40,7 @@ const setup = () => {
 		headers: Record<string, string | string[] | undefined> = {
 			'cf-ipcountry': COUNTRY,
 		},
-	) =>
-		handleGateRequest(
-			{ headers, body },
-			{
-				botToken: BOT_TOKEN,
-				devCountry: undefined,
-				isDevelopment: false,
-				onFact,
-			},
-		)
+	) => handleGateRequest({ headers, body }, { botToken: BOT_TOKEN, onFact })
 
 	return { facts, onFact, send }
 }

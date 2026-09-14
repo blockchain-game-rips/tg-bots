@@ -5,8 +5,6 @@ import { MINI_APP_PAGE } from './mini-app-page'
 
 export { EligibilityFact } from './gate-request'
 
-const DEVELOPMENT = 'development'
-
 const MIN_PORT = 1
 const MAX_PORT = 65535
 
@@ -39,16 +37,12 @@ export function startGate(
 	onFact: (fact: EligibilityFact) => Promise<void>,
 ): void {
 	// Read directly rather than through `getEnvSafe`, which throws on an absent
-	// variable: both of these are optional and have a defined meaning when unset.
+	// variable: the port is optional and has a defined meaning when unset.
 	const port = gatePort(process.env['GATE_PORT'])
-
-	const isDevelopment = process.env['NODE_ENV'] === DEVELOPMENT
 
 	startGateServer({
 		botToken: getEnvSafe('BOT_TOKEN'),
 		port,
-		devCountry: process.env['GATE_DEV_COUNTRY'],
-		isDevelopment,
 		page: MINI_APP_PAGE,
 		onFact,
 	})

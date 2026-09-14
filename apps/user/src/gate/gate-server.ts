@@ -27,8 +27,6 @@ const VERIFY_ROUTE = '/verify'
 export interface GateServerConfig {
 	botToken: string
 	port: number
-	devCountry: string | undefined
-	isDevelopment: boolean
 
 	/** The mini app page, served from memory so there is nothing to read at request time. */
 	page: string
@@ -47,8 +45,6 @@ export interface GateServerConfig {
 export function startGateServer({
 	botToken,
 	port,
-	devCountry,
-	isDevelopment,
 	page,
 	onFact,
 }: GateServerConfig): void {
@@ -85,7 +81,7 @@ export function startGateServer({
 
 				const { status } = await handleGateRequest(
 					{ headers: request.headers, body },
-					{ botToken, devCountry, isDevelopment, onFact },
+					{ botToken, onFact },
 				)
 
 				response.writeHead(status).end()

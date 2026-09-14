@@ -13,16 +13,6 @@ export interface CountrySource {
 	headers: Record<string, string | string[] | undefined>
 }
 
-interface CountryOverride {
-	/**
-	 * Stands in for the header outside Cloudflare, where it does not exist.
-	 * Ignored unless development is explicitly in force, so it cannot become a
-	 * way to state a country in production.
-	 */
-	devCountry: string | undefined
-	isDevelopment: boolean
-}
-
 /**
  * The country Cloudflare observed for this request, or `undefined` when it said
  * nothing. The only place the country signal is read, so swapping Cloudflare for
@@ -30,16 +20,10 @@ interface CountryOverride {
  *
  * There is deliberately no fallback source: a guessed country is worse than an
  * absent one, since the caller can tell the difference only if we do not invent
- * it.
+ * it. Local development gets the real header by running behind the same tunnel
+ * as production rather than by standing something in for it.
  */
-export function requestCountry(
-	request: CountrySource,
-	{ devCountry, isDevelopment }: CountryOverride,
-): string | undefined {
-	if (isDevelopment && devCountry !== undefined && devCountry !== '') {
-		return devCountry
-	}
-
+export function requestCountry(request: CountrySource): string | undefined {
 	const header = request.headers[COUNTRY_HEADER]
 
 	const value = Array.isArray(header) ? header[0] : header

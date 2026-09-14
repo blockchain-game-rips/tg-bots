@@ -20,8 +20,6 @@ export interface GateResponse {
 
 export interface GateRequestOptions {
 	botToken: string
-	devCountry: string | undefined
-	isDevelopment: boolean
 	onFact: (fact: EligibilityFact) => Promise<void>
 }
 
@@ -45,7 +43,7 @@ interface IncomingGateRequest {
  */
 export async function handleGateRequest(
 	request: IncomingGateRequest,
-	{ botToken, devCountry, isDevelopment, onFact }: GateRequestOptions,
+	{ botToken, onFact }: GateRequestOptions,
 ): Promise<GateResponse> {
 	const initData = readInitData(request.body)
 
@@ -55,7 +53,7 @@ export async function handleGateRequest(
 
 	if (verified === undefined) return { status: HTTP_UNAUTHORIZED }
 
-	const country = requestCountry(request, { devCountry, isDevelopment })
+	const country = requestCountry(request)
 
 	// No fallback source, so an absent country is reported rather than guessed.
 	if (country === undefined) return { status: HTTP_UNPROCESSABLE }

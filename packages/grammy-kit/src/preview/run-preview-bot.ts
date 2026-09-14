@@ -1,5 +1,6 @@
 import { fmt, FormattedString } from '@grammyjs/parse-mode'
 import { Bot, type Context } from 'grammy'
+import { captionArgs } from '../messaging/page-delivery'
 import { getEnvSafe } from '../utils/common'
 import {
 	groupPagesBySection,
@@ -38,14 +39,17 @@ async function renderVariant(
 	const { message, keyboard, media } = rendered
 
 	if (media !== undefined) {
-		const other = {
-			caption: message.caption,
-			caption_entities: message.caption_entities,
-			reply_markup: keyboard,
-		}
+		const other = { ...captionArgs(message), reply_markup: keyboard }
 
-		if (media.kind === 'photo') await ctx.replyWithPhoto(media.file, other)
-		else await ctx.replyWithDocument(media.file, other)
+		switch (media.kind) {
+			case 'photo':
+				await ctx.replyWithPhoto(media.file, other)
+				break
+
+			case 'document':
+				await ctx.replyWithDocument(media.file, other)
+				break
+		}
 
 		return
 	}

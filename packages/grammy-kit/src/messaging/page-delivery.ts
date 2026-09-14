@@ -8,7 +8,7 @@ export interface ChatMessage {
 	message: Message
 }
 
-function captionArgs(message: FormattedString) {
+export function captionArgs(message: FormattedString) {
 	return {
 		caption: message.caption,
 		caption_entities: message.caption_entities,

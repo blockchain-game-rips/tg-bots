@@ -15,6 +15,7 @@ import { actionIds } from './action-ids'
 import { actions } from './actions'
 import { botStartLink, setBotUsername } from './bot-identity'
 import { Flow } from './flows'
+import { EligibilityFact, startGate } from './gate'
 import { Notifier } from './notifier'
 import { initSupportedCurrencies } from './supported-currencies'
 import { Context, SessionData } from './types'
@@ -24,6 +25,23 @@ import { installKeyboardExtensions } from './utils/keyboard'
 initApiClient(getEnvSafe('BACKEND_URL'))
 
 startMetricsServer()
+
+/**
+ * The gate's public listener, on its own port beside the metrics one. Only the
+ * gate's port is ever published — `/metrics` stays internal, and one server
+ * serving both would mean any firewall slip leaks it.
+ *
+ * What the bot does with the fact is not the gate's to decide: computing the
+ * verdict against the policy, writing the acceptance and landing the user on
+ * home all belong to the bot, which reaches the chat through
+ * `createEventHandler`. Until that is wired, the fact is recorded and goes no
+ * further.
+ */
+startGate((fact: EligibilityFact) => {
+	logger.info(fact, 'Gate observed an eligibility fact')
+
+	return Promise.resolve()
+})
 
 installKeyboardExtensions()
 

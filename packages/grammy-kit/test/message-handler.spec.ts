@@ -34,7 +34,7 @@ const sessionAwaitingReply = (): SessionData => {
 
 	resolveWorkspace(session, WORKSPACE_MESSAGE_ID).lastAsk = {
 		onSubmit: SUBMIT_ACTION,
-		message: { messageId: WORKSPACE_MESSAGE_ID, hasPhoto: false },
+		message: { messageId: WORKSPACE_MESSAGE_ID, hasMedia: false },
 		promptMessageId: PROMPT_MESSAGE_ID,
 	}
 

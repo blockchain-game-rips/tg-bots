@@ -71,7 +71,7 @@ export const DepositAddressPage = {
 		return {
 			message: joinLines(lines),
 			keyboard,
-			photo: qr,
+			media: qr === undefined ? undefined : { kind: 'photo', file: qr },
 		}
 	},
 }

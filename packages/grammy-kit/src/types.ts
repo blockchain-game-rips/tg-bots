@@ -99,15 +99,23 @@ interface PageContentBase {
 	trailSlot?: string
 }
 
-export interface PhotoPage extends PageContentBase {
-	photo: InputFile
+export type MediaKind = 'photo' | 'document'
+
+/** What a page attaches to its message, tagged by how Telegram must send it. */
+export interface Media {
+	kind: MediaKind
+	file: InputFile
+}
+
+export interface MediaPage extends PageContentBase {
+	media: Media
 }
 
 export interface TextPage extends PageContentBase {
-	photo?: never
+	media?: never
 }
 
-export type PageContent = PhotoPage | TextPage
+export type PageContent = MediaPage | TextPage
 
 export interface PromptContent {
 	message: FormattedString
@@ -116,5 +124,5 @@ export interface PromptContent {
 
 export interface Message {
 	messageId: number
-	hasPhoto: boolean
+	hasMedia: boolean
 }

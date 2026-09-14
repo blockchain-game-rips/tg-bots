@@ -61,7 +61,7 @@ const page = (text: string): PageContent => ({
 	keyboard: new InlineKeyboard(),
 })
 
-const message: Message = { messageId: MESSAGE_ID, hasPhoto: false }
+const message: Message = { messageId: MESSAGE_ID, hasMedia: false }
 
 const editedTexts: string[] = []
 

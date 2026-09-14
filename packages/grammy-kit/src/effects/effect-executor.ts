@@ -78,7 +78,7 @@ async function deliverPage(
 
 	const messageId = await sendMessage(api, chatId, page)
 
-	return { messageId, hasPhoto: page.photo !== undefined }
+	return { messageId, hasMedia: page.media !== undefined }
 }
 
 async function performEffect(

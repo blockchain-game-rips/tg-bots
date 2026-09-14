@@ -119,8 +119,8 @@ function recordActionEntry(workspace: Workspace, action: ActionData): void {
 }
 
 function recordPageEntry(workspace: Workspace, page: PageContent): void {
-	// too much memory consumption for saving image in history
-	if (page.photo !== undefined) return
+	// too much memory consumption for saving media in history
+	if (page.media !== undefined) return
 
 	if (holdsSlotOf(currentEntry(workspace), page)) workspace.history.pop()
 

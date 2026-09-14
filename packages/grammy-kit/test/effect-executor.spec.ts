@@ -36,7 +36,7 @@ const makePage = (text: string): PageContent => ({
 
 const message: Message = {
 	messageId: MESSAGE_ID,
-	hasPhoto: false,
+	hasMedia: false,
 }
 
 interface FakeApi {

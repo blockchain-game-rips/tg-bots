@@ -74,15 +74,15 @@ export function createButtonHandler(
 function toMessage(message: TelegramMessage): Message {
 	return {
 		messageId: message.message_id,
-		hasPhoto: hasPhoto(message),
+		hasMedia: hasMedia(message),
 	}
 }
 
 function recoverPage(message: TelegramMessage): PageContent {
-	const withPhoto = hasPhoto(message)
-	const text = (withPhoto ? message.caption : message.text) ?? ''
+	const withMedia = hasMedia(message)
+	const text = (withMedia ? message.caption : message.text) ?? ''
 	const entities =
-		(withPhoto ? message.caption_entities : message.entities) ?? []
+		(withMedia ? message.caption_entities : message.entities) ?? []
 
 	const rawMarkup = message.reply_markup
 	const keyboard =
@@ -93,6 +93,18 @@ function recoverPage(message: TelegramMessage): PageContent {
 	return { message: new FormattedString(text, entities), keyboard }
 }
 
-function hasPhoto(message: TelegramMessage): boolean {
-	return message.photo !== undefined
+/**
+ * Whether the message carries a caption rather than text. Covers every media
+ * kind Telegram can deliver, not just the ones a page can render: a message the
+ * bot cannot reproduce still cannot be edited as text.
+ */
+function hasMedia(message: TelegramMessage): boolean {
+	return (
+		message.photo !== undefined ||
+		message.document !== undefined ||
+		message.video !== undefined ||
+		message.animation !== undefined ||
+		message.audio !== undefined ||
+		message.voice !== undefined
+	)
 }

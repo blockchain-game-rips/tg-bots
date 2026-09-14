@@ -207,7 +207,22 @@ describe('recordPage with a page entry', () => {
 		enter(workspace, 'reveal')
 		enterWithoutAction(workspace, {
 			...makePage('you won'),
-			photo: new InputFile(Buffer.from('image')),
+			media: { kind: 'photo', file: new InputFile(Buffer.from('image')) },
+		})
+
+		expect(currentEntry(workspace)).toEqual(actionEntry('reveal'))
+	})
+
+	it('ignores a document page too, since its buffer is just as heavy', () => {
+		const workspace = makeWorkspace()
+
+		enter(workspace, 'reveal')
+		enterWithoutAction(workspace, {
+			...makePage('your report'),
+			media: {
+				kind: 'document',
+				file: new InputFile(Buffer.from('report')),
+			},
 		})
 
 		expect(currentEntry(workspace)).toEqual(actionEntry('reveal'))

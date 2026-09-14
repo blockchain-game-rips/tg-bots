@@ -35,14 +35,17 @@ async function renderVariant(
 		throw e
 	}
 
-	const { message, keyboard, photo } = rendered
+	const { message, keyboard, media } = rendered
 
-	if (photo !== undefined) {
-		await ctx.replyWithPhoto(photo, {
+	if (media !== undefined) {
+		const other = {
 			caption: message.caption,
 			caption_entities: message.caption_entities,
 			reply_markup: keyboard,
-		})
+		}
+
+		if (media.kind === 'photo') await ctx.replyWithPhoto(media.file, other)
+		else await ctx.replyWithDocument(media.file, other)
 
 		return
 	}

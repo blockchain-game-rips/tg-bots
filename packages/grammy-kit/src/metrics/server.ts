@@ -4,6 +4,9 @@ import { registry } from './registry'
 
 const METRICS_PORT = Number(process.env['METRICS_PORT'] ?? 9090)
 
+/** Metrics are for the scraper on this host, so nothing off it may connect. */
+const LOOPBACK_ADDRESS = '127.0.0.1'
+
 export function startMetricsServer(): void {
 	const server = createServer((req, res) => {
 		if (req.url !== '/metrics') {
@@ -24,7 +27,7 @@ export function startMetricsServer(): void {
 			})
 	})
 
-	server.listen(METRICS_PORT, () => {
+	server.listen(METRICS_PORT, LOOPBACK_ADDRESS, () => {
 		logger.info(
 			`Metrics server listening on port ${METRICS_PORT.toString()}`,
 		)

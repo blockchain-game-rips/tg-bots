@@ -2,7 +2,7 @@ import { AnyHandlerResult } from '@rips/grammy-kit'
 import { EligibilityPolicyCache } from '../cache/eligibility-policy-cache'
 import { UserEligibilityCache } from '../cache/user-eligibility-cache'
 import { EligibilityCheck } from '../gated-registry'
-import { hasAcceptedCurrentTerms } from './terms-acceptance'
+import { verdict } from './verdict'
 
 interface EligibilityCheckOptions {
 	policyCache: Pick<EligibilityPolicyCache, 'get'>
@@ -17,8 +17,12 @@ interface EligibilityCheckOptions {
 }
 
 /**
- * Builds the check the gated registry consults. Refuses a user who has not
- * accepted the current terms; everyone else proceeds untouched.
+ * Builds the check the gated registry consults. Every refusal ends on the same
+ * page, whatever the verdict's reason: a press is a fresh gesture, and a user
+ * whose country was blocked may since have moved, so re-running the flow — which
+ * the consent page's Agree button starts — is the way out rather than a dead
+ * end. The visible country refusal belongs to the gate path, which has just
+ * observed where the user is.
  *
  * Both reads go through their caches, so a warm press costs no request. A
  * backend failure is left to propagate: the gate adds no branch of its own.
@@ -34,9 +38,13 @@ export function buildEligibilityCheck({
 			userCache.get(telegramId),
 		])
 
-		if (hasAcceptedCurrentTerms(eligibility, policy.termsVersion)) {
-			return undefined
-		}
+		const refusalReason = verdict(
+			eligibility?.country,
+			eligibility?.termsVersion,
+			policy,
+		)
+
+		if (refusalReason === undefined) return undefined
 
 		return renderRefusal()
 	}

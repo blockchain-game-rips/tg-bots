@@ -8,6 +8,8 @@ const TELEGRAM_ID = 111
 
 const CURRENT_TERMS_VERSION = 4
 
+const BLOCKED_COUNTRY = 'US'
+
 const actionContext = { telegramId: TELEGRAM_ID, flow: null }
 
 const refusal: AnyHandlerResult = {
@@ -21,9 +23,9 @@ const refusal: AnyHandlerResult = {
 	},
 }
 
-function acceptedAt(termsVersion: number) {
+function acceptedAt(termsVersion: number, country = 'DE') {
 	return {
-		country: 'DE',
+		country,
 		termsVersion,
 		acceptedAt: '2026-01-01T00:00:00.000Z',
 	}
@@ -37,7 +39,7 @@ function buildCheck(
 		policyCache: {
 			get: () =>
 				Promise.resolve({
-					blockedCountries: [],
+					blockedCountries: [BLOCKED_COUNTRY],
 					termsVersion: CURRENT_TERMS_VERSION,
 					updatedAt: '2026-01-01T00:00:00.000Z',
 				}),
@@ -64,6 +66,30 @@ describe('buildEligibilityCheck', () => {
 		const check = buildCheck(acceptedAt(CURRENT_TERMS_VERSION - 1))
 
 		expect(await check(actionContext)).toEqual(refusal)
+	})
+
+	it('refuses a user whose stored country is now blocked', async () => {
+		const check = buildCheck(
+			acceptedAt(CURRENT_TERMS_VERSION, BLOCKED_COUNTRY),
+		)
+
+		expect(await check(actionContext)).toEqual(refusal)
+	})
+
+	it('shows one screen for every reason, so a user who has moved can re-check', async () => {
+		const renderRefusal = vi.fn(() => refusal)
+
+		const blocked = buildCheck(
+			acceptedAt(CURRENT_TERMS_VERSION, BLOCKED_COUNTRY),
+			renderRefusal,
+		)
+
+		const stale = buildCheck(
+			acceptedAt(CURRENT_TERMS_VERSION - 1),
+			renderRefusal,
+		)
+
+		expect(await blocked(actionContext)).toEqual(await stale(actionContext))
 	})
 
 	it('renders the refusal only when the user is refused', async () => {

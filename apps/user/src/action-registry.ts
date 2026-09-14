@@ -1,6 +1,7 @@
 import { ActionRegistryFor } from '@rips/grammy-kit'
 import { actionIds } from './action-ids'
 import { openAbout } from './action-handlers/open-about'
+import { openEligibilityBlocked } from './action-handlers/open-eligibility-blocked'
 import {
 	chooseCreateAccount,
 	openHome,
@@ -87,6 +88,9 @@ import { promptSwapAmount } from './action-handlers/wallet/swap/prompt-swap-amou
 export const actionRegistry = {
 	// Home
 	openHome,
+
+	// Eligibility
+	openEligibilityBlocked,
 
 	// Onboarding
 	chooseCreateAccount,

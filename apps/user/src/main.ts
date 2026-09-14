@@ -3,6 +3,7 @@ import { run } from '@grammyjs/runner'
 import { initApiClient } from '@rips/api-client'
 import {
 	createButtonHandler,
+	createEventHandler,
 	createMessageHandler,
 	createStartHandler,
 	createTelegramMetricsTransformer,
@@ -10,38 +11,25 @@ import {
 	logger,
 	startMetricsServer,
 } from '@rips/grammy-kit'
-import { Bot, session } from 'grammy'
+import { Bot, MemorySessionStorage, session } from 'grammy'
 import { actionIds } from './action-ids'
-import { actions } from './actions'
+import { actions, ungatedActions } from './actions'
 import { botStartLink, setBotUsername } from './bot-identity'
+import { eligibilityPolicyCache } from './cache/eligibility-policy-cache'
+import { userEligibilityCache } from './cache/user-eligibility-cache'
+import { buildEligibilityFactHandler } from './eligibility/eligibility-fact'
 import { Flow } from './flows'
-import { EligibilityFact, startGate } from './gate'
+import { startGate } from './gate'
 import { Notifier } from './notifier'
 import { initSupportedCurrencies } from './supported-currencies'
 import { Context, SessionData } from './types'
 import { getEnvSafe } from './utils/common'
+import { recordEligibility } from './utils/api/wrappers'
 import { installKeyboardExtensions } from './utils/keyboard'
 
 initApiClient(getEnvSafe('BACKEND_URL'))
 
 startMetricsServer()
-
-/**
- * The gate's public listener, on its own port beside the metrics one. Only the
- * gate's port is ever published — `/metrics` stays internal, and one server
- * serving both would mean any firewall slip leaks it.
- *
- * What the bot does with the fact is not the gate's to decide: computing the
- * verdict against the policy, writing the acceptance and landing the user on
- * home all belong to the bot, which reaches the chat through
- * `createEventHandler`. Until that is wired, the fact is recorded and goes no
- * further.
- */
-startGate((fact: EligibilityFact) => {
-	logger.info(fact, 'Gate observed an eligibility fact')
-
-	return Promise.resolve()
-})
 
 installKeyboardExtensions()
 
@@ -58,16 +46,55 @@ bot.api.config.use(createTelegramMetricsTransformer())
 const initial = (): SessionData<Flow> => initialSession<Flow>()
 
 /**
- * Storage is left to grammy's in-process default deliberately. `createEventHandler`
- * reaches this same storage without an update, and relies on its reads returning
- * the live object; a serialising adapter would silently break that. Read the
- * concurrency note on `createEventHandler` before passing `storage` here.
+ * The one storage both entrances share: grammy's middleware writes it after
+ * every update, and `createEventHandler` reaches it without an update at all.
+ *
+ * It stays grammy's in-process `MemorySessionStorage` deliberately, because the
+ * event path relies on reads returning the live object rather than a copy — a
+ * serialising adapter (Redis, a file) would silently turn every concurrent press
+ * into a lost update. Read the concurrency note on `createEventHandler` before
+ * swapping it.
  */
-bot.use(session({ initial }))
+const sessionStorage = new MemorySessionStorage<SessionData<Flow>>()
+
+bot.use(session({ initial, storage: sessionStorage }))
 
 const handleButton = createButtonHandler(actions)
 const handleMessage = createMessageHandler(actions)
 const handleStart = createStartHandler(actions, actionIds.openHome)
+
+/**
+ * Delivers through the ungated registry: the gate has already ruled, and a
+ * second check here would re-read the stored record and replace the page the
+ * verdict chose — leaving the region refusal unreachable.
+ */
+const handleEvent = createEventHandler<Flow>({
+	api: bot.api,
+	storage: sessionStorage,
+	initial,
+	actions: ungatedActions,
+})
+
+/**
+ * The gate's public listener, on its own port beside the metrics one. Only the
+ * gate's port is ever published — `/metrics` stays internal, and one server
+ * serving both would mean any firewall slip leaks it.
+ *
+ * The gate reports a fact and stops; the verdict, the write and the page all
+ * belong to the bot, which reaches the chat through `createEventHandler`. The
+ * gate answers the mini app as soon as this resolves, whatever the verdict, so a
+ * legitimately blocked user still gets a 200 and reads the refusal in the chat.
+ */
+startGate(
+	buildEligibilityFactHandler({
+		policyCache: eligibilityPolicyCache,
+		record: recordEligibility,
+		invalidate: (telegramId) => userEligibilityCache.invalidate(telegramId),
+		deliver: handleEvent,
+		homeActionId: actionIds.openHome,
+		blockedActionId: actionIds.openEligibilityBlocked,
+	}),
+)
 
 bot.command('start', async (ctx) => handleStart(ctx))
 

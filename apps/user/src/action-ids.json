@@ -14,6 +14,7 @@
 		"openDepositAddress": "v",
 		"openDepositAddressQr": "w",
 		"openDepositChooseCurrency": "u",
+		"openEligibilityBlocked": "1r",
 		"openEnterCheckout": "b",
 		"openEnterCheckoutFromEntryCount": "d",
 		"openEnterCheckoutFromPaymentToken": "c",
@@ -64,5 +65,5 @@
 		"startImportKey": "2",
 		"submitImportKey": "3"
 	},
-	"next": "1r"
+	"next": "1s"
 }

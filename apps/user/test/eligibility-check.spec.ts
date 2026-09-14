@@ -1,48 +1,66 @@
+import { EligibilityPolicyDtoOutput } from '@rips/api-client'
 import { describe, expect, it } from 'vitest'
-import { hasAcceptedCurrentTerms } from '../src/eligibility/terms-acceptance'
+import { Refusal, verdict } from '../src/eligibility/verdict'
 
 const CURRENT_TERMS_VERSION = 4
 
-describe('hasAcceptedCurrentTerms', () => {
-	it('refuses a user who was never gated', () => {
-		expect(hasAcceptedCurrentTerms(undefined, CURRENT_TERMS_VERSION)).toBe(
-			false,
+const ALLOWED_COUNTRY = 'DE'
+const BLOCKED_COUNTRY = 'US'
+
+const policy: EligibilityPolicyDtoOutput = {
+	blockedCountries: [BLOCKED_COUNTRY],
+	termsVersion: CURRENT_TERMS_VERSION,
+	updatedAt: '2026-01-01T00:00:00.000Z',
+}
+
+describe('verdict', () => {
+	it('admits a user in an allowed country who accepted the current terms', () => {
+		expect(
+			verdict(ALLOWED_COUNTRY, CURRENT_TERMS_VERSION, policy),
+		).toBeUndefined()
+	})
+
+	it('refuses a user who was never gated, since no country and no version are known', () => {
+		expect(verdict(undefined, undefined, policy)).toBe(Refusal.TERMS)
+	})
+
+	it('refuses a user whose accepted version is behind the policy', () => {
+		expect(
+			verdict(ALLOWED_COUNTRY, CURRENT_TERMS_VERSION - 1, policy),
+		).toBe(Refusal.TERMS)
+	})
+
+	it('admits a user whose accepted version is ahead, so a rollback does not lock them out', () => {
+		expect(
+			verdict(ALLOWED_COUNTRY, CURRENT_TERMS_VERSION + 1, policy),
+		).toBeUndefined()
+	})
+
+	it('refuses a user in a blocked country even with the current terms accepted', () => {
+		expect(verdict(BLOCKED_COUNTRY, CURRENT_TERMS_VERSION, policy)).toBe(
+			Refusal.COUNTRY,
 		)
 	})
 
-	it('refuses a user whose accepted version is behind the current one', () => {
-		const eligibility = {
-			country: 'DE',
-			termsVersion: CURRENT_TERMS_VERSION - 1,
-			acceptedAt: '2026-01-01T00:00:00.000Z',
-		}
-
+	it('names the country as the reason when both halves fail, since the country is the harder barrier', () => {
 		expect(
-			hasAcceptedCurrentTerms(eligibility, CURRENT_TERMS_VERSION),
-		).toBe(false)
+			verdict(BLOCKED_COUNTRY, CURRENT_TERMS_VERSION - 1, policy),
+		).toBe(Refusal.COUNTRY)
 	})
 
-	it('admits a user who accepted the current version', () => {
-		const eligibility = {
-			country: 'DE',
-			termsVersion: CURRENT_TERMS_VERSION,
-			acceptedAt: '2026-01-01T00:00:00.000Z',
-		}
-
+	it('compares the country case-insensitively, since the observed header casing is not guaranteed', () => {
 		expect(
-			hasAcceptedCurrentTerms(eligibility, CURRENT_TERMS_VERSION),
-		).toBe(true)
+			verdict(
+				BLOCKED_COUNTRY.toLowerCase(),
+				CURRENT_TERMS_VERSION,
+				policy,
+			),
+		).toBe(Refusal.COUNTRY)
 	})
 
-	it('admits a user whose accepted version is ahead, so a policy rollback does not lock them out', () => {
-		const eligibility = {
-			country: 'DE',
-			termsVersion: CURRENT_TERMS_VERSION + 1,
-			acceptedAt: '2026-01-01T00:00:00.000Z',
-		}
-
-		expect(
-			hasAcceptedCurrentTerms(eligibility, CURRENT_TERMS_VERSION),
-		).toBe(true)
+	it('refuses on terms when the country is unknown but the version is current', () => {
+		expect(verdict(undefined, CURRENT_TERMS_VERSION, policy)).toBe(
+			Refusal.TERMS,
+		)
 	})
 })

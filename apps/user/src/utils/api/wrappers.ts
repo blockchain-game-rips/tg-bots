@@ -5,6 +5,7 @@ import {
 	eligibilityControllerGetPolicy,
 	eligibilityControllerGetTerms,
 	eligibilityControllerGetUserEligibility,
+	eligibilityControllerRecordEligibility,
 	EligibilityPolicyDtoOutput,
 	UserEligibilityDtoOutput,
 	currencyControllerGetSupportedCurrencies,
@@ -171,6 +172,28 @@ export async function fetchEligibilityTerms(): Promise<Uint8Array> {
 	})
 
 	return new Uint8Array(await data.arrayBuffer())
+}
+
+/**
+ * The acceptance, recorded the moment the gate reports a fact. The terms
+ * version is the bot's own read of the policy rather than anything the caller
+ * supplied, which is what keeps it out of the mini app's untrusted input.
+ */
+export async function recordEligibility(
+	telegramId: number,
+	country: string,
+	termsVersion: number,
+): Promise<UserEligibilityDtoOutput> {
+	const { data } = await eligibilityControllerRecordEligibility({
+		headers: { 'x-user-key': userApiKey() },
+		body: {
+			telegramId: telegramId.toString(),
+			country,
+			termsVersion,
+		},
+	})
+
+	return data
 }
 
 /**

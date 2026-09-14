@@ -13,6 +13,9 @@ export const actionDeclarations = {
 	// Home
 	openHome: withPayloadId<string | undefined>(),
 
+	// Eligibility — the verdict's own landing, named by the gate path only
+	openEligibilityBlocked: noPayloadId(),
+
 	// Onboarding
 	chooseCreateAccount: noPayloadId(),
 	startImportKey: noPayloadId(),

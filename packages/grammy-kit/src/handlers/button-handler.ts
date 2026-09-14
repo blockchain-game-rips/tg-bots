@@ -93,18 +93,25 @@ function recoverPage(message: TelegramMessage): PageContent {
 	return { message: new FormattedString(text, entities), keyboard }
 }
 
+const MEDIA_FIELDS = [
+	'animation',
+	'audio',
+	'document',
+	'live_photo',
+	'paid_media',
+	'photo',
+	'sticker',
+	'video',
+	'video_note',
+	'voice',
+] as const satisfies readonly (keyof TelegramMessage)[]
+
 /**
- * Whether the message carries a caption rather than text. Covers every media
- * kind Telegram can deliver, not just the ones a page can render: a message the
- * bot cannot reproduce still cannot be edited as text.
+ * Whether the message holds media rather than text. Covers every kind Telegram
+ * can deliver, not just the ones a page can render: a kind the bot cannot
+ * reproduce still cannot be edited as text. Stickers and video notes carry no
+ * caption either, so this asks what the message holds, not how it is captioned.
  */
 function hasMedia(message: TelegramMessage): boolean {
-	return (
-		message.photo !== undefined ||
-		message.document !== undefined ||
-		message.video !== undefined ||
-		message.animation !== undefined ||
-		message.audio !== undefined ||
-		message.voice !== undefined
-	)
+	return MEDIA_FIELDS.some((field) => message[field] !== undefined)
 }

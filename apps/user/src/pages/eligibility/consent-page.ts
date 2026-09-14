@@ -1,5 +1,5 @@
 import { fmt, FormattedString, joinLines } from '@rips/grammy-kit'
-import { InlineKeyboard } from 'grammy'
+import { InlineKeyboard, InputFile } from 'grammy'
 import { PageContent } from '../../types'
 import * as labels from '../../utils/button-labels'
 
@@ -11,11 +11,11 @@ interface ConsentPageVariant {
 	gateUrl: string
 
 	/**
-	 * Callback data for `📄 Terms of Service`. Supplied because the action that
-	 * delivers the stored PDF cannot exist until the policy is readable as
-	 * bytes; the page is complete either way.
+	 * The terms PDF, attached to this message rather than offered behind a
+	 * button: the user reads what they are agreeing to without leaving the
+	 * screen that asks for the agreement.
 	 */
-	termsActionData: string
+	termsDocument: InputFile
 }
 
 /**
@@ -25,7 +25,7 @@ interface ConsentPageVariant {
  * unannounced.
  */
 export const ConsentPage = {
-	render({ gateUrl, termsActionData }: ConsentPageVariant): PageContent {
+	render({ gateUrl, termsDocument }: ConsentPageVariant): PageContent {
 		const lines = [
 			fmt`📋 ${FormattedString.b('Before You Play')}`,
 			'',
@@ -37,11 +37,15 @@ export const ConsentPage = {
 			"Tap Agree to continue. We'll check that Rips is available in your region.",
 		]
 
-		const keyboard = new InlineKeyboard()
-			.webApp(labels.AGREE_AND_CONTINUE, gateUrl)
-			.row()
-			.text(labels.TERMS_OF_SERVICE, termsActionData)
+		const keyboard = new InlineKeyboard().webApp(
+			labels.AGREE_AND_CONTINUE,
+			gateUrl,
+		)
 
-		return { message: joinLines(lines), keyboard }
+		return {
+			message: joinLines(lines),
+			keyboard,
+			media: { kind: 'document', file: termsDocument },
+		}
 	},
 }

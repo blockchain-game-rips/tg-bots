@@ -1,10 +1,12 @@
 import { FormattedString } from '@rips/grammy-kit'
+import { InputFile } from 'grammy'
 import { describe, expect, it } from 'vitest'
 import { BlockedPage } from '../src/pages/eligibility/blocked-page'
 import { ConsentPage } from '../src/pages/eligibility/consent-page'
 
 const GATE_URL = 'https://gate.example.com/eligibility'
-const TERMS_ACTION_DATA = 'terms'
+
+const TERMS_DOCUMENT = new InputFile(new Uint8Array(), 'terms.pdf')
 
 const WELCOME_HEADER = '👋 Welcome to Rips'
 const BARRIER_EMOJI = '⛔'
@@ -35,7 +37,7 @@ function boldRanges({ text, entities }: FormattedString): string[] {
 describe('the consent screen', () => {
 	const page = ConsentPage.render({
 		gateUrl: GATE_URL,
-		termsActionData: TERMS_ACTION_DATA,
+		termsDocument: TERMS_DOCUMENT,
 	})
 
 	it('states both bullets and the closing line about the region check', () => {
@@ -50,16 +52,17 @@ describe('the consent screen', () => {
 		])
 	})
 
-	it('offers Agree & Continue as the region check and a Terms of Service button', () => {
-		const [agreeRow, termsRow] = page.keyboard.inline_keyboard
-
-		expect(agreeRow).toEqual([
-			{ text: 'Agree & Continue', web_app: { url: GATE_URL } },
+	it('offers Agree & Continue as the only button, since the terms ride along', () => {
+		expect(page.keyboard.inline_keyboard).toEqual([
+			[{ text: 'Agree & Continue', web_app: { url: GATE_URL } }],
 		])
+	})
 
-		expect(termsRow).toEqual([
-			{ text: '📄 Terms of Service', callback_data: TERMS_ACTION_DATA },
-		])
+	it('carries the terms document on the message itself', () => {
+		expect(page.media).toEqual({
+			kind: 'document',
+			file: TERMS_DOCUMENT,
+		})
 	})
 
 	it('avoids the header WelcomePage owns and never accuses the user', () => {

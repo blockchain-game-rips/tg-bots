@@ -3,6 +3,7 @@ import {
 	createQuerySerializer,
 	currencyControllerGetCurrencies,
 	eligibilityControllerGetPolicy,
+	eligibilityControllerGetTerms,
 	eligibilityControllerGetUserEligibility,
 	EligibilityPolicyDtoOutput,
 	UserEligibilityDtoOutput,
@@ -158,6 +159,18 @@ export async function fetchEligibilityPolicy(): Promise<EligibilityPolicyDtoOutp
 	})
 
 	return data
+}
+
+/**
+ * The terms PDF as bytes, ready to become an `InputFile`. The route answers
+ * `application/pdf`, which the client parses to a `Blob`.
+ */
+export async function fetchEligibilityTerms(): Promise<Uint8Array> {
+	const { data } = await eligibilityControllerGetTerms({
+		headers: { 'x-user-key': userApiKey() },
+	})
+
+	return new Uint8Array(await data.arrayBuffer())
 }
 
 /**

@@ -1,6 +1,8 @@
 import { PayoutDtoOutput, RipDtoOutput } from '@rips/api-client'
+import { InputFile } from 'grammy'
 import { getSupportedChains } from '../../src/supported-currencies'
 import { PageEntry, resolveVariant } from '@rips/grammy-kit'
+import { TERMS_FILENAME } from '../../src/eligibility/terms-document'
 import { currencyToChain, resolveConfig, RipStatusGroup } from '@rips/shared'
 import { buildCardCollection } from '../../src/domain/card-collection'
 import { buildRevealSummary } from '../../src/domain/reveal-summary'
@@ -147,7 +149,14 @@ const MOCK_PLAY_LINK = 'https://t.me/RipsBot?start'
 
 const MOCK_GATE_URL = 'https://gate.example.com/eligibility'
 
-const MOCK_TERMS_ACTION_DATA = 'preview-terms'
+// A minimal valid PDF, so the preview shows a real document rather than a file
+// Telegram refuses to render.
+const MOCK_TERMS_PDF = `%PDF-1.4
+1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
+2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
+3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]>>endobj
+trailer<</Root 1 0 R>>
+%%EOF`
 
 const [mockCompletedRip, mockRefundedRip] = mockFinalizedRips
 
@@ -948,11 +957,14 @@ export const pages: Record<string, PageEntry> = {
 	},
 	'eligibility-consent': {
 		description:
-			'The gate screen. One screen serves all three cases — first-time consent, re-consent after a terms bump, and a blocked user who pressed something. Confirms 18+ and the Terms of Service, and announces the region check so the mini app window does not appear unannounced. "Agree & Continue" opens the region check; "📄 Terms of Service" sends the stored PDF as its own message rather than linking out.',
+			'The gate screen. One screen serves all three cases — first-time consent, re-consent after a terms bump, and a blocked user who pressed something. Confirms 18+ and the Terms of Service, and announces the region check so the mini app window does not appear unannounced. The stored terms PDF is attached to this message, so the user reads it without leaving the screen; "Agree & Continue" is the only button and opens the region check.',
 		render: () =>
 			ConsentPage.render({
 				gateUrl: MOCK_GATE_URL,
-				termsActionData: MOCK_TERMS_ACTION_DATA,
+				termsDocument: new InputFile(
+					Buffer.from(MOCK_TERMS_PDF),
+					TERMS_FILENAME,
+				),
 			}),
 	},
 	'eligibility-blocked': {

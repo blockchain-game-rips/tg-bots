@@ -53,7 +53,6 @@ export const CONFIRM_WITHDRAWAL = `${SEND_TRANSACTION_EMOJI} Confirm Withdrawal`
 export const CLAIM = `${SEND_TRANSACTION_EMOJI} Claim`
 
 export const AGREE_AND_CONTINUE = 'Agree & Continue'
-export const TERMS_OF_SERVICE = '📄 Terms of Service'
 
 export const REVEAL_NEXT = 'Reveal Next'
 export const REVEAL_ALL = 'Reveal All'

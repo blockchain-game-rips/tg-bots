@@ -42,12 +42,12 @@ export const submitConfirmSetDefaultFee: ActionDef<string> =
 		(v) => v,
 		(v) => v,
 		(_session, payload) => {
-			const bp = parseFeeBp(payload)
+			const feeBps = parseFeeBp(payload)
 
 			const flow = toFlow<Flow, 'setDefaultFee', 'confirm'>(
 				'setDefaultFee',
 				'confirm',
-				{ bp },
+				{ feeBps },
 			)
 
 			return {
@@ -55,7 +55,7 @@ export const submitConfirmSetDefaultFee: ActionDef<string> =
 				effect: {
 					type: EffectType.NAVIGATE,
 					page: ConfirmationPage.render(
-						fmt`This will set the default referral fee to ${FormattedString.b(`${String(bp)} bp`)}.`,
+						fmt`This will set the default referral fee to ${FormattedString.b(`${String(feeBps)} bp`)}.`,
 						actionIds.executeConfirmSetDefaultFee,
 					),
 				},
@@ -67,7 +67,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 	(session) => {
 		assertFlow(session, 'setDefaultFee', 'confirm')
 
-		const { bp } = session.flow.data
+		const { feeBps } = session.flow.data
 
 		return {
 			effect: {
@@ -77,7 +77,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 					const { data: tx } =
 						await adminControllerSetDefaultReferralFee({
 							headers: { 'x-admin-api-key': adminApiKey },
-							body: { feeBps: bp },
+							body: { feeBps },
 						})
 
 					return {
@@ -86,7 +86,7 @@ export const executeConfirmSetDefaultFee: ActionDef<void> = noPayload(
 							type: EffectType.NAVIGATE,
 							page: TransactionPage.render(
 								{
-									succeeded: `Default fee set to ${String(bp)} bp`,
+									succeeded: `Default fee set to ${String(feeBps)} bp`,
 									operation: 'Setting the default fee',
 								},
 								tx,

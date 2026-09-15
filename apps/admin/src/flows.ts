@@ -37,7 +37,7 @@ export type SetReferrerCustomFeeFlow =
 export interface SetDefaultFeeFlow {
 	flowType: 'setDefaultFee'
 	step: 'confirm'
-	data: { bp: number }
+	data: { feeBps: number }
 }
 
 export interface SetTiersFlow {

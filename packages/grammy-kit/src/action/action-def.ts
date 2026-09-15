@@ -1,7 +1,7 @@
 import { FlowBase } from '../session/session-utils'
 import { HandlerResult } from '../types'
 
-export interface ActionContext<F extends FlowBase | null = any> {
+export interface ActionContext<F extends FlowBase | null = FlowBase | null> {
 	telegramId: number
 	flow: F
 }

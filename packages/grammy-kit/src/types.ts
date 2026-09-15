@@ -13,7 +13,7 @@ export type HistoryEntry =
 	| { kind: 'action'; action: ActionData }
 	| { kind: 'page'; page: PageContent }
 
-export interface Workspace<F extends FlowBase | null = any> {
+export interface Workspace<F extends FlowBase | null = FlowBase | null> {
 	/** the bot message this workspace lives behind */
 	messageId: number
 	lastInteraction: number

@@ -2,7 +2,6 @@ import { User } from '@grammyjs/types'
 import { Api, Filter, Context as GrammyContext, SessionFlavor } from 'grammy'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
-import { FlowBase } from '../session/session-utils'
 import { findWorkspaceByPrompt } from '../session/workspaces'
 import { ActionId, Message, SessionData, Workspace } from '../types'
 import { EMPTY_PAGE } from './empty-page'
@@ -125,7 +124,7 @@ function getSubmittedContent(ctx: SubmitContext): string | null {
 }
 
 function getAskAndSubmit(ctx: SubmitContext): {
-	workspace: Workspace<FlowBase | null>
+	workspace: Workspace
 	ask: {
 		messageId: number
 		onSubmit: ActionId<unknown>

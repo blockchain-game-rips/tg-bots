@@ -37,6 +37,10 @@ export function buildGatedRegistry<D extends ActionDeclarations>(
 
 				if (refusal !== undefined) return refusal
 
+				// `def` is an AnyActionDef, whose payload type is `any` because
+				// ActionDef<P> is invariant in P. The registry guarantees this
+				// handler receives the payload its own codec decoded.
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
 				return def.handler(actionContext, payload)
 			},
 		}

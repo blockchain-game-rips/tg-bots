@@ -18,6 +18,12 @@ import {
 	submitConfirmUnfreezeReferrer,
 } from './action-handlers/execute-set-referrer-frozen'
 import {
+	executeConfirmSetReferrerCustomFee,
+	openSetReferrerCustomFee,
+	submitConfirmSetReferrerCustomFee,
+	submitSetReferrerCustomFeeAddress,
+} from './action-handlers/execute-set-referrer-custom-fee'
+import {
 	executeConfirmSetTiers,
 	openSetTiers,
 	submitConfirmSetTiers,
@@ -54,6 +60,10 @@ export const actionRegistry = {
 	openUnfreezeReferrer,
 	submitConfirmUnfreezeReferrer,
 	executeConfirmReferrerFrozen,
+	openSetReferrerCustomFee,
+	submitSetReferrerCustomFeeAddress,
+	submitConfirmSetReferrerCustomFee,
+	executeConfirmSetReferrerCustomFee,
 	openSetTiers,
 	submitConfirmSetTiers,
 	executeConfirmSetTiers,

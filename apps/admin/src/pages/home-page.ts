@@ -57,6 +57,12 @@ export const HomePage = {
 				],
 				[
 					{
+						label: 'Set Custom Fee',
+						actionId: actionIds.openSetReferrerCustomFee,
+					},
+				],
+				[
+					{
 						label: 'Set Tiers',
 						actionId: actionIds.openSetTiers,
 					},

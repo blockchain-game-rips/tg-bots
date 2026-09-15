@@ -4,6 +4,7 @@
 		"executeConfirmReferrerFrozen": "c",
 		"executeConfirmSetBlockedCountries": "l",
 		"executeConfirmSetDefaultFee": "7",
+		"executeConfirmSetReferrerCustomFee": "s",
 		"executeConfirmSetTiers": "f",
 		"executeConfirmUpdatePresetConfig": "i",
 		"executeConfirmUploadTerms": "o",
@@ -13,6 +14,7 @@
 		"openHome": "0",
 		"openSetBlockedCountries": "j",
 		"openSetDefaultFee": "5",
+		"openSetReferrerCustomFee": "p",
 		"openSetTiers": "d",
 		"openState": "1",
 		"openUnfreezeReferrer": "a",
@@ -21,10 +23,12 @@
 		"submitConfirmFreezeReferrer": "9",
 		"submitConfirmSetBlockedCountries": "k",
 		"submitConfirmSetDefaultFee": "6",
+		"submitConfirmSetReferrerCustomFee": "r",
 		"submitConfirmSetTiers": "e",
 		"submitConfirmUnfreezeReferrer": "b",
 		"submitConfirmUpdatePresetConfig": "h",
-		"submitConfirmUploadTerms": "n"
+		"submitConfirmUploadTerms": "n",
+		"submitSetReferrerCustomFeeAddress": "q"
 	},
-	"next": "p"
+	"next": "t"
 }

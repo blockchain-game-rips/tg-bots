@@ -22,6 +22,18 @@ export interface SetReferrerFrozenFlow {
 	data: { address: string; frozen: boolean }
 }
 
+export type SetReferrerCustomFeeFlow =
+	| {
+			flowType: 'setReferrerCustomFee'
+			step: 'fee'
+			data: { address: string }
+	  }
+	| {
+			flowType: 'setReferrerCustomFee'
+			step: 'confirm'
+			data: { address: string; feeBps: number }
+	  }
+
 export interface SetDefaultFeeFlow {
 	flowType: 'setDefaultFee'
 	step: 'confirm'
@@ -67,6 +79,7 @@ export type Flow =
 	| EnterFlow
 	| SetPausedFlow
 	| SetReferrerFrozenFlow
+	| SetReferrerCustomFeeFlow
 	| SetDefaultFeeFlow
 	| SetTiersFlow
 	| UpdatePresetConfigFlow

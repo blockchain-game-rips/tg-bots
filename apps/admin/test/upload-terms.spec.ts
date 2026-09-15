@@ -1,4 +1,4 @@
-import { ErrorToRender } from '@rips/grammy-kit'
+import { AnyHandlerResult, ErrorToRender } from '@rips/grammy-kit'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('../src/utils/api', () => ({ adminApiKey: 'test-admin-api-key' }))
@@ -14,17 +14,15 @@ const session = { telegramId: 1, flow: null }
 const documentPayload = (fileName: string | null = FILE_NAME): string =>
 	JSON.stringify({ tag: 'document', fileId: FILE_ID, fileName })
 
+// ActionDef widens every handler to `Promise<HandlerResult> | HandlerResult`,
+// but this one's body is synchronous, so the tests can treat it as such.
 const submit = (payload: string) =>
-	submitConfirmUploadTerms.handler(session, payload)
+	submitConfirmUploadTerms.handler(session, payload) as AnyHandlerResult
 
 const confirmationTextOf = (payload: string): string => {
 	const result = submit(payload)
 
-	if (
-		!('effect' in result) ||
-		result.effect.type !== EffectType.NAVIGATE ||
-		result.effect.page === undefined
-	) {
+	if (!('effect' in result) || result.effect.type !== EffectType.NAVIGATE) {
 		throw new Error('expected the submission to navigate to a confirmation')
 	}
 

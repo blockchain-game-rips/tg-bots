@@ -135,7 +135,7 @@ describe('submitting a reply to a prompt', () => {
 		})
 	})
 
-	it('leaves typed text undecodable as a document', async () => {
+	it('leaves typed text undecodable as a document', () => {
 		expect(parseDocumentPayload('US,GB')).toBe(null)
 	})
 

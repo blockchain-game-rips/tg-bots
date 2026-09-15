@@ -32,12 +32,12 @@ function pageResult(message: string): AnyHandlerResult {
 	}
 }
 
-const declarations = {
+const _declarations = {
 	openHome: noPayloadId(),
 	openRip: withPayloadId<number>(),
 }
 
-type Declarations = typeof declarations
+type Declarations = typeof _declarations
 
 function stubRegistry(
 	handler: () => AnyHandlerResult,

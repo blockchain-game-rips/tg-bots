@@ -11,6 +11,7 @@ import { parseActionData } from '../action/action-data'
 import { BoundAction } from '../action/actions'
 import { executeEffectOrDisplayError } from '../effects/effect-executor'
 import { logger } from '../logging/pino-logger'
+import { runWithRequestContext } from '../logging/request-context'
 import { resolveWorkspace } from '../session/workspaces'
 import { Message, PageContent, SessionData } from '../types'
 import { fireAndForget } from '../utils/common'
@@ -46,22 +47,32 @@ export function createButtonHandler(
 
 			const action = parseActionData(ctx.callbackQuery.data)
 
-			if (action.actionId === '') {
-				logger.error('Missing action ID in callback data')
-				return
-			}
+			await runWithRequestContext(
+				{ telegramId: userId, messageId: message.message_id },
+				async () => {
+					if (action.actionId === '') {
+						logger.error('Missing action ID in callback data')
+						return
+					}
 
-			await executeEffectOrDisplayError({
-				api: ctx.api,
-				chatId: message.chat.id,
-				telegramId: ctx.from.id,
-				message: toMessage(message),
-				workspace,
-				actions,
-				action,
-				fallbackPage: recoverPage(message),
-				messagesToDelete,
-			})
+					logger.info(
+						{ actionId: action.actionId },
+						'Handling button press',
+					)
+
+					await executeEffectOrDisplayError({
+						api: ctx.api,
+						chatId: message.chat.id,
+						telegramId: ctx.from.id,
+						message: toMessage(message),
+						workspace,
+						actions,
+						action,
+						fallbackPage: recoverPage(message),
+						messagesToDelete,
+					})
+				},
+			)
 		} catch (error) {
 			if (error instanceof GrammyError) throw error
 			logger.error(error)

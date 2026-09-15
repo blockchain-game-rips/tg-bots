@@ -6,6 +6,7 @@ import {
 	createMessageHandler,
 	createStartHandler,
 	createTelegramMetricsTransformer,
+	currentRequestContext,
 	initialSession,
 	startMetricsServer,
 } from '@rips/grammy-kit'
@@ -17,7 +18,10 @@ import { Flow } from './flows'
 import { Context, SessionData } from './types'
 import { getAllowedUserIds } from './utils/common'
 
-initApiClient(getEnvSafe('BACKEND_URL'))
+initApiClient(
+	getEnvSafe('BACKEND_URL'),
+	() => currentRequestContext()?.requestId,
+)
 
 startMetricsServer()
 

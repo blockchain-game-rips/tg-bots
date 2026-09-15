@@ -7,6 +7,7 @@ import {
 	createMessageHandler,
 	createStartHandler,
 	createTelegramMetricsTransformer,
+	currentRequestContext,
 	initialSession,
 	logger,
 	startMetricsServer,
@@ -27,7 +28,10 @@ import { getEnvSafe } from './utils/common'
 import { recordEligibility } from './utils/api/wrappers'
 import { installKeyboardExtensions } from './utils/keyboard'
 
-initApiClient(getEnvSafe('BACKEND_URL'))
+initApiClient(
+	getEnvSafe('BACKEND_URL'),
+	() => currentRequestContext()?.requestId,
+)
 
 startMetricsServer()
 

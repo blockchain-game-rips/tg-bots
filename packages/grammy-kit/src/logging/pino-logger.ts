@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+import { currentRequestContext } from './request-context'
 
 export const logger = pino({
 	formatters: {
@@ -7,4 +8,7 @@ export const logger = pino({
 		},
 	},
 	timestamp: () => `,"time":"${new Date().toISOString()}"`,
+	mixin() {
+		return { ...currentRequestContext() }
+	},
 })

@@ -5,6 +5,8 @@ import { z } from 'zod'
  * the largest value it accepts before reverting FeeTooHigh. */
 const MAX_FEE_BP = 10_000
 
+export const FEE_PLACEHOLDER = 'e.g. 1000 for 10%'
+
 const feeBpSchema = z
 	.string()
 	.regex(/^\d+$/, 'Must be a whole number')

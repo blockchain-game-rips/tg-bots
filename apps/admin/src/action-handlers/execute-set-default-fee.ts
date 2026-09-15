@@ -15,7 +15,7 @@ import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiKey } from '../utils/api'
-import { parseFeeBp } from '../validation/fee-bp'
+import { FEE_PLACEHOLDER, parseFeeBp } from '../validation/fee-bp'
 
 const FEE_PROMPT_MESSAGE = joinLines([
 	'Enter the default referral fee in basis points (bp).',
@@ -24,8 +24,6 @@ const FEE_PROMPT_MESSAGE = joinLines([
 	fmt`${FormattedString.code('100 bp')} = 1%`,
 	fmt`${FormattedString.code('1 bp')} = 0.01%`,
 ])
-
-const FEE_PLACEHOLDER = 'e.g. 1000 for 10%'
 
 export const openSetDefaultFee: ActionDef<void> = noPayload(() => ({
 	flow: toReset(),

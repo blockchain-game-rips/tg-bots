@@ -16,7 +16,7 @@ import { ConfirmationPage } from '../pages/confirmation-page'
 import { TransactionPage } from '../pages/transaction-page'
 import { EffectType } from '../types'
 import { adminApiKey } from '../utils/api'
-import { parseFeeBp } from '../validation/fee-bp'
+import { FEE_PLACEHOLDER, parseFeeBp } from '../validation/fee-bp'
 
 const CLEARED_FEE_BP = 0
 
@@ -31,8 +31,6 @@ const FEE_PROMPT_MESSAGE = joinLines([
 	'',
 	fmt`${FormattedString.code('0 bp')} clears the override, so the referrer falls back to the tier rules.`,
 ])
-
-const FEE_PLACEHOLDER = 'e.g. 1000 for 10%'
 
 function describeFee(address: string, feeBps: number): FormattedString {
 	return feeBps === CLEARED_FEE_BP

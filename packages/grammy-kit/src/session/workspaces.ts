@@ -31,6 +31,7 @@ function createWorkspace<F extends FlowBase | null>(
 		flow: null as F,
 		lastNavigatedPage: null,
 		history: [],
+		isProcessing: false,
 	}
 }
 

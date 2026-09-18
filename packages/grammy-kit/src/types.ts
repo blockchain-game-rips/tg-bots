@@ -25,6 +25,14 @@ export interface Workspace<F extends FlowBase | null = FlowBase | null> {
 	flow: F
 	lastNavigatedPage: PageContent | null
 	history: HistoryEntry[]
+	/**
+	 * Whether a press on this workspace's message is still being handled, so a
+	 * second one is dropped rather than racing it. Scoped to the workspace and
+	 * not to the user: a chat holds several messages, and pressing one must not
+	 * freeze the others. Lives here rather than in a handler-side registry so it
+	 * dies with the workspace an eviction drops, leaving nothing stuck locked.
+	 */
+	isProcessing: boolean
 }
 
 export interface SessionData<F extends FlowBase | null = FlowBase | null> {

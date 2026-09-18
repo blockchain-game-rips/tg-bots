@@ -20,27 +20,27 @@ type BaseContext = GrammyContext & SessionFlavor<SessionData> & { from: User }
 
 type ButtonContext = Filter<BaseContext, 'callback_query:data'>
 
-const processingUsers = new Set<number>()
-
 export function createButtonHandler(
 	actions: Record<string, BoundAction | undefined>,
 ): (ctx: ButtonContext) => Promise<void> {
 	return async function handleButton(ctx: ButtonContext): Promise<void> {
 		const userId = ctx.from.id
 
-		if (processingUsers.has(userId)) return
-		processingUsers.add(userId)
+		fireAndForget(ctx.answerCallbackQuery())
+
+		const message = ctx.callbackQuery.message
+
+		if (message === undefined)
+			throw new Error('No message id on callback query')
+
+		const workspace = resolveWorkspace(ctx.session, message.message_id)
+
+		// dropped rather than queued: it was aimed at a page that no longer stands
+		if (workspace.isProcessing) return
+
+		workspace.isProcessing = true
 
 		try {
-			fireAndForget(ctx.answerCallbackQuery())
-
-			const message = ctx.callbackQuery.message
-
-			if (message === undefined)
-				throw new Error('No message id on callback query')
-
-			const workspace = resolveWorkspace(ctx.session, message.message_id)
-
 			const { lastAsk } = workspace
 			const messagesToDelete =
 				lastAsk === null ? [] : [lastAsk.promptMessageId]
@@ -63,7 +63,7 @@ export function createButtonHandler(
 					await executeEffectOrDisplayError({
 						api: ctx.api,
 						chatId: message.chat.id,
-						telegramId: ctx.from.id,
+						telegramId: userId,
 						message: toMessage(message),
 						workspace,
 						actions,
@@ -77,7 +77,7 @@ export function createButtonHandler(
 			if (error instanceof GrammyError) throw error
 			logger.error(error)
 		} finally {
-			processingUsers.delete(userId)
+			workspace.isProcessing = false
 		}
 	}
 }

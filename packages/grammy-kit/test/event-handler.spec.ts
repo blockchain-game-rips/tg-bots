@@ -99,6 +99,7 @@ const existingWorkspace = () => ({
 	flow: null,
 	lastNavigatedPage: null,
 	history: [],
+	isProcessing: false,
 })
 
 describe('driving the bot from an event with no update', () => {

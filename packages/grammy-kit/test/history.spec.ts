@@ -22,6 +22,7 @@ const makeWorkspace = (): Workspace => ({
 	flow: null,
 	lastNavigatedPage: null,
 	history: [],
+	isProcessing: false,
 })
 
 const makePage = (text: string): PageContent => ({

@@ -92,6 +92,7 @@ const workspace = (payChainAddress: object): Workspace => ({
 	},
 	lastNavigatedPage: page(STALE_TEXT),
 	history: [],
+	isProcessing: false,
 })
 
 async function runEnter(
